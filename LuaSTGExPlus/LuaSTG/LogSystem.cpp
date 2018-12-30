@@ -10,8 +10,7 @@ LNOINLINE LogSystem& LogSystem::GetInstance()
 	return s_Instance;
 }
 
-LogSystem::LogSystem()
-	: m_LogFile(LLOGFILE, ios::out)
+LogSystem::LogSystem() : m_LogFile(LLOGFILE, ios::out)
 {
 	if (!m_LogFile)
 		LERROR("无法创建日志文件'%s'", LLOGFILE);

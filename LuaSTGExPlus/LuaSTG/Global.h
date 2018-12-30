@@ -77,7 +77,11 @@
 #define LGOBJ_CC_COLLI 5
 #define LGOBJ_CC_KILL 6
 
+//功能控制
+#define USER_SYSTEM_OPERATION //控制是否启用由lua层转来的额外功能
+
 // 数学常量
+#define DBL_HALF_MAX (DBL_MAX / 2.0) //双精度浮点的半大值
 #define LRAD2DEGREE (180.0/3.141592653589793) // 弧度到角度
 #define LDEGREE2RAD (1.0/LRAD2DEGREE) // 角度到弧度
 #define LPI_HALF (3.141592653589793 / 2)  // PI*0.5

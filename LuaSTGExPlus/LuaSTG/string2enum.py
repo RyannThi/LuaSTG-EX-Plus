@@ -14,7 +14,7 @@ def combination(seq, length):
     if not length:
         yield []
     else:
-        for i in xrange(len(seq)):
+        for i in range(len(seq)):
             for result in combination(seq[i+1:], length-1):
                 yield [seq[i]] + result
 
@@ -155,7 +155,7 @@ def generated_mpf(filename):
     # step1: find best indices
     best_indices = find_best_indices(keys)
     # step2: generate random table and graph
-    hash_table1, hash_table2, graph = generate_graph(keys, best_indices, options["factor"] if options.has_key("factor") else 2.0)
+    hash_table1, hash_table2, graph = generate_graph(keys, best_indices, options["factor"] if "factor" in options else 2.0)
     # step3: generate function g
     hash_func_g = find_func_g(graph, len(keys))
     # check step

@@ -954,6 +954,7 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 
 
 	GameObject* p = m_pObjectListHeader.pObjectNext;
+	lua_Number cache1, cache1m, cache2;//速度限制计算时用到的中间变量
 	while (p && p != &m_pObjectListTail)
 	{
 		// 根据id获取对象的lua绑定table、拿到class再拿到framefunc
@@ -975,6 +976,27 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 					// 更新对象状态
 					p->vx += p->ax;
 					p->vy += p->ay;
+#ifdef USER_SYSTEM_OPERATION
+					p->vy -= p->ag;//单独的重力更新
+					//速度限制，来自lua层
+					cache1 = sqrt(p->vx * p->vx + p->vy * p->vy);
+					if (p->maxv == 0.) {
+						p->vx = p->vy = 0.;
+					}
+					else if (p->maxv < cache1) { //防止maxv为最大值时相乘出现溢出的情况
+						cache2 = p->maxv / cache1;
+						p->vx = cache2 * p->vx;
+						p->vy = cache2 * p->vy;
+					}
+					//针对x、y方向单独限制
+					if (abs(p->vx) > p->maxvx) {
+						p->vx = p->maxvx * ((p->vx > 0) ? 1 : -1);
+					}
+					if (abs(p->vy) > p->maxvy) {
+						p->vy = p->maxvy * ((p->vy > 0) ? 1 : -1);
+					}
+#endif
+					//坐标更新
 					p->x += p->vx;
 					p->y += p->vy;
 				}
@@ -1594,7 +1616,7 @@ int GameObjectPool::GetAttr(lua_State* L)LNOEXCEPT
 		lua_pushnumber(L, p->y);
 		return 1;
 	}
-
+	
 	// 一般属性
 	switch (GameObjectPropertyHash(key))
 	{
@@ -1625,6 +1647,20 @@ int GameObjectPool::GetAttr(lua_State* L)LNOEXCEPT
 	case GameObjectProperty::AY:
 		lua_pushnumber(L, p->ay);
 		break;
+#ifdef USER_SYSTEM_OPERATION
+	case GameObjectProperty::MAXV:
+		lua_pushnumber(L, p->maxv);
+		break;
+	case GameObjectProperty::MAXVX:
+		lua_pushnumber(L, p->maxvx);
+		break;
+	case GameObjectProperty::MAXVY:
+		lua_pushnumber(L, p->maxvy);
+		break;
+	case GameObjectProperty::AG:
+		lua_pushnumber(L, p->ag);
+		break;
+#endif
 	case GameObjectProperty::LAYER:
 		lua_pushnumber(L, p->layer);
 		break;
@@ -1773,6 +1809,20 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 	case GameObjectProperty::AY:
 		p->ay = luaL_checknumber(L, 3);
 		break;
+#ifdef USER_SYSTEM_OPERATION
+	case GameObjectProperty::MAXV:
+		p->maxv = luaL_checknumber(L, 3);
+		break;
+	case GameObjectProperty::MAXVX:
+		p->maxvx = luaL_checknumber(L, 3);
+		break;
+	case GameObjectProperty::MAXVY:
+		p->maxvy = luaL_checknumber(L, 3);
+		break;
+	case GameObjectProperty::AG:
+		p->ag = luaL_checknumber(L, 3);
+		break;
+#endif
 	case GameObjectProperty::LAYER:
 		p->layer = luaL_checknumber(L, 3);
 		LIST_INSERT_SORT(p, Render, RenderListSortFunc); // 刷新p的渲染层级
@@ -1930,7 +1980,7 @@ int GameObjectPool::InitAttr(lua_State* L)LNOEXCEPT  // t(object)
 
 	for (int i = 2; i < 26; i++)
 	{
-		key = s_orgKeyList[i];
+		key = LuaSTGPlusESC::s_orgKeyList[i];
 		lua_pushstring(L, key); // t(object) s(key)
 		lua_pushstring(L, key); // t(object) s(key) s(key)
 		lua_rawget(L, 1); // t(object) s(key) v(x)
@@ -1963,6 +2013,20 @@ int GameObjectPool::InitAttr(lua_State* L)LNOEXCEPT  // t(object)
 			case GameObjectProperty::AY:
 				p->ay = luaL_checknumber(L, 3);
 				break;
+#ifdef USER_SYSTEM_OPERATION
+			case GameObjectProperty::MAXV:
+				p->maxv = luaL_checknumber(L, 3);
+				break;
+			case GameObjectProperty::MAXVX:
+				p->maxvx = luaL_checknumber(L, 3);
+				break;
+			case GameObjectProperty::MAXVY:
+				p->maxvy = luaL_checknumber(L, 3);
+				break;
+			case GameObjectProperty::AG:
+				p->ag = luaL_checknumber(L, 3);
+				break;
+#endif
 			case GameObjectProperty::LAYER:
 				p->layer = luaL_checknumber(L, 3);
 				LIST_INSERT_SORT(p, Render, RenderListSortFunc); // 刷新p的渲染层级

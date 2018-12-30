@@ -27,6 +27,10 @@ namespace LuaSTGPlus
 		lua_Number dx, dy;  // (只读)上一帧中心坐标相对中心坐标的偏移量
 		lua_Number rot, omiga;  // 旋转角度与角度增量
 		lua_Number vx, vy;  // 速度
+#ifdef USER_SYSTEM_OPERATION
+		lua_Number maxv, maxvx, maxvy; // 速度限制
+		lua_Number ag;  // 重力加速度
+#endif
 		lua_Number ax, ay;  // 加速度
 		//lua_Number va, speed; // 速度方向 速度值
 		lua_Number layer;  // 图层
@@ -74,7 +78,11 @@ namespace LuaSTGPlus
 			layer = 0.;
 			a = b = 0.;
 			hscale = vscale = 1.;
-
+#ifdef USER_SYSTEM_OPERATION
+			maxv = maxvx = maxvy = DBL_HALF_MAX; // 平时应该不会有人弄那么大的速度吧，希望计算时不会溢出（
+			ag = 0.;
+#endif
+			
 			colli = bound = true;
 			rect = hide = navi = false;
 
