@@ -14,15 +14,15 @@ RemoteDebuggerClient::RemoteDebuggerClient(fuShort p, const char* addr)
 	if (tRet != 0)
 		throw fcyException("RemoteDebuggerClient::RemoteDebuggerClient", "WSAStartup failed.");
 	
-	// ´´½¨socket
+	// åˆ›å»ºsocket
 	S = socket(AF_INET, SOCK_DGRAM, 0);
 	if (!S)
 		throw fcyException("RemoteDebuggerClient::RemoteDebuggerClient", "Create socket failed.");
 
-	// ÉèÖÃµ÷ÊÔÆ÷µØÖ·
+	// è®¾ç½®è°ƒè¯•å™¨åœ°å€
 	m_DebuggerAddr = inet_addr(addr);
 
-	// ´´½¨Êı¾İ°ü
+	// åˆ›å»ºæ•°æ®åŒ…
 	m_SendPacketCache = make_shared<Value>(ValueType::Dictionary);
 	m_SendPacketCache->VDict["processId"] = make_shared<Value>(static_cast<int>(GetCurrentProcessId()));
 }
@@ -46,10 +46,10 @@ void RemoteDebuggerClient::sendUdpMessage(UdpMessageType type, std::shared_ptr<V
 	int tEndpointLen = sizeof(tEndpoint);
 	memset(&tEndpoint, 0, sizeof(tEndpoint));
 	tEndpoint.sin_family = AF_INET;
-	tEndpoint.sin_port = htons(m_DebuggerPort);  // ¼àÌı¶Ë¿Ú
+	tEndpoint.sin_port = htons(m_DebuggerPort);  // ç›‘å¬ç«¯å£
 	tEndpoint.sin_addr.S_un.S_addr = m_DebuggerAddr;
 
-	// ²¢²»Àí»ásendto³É¹¦Óë·ñ
+	// å¹¶ä¸ç†ä¼šsendtoæˆåŠŸä¸å¦
 	sendto(S, tData.c_str(), tData.size(), 0, (sockaddr*)&tEndpoint, tEndpointLen);
 }
 

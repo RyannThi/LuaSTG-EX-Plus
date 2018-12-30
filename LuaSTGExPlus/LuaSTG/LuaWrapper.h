@@ -1,33 +1,33 @@
 /// @file LuaWrapper.h
-/// @brief lua°ü×°²ã ÓÃÓÚµ¼³öC++º¯ÊıºÍÀà
+/// @brief luaåŒ…è£…å±‚ ç”¨äºå¯¼å‡ºC++å‡½æ•°å’Œç±»
 #pragma once
 #include "Global.h"
 
 namespace LuaSTGPlus
 {
-	/// @brief ÑÕÉ«°ü×°
+	/// @brief é¢œè‰²åŒ…è£…
 	class ColorWrapper
 	{
 	public:
-		/// @brief Ïòlua×¢²á°ü×°Àà
+		/// @brief å‘luaæ³¨å†ŒåŒ…è£…ç±»
 		static void Register(lua_State* L)LNOEXCEPT;
-		/// @brief ´´½¨Ò»¸öÑÕÉ«Àà²¢ÍÆÈë¶ÑÕ»
+		/// @brief åˆ›å»ºä¸€ä¸ªé¢œè‰²ç±»å¹¶æ¨å…¥å †æ ˆ
 		static fcyColor* CreateAndPush(lua_State* L);
 	};
 
-	/// @brief Ëæ»úÊı·¢ÉúÆ÷°ü×°
+	/// @brief éšæœºæ•°å‘ç”Ÿå™¨åŒ…è£…
 	class RandomizerWrapper
 	{
 	public:
-		/// @brief Ïòlua×¢²á°ü×°Àà
+		/// @brief å‘luaæ³¨å†ŒåŒ…è£…ç±»
 		static void Register(lua_State* L)LNOEXCEPT;
-		/// @brief ´´½¨Ò»¸öÑÕÉ«Àà²¢ÍÆÈë¶ÑÕ»
+		/// @brief åˆ›å»ºä¸€ä¸ªé¢œè‰²ç±»å¹¶æ¨å…¥å †æ ˆ
 		static fcyRandomWELL512* CreateAndPush(lua_State* L);
 	};
 
 	class GameObjectBentLaser;
 
-	/// @brief ÇúÏß¼¤¹â°ü×°
+	/// @brief æ›²çº¿æ¿€å…‰åŒ…è£…
 	class BentLaserDataWrapper
 	{
 	private:
@@ -36,27 +36,27 @@ namespace LuaSTGPlus
 			GameObjectBentLaser* handle;
 		};
 	public:
-		/// @brief Ïòlua×¢²á°ü×°Àà
+		/// @brief å‘luaæ³¨å†ŒåŒ…è£…ç±»
 		static void Register(lua_State* L)LNOEXCEPT;
-		/// @brief ´´½¨Ò»¸öÇúÏß¼¤¹âÀà²¢ÍÆÈë¶ÑÕ»
+		/// @brief åˆ›å»ºä¸€ä¸ªæ›²çº¿æ¿€å…‰ç±»å¹¶æ¨å…¥å †æ ˆ
 		static GameObjectBentLaser* CreateAndPush(lua_State* L);
 	};
 	
-	/// @brief f2d¸ß¾«¶ÈÄÉÃë¼¶Í£±í
+	/// @brief f2dé«˜ç²¾åº¦çº³ç§’çº§åœè¡¨
 	class Fancy2dStopWatchWrapper
 	{
 	public:
-		/// @brief Ïòlua×¢²á°ü×°Àà
+		/// @brief å‘luaæ³¨å†ŒåŒ…è£…ç±»
 		static void Register(lua_State* L)LNOEXCEPT;
-		/// @brief ´´½¨Ò»¸ö¸ß¾«¶ÈÄÉÃë¼¶Í£±íÀà²¢ÍÆÈë¶ÑÕ»
+		/// @brief åˆ›å»ºä¸€ä¸ªé«˜ç²¾åº¦çº³ç§’çº§åœè¡¨ç±»å¹¶æ¨å…¥å †æ ˆ
 		static fcyStopWatch* CreateAndPush(lua_State* L);
 	};
 
-	/// @brief ÄÚ½¨º¯Êı°ü×°
+	/// @brief å†…å»ºå‡½æ•°åŒ…è£…
 	class BuiltInFunctionWrapper
 	{
 	public:
-		/// @brief Ïòlua×¢²á°ü×°Àà
+		/// @brief å‘luaæ³¨å†ŒåŒ…è£…ç±»
 		static void Register(lua_State* L)LNOEXCEPT;
 	};
 }

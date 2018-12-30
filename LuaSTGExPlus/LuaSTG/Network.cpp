@@ -123,7 +123,7 @@ int EXTCPIPSERVERCLIENTINFO::Receive(char *out_data, int max_count)
 	}
 	out_data[i] = 0;
 	if (EXTCPDEBUG)if (i)printf("SV_CL_Get:%s\n", out_data);
-	if(out_data[0]!='K' && i)LINFO("»ñµÃÍøÂçÊäÈë'%m'", out_data);
+	if(out_data[0]!='K' && i)LINFO("è·å¾—ç½‘ç»œè¾“å…¥'%m'", out_data);
 	WriteEnd();
 	return i;
 }

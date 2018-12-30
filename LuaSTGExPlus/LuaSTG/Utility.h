@@ -1,11 +1,11 @@
 /// @file Utility.h
-/// @brief ÊµÓÃ¹¤¾ß
+/// @brief å®ç”¨å·¥å…·
 #pragma once
 #include "Global.h"
 
 namespace LuaSTGPlus
 {
-	/// @brief Óò
+	/// @brief åŸŸ
 	class Scope
 	{
 	private:
@@ -22,7 +22,7 @@ namespace LuaSTGPlus
 		}
 	};
 
-	/// @brief ¼ÆÊ±Óò
+	/// @brief è®¡æ—¶åŸŸ
 	class TimerScope
 	{
 	private:
@@ -39,21 +39,21 @@ namespace LuaSTGPlus
 		}
 	};
 
-	/// @brief ×Ö·û´®¸ñÊ½»¯
-	/// @param Format ×Ö·û´®¸ñÊ½£¬²»Ö§³Ö¾«¶È
+	/// @brief å­—ç¬¦ä¸²æ ¼å¼åŒ–
+	/// @param Format å­—ç¬¦ä¸²æ ¼å¼ï¼Œä¸æ”¯æŒç²¾åº¦
 	std::string StringFormat(const char* Format, ...)LNOEXCEPT;
 
-	/// @brief ×Ö·û´®¸ñÊ½»¯ va_list°æ±¾
+	/// @brief å­—ç¬¦ä¸²æ ¼å¼åŒ– va_listç‰ˆæœ¬
 	std::string StringFormatV(const char* Format, va_list vaptr)LNOEXCEPT;
 
-	/// @brief ×Ö·û´®¸ñÊ½»¯ ¿í×Ö·û
-	/// @param Format ×Ö·û´®¸ñÊ½£¬²»Ö§³Ö¾«¶È
+	/// @brief å­—ç¬¦ä¸²æ ¼å¼åŒ– å®½å­—ç¬¦
+	/// @param Format å­—ç¬¦ä¸²æ ¼å¼ï¼Œä¸æ”¯æŒç²¾åº¦
 	std::wstring StringFormat(const wchar_t* Format, ...)LNOEXCEPT;
 
-	/// @brief ×Ö·û´®¸ñÊ½»¯ ¿í×Ö·û¡¢va_list°æ±¾
+	/// @brief å­—ç¬¦ä¸²æ ¼å¼åŒ– å®½å­—ç¬¦ã€va_listç‰ˆæœ¬
 	std::wstring StringFormatV(const wchar_t* Format, va_list vaptr)LNOEXCEPT;
 
-	/// @brief RC4¼Ó½âÃÜÊµÏÖ
+	/// @brief RC4åŠ è§£å¯†å®ç°
 	class RC4
 	{
 	private:
@@ -66,13 +66,13 @@ namespace LuaSTGPlus
 
             for (size_t i = 0, j = 0; i < inputlen; i++)
             {
-                // SºĞÖÃ»»
+                // Sç›’ç½®æ¢
                 size_t i2 = (i + 1) % 256;
                 j = (j + Scpy[i2]) % 256;
                 std::swap(Scpy[i2], Scpy[j]);
                 uint8_t n = Scpy[(Scpy[i2] + Scpy[j]) % 256];
 
-                // ¼Ó½âÃÜ
+                // åŠ è§£å¯†
                 *(output + i) = *(input + i) ^ n;
             }
         }
@@ -81,11 +81,11 @@ namespace LuaSTGPlus
 		{
 			len = min(len, 256U);
 
-			// ³õÊ¼»¯SºĞ
+			// åˆå§‹åŒ–Sç›’
 			for (int i = 0; i < 256; ++i)
 				S[i] = i;
 
-			// SºĞ³õÊ¼ÖÃ»»
+			// Sç›’åˆå§‹ç½®æ¢
 			for (size_t i = 0, j = 0; i < 256; i++)
 			{
 				j = (j + S[i] + password[i % len]) % 256;

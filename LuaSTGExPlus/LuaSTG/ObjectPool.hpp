@@ -3,7 +3,7 @@
 
 namespace LuaSTGPlus
 {
-	/// @brief ¶¨³¤¶ÔÏó³Ø
+	/// @brief å®šé•¿å¯¹è±¡æ± 
 	template <typename T, size_t AllocCount>
 	class FixedObjectPool
 	{
@@ -11,13 +11,13 @@ namespace LuaSTGPlus
 		static_assert(std::is_pod<T>::value, "T must be a pod type.");
 		//static_assert(std::is_pod<typename T>::value, "T must be a pod type.");
 		
-		std::vector<size_t> m_FreeIndex;  // ¿ÕÏÐ¿Õ¼äË÷Òý±í
-		std::array<bool, AllocCount> m_DataUsed;  // ÒÑÓÃ¿Õ¼ä±ê¼Ç
-		std::array<T, AllocCount> m_DataBuffer;  // ËùÓÐ¿Õ¼ä
+		std::vector<size_t> m_FreeIndex;  // ç©ºé—²ç©ºé—´ç´¢å¼•è¡¨
+		std::array<bool, AllocCount> m_DataUsed;  // å·²ç”¨ç©ºé—´æ ‡è®°
+		std::array<T, AllocCount> m_DataBuffer;  // æ‰€æœ‰ç©ºé—´
 	public:
-		/// @brief ÉêÇëÒ»¸ö¶ÔÏó
-		/// @param[out] id ¶ÔÏóid
-		/// @return ÊÇ·ñ³É¹¦£¬Ê§°Ü·µ»Øfalse±íÃ÷¶ÔÏó³ØÒÑÂú
+		/// @brief ç”³è¯·ä¸€ä¸ªå¯¹è±¡
+		/// @param[out] id å¯¹è±¡id
+		/// @return æ˜¯å¦æˆåŠŸï¼Œå¤±è´¥è¿”å›žfalseè¡¨æ˜Žå¯¹è±¡æ± å·²æ»¡
 		bool Alloc(size_t& id)
 		{
 			if (m_FreeIndex.size() > 0)
@@ -30,7 +30,7 @@ namespace LuaSTGPlus
 			id = static_cast<size_t>(-1);
 			return false;
 		}
-		/// @brief »ØÊÕÒ»¸ö¶ÔÏó
+		/// @brief å›žæ”¶ä¸€ä¸ªå¯¹è±¡
 		void Free(size_t id)
 		{
 			if (id < AllocCount && m_DataUsed[id])
@@ -39,20 +39,20 @@ namespace LuaSTGPlus
 				m_FreeIndex.push_back(id);
 			}
 		}
-		/// @brief »ñÈ¡¶ÔÏóµÄÊý¾Ý
-		/// @return ÈôidÎÞÐ§·µ»Ønullptr
+		/// @brief èŽ·å–å¯¹è±¡çš„æ•°æ®
+		/// @return è‹¥idæ— æ•ˆè¿”å›žnullptr
 		T* Data(size_t id)
 		{
 			if (id < AllocCount && m_DataUsed[id])
 				return &m_DataBuffer[id];
 			return nullptr;
 		}
-		/// @brief ·µ»ØÒÑ·ÖÅä¶ÔÏóÊý
+		/// @brief è¿”å›žå·²åˆ†é…å¯¹è±¡æ•°
 		size_t Size()
 		{
 			return m_DataBuffer.size() - m_FreeIndex.size();
 		}
-		/// @brief Çå¿Õ¶ÔÏó³Ø²¢»ØÊÕËùÓÐ¶ÔÏó
+		/// @brief æ¸…ç©ºå¯¹è±¡æ± å¹¶å›žæ”¶æ‰€æœ‰å¯¹è±¡
 		void Clear()
 		{
 			m_FreeIndex.resize(m_DataBuffer.size());

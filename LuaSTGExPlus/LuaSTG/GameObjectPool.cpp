@@ -65,13 +65,13 @@ using namespace LuaSTGPlus;
 
 static inline bool ObjectListSortFunc(GameObject* p1, GameObject* p2)LNOEXCEPT
 {
-	// ×ÜÊÇÒÔuidÎª²ÎÕÕ
+	// æ€»æ˜¯ä»¥uidä¸ºå‚ç…§
 	return p1->uid < p2->uid;
 }
 
 static inline bool RenderListSortFunc(GameObject* p1, GameObject* p2)LNOEXCEPT
 {
-	// layerĞ¡µÄ¿¿Ç°¡£ÈôlayerÏàÍ¬Ôò²ÎÕÕuid¡£
+	// layerå°çš„é å‰ã€‚è‹¥layerç›¸åŒåˆ™å‚ç…§uidã€‚
 	return (p1->layer < p2->layer) || ((p1->layer == p2->layer) && (p1->uid < p2->uid));
 }
 
@@ -126,7 +126,7 @@ static fcyMemPool<sizeof(GameObjectBentLaser)> s_GameObjectBentLaserPool(1024);
 
 GameObjectBentLaser* GameObjectBentLaser::AllocInstance()
 {
-	// ! Ç±ÔÚbad_alloc
+	// ! æ½œåœ¨bad_alloc
 	GameObjectBentLaser* pRet = new(s_GameObjectBentLaserPool.Alloc()) GameObjectBentLaser();
 	return pRet;
 }
@@ -152,17 +152,17 @@ bool GameObjectBentLaser::Update(size_t id, int length, float width,bool active)
 		return false;
 	if (length <= 1)
 	{
-		LERROR("lstgBentLaserData: ÎŞĞ§µÄ²ÎÊılength");
+		LERROR("lstgBentLaserData: æ— æ•ˆçš„å‚æ•°length");
 		return false;
 	}
 
-	// ÒÆ³ı¶àÓàµÄ½Úµã£¬±£Ö¤³¤¶ÈÔÚlength·¶Î§ÄÚ
+	// ç§»é™¤å¤šä½™çš„èŠ‚ç‚¹ï¼Œä¿è¯é•¿åº¦åœ¨lengthèŒƒå›´å†…
 	while (m_Queue.IsFull() || m_Queue.Size() >= (size_t)length)
 	{
 		LaserNode tLastPop;
 		m_Queue.Pop(tLastPop);
 
-		// ¼õÉÙ×Ü³¤¶È
+		// å‡å°‘æ€»é•¿åº¦
 		if (!m_Queue.IsEmpty())
 		{
 			LaserNode &tFront = m_Queue.Front();
@@ -173,7 +173,7 @@ bool GameObjectBentLaser::Update(size_t id, int length, float width,bool active)
 		}
 	}
 
-	// Ìí¼ÓĞÂ½Úµã
+	// æ·»åŠ æ–°èŠ‚ç‚¹
 	if (m_Queue.Size() < (size_t)length)
 	{
 		LaserNode tNode;
@@ -182,7 +182,7 @@ bool GameObjectBentLaser::Update(size_t id, int length, float width,bool active)
 		tNode.active = active;
 		m_Queue.Push(tNode);
 
-		// Ôö¼Ó×Ü³¤¶È
+		// å¢åŠ æ€»é•¿åº¦
 		if (m_Queue.Size() > 1)
 		{
 			LaserNode& tNodeLast = m_Queue.Back();
@@ -219,7 +219,7 @@ bool GameObjectBentLaser::UpdateByNode(size_t id, int node ,int length, float wi
 		return false;
 	if (length <= 1)
 	{
-		LERROR("lstgBentLaserData: ÎŞĞ§µÄ²ÎÊılength");
+		LERROR("lstgBentLaserData: æ— æ•ˆçš„å‚æ•°length");
 		return false;
 	}
 
@@ -227,7 +227,7 @@ bool GameObjectBentLaser::UpdateByNode(size_t id, int node ,int length, float wi
 		node = m_Queue.Size() + node;
 	}
 	
-	// Ìí¼ÓĞÂ½Úµã
+	// æ·»åŠ æ–°èŠ‚ç‚¹
 	if (node<m_Queue.Size() && node>=0)
 	{
 		LaserNode& tNode = m_Queue[node];
@@ -326,14 +326,14 @@ void GameObjectBentLaser::Release()LNOEXCEPT
 
 bool GameObjectBentLaser::Render(const char* tex_name, BlendMode blend, fcyColor c, float tex_left, float tex_top, float tex_width, float tex_height, float scale)LNOEXCEPT
 {
-	// ºöÂÔÖ»ÓĞÒ»¸ö½ÚµãµÄÇé¿ö
+	// å¿½ç•¥åªæœ‰ä¸€ä¸ªèŠ‚ç‚¹çš„æƒ…å†µ
 	if (m_Queue.Size() <= 1)
 		return true;
 
 	fcyRefPointer<ResTexture> pTex = LRES.FindTexture(tex_name);
 	if (!pTex)
 	{
-		LERROR("lstgBentLaserData: ÕÒ²»µ½ÎÆÀí×ÊÔ´'%m'", tex_name);
+		LERROR("lstgBentLaserData: æ‰¾ä¸åˆ°çº¹ç†èµ„æº'%m'", tex_name);
 		return false;
 	}
 
@@ -409,14 +409,14 @@ bool GameObjectBentLaser::Render(const char* tex_name, BlendMode blend, fcyColor
 		//if (lenOffsetA < 0.0001f && i + 1 != m_Queue.Size() - 1)
 		//	continue;
 
-		// ¼ÆËã¿í¶ÈÉÏµÄÀ©Õ¹³¤¶È(Ğı×ª270¶È)
+		// è®¡ç®—å®½åº¦ä¸Šçš„æ‰©å±•é•¿åº¦(æ—‹è½¬270åº¦)
 
 		/*
 	//	fcyVec2 expandVec = offsetNA;//offsetA.GetNormalize();
 	//	std::swap(expandVec.x, expandVec.y);
 	//	expandVec.y = -expandVec.y;
 
-		if (i == 0)  // Èç¹ûÊÇµÚÒ»¸ö½Úµã£¬ÔòÆä¿í¶ÈÀ©Õ¹Ê¹ÓÃexpandVec¼ÆËã
+		if (i == 0)  // å¦‚æœæ˜¯ç¬¬ä¸€ä¸ªèŠ‚ç‚¹ï¼Œåˆ™å…¶å®½åº¦æ‰©å±•ä½¿ç”¨expandVecè®¡ç®—
 		{
 			float expX = cur.x_dir * scale * cur.half_width;
 			float expY = cur.y_dir * scale * cur.half_width;
@@ -427,7 +427,7 @@ bool GameObjectBentLaser::Render(const char* tex_name, BlendMode blend, fcyColor
 			renderVertex[3].y = cur.pos.y - expY;
 			renderVertex[3].u = tex_left;
 		}
-		else  // ·ñÔò£¬¿½±´1ºÍ2
+		else  // å¦åˆ™ï¼Œæ‹·è´1å’Œ2
 		{
 			renderVertex[0].x = renderVertex[1].x;
 			renderVertex[0].y = renderVertex[1].y;
@@ -467,7 +467,7 @@ bool GameObjectBentLaser::Render(const char* tex_name, BlendMode blend, fcyColor
 				expX = expandVec.x * scale * next.half_width;
 				expY = expandVec.y * scale * next.half_width;
 			}
-			else // ¼ÆËã½ÇÆ½·ÖÏßµ½½ÇÁ½±ß¾àÀëÎªnext.half_width * scaleµÄÆ«ÒÆÁ¿
+			else // è®¡ç®—è§’å¹³åˆ†çº¿åˆ°è§’ä¸¤è¾¹è·ç¦»ä¸ºnext.half_width * scaleçš„åç§»é‡
 			{
 				angleBisect *= (1 / angleBisectLen);  // angleBisect.Normalize();
 				float t = angleBisect * offsetA.GetNormalize();
@@ -508,7 +508,7 @@ bool GameObjectBentLaser::Render(const char* tex_name, BlendMode blend, fcyColor
 
 bool GameObjectBentLaser::CollisionCheck(float x, float y, float rot, float a, float b, bool rect)LNOEXCEPT
 {
-	// ºöÂÔÖ»ÓĞÒ»¸ö½ÚµãµÄÇé¿ö
+	// å¿½ç•¥åªæœ‰ä¸€ä¸ªèŠ‚ç‚¹çš„æƒ…å†µ
 	if (m_Queue.Size() <= 1)
 		return false;
 
@@ -563,7 +563,7 @@ bool GameObjectBentLaser::CollisionCheck(float x, float y, float rot, float a, f
 
 bool GameObjectBentLaser::CollisionCheckW(float x, float y, float rot, float a, float b, bool rect,float width)LNOEXCEPT
 {
-	// ºöÂÔÖ»ÓĞÒ»¸ö½ÚµãµÄÇé¿ö
+	// å¿½ç•¥åªæœ‰ä¸€ä¸ªèŠ‚ç‚¹çš„æƒ…å†µ
 	if (m_Queue.Size() <= 1)
 	return false;
 	width = width / 2;
@@ -626,19 +626,19 @@ bool GameObjectBentLaser::BoundCheck()LNOEXCEPT
 		if (n.pos.x >= tBound.a.x && n.pos.x <= tBound.b.x && n.pos.y <= tBound.a.y && n.pos.y >= tBound.b.y)
 			return true;
 	}
-	// Ô½½çÊ±·µ»Øfalse£¬Ö»ÓĞµ±ËùÓĞµÄµ¯Ä»Ô½½ç²Å·µ»Øfalse
+	// è¶Šç•Œæ—¶è¿”å›falseï¼Œåªæœ‰å½“æ‰€æœ‰çš„å¼¹å¹•è¶Šç•Œæ‰è¿”å›false
 	return false;
 }
 
-//ÓëluaÒ»Ö±£¬index´Ó1¿ªÊ¼
+//ä¸luaä¸€ç›´ï¼Œindexä»1å¼€å§‹
 bool LuaSTGPlus::GameObjectBentLaser::UpdatePositionByList(lua_State *L,int length,float width, int index,bool revert) LNOEXCEPT// ... t(list)
 {
 	// ... t(list)
-	int push_count = 0;//ÒÔ²åÈëÍ·µÄ½ÚµãÊıÁ¿ 
+	int push_count = 0;//ä»¥æ’å…¥å¤´çš„èŠ‚ç‚¹æ•°é‡ 
 
 	for (int i = 0; i < length; i++)
 	{
-		//»ñµÃx,y
+		//è·å¾—x,y
 		lua_rawgeti(L, -1, i + 1);// ... t(list) t(object)
 		lua_pushstring(L, "x");// ... t(list) t(object) 'x'
 		lua_gettable(L, -2);// ... t(list) t(object) x
@@ -649,8 +649,8 @@ bool LuaSTGPlus::GameObjectBentLaser::UpdatePositionByList(lua_State *L,int leng
 		float y = luaL_optnumber(L, -1, 0.0);// ... t(list) t(object) y
 		lua_pop(L, 2);// ... t(list)
 
-		//µÃµ½index
-		//¶¥µã´¦ÔÚ¶ÓÁĞÇ°±ß
+		//å¾—åˆ°index
+		//é¡¶ç‚¹å¤„åœ¨é˜Ÿåˆ—å‰è¾¹
 		int cindex = push_count+ index-1 + (revert?-i:i);
 		if (cindex < 0){
 			int j = cindex;
@@ -664,7 +664,7 @@ bool LuaSTGPlus::GameObjectBentLaser::UpdatePositionByList(lua_State *L,int leng
 		}
 
 		int size = m_Queue.Size();
-		//¶¥µã´¦ÔÚ¶ÓÁĞºó±ß
+		//é¡¶ç‚¹å¤„åœ¨é˜Ÿåˆ—åè¾¹
 		if (cindex >= size){
 			int j = cindex - size+1;
 			LaserNode np;
@@ -675,7 +675,7 @@ bool LuaSTGPlus::GameObjectBentLaser::UpdatePositionByList(lua_State *L,int leng
 			}
 		}
 		size = m_Queue.Size();
-		//ÉèÖÃ¶¥µã
+		//è®¾ç½®é¡¶ç‚¹
 		LaserNode *tNode = &m_Queue[size-cindex-1];
 		tNode->active = true;
 		tNode->half_width = width / 2;
@@ -688,13 +688,13 @@ bool LuaSTGPlus::GameObjectBentLaser::UpdatePositionByList(lua_State *L,int leng
 
 int LuaSTGPlus::GameObjectBentLaser::SampleL(lua_State *L, float length) LNOEXCEPT
 {
-	//²åÈëÒ»¸öÊı×é
+	//æ’å…¥ä¸€ä¸ªæ•°ç»„
 	lua_newtable(L); //... t(list)
-	// ºöÂÔÃ»ÓĞ½ÚµãµÄÇé¿ö
+	// å¿½ç•¥æ²¡æœ‰èŠ‚ç‚¹çš„æƒ…å†µ
 	if (m_Queue.Size() <= 1)
 	return true;
 
-	float fLeft = 0;// Ê£Óà³¤¶È
+	float fLeft = 0;// å‰©ä½™é•¿åº¦
 	int count = 0;
 
 	float tVecLength = 0;
@@ -749,13 +749,13 @@ int LuaSTGPlus::GameObjectBentLaser::UpdateLength() LNOEXCEPT
 
 int LuaSTGPlus::GameObjectBentLaser::SampleT(lua_State *L, float delay) LNOEXCEPT
 {
-	//²åÈëÒ»¸öÊı×é
+	//æ’å…¥ä¸€ä¸ªæ•°ç»„
 	lua_newtable(L); //... t(list)
-	// ºöÂÔÃ»ÓĞ½ÚµãµÄÇé¿ö
+	// å¿½ç•¥æ²¡æœ‰èŠ‚ç‚¹çš„æƒ…å†µ
 	if (m_Queue.Size() <= 1)
 		return true;
 
-	float fLeft = 0;// Ê£Óà³¤¶È
+	float fLeft = 0;// å‰©ä½™é•¿åº¦
 	int count = 0;
 
 	float tVecLength = 0;
@@ -841,7 +841,7 @@ bool GameObject::ChangeResource(const char* res_name)
 		if (!(ps = tParticle->AllocInstance()))
 		{
 			res = nullptr;
-			LERROR("ÎŞ·¨¹¹ÔìÁ£×Ó³Ø£¬ÄÚ´æ²»×ã");
+			LERROR("æ— æ³•æ„é€ ç²’å­æ± ï¼Œå†…å­˜ä¸è¶³");
 			return false;
 		}
 		ps->SetInactive();
@@ -863,7 +863,7 @@ bool GameObject::ChangeResource(const char* res_name)
 GameObjectPool::GameObjectPool(lua_State* pL)
 	: L(pL)
 {
-	// ³õÊ¼»¯Î±Í·²¿Êı¾İ
+	// åˆå§‹åŒ–ä¼ªå¤´éƒ¨æ•°æ®
 	memset(&m_pObjectListHeader, 0, sizeof(GameObject));
 	memset(&m_pRenderListHeader, 0, sizeof(GameObject));
 	memset(m_pCollisionListHeader, 0, sizeof(m_pCollisionListHeader));
@@ -886,11 +886,11 @@ GameObjectPool::GameObjectPool(lua_State* pL)
 		m_pCollisionListTail[i].pCollisionPrev = &m_pCollisionListHeader[i];
 	}
 
-	// ´´½¨Ò»¸öÈ«¾Ö±íÓÃÓÚ´æ·ÅËùÓĞ¶ÔÏó
-	lua_pushlightuserdata(L, (void*)&LAPP);  // p(Ê¹ÓÃAPPÊµÀıÖ¸Õë×÷¼üÓÃÒÔ·ÀÖ¹ÓÃ»§·ÃÎÊ)
-	lua_createtable(L, LGOBJ_MAXCNT, 0);  // p t(´´½¨×ã¹»´óµÄtableÓÃÓÚ´æ·ÅËùÓĞµÄÓÎÏ·¶ÔÏóÔÚluaÖĞµÄ¶ÔÓ¦¶ÔÏó)
+	// åˆ›å»ºä¸€ä¸ªå…¨å±€è¡¨ç”¨äºå­˜æ”¾æ‰€æœ‰å¯¹è±¡
+	lua_pushlightuserdata(L, (void*)&LAPP);  // p(ä½¿ç”¨APPå®ä¾‹æŒ‡é’ˆä½œé”®ç”¨ä»¥é˜²æ­¢ç”¨æˆ·è®¿é—®)
+	lua_createtable(L, LGOBJ_MAXCNT, 0);  // p t(åˆ›å»ºè¶³å¤Ÿå¤§çš„tableç”¨äºå­˜æ”¾æ‰€æœ‰çš„æ¸¸æˆå¯¹è±¡åœ¨luaä¸­çš„å¯¹åº”å¯¹è±¡)
 
-	// È¡³ölstg.GetAttrºÍlstg.SetAttr´´½¨Ôª±í
+	// å–å‡ºlstg.GetAttrå’Œlstg.SetAttråˆ›å»ºå…ƒè¡¨
 	lua_newtable(L);  // ... t
 	lua_getglobal(L, "lstg");  // ... t t
 	lua_pushstring(L, "GetAttr");  // ... t t s
@@ -900,9 +900,9 @@ GameObjectPool::GameObjectPool(lua_State* pL)
 	LASSERT(lua_iscfunction(L, -1) && lua_iscfunction(L, -2));
 	lua_setfield(L, -4, "__newindex");  // ... t t f(GetAttr)
 	lua_setfield(L, -3, "__index");  // ... t t
-	lua_pop(L, 1);  // ... t(½«±»ÓÃ×÷Ôª±í)
+	lua_pop(L, 1);  // ... t(å°†è¢«ç”¨ä½œå…ƒè¡¨)
 	
-	// ±£´æÔª±íµ½ register[app][mt]
+	// ä¿å­˜å…ƒè¡¨åˆ° register[app][mt]
 	lua_setfield(L, -2, METATABLE_OBJ);  // p t
 	lua_settable(L, LUA_REGISTRYINDEX);
 
@@ -922,25 +922,25 @@ GameObject* GameObjectPool::freeObject(GameObject* p)LNOEXCEPT
 		m_pCurrentObject = NULL;
 	}
 
-	// ´Ó¶ÔÏóÁ´±íÒÆ³ı
+	// ä»å¯¹è±¡é“¾è¡¨ç§»é™¤
 	LIST_REMOVE(p, Object);
 
-	// ´ÓäÖÈ¾Á´±íÒÆ³ı
+	// ä»æ¸²æŸ“é“¾è¡¨ç§»é™¤
 	LIST_REMOVE(p, Render);
 
-	// ´ÓÅö×²Á´±íÒÆ³ı
+	// ä»ç¢°æ’é“¾è¡¨ç§»é™¤
 	LIST_REMOVE(p, Collision);
 
-	// É¾³ılua¶ÔÏó±íÖĞÔªËØ
+	// åˆ é™¤luaå¯¹è±¡è¡¨ä¸­å…ƒç´ 
 	GETOBJTABLE;  // ot
 	lua_pushnil(L);  // ot nil
 	lua_rawseti(L, -2, p->id + 1);  // ot
 	lua_pop(L, 1);
 
-	// ÊÍ·ÅÒıÓÃµÄ×ÊÔ´
+	// é‡Šæ”¾å¼•ç”¨çš„èµ„æº
 	p->ReleaseResource();
 
-	// »ØÊÕµ½¶ÔÏó³Ø
+	// å›æ”¶åˆ°å¯¹è±¡æ± 
 	m_ObjectPool.Free(p->id);
 
 	return pRet;
@@ -948,23 +948,23 @@ GameObject* GameObjectPool::freeObject(GameObject* p)LNOEXCEPT
 
 void GameObjectPool::DoFrame()LNOEXCEPT
 {
-	//´¦Àí³¬¼¶ÔİÍ£
+	//å¤„ç†è¶…çº§æš‚åœ
 	GETOBJTABLE;  // ot
 	int superpause = LAPP.UpdateSuperPause();
 
 
 	GameObject* p = m_pObjectListHeader.pObjectNext;
-	lua_Number cache1, cache1m, cache2;//ËÙ¶ÈÏŞÖÆ¼ÆËãÊ±ÓÃµ½µÄÖĞ¼ä±äÁ¿
+	lua_Number cache1, cache1m, cache2;//é€Ÿåº¦é™åˆ¶è®¡ç®—æ—¶ç”¨åˆ°çš„ä¸­é—´å˜é‡
 	while (p && p != &m_pObjectListTail)
 	{
-		// ¸ù¾İid»ñÈ¡¶ÔÏóµÄlua°ó¶¨table¡¢ÄÃµ½classÔÙÄÃµ½framefunc
+		// æ ¹æ®idè·å–å¯¹è±¡çš„luaç»‘å®štableã€æ‹¿åˆ°classå†æ‹¿åˆ°framefunc
 		if (superpause<=0 || p->ignore_superpause){
 			m_pCurrentObject = p;
 			lua_rawgeti(L, -1, p->id + 1);  // ot t(object)
 			lua_rawgeti(L, -1, 1);  // ot t(object) t(class)
 			lua_rawgeti(L, -1, LGOBJ_CC_FRAME);  // ot t(object) t(class) f(frame)
 			lua_pushvalue(L, -3);  // ot t(object) t(class) f(frame) t(object)
-			lua_call(L, 1, 0);  // ot t(object) t(class) Ö´ĞĞÖ¡º¯Êı
+			lua_call(L, 1, 0);  // ot t(object) t(class) æ‰§è¡Œå¸§å‡½æ•°
 			lua_pop(L, 2);  // ot
 			
 			if (p->pause<=0){
@@ -973,22 +973,22 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 					p->vy = p->y - p->lasty;
 				}
 				else{
-					// ¸üĞÂ¶ÔÏó×´Ì¬
+					// æ›´æ–°å¯¹è±¡çŠ¶æ€
 					p->vx += p->ax;
 					p->vy += p->ay;
 #ifdef USER_SYSTEM_OPERATION
-					p->vy -= p->ag;//µ¥¶ÀµÄÖØÁ¦¸üĞÂ
-					//ËÙ¶ÈÏŞÖÆ£¬À´×Ôlua²ã
+					p->vy -= p->ag;//å•ç‹¬çš„é‡åŠ›æ›´æ–°
+					//é€Ÿåº¦é™åˆ¶ï¼Œæ¥è‡ªluaå±‚
 					cache1 = sqrt(p->vx * p->vx + p->vy * p->vy);
 					if (p->maxv == 0.) {
 						p->vx = p->vy = 0.;
 					}
-					else if (p->maxv < cache1) { //·ÀÖ¹maxvÎª×î´óÖµÊ±Ïà³Ë³öÏÖÒç³öµÄÇé¿ö
+					else if (p->maxv < cache1) { //é˜²æ­¢maxvä¸ºæœ€å¤§å€¼æ—¶ç›¸ä¹˜å‡ºç°æº¢å‡ºçš„æƒ…å†µ
 						cache2 = p->maxv / cache1;
 						p->vx = cache2 * p->vx;
 						p->vy = cache2 * p->vy;
 					}
-					//Õë¶Ôx¡¢y·½Ïòµ¥¶ÀÏŞÖÆ
+					//é’ˆå¯¹xã€yæ–¹å‘å•ç‹¬é™åˆ¶
 					if (abs(p->vx) > p->maxvx) {
 						p->vx = p->maxvx * ((p->vx > 0) ? 1 : -1);
 					}
@@ -996,18 +996,18 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 						p->vy = p->maxvy * ((p->vy > 0) ? 1 : -1);
 					}
 #endif
-					//×ø±ê¸üĞÂ
+					//åæ ‡æ›´æ–°
 					p->x += p->vx;
 					p->y += p->vy;
 				}
 				p->rot += p->omiga;
 				
-				// ¸üĞÂÁ£×ÓÏµÍ³£¨ÈôÓĞ£©
+				// æ›´æ–°ç²’å­ç³»ç»Ÿï¼ˆè‹¥æœ‰ï¼‰
 				if (p->res && p->res->GetType() == ResourceType::Particle)
 				{
 					float gscale = LRES.GetGlobalImageScaleFactor();
 					p->ps->SetRotation((float)p->rot);
-					if (p->ps->IsActived())  // ¼æÈİĞÔ´¦Àí
+					if (p->ps->IsActived())  // å…¼å®¹æ€§å¤„ç†
 					{
 						p->ps->SetInactive();
 						p->ps->SetCenter(fcyVec2((float)p->x, (float)p->y));
@@ -1038,15 +1038,15 @@ void GameObjectPool::DoRender()LNOEXCEPT
 	lua_Integer world = LAPP.GetWorldFlag();
 	while (p && p != &m_pRenderListTail)
 	{
-		if (!p->hide  && CheckWorld(p->world, world))  // Ö»äÖÈ¾¿É¼û¶ÔÏó
+		if (!p->hide  && CheckWorld(p->world, world))  // åªæ¸²æŸ“å¯è§å¯¹è±¡
 		{
 			m_pCurrentObject = p;
-			// ¸ù¾İid»ñÈ¡¶ÔÏóµÄlua°ó¶¨table¡¢ÄÃµ½classÔÙÄÃµ½renderfunc
+			// æ ¹æ®idè·å–å¯¹è±¡çš„luaç»‘å®štableã€æ‹¿åˆ°classå†æ‹¿åˆ°renderfunc
 			lua_rawgeti(L, -1, p->id + 1);  // ot t(object)
 			lua_rawgeti(L, -1, 1);  // ot t(object) t(class)
 			lua_rawgeti(L, -1, LGOBJ_CC_RENDER);  // ot t(object) t(class) f(render)
 			lua_pushvalue(L, -3);  // ot t(object) t(class) f(render) t(object)
-			lua_call(L, 1, 0);  // ot t(object) t(class) Ö´ĞĞäÖÈ¾º¯Êı
+			lua_call(L, 1, 0);  // ot t(object) t(class) æ‰§è¡Œæ¸²æŸ“å‡½æ•°
 			lua_pop(L, 2);  // ot
 		}
 		p = p->pRenderNext;
@@ -1066,10 +1066,10 @@ void GameObjectPool::BoundCheck()LNOEXCEPT
 			if ((p->x < m_BoundLeft || p->x > m_BoundRight || p->y < m_BoundBottom || p->y > m_BoundTop) && p->bound)
 			{
 				m_pCurrentObject = p;
-				// Ô½½çÉèÖÃÎªDEL×´Ì¬
+				// è¶Šç•Œè®¾ç½®ä¸ºDELçŠ¶æ€
 				p->status = STATUS_DEL;
 
-				// ¸ù¾İid»ñÈ¡¶ÔÏóµÄlua°ó¶¨table¡¢ÄÃµ½classÔÙÄÃµ½delfunc
+				// æ ¹æ®idè·å–å¯¹è±¡çš„luaç»‘å®štableã€æ‹¿åˆ°classå†æ‹¿åˆ°delfunc
 				lua_rawgeti(L, -1, p->id + 1);  // ot t(object)
 				lua_rawgeti(L, -1, 1);  // ot t(object) t(class)
 				lua_rawgeti(L, -1, LGOBJ_CC_DEL);  // ot t(object) t(class) f(del)
@@ -1095,10 +1095,10 @@ void GameObjectPool::BoundCheckWorld(lua_Number w)LNOEXCEPT
 			if ((p->x < m_BoundLeft || p->x > m_BoundRight || p->y < m_BoundBottom || p->y > m_BoundTop) && p->bound)
 			{
 				m_pCurrentObject = p;
-				// Ô½½çÉèÖÃÎªDEL×´Ì¬
+				// è¶Šç•Œè®¾ç½®ä¸ºDELçŠ¶æ€
 				p->status = STATUS_DEL;
 
-				// ¸ù¾İid»ñÈ¡¶ÔÏóµÄlua°ó¶¨table¡¢ÄÃµ½classÔÙÄÃµ½delfunc
+				// æ ¹æ®idè·å–å¯¹è±¡çš„luaç»‘å®štableã€æ‹¿åˆ°classå†æ‹¿åˆ°delfunc
 				lua_rawgeti(L, -1, p->id + 1);  // ot t(object)
 				lua_rawgeti(L, -1, 1);  // ot t(object) t(class)
 				lua_rawgeti(L, -1, LGOBJ_CC_DEL);  // ot t(object) t(class) f(del)
@@ -1132,7 +1132,7 @@ void GameObjectPool::CollisionCheck(size_t groupA, size_t groupB)LNOEXCEPT
 			if (LAPP.CheckWorlds(pA->world, pB->world)){
 				if (::CollisionCheck(pA, pB))
 				{
-					// ¸ù¾İid»ñÈ¡¶ÔÏóµÄlua°ó¶¨table¡¢ÄÃµ½classÔÙÄÃµ½collifunc
+					// æ ¹æ®idè·å–å¯¹è±¡çš„luaç»‘å®štableã€æ‹¿åˆ°classå†æ‹¿åˆ°collifunc
 					lua_rawgeti(L, -1, pA->id + 1);  // ot t(object)
 					lua_rawgeti(L, -1, 1);  // ot t(object) t(class)
 					lua_rawgeti(L, -1, LGOBJ_CC_COLLI);  // ot t(object) t(class) f(colli)
@@ -1192,7 +1192,7 @@ void GameObjectPool::AfterFrame()LNOEXCEPT
 
 int GameObjectPool::New(lua_State* L)LNOEXCEPT
 {
-	// ¼ì²é²ÎÊı
+	// æ£€æŸ¥å‚æ•°
 	if (!lua_istable(L, 1))
 		return luaL_error(L, "invalid argument #1, luastg object class required for 'New'.");
 	lua_getfield(L, 1, "is_class");  // t(class) ... b
@@ -1200,12 +1200,12 @@ int GameObjectPool::New(lua_State* L)LNOEXCEPT
 		return luaL_error(L, "invalid argument #1, luastg object class required for 'New'.");
 	lua_pop(L, 1);  // t(class) ...
 
-	// ·ÖÅäÒ»¸ö¶ÔÏó
+	// åˆ†é…ä¸€ä¸ªå¯¹è±¡
 	size_t id = 0;
 	if (!m_ObjectPool.Alloc(id))
 		return luaL_error(L, "can't alloc object, object pool may be full.");
 	
-	// ÉèÖÃ¶ÔÏó
+	// è®¾ç½®å¯¹è±¡
 	GameObject* p = m_ObjectPool.Data(id);
 	LASSERT(p);
 	p->Reset();
@@ -1217,30 +1217,30 @@ int GameObjectPool::New(lua_State* L)LNOEXCEPT
 		p->world = m_pCurrentObject->world;
 	}
 
-	// ²åÈëÁ´±íÓò
-	LIST_INSERT_BEFORE(&m_pObjectListTail, p, Object);  // ObjectÁ´±íÖ»ÓëuidÓĞ¹Ø£¬Òò´Ë×ÜÔÚÄ©Î²²åÈë
-	LIST_INSERT_BEFORE(&m_pRenderListTail, p, Render);  // RenderÁ´±íÔÚ²åÈëºó»¹ĞèÒª½øĞĞÅÅĞò
-	LIST_INSERT_BEFORE(&m_pCollisionListTail[p->group], p, Collision);  // Îª±£Ö¤¼æÈİĞÔ£¬¶ÔCollisionÒ²×öÅÅĞò
+	// æ’å…¥é“¾è¡¨åŸŸ
+	LIST_INSERT_BEFORE(&m_pObjectListTail, p, Object);  // Objecté“¾è¡¨åªä¸uidæœ‰å…³ï¼Œå› æ­¤æ€»åœ¨æœ«å°¾æ’å…¥
+	LIST_INSERT_BEFORE(&m_pRenderListTail, p, Render);  // Renderé“¾è¡¨åœ¨æ’å…¥åè¿˜éœ€è¦è¿›è¡Œæ’åº
+	LIST_INSERT_BEFORE(&m_pCollisionListTail[p->group], p, Collision);  // ä¸ºä¿è¯å…¼å®¹æ€§ï¼Œå¯¹Collisionä¹Ÿåšæ’åº
 	LIST_INSERT_SORT(p, Render, RenderListSortFunc);
 	LIST_INSERT_SORT(p, Collision, ObjectListSortFunc);
 
 	GETOBJTABLE;  // t(class) ... ot
 	lua_createtable(L, 2, 0);  // t(class) ... ot t(object)
 	lua_pushvalue(L, 1);  // t(class) ... ot t(object) class
-	lua_rawseti(L, -2, 1);  // t(class) ... ot t(object)  ÉèÖÃclass
+	lua_rawseti(L, -2, 1);  // t(class) ... ot t(object)  è®¾ç½®class
 	lua_pushinteger(L, (lua_Integer)id);  // t(class) ... ot t(object) id
-	lua_rawseti(L, -2, 2);  // t(class) ... ot t(object)  ÉèÖÃid
+	lua_rawseti(L, -2, 2);  // t(class) ... ot t(object)  è®¾ç½®id
 	lua_getfield(L, -2, METATABLE_OBJ);  // t(class) ... ot t(object) mt
-	lua_setmetatable(L, -2);  // t(class) ... ot t(object)  ÉèÖÃÔª±í
+	lua_setmetatable(L, -2);  // t(class) ... ot t(object)  è®¾ç½®å…ƒè¡¨
 	lua_pushvalue(L, -1);  // t(class) ... ot t(object) t(object)
-	lua_rawseti(L, -3, id + 1);  // t(class) ... ot t(object)  ÉèÖÃµ½È«¾Ö±í
+	lua_rawseti(L, -3, id + 1);  // t(class) ... ot t(object)  è®¾ç½®åˆ°å…¨å±€è¡¨
 	lua_insert(L, 1);  // t(object) t(class) ... ot
 	lua_pop(L, 1);  // t(object) t(class) ...
 	lua_rawgeti(L, 2, LGOBJ_CC_INIT);  // t(object) t(class) ... f(init)
 	lua_insert(L, 3);  // t(object) t(class) f(init) ...
 	lua_pushvalue(L, 1);  // t(object) t(class) f(init) ... t(object)
 	lua_insert(L, 4);  // t(object) t(class) f(init) t(object) ...
-	lua_call(L, lua_gettop(L) - 3, 0);  // t(object) t(class)  Ö´ĞĞ¹¹Ôìº¯Êı
+	lua_call(L, lua_gettop(L) - 3, 0);  // t(object) t(class)  æ‰§è¡Œæ„é€ å‡½æ•°
 	lua_pop(L, 1);  // t(object)
 
 	p->lastx = p->x;
@@ -1250,7 +1250,7 @@ int GameObjectPool::New(lua_State* L)LNOEXCEPT
 
 int GameObjectPool::Add(lua_State* L)LNOEXCEPT
 {
-	// ¼ì²é²ÎÊı
+	// æ£€æŸ¥å‚æ•°
 	if (!lua_istable(L, 1))
 	return luaL_error(L, "invalid argument #1, luastg object required for 'Add'.");
 //	lua_getfield(L, 1, "is_class");  // t(class) ... b
@@ -1258,12 +1258,12 @@ int GameObjectPool::Add(lua_State* L)LNOEXCEPT
 //		return luaL_error(L, "invalid argument #1, luastg object class required for 'New'.");
 //	lua_pop(L, 1);  // t(class) ...
 
-	// ·ÖÅäÒ»¸ö¶ÔÏó
+	// åˆ†é…ä¸€ä¸ªå¯¹è±¡
 	size_t id = 0;
 	if (!m_ObjectPool.Alloc(id))
 		return luaL_error(L, "can't alloc object, object pool may be full.");
 
-	// ÉèÖÃ¶ÔÏó
+	// è®¾ç½®å¯¹è±¡
 	GameObject* p = m_ObjectPool.Data(id);
 	LASSERT(p);
 	p->Reset();
@@ -1271,36 +1271,36 @@ int GameObjectPool::Add(lua_State* L)LNOEXCEPT
 	p->id = id;
 	p->uid = m_iUid++;
 
-	// ²åÈëÁ´±íÓò
-	LIST_INSERT_BEFORE(&m_pObjectListTail, p, Object);  // ObjectÁ´±íÖ»ÓëuidÓĞ¹Ø£¬Òò´Ë×ÜÔÚÄ©Î²²åÈë
-	LIST_INSERT_BEFORE(&m_pRenderListTail, p, Render);  // RenderÁ´±íÔÚ²åÈëºó»¹ĞèÒª½øĞĞÅÅĞò
-	LIST_INSERT_BEFORE(&m_pCollisionListTail[p->group], p, Collision);  // Îª±£Ö¤¼æÈİĞÔ£¬¶ÔCollisionÒ²×öÅÅĞò
+	// æ’å…¥é“¾è¡¨åŸŸ
+	LIST_INSERT_BEFORE(&m_pObjectListTail, p, Object);  // Objecté“¾è¡¨åªä¸uidæœ‰å…³ï¼Œå› æ­¤æ€»åœ¨æœ«å°¾æ’å…¥
+	LIST_INSERT_BEFORE(&m_pRenderListTail, p, Render);  // Renderé“¾è¡¨åœ¨æ’å…¥åè¿˜éœ€è¦è¿›è¡Œæ’åº
+	LIST_INSERT_BEFORE(&m_pCollisionListTail[p->group], p, Collision);  // ä¸ºä¿è¯å…¼å®¹æ€§ï¼Œå¯¹Collisionä¹Ÿåšæ’åº
 	LIST_INSERT_SORT(p, Render, RenderListSortFunc);
 	LIST_INSERT_SORT(p, Collision, ObjectListSortFunc);
 
 	GETOBJTABLE;  // t(object) ... ot
 	lua_pushvalue(L, 1);  // t(object) ... ot t(object)
 	lua_pushinteger(L, (lua_Integer)id);  // t(object) ... ot t(object) id
-	lua_rawseti(L, -2, 2);  // t(object) ... ot t(object)  ÉèÖÃid
+	lua_rawseti(L, -2, 2);  // t(object) ... ot t(object)  è®¾ç½®id
 	lua_getfield(L, -2, METATABLE_OBJ);  // t(object) ... ot t(object) mt
-	lua_setmetatable(L, -2);  // t(object) ... ot t(object)  ÉèÖÃÔª±í
+	lua_setmetatable(L, -2);  // t(object) ... ot t(object)  è®¾ç½®å…ƒè¡¨
 	lua_pushvalue(L, -1);  // t(object) ... ot t(object) t(object)
-	lua_rawseti(L, -3, id + 1);  // t(object) ... ot t(object)  ÉèÖÃµ½È«¾Ö±í
+	lua_rawseti(L, -3, id + 1);  // t(object) ... ot t(object)  è®¾ç½®åˆ°å…¨å±€è¡¨
 
-	InitAttr(L); //½«³õÊ¼ÊôĞÔ´«µİÖÁC++¶ÔÏó
+	InitAttr(L); //å°†åˆå§‹å±æ€§ä¼ é€’è‡³C++å¯¹è±¡
 
 	lua_insert(L, 1);  // t(object) t(object) ... ot
 	lua_pop(L, 1);  // t(object) t(object) ...
 
 	lua_getfield(L, 1, "init"); // t(object) t(object) ... f(init)
-	if (lua_isnil(L, -1)){//Ã»ÓĞ¹¹Ôìº¯Êı
+	if (lua_isnil(L, -1)){//æ²¡æœ‰æ„é€ å‡½æ•°
 		lua_pop(L, 3);// t(object)
 	}
 	else{
 		lua_insert(L, 3);  // t(object) t(object) f(init) ...
 		lua_pushvalue(L, 1);  // t(object) t(object) f(init) ... t(object)
 		lua_insert(L, 4);  // t(object) t(object) f(init) t(object) ...
-		lua_call(L, lua_gettop(L) - 3, 0);  // t(object) t(object)  Ö´ĞĞ¹¹Ôìº¯Êı
+		lua_call(L, lua_gettop(L) - 3, 0);  // t(object) t(object)  æ‰§è¡Œæ„é€ å‡½æ•°
 		lua_pop(L, 1);  // t(object)
 	}
 	p->lastx = p->x;
@@ -1322,7 +1322,7 @@ int GameObjectPool::Del(lua_State* L)LNOEXCEPT
 	{
 		p->status = STATUS_DEL;
 
-		// µ÷ÓÃÀàÖĞµÄ»Øµ÷·½·¨
+		// è°ƒç”¨ç±»ä¸­çš„å›è°ƒæ–¹æ³•
 		lua_rawgeti(L, 1, 1);  // t(object) ... class
 		lua_rawgeti(L, -1, LGOBJ_CC_DEL);  // t(object) ... class f(del)
 		lua_insert(L, 1);  // f(del) t(object) ... class
@@ -1346,7 +1346,7 @@ int GameObjectPool::Kill(lua_State* L)LNOEXCEPT
 	{
 		p->status = STATUS_KILL;
 
-		// µ÷ÓÃÀàÖĞµÄ»Øµ÷·½·¨
+		// è°ƒç”¨ç±»ä¸­çš„å›è°ƒæ–¹æ³•
 		lua_rawgeti(L, 1, 1);  // t(object) ... class
 		lua_rawgeti(L, -1, LGOBJ_CC_KILL);  // t(object) ... class f(kill)
 		lua_insert(L, 1);  // f(kill) t(object) ... class
@@ -1372,7 +1372,7 @@ int GameObjectPool::IsValid(lua_State* L)LNOEXCEPT
 		return 1;
 	}
 
-	// ÔÚ¶ÔÏó³ØÖĞ¼ì²é
+	// åœ¨å¯¹è±¡æ± ä¸­æ£€æŸ¥
 	size_t id = (size_t)lua_tonumber(L, -1);
 	lua_pop(L, 1);  // t(object)
 	if (!m_ObjectPool.Data(id))
@@ -1534,7 +1534,7 @@ int GameObjectPool::NextObject(int groupId, int id)LNOEXCEPT
 	if (!p)
 		return -1;
 
-	// Èç¹û²»ÊÇÒ»¸öÓĞĞ§µÄ·Ö×é£¬ÔòÔÚÕû¸ö¶ÔÏó±íÖĞ±éÀú
+	// å¦‚æœä¸æ˜¯ä¸€ä¸ªæœ‰æ•ˆçš„åˆ†ç»„ï¼Œåˆ™åœ¨æ•´ä¸ªå¯¹è±¡è¡¨ä¸­éå†
 	if (groupId < 0 || groupId >= LGOBJ_GROUPCNT)
 	{
 		p = p->pObjectNext;
@@ -1573,7 +1573,7 @@ int GameObjectPool::FirstObject(int groupId)LNOEXCEPT
 {
 	GameObject* p;
 
-	// Èç¹û²»ÊÇÒ»¸öÓĞĞ§µÄ·Ö×é£¬ÔòÔÚÕû¸ö¶ÔÏó±íÖĞ±éÀú
+	// å¦‚æœä¸æ˜¯ä¸€ä¸ªæœ‰æ•ˆçš„åˆ†ç»„ï¼Œåˆ™åœ¨æ•´ä¸ªå¯¹è±¡è¡¨ä¸­éå†
 	if (groupId < 0 || groupId >= LGOBJ_GROUPCNT)
 	{
 		p = m_pObjectListHeader.pObjectNext;
@@ -1602,10 +1602,10 @@ int GameObjectPool::GetAttr(lua_State* L)LNOEXCEPT
 	if (!p)
 		return luaL_error(L, "invalid lstg object for '__index' meta operation.");
 	
-	// ²éÑ¯ÊôĞÔ
+	// æŸ¥è¯¢å±æ€§
 	const char* key = luaL_checkstring(L, 2);
 	
-	// ¶Ôx,y×÷ÌØ»¯´¦Àí
+	// å¯¹x,yä½œç‰¹åŒ–å¤„ç†
 	if (key[0] == 'x' && key[1] == '\0')
 	{
 		lua_pushnumber(L, p->x);
@@ -1617,7 +1617,7 @@ int GameObjectPool::GetAttr(lua_State* L)LNOEXCEPT
 		return 1;
 	}
 	
-	// Ò»°ãÊôĞÔ
+	// ä¸€èˆ¬å±æ€§
 	switch (GameObjectPropertyHash(key))
 	{
 	case GameObjectProperty::DX:
@@ -1766,10 +1766,10 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 	if (!p)
 		return luaL_error(L, "invalid lstg object for '__newindex' meta operation.");
 
-	// ²éÑ¯ÊôĞÔ
+	// æŸ¥è¯¢å±æ€§
 	const char* key = luaL_checkstring(L, 2);
 
-	// ¶Ôx,y×÷ÌØ»¯´¦Àí
+	// å¯¹x,yä½œç‰¹åŒ–å¤„ç†
 	if (key[0] == 'x' && key[1] == '\0')
 	{
 		p->x = luaL_checknumber(L, 3);
@@ -1781,7 +1781,7 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 		return 0;
 	}	
 
-	// Ò»°ãÊôĞÔ
+	// ä¸€èˆ¬å±æ€§
 	switch (GameObjectPropertyHash(key))
 	{
 	case GameObjectProperty::DX:
@@ -1825,7 +1825,7 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 #endif
 	case GameObjectProperty::LAYER:
 		p->layer = luaL_checknumber(L, 3);
-		LIST_INSERT_SORT(p, Render, RenderListSortFunc); // Ë¢ĞÂpµÄäÖÈ¾²ã¼¶
+		LIST_INSERT_SORT(p, Render, RenderListSortFunc); // åˆ·æ–°pçš„æ¸²æŸ“å±‚çº§
 		LASSERT(m_pRenderListHeader.pRenderNext != nullptr);
 		LASSERT(m_pRenderListTail.pRenderPrev != nullptr);
 		break;
@@ -1841,7 +1841,7 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 				if (0 <= group && group < LGOBJ_GROUPCNT)
 				{
 					LIST_INSERT_BEFORE(&m_pCollisionListTail[group], p, Collision);
-					LIST_INSERT_SORT(p, Collision, ObjectListSortFunc);  // Ë¢ĞÂpµÄÅö×²´ÎĞò
+					LIST_INSERT_SORT(p, Collision, ObjectListSortFunc);  // åˆ·æ–°pçš„ç¢°æ’æ¬¡åº
 					LASSERT(m_pCollisionListHeader[group].pCollisionNext != nullptr);
 					LASSERT(m_pCollisionListTail[group].pCollisionPrev != nullptr);
 				}
@@ -1967,7 +1967,7 @@ int GameObjectPool::InitAttr(lua_State* L)LNOEXCEPT  // t(object)
 	if (!p)
 		return luaL_error(L, "invalid lstg object for init function.");
 
-	// ²éÑ¯ÊôĞÔ
+	// æŸ¥è¯¢å±æ€§
 	const char* key = NULL;
 
 	lua_getfield(L, 1, "x"); // t(object) i(id) v(x)
@@ -2029,7 +2029,7 @@ int GameObjectPool::InitAttr(lua_State* L)LNOEXCEPT  // t(object)
 #endif
 			case GameObjectProperty::LAYER:
 				p->layer = luaL_checknumber(L, 3);
-				LIST_INSERT_SORT(p, Render, RenderListSortFunc); // Ë¢ĞÂpµÄäÖÈ¾²ã¼¶
+				LIST_INSERT_SORT(p, Render, RenderListSortFunc); // åˆ·æ–°pçš„æ¸²æŸ“å±‚çº§
 				LASSERT(m_pRenderListHeader.pRenderNext != nullptr);
 				LASSERT(m_pRenderListTail.pRenderPrev != nullptr);
 				break;
@@ -2045,7 +2045,7 @@ int GameObjectPool::InitAttr(lua_State* L)LNOEXCEPT  // t(object)
 						if (0 <= group && group < LGOBJ_GROUPCNT)
 						{
 							LIST_INSERT_BEFORE(&m_pCollisionListTail[group], p, Collision);
-							LIST_INSERT_SORT(p, Collision, ObjectListSortFunc);  // Ë¢ĞÂpµÄÅö×²´ÎĞò
+							LIST_INSERT_SORT(p, Collision, ObjectListSortFunc);  // åˆ·æ–°pçš„ç¢°æ’æ¬¡åº
 							LASSERT(m_pCollisionListHeader[group].pCollisionNext != nullptr);
 							LASSERT(m_pCollisionListTail[group].pCollisionPrev != nullptr);
 						}
@@ -2144,7 +2144,7 @@ int GameObjectPool::ParticleStop(lua_State* L)LNOEXCEPT
 		return luaL_error(L, "invalid lstg object for 'ParticleStop'.");
 	if (!p->res || p->res->GetType() != ResourceType::Particle)
 	{
-		LWARNING("ParticleStop: ÊÔÍ¼Í£Ö¹Ò»¸ö²»´øÓĞÁ£×Ó·¢ÉäÆ÷µÄ¶ÔÏóµÄÁ£×Ó·¢Éä¹ı³Ì(uid=%d)", m_iUid);
+		LWARNING("ParticleStop: è¯•å›¾åœæ­¢ä¸€ä¸ªä¸å¸¦æœ‰ç²’å­å‘å°„å™¨çš„å¯¹è±¡çš„ç²’å­å‘å°„è¿‡ç¨‹(uid=%d)", m_iUid);
 		return 0;
 	}	
 	p->ps->SetInactive();
@@ -2164,7 +2164,7 @@ int GameObjectPool::ParticleFire(lua_State* L)LNOEXCEPT
 		return luaL_error(L, "invalid lstg object for 'ParticleFire'.");
 	if (!p->res || p->res->GetType() != ResourceType::Particle)
 	{
-		LWARNING("ParticleFire: ÊÔÍ¼Æô¶¯Ò»¸ö²»´øÓĞÁ£×Ó·¢ÉäÆ÷µÄ¶ÔÏóµÄÁ£×Ó·¢Éä¹ı³Ì(uid=%d)", m_iUid);
+		LWARNING("ParticleFire: è¯•å›¾å¯åŠ¨ä¸€ä¸ªä¸å¸¦æœ‰ç²’å­å‘å°„å™¨çš„å¯¹è±¡çš„ç²’å­å‘å°„è¿‡ç¨‹(uid=%d)", m_iUid);
 		return 0;
 	}	
 	p->ps->SetActive();
@@ -2204,7 +2204,7 @@ int GameObjectPool::ParticleGetEmission(lua_State* L)LNOEXCEPT
 		return luaL_error(L, "invalid lstg object for 'ParticleGetEmission'.");
 	if (!p->res || p->res->GetType() != ResourceType::Particle)
 	{
-		LWARNING("ParticleGetEmission: ÊÔÍ¼»ñÈ¡Ò»¸ö²»´øÓĞÁ£×Ó·¢ÉäÆ÷µÄ¶ÔÏóµÄÁ£×Ó·¢ÉäÃÜ¶È(uid=%d)", m_iUid);
+		LWARNING("ParticleGetEmission: è¯•å›¾è·å–ä¸€ä¸ªä¸å¸¦æœ‰ç²’å­å‘å°„å™¨çš„å¯¹è±¡çš„ç²’å­å‘å°„å¯†åº¦(uid=%d)", m_iUid);
 		lua_pushinteger(L, 0);
 		return 1;
 	}
@@ -2225,7 +2225,7 @@ int GameObjectPool::ParticleSetEmission(lua_State* L)LNOEXCEPT
 		return luaL_error(L, "invalid lstg object for 'ParticleGetEmission'.");
 	if (!p->res || p->res->GetType() != ResourceType::Particle)
 	{
-		LWARNING("ParticleSetEmission: ÊÔÍ¼ÉèÖÃÒ»¸ö²»´øÓĞÁ£×Ó·¢ÉäÆ÷µÄ¶ÔÏóµÄÁ£×Ó·¢ÉäÃÜ¶È(uid=%d)", m_iUid);
+		LWARNING("ParticleSetEmission: è¯•å›¾è®¾ç½®ä¸€ä¸ªä¸å¸¦æœ‰ç²’å­å‘å°„å™¨çš„å¯¹è±¡çš„ç²’å­å‘å°„å¯†åº¦(uid=%d)", m_iUid);
 		return 0;
 	}
 	p->ps->SetEmission((float)::max(0., luaL_checknumber(L, 2)));
@@ -2245,7 +2245,7 @@ void GameObjectPool::DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer
 			{
 				fcyVec2 tHalfSize((float)p->a, (float)p->b);
 
-				// ¼ÆËã³ö¾ØĞÎµÄ4¸ö¶¥µã
+				// è®¡ç®—å‡ºçŸ©å½¢çš„4ä¸ªé¡¶ç‚¹
 				f2dGraphics2DVertex tFinalPos[4] =
 				{
 					{ -tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 0.0f },
@@ -2258,7 +2258,7 @@ void GameObjectPool::DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer
 				float tSin, tCos;
 				SinCos((float)p->rot, tSin, tCos);
 
-				// ±ä»»
+				// å˜æ¢
 				for (int i = 0; i < 4; i++)
 				{
 					fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,

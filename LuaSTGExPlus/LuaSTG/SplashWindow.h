@@ -6,7 +6,7 @@
 
 namespace LuaSTGPlus
 {
-	/// @brief ÔØÈë´°¿Ú
+	/// @brief è½½å…¥çª—å£
 	class SplashWindow
 	{
 	public:

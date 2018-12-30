@@ -1,5 +1,5 @@
 /// @file Global.h
-/// @brief ȫ�ֶ����ļ�
+/// @brief 全局定义文件
 #pragma once
 
 // C
@@ -44,32 +44,32 @@
 // luajit
 #include <lua.hpp>
 
-// ��־ϵͳ
+// 日志系统
 #include "LogSystem.h"
 
-// һЩȫ�ַ�Χ�ĺ�
+// 一些全局范围的宏
 #define LVERSION L"luaSTGPlus-0.2"
 #define LVERSION_LUA LUAJIT_VERSION
 
-// ȫ���ļ�
+// 全局文件
 #define LLOGFILE L"log.txt"
 #define LLAUNCH_SCRIPT L"launch"
 #define LCORE_SCRIPT L"core.lua"
 
-// ȫ�ֻص���������
+// 全局回调函数名称
 #define LFUNC_GAMEINIT "GameInit"
 #define LFUNC_FRAME "FrameFunc"
 #define LFUNC_RENDER "RenderFunc"
 #define LFUNC_LOSEFOCUS "FocusLoseFunc"
 #define LFUNC_GAINFOCUS "FocusGainFunc"
 
-// �������Ϣ
-#define LGOBJ_MAXCNT 16384  // �������� //32768(old)
-#define LGOBJ_MAXLASERNODE 512  // ���߼������ڵ���
-#define LGOBJ_DEFAULTGROUP 0  // Ĭ����
-#define LGOBJ_GROUPCNT 16  // ��ײ����
+// 对象池信息
+#define LGOBJ_MAXCNT 16384  // 最大对象数 //32768(old)
+#define LGOBJ_MAXLASERNODE 512  // 曲线激光最大节点数
+#define LGOBJ_DEFAULTGROUP 0  // 默认组
+#define LGOBJ_GROUPCNT 16  // 碰撞组数
 
-// CLASS�д�ŵĻص��������±�
+// CLASS中存放的回调函数的下标
 #define LGOBJ_CC_INIT 1
 #define LGOBJ_CC_DEL 2
 #define LGOBJ_CC_FRAME 3
@@ -77,13 +77,13 @@
 #define LGOBJ_CC_COLLI 5
 #define LGOBJ_CC_KILL 6
 
-//���ܿ���
-#define USER_SYSTEM_OPERATION //�����Ƿ�������lua��ת���Ķ��⹦��
+//功能控制
+#define USER_SYSTEM_OPERATION //控制是否启用由lua层转来的额外功能
 
-// ��ѧ����
-#define DBL_HALF_MAX (DBL_MAX / 2.0) //˫���ȸ���İ��ֵ
-#define LRAD2DEGREE (180.0/3.141592653589793) // ���ȵ��Ƕ�
-#define LDEGREE2RAD (1.0/LRAD2DEGREE) // �Ƕȵ�����
+// 数学常量
+#define DBL_HALF_MAX (DBL_MAX / 2.0) //双精度浮点的半大值
+#define LRAD2DEGREE (180.0/3.141592653589793) // 弧度到角度
+#define LDEGREE2RAD (1.0/LRAD2DEGREE) // 角度到弧度
 #define LPI_HALF (3.141592653589793 / 2)  // PI*0.5
 
 #define LNOEXCEPT throw()
@@ -92,12 +92,12 @@
 #ifdef _DEBUG
 #define LDEBUG
 #endif
-// ���Ը���
+// 调试辅助
 #if (defined LDEVVERSION) || (defined LDEBUG)
-#define LSHOWRESLOADINFO  // ��ʾ������Ϣ
+#define LSHOWRESLOADINFO  // 显示加载信息
 #endif
-// #define LSHOWFONTBASELINE  // ��ʾ���ֻ���
-#define LPERFORMANCEUPDATETIMER 0.25f  // ˢ��һ�μ�������������룩
+// #define LSHOWFONTBASELINE  // 显示文字基线
+#define LPERFORMANCEUPDATETIMER 0.25f  // 刷新一次计数器（间隔：秒）
 
 #define LAPP (LuaSTGPlus::AppFrame::GetInstance())
 #define LLOGGER (LuaSTGPlus::LogSystem::GetInstance())
@@ -114,14 +114,14 @@
 #define LASSERT(cond) \
 	if (!(cond)) \
 	{ \
-		LERROR("���Զ���ʧ�� ���ļ� '%s' ���� '%s' �� %d: %s", LWIDE(__FILE__), LWIDE(__FUNCTION__), __LINE__, L#cond); \
+		LERROR("调试断言失败 于文件 '%s' 函数 '%s' 行 %d: %s", LWIDE(__FILE__), LWIDE(__FUNCTION__), __LINE__, L#cond); \
 		_wassert(L#cond, LWIDE(__FILE__), __LINE__); \
 	}
 #else
 #define LASSERT(cond)
 #endif
 
-#define LPARTICLE_MAXCNT 500  // �������ӳ������500������
+#define LPARTICLE_MAXCNT 500  // 单个粒子池最多有500个粒子
 
 #define LJOYSTICK1_MAPPING_START 0x92
 #define LJOYSTICK1_MAPPING_END (0x92 + 31)

@@ -13,14 +13,14 @@ namespace Bencode
 {
 	struct Value;
 
-	/// @brief ÖµÀàĞÍ
+	/// @brief å€¼ç±»å‹
 	enum class ValueType
 	{
-		Null,       ///< @brief ¿ÕÖµ
-		Int,        ///< @brief ÕûÊı
-		String,     ///< @brief ×Ö·û´®
-		List,       ///< @brief ÁĞ±í
-		Dictionary  ///< @brief ×Öµä
+		Null,       ///< @brief ç©ºå€¼
+		Int,        ///< @brief æ•´æ•°
+		String,     ///< @brief å­—ç¬¦ä¸²
+		List,       ///< @brief åˆ—è¡¨
+		Dictionary  ///< @brief å­—å…¸
 	};
 
 	using IntType = int32_t;
@@ -28,7 +28,7 @@ namespace Bencode
 	using ListType = std::vector<std::shared_ptr<Value>>;
 	using DictType = std::map<StringType, std::shared_ptr<Value>>;
 
-	/// @brief Öµ
+	/// @brief å€¼
 	struct Value
 	{
 		ValueType  Type = ValueType::Null;
@@ -51,7 +51,7 @@ namespace Bencode
 		Value(Value&& org);
 	};
 
-	/// @brief Bencode±àÂëÆ÷
+	/// @brief Bencodeç¼–ç å™¨
 	class Encoder
 	{
 	private:
@@ -59,11 +59,11 @@ namespace Bencode
 	private:
 		void makeData(const Value& v);
 	public:
-		/// @brief ¹¹ÔìBencodeÊı¾İ
+		/// @brief æ„é€ Bencodeæ•°æ®
 		const std::string& operator<<(const Value& v);
-		/// @brief »ñÈ¡ÄÚ²¿»º³åÇø
+		/// @brief è·å–å†…éƒ¨ç¼“å†²åŒº
 		const std::string& operator*();
-		/// @brief ÖØÖÃ
+		/// @brief é‡ç½®
 		void Reset();
 	private:
 		Encoder& operator=(const Encoder&);
@@ -72,13 +72,13 @@ namespace Bencode
 		Encoder();
 	};
 
-	/// @brief Bencode½âÂëÆ÷
+	/// @brief Bencodeè§£ç å™¨
 	class Decoder
 	{
 	private:
 		Value m_RootValue;
 
-		// === ÄÚ²¿×´Ì¬ ===
+		// === å†…éƒ¨çŠ¶æ€ ===
 		int m_State;
 		std::stack<Value> m_StackValue;
 		std::stack<int> m_DictReadState;
@@ -89,13 +89,13 @@ namespace Bencode
 	private:
 		bool closeValue();
 	public:
-		/// @brief  ÊäÈë×Ö·û½øĞĞ½âÂë
-		/// @return ÈôÄÜ²úÉúÒ»¸ö¸ù¶ÔÏóÔò·µ»Øtrue
+		/// @brief  è¾“å…¥å­—ç¬¦è¿›è¡Œè§£ç 
+		/// @return è‹¥èƒ½äº§ç”Ÿä¸€ä¸ªæ ¹å¯¹è±¡åˆ™è¿”å›true
 		bool operator<<(char c);
-		/// @brief  »ñÈ¡½âÂëµÄÊı¾İ
+		/// @brief  è·å–è§£ç çš„æ•°æ®
 		const Value& operator->();
 		const Value& operator*();
-		/// @brief ÖØÖÃ×´Ì¬
+		/// @brief é‡ç½®çŠ¶æ€
 		void Reset();
 	private:
 		Decoder& operator=(const Decoder&);

@@ -6,59 +6,59 @@
 
 namespace LuaSTGPlus
 {
-	/// @brief ÓÎÏ·¶ÔÏó×´Ì¬
+	/// @brief æ¸¸æˆå¯¹è±¡çŠ¶æ€
 	enum GAMEOBJECTSTATUS
 	{
-		STATUS_FREE = 0,  // ¿ÕÏĞ×´Ì¬¡¢ÓÃÓÚ±êÊ¶Á´±íÎ±Í·²¿
-		STATUS_DEFAULT,  // Õı³£×´Ì¬
-		STATUS_KILL,  // ±»killÊÂ¼ş´¥·¢
-		STATUS_DEL  // ±»delÊÂ¼ş´¥·¢
+		STATUS_FREE = 0,  // ç©ºé—²çŠ¶æ€ã€ç”¨äºæ ‡è¯†é“¾è¡¨ä¼ªå¤´éƒ¨
+		STATUS_DEFAULT,  // æ­£å¸¸çŠ¶æ€
+		STATUS_KILL,  // è¢«killäº‹ä»¶è§¦å‘
+		STATUS_DEL  // è¢«deläº‹ä»¶è§¦å‘
 	};
 	
-	/// @brief ÓÎÏ·¶ÔÏó
+	/// @brief æ¸¸æˆå¯¹è±¡
 	struct GameObject
 	{
-		GAMEOBJECTSTATUS status;  // (²»¿É¼û)¶ÔÏó×´Ì¬
-		size_t id;  // (²»¿É¼û)¶ÔÏóÔÚ¶ÔÏó³ØÖĞµÄid
-		int64_t uid;  // (²»¿É¼û)¶ÔÏóÎ¨Ò»id
+		GAMEOBJECTSTATUS status;  // (ä¸å¯è§)å¯¹è±¡çŠ¶æ€
+		size_t id;  // (ä¸å¯è§)å¯¹è±¡åœ¨å¯¹è±¡æ± ä¸­çš„id
+		int64_t uid;  // (ä¸å¯è§)å¯¹è±¡å”¯ä¸€id
 
-		lua_Number x, y;  // ÖĞĞÄ×ø±ê
-		lua_Number lastx, lasty;  // (²»¿É¼û)ÉÏÒ»Ö¡ÖĞĞÄ×ø±ê
-		lua_Number dx, dy;  // (Ö»¶Á)ÉÏÒ»Ö¡ÖĞĞÄ×ø±êÏà¶ÔÖĞĞÄ×ø±êµÄÆ«ÒÆÁ¿
-		lua_Number rot, omiga;  // Ğı×ª½Ç¶ÈÓë½Ç¶ÈÔöÁ¿
-		lua_Number vx, vy;  // ËÙ¶È
+		lua_Number x, y;  // ä¸­å¿ƒåæ ‡
+		lua_Number lastx, lasty;  // (ä¸å¯è§)ä¸Šä¸€å¸§ä¸­å¿ƒåæ ‡
+		lua_Number dx, dy;  // (åªè¯»)ä¸Šä¸€å¸§ä¸­å¿ƒåæ ‡ç›¸å¯¹ä¸­å¿ƒåæ ‡çš„åç§»é‡
+		lua_Number rot, omiga;  // æ—‹è½¬è§’åº¦ä¸è§’åº¦å¢é‡
+		lua_Number vx, vy;  // é€Ÿåº¦
 #ifdef USER_SYSTEM_OPERATION
-		lua_Number maxv, maxvx, maxvy; // ËÙ¶ÈÏŞÖÆ
-		lua_Number ag;  // ÖØÁ¦¼ÓËÙ¶È
+		lua_Number maxv, maxvx, maxvy; // é€Ÿåº¦é™åˆ¶
+		lua_Number ag;  // é‡åŠ›åŠ é€Ÿåº¦
 #endif
-		lua_Number ax, ay;  // ¼ÓËÙ¶È
-		//lua_Number va, speed; // ËÙ¶È·½Ïò ËÙ¶ÈÖµ
-		lua_Number layer;  // Í¼²ã
-		lua_Number a, b;  // µ¥Î»µÄºáÏò¡¢×İÏòÅö×²´óĞ¡µÄÒ»°ë
-		lua_Number hscale, vscale;  // ºáÏò¡¢×İÏòÀ­ÉìÂÊ£¬½öÓ°ÏìäÖÈ¾
+		lua_Number ax, ay;  // åŠ é€Ÿåº¦
+		//lua_Number va, speed; // é€Ÿåº¦æ–¹å‘ é€Ÿåº¦å€¼
+		lua_Number layer;  // å›¾å±‚
+		lua_Number a, b;  // å•ä½çš„æ¨ªå‘ã€çºµå‘ç¢°æ’å¤§å°çš„ä¸€åŠ
+		lua_Number hscale, vscale;  // æ¨ªå‘ã€çºµå‘æ‹‰ä¼¸ç‡ï¼Œä»…å½±å“æ¸²æŸ“
 
-		bool colli;  // ÊÇ·ñ²ÎÓëÅö×²
-		bool rect;  // ÊÇ·ñÎª¾ØĞÎÅö×²ºĞ
-		bool bound;  // ÊÇ·ñÔ½½çÇå³ı
-		bool hide;  // ÊÇ·ñÒş²Ø
-		bool navi;  // ÊÇ·ñ×Ô¶¯×ªÏò
+		bool colli;  // æ˜¯å¦å‚ä¸ç¢°æ’
+		bool rect;  // æ˜¯å¦ä¸ºçŸ©å½¢ç¢°æ’ç›’
+		bool bound;  // æ˜¯å¦è¶Šç•Œæ¸…é™¤
+		bool hide;  // æ˜¯å¦éšè—
+		bool navi;  // æ˜¯å¦è‡ªåŠ¨è½¬å‘
 
 		//EX+
-		bool resolve_move; //ÊÇ·ñÎª¼ÆËãËÙ¶È¶ø·Ç¼ÆËãÎ»ÖÃ
-		lua_Integer pause; //¶ÔÏó±»ÔİÍ£µÄÊ±¼ä(Ö¡) ¶ÔÏó±»ÔİÍ£Ê±£¬½«Ìø¹ıËÙ¶È¼ÆËã£¬µ«ÊÇtimer»áÔö¼Ó£¬frameÈÔ»áµ÷ÓÃ
-		bool ignore_superpause; //ÊÇ·ñÎŞÊÓ³¬¼¶ÔİÍ£¡£ ³¬¼¶ÔİÍ£Ê±£¬timer²»»áÔö¼Ó£¬frame²»»áµ÷ÓÃ£¬µ«render»áµ÷ÓÃ¡£
-		lua_Integer world; //ÊÀ½ç±ê¼ÇÎ»
+		bool resolve_move; //æ˜¯å¦ä¸ºè®¡ç®—é€Ÿåº¦è€Œéè®¡ç®—ä½ç½®
+		lua_Integer pause; //å¯¹è±¡è¢«æš‚åœçš„æ—¶é—´(å¸§) å¯¹è±¡è¢«æš‚åœæ—¶ï¼Œå°†è·³è¿‡é€Ÿåº¦è®¡ç®—ï¼Œä½†æ˜¯timerä¼šå¢åŠ ï¼Œframeä»ä¼šè°ƒç”¨
+		bool ignore_superpause; //æ˜¯å¦æ— è§†è¶…çº§æš‚åœã€‚ è¶…çº§æš‚åœæ—¶ï¼Œtimerä¸ä¼šå¢åŠ ï¼Œframeä¸ä¼šè°ƒç”¨ï¼Œä½†renderä¼šè°ƒç”¨ã€‚
+		lua_Integer world; //ä¸–ç•Œæ ‡è®°ä½
 
-		// ÊÜcolli,a,b,rect²ÎÊıÓ°ÏìµÄÅö×²ºĞÍâÔ²°ë¾¶
+		// å—colli,a,b,rectå‚æ•°å½±å“çš„ç¢°æ’ç›’å¤–åœ†åŠå¾„
 		lua_Number col_r;
 
-		lua_Integer group;  // ¶ÔÏóËùÔÚµÄÅö×²×é
-		lua_Integer timer, ani_timer;  // ¼ÆÊıÆ÷
+		lua_Integer group;  // å¯¹è±¡æ‰€åœ¨çš„ç¢°æ’ç»„
+		lua_Integer timer, ani_timer;  // è®¡æ•°å™¨
 
-		Resource* res;  // äÖÈ¾×ÊÔ´
-		ResParticle::ParticlePool* ps;  // Á£×ÓÏµÍ³
+		Resource* res;  // æ¸²æŸ“èµ„æº
+		ResParticle::ParticlePool* ps;  // ç²’å­ç³»ç»Ÿ
 
-		// Á´±íÓò
+		// é“¾è¡¨åŸŸ
 		GameObject *pObjectPrev, *pObjectNext;
 		GameObject *pRenderPrev, *pRenderNext;
 		GameObject *pCollisionPrev, *pCollisionNext;
@@ -79,7 +79,7 @@ namespace LuaSTGPlus
 			a = b = 0.;
 			hscale = vscale = 1.;
 #ifdef USER_SYSTEM_OPERATION
-			maxv = maxvx = maxvy = DBL_HALF_MAX; // Æ½Ê±Ó¦¸Ã²»»áÓĞÈËÅªÄÇÃ´´óµÄËÙ¶È°É£¬Ï£Íû¼ÆËãÊ±²»»áÒç³ö£¨
+			maxv = maxvx = maxvy = DBL_HALF_MAX; // å¹³æ—¶åº”è¯¥ä¸ä¼šæœ‰äººå¼„é‚£ä¹ˆå¤§çš„é€Ÿåº¦å§ï¼Œå¸Œæœ›è®¡ç®—æ—¶ä¸ä¼šæº¢å‡ºï¼ˆ
 			ag = 0.;
 #endif
 			
@@ -132,7 +132,7 @@ namespace LuaSTGPlus
 		bool ChangeResource(const char* res_name);
 	};
 
-	/// @brief ÇúÏß¼¤¹âÌØ»¯ÊµÏÖ
+	/// @brief æ›²çº¿æ¿€å…‰ç‰¹åŒ–å®ç°
 	class GameObjectBentLaser
 	{
 	public:
@@ -159,7 +159,7 @@ namespace LuaSTGPlus
 		};
 	private:
 		CirularQueue<LaserNode, LGOBJ_MAXLASERNODE> m_Queue;
-		float m_fLength = 0.f;  // ¼ÇÂ¼¼¤¹â³¤¶È
+		float m_fLength = 0.f;  // è®°å½•æ¿€å…‰é•¿åº¦
 	public:
 		bool Update(size_t id, int length, float width,bool active)LNOEXCEPT;
 		bool UpdateByNode(size_t id, int node, int length, float width, bool active)LNOEXCEPT;
@@ -180,14 +180,14 @@ namespace LuaSTGPlus
 		~GameObjectBentLaser();
 	};
 
-	/// @brief ÓÎÏ·¶ÔÏó³Ø
+	/// @brief æ¸¸æˆå¯¹è±¡æ± 
 	class GameObjectPool
 	{
 	private:
 		lua_State* L = nullptr;
 		FixedObjectPool<GameObject, LGOBJ_MAXCNT> m_ObjectPool;
 
-		// Á´±íÎ±Í·²¿
+		// é“¾è¡¨ä¼ªå¤´éƒ¨
 		uint64_t m_iUid = 0;
 		GameObject m_pObjectListHeader, m_pObjectListTail;
 		GameObject m_pRenderListHeader, m_pRenderListTail;
@@ -195,7 +195,7 @@ namespace LuaSTGPlus
 
 		GameObject* m_pCurrentObject;
 
-		// ³¡¾°±ß½ç
+		// åœºæ™¯è¾¹ç•Œ
 		lua_Number m_BoundLeft = -100.f;
 		lua_Number m_BoundRight = 100.f;
 		lua_Number m_BoundTop = 100.f;
@@ -203,28 +203,28 @@ namespace LuaSTGPlus
 	private:
 		GameObject* freeObject(GameObject* p)LNOEXCEPT;
 	public:
-		/// @brief ¼ì²éÊÇ·ñÎªÖ÷Ïß³Ì
+		/// @brief æ£€æŸ¥æ˜¯å¦ä¸ºä¸»çº¿ç¨‹
 		bool CheckIsMainThread(lua_State* pL)LNOEXCEPT { return pL == L; }
 
-		/// @brief »ñÈ¡ÒÑ·ÖÅä¶ÔÏóÊıÁ¿
+		/// @brief è·å–å·²åˆ†é…å¯¹è±¡æ•°é‡
 		size_t GetObjectCount()LNOEXCEPT { return m_ObjectPool.Size(); }
 		
-		/// @brief »ñÈ¡¶ÔÏó
+		/// @brief è·å–å¯¹è±¡
 		GameObject* GetPooledObject(size_t i)LNOEXCEPT { return m_ObjectPool.Data(i); }
 
-		/// @brief Ö´ĞĞ¶ÔÏóµÄFrameº¯Êı
+		/// @brief æ‰§è¡Œå¯¹è±¡çš„Frameå‡½æ•°
 		void DoFrame()LNOEXCEPT;
 
-		/// @brief Ö´ĞĞ¶ÔÏóµÄRenderº¯Êı
+		/// @brief æ‰§è¡Œå¯¹è±¡çš„Renderå‡½æ•°
 		void DoRender()LNOEXCEPT;
 
-		/// @brief »ñÈ¡ÎèÌ¨±ß½ç
+		/// @brief è·å–èˆå°è¾¹ç•Œ
 		fcyRect GetBound()LNOEXCEPT
 		{
 			return fcyRect((float)m_BoundLeft, (float)m_BoundTop, (float)m_BoundRight, (float)m_BoundBottom);
 		}
 
-		/// @brief ÉèÖÃÎèÌ¨±ß½ç
+		/// @brief è®¾ç½®èˆå°è¾¹ç•Œ
 		void SetBound(lua_Number l, lua_Number r, lua_Number b, lua_Number t)LNOEXCEPT
 		{
 			m_BoundLeft = l;
@@ -233,90 +233,90 @@ namespace LuaSTGPlus
 			m_BoundBottom = b;
 		}
 
-		/// @brief Ö´ĞĞ±ß½ç¼ì²é
+		/// @brief æ‰§è¡Œè¾¹ç•Œæ£€æŸ¥
 		void BoundCheck()LNOEXCEPT;
 		//void BoundCheckWorld(lua_Number worldflag)LNOEXCEPT;
 
-		/// @brief Åö×²¼ì²é
-		/// @param[in] groupA ¶ÔÏó×éA
-		/// @param[in] groupB ¶ÔÏó×éB
+		/// @brief ç¢°æ’æ£€æŸ¥
+		/// @param[in] groupA å¯¹è±¡ç»„A
+		/// @param[in] groupB å¯¹è±¡ç»„B
 		void CollisionCheck(size_t groupA, size_t groupB)LNOEXCEPT;
 
-		/// @brief ¸üĞÂ¶ÔÏóµÄXY×ø±êÆ«ÒÆÁ¿
+		/// @brief æ›´æ–°å¯¹è±¡çš„XYåæ ‡åç§»é‡
 		void UpdateXY()LNOEXCEPT;
 
-		/// @brief Ö¡Ä©¸üĞÂº¯Êı
+		/// @brief å¸§æœ«æ›´æ–°å‡½æ•°
 		void AfterFrame()LNOEXCEPT;
 
-		/// @brief ´´½¨ĞÂ¶ÔÏó
+		/// @brief åˆ›å»ºæ–°å¯¹è±¡
 		int New(lua_State* L)LNOEXCEPT;
 
-		/// @brief ½«Ò»¸ö¶ÔÏó²åÈëÁ´±í
+		/// @brief å°†ä¸€ä¸ªå¯¹è±¡æ’å…¥é“¾è¡¨
 		int Add(lua_State* L)LNOEXCEPT;
 
-		/// @brief Í¨Öª¶ÔÏóÉ¾³ı
+		/// @brief é€šçŸ¥å¯¹è±¡åˆ é™¤
 		int Del(lua_State* L)LNOEXCEPT;
 		
-		/// @brief Í¨Öª¶ÔÏóÏûÍö
+		/// @brief é€šçŸ¥å¯¹è±¡æ¶ˆäº¡
 		int Kill(lua_State* L)LNOEXCEPT;
 
-		/// @brief ¼ì²é¶ÔÏóÊÇ·ñÓĞĞ§
+		/// @brief æ£€æŸ¥å¯¹è±¡æ˜¯å¦æœ‰æ•ˆ
 		int IsValid(lua_State* L)LNOEXCEPT;
 		
-		/// @brief Çó¼Ğ½Ç
+		/// @brief æ±‚å¤¹è§’
 		bool Angle(size_t idA, size_t idB, double& out)LNOEXCEPT;
 
-		/// @brief Çó¾àÀë
+		/// @brief æ±‚è·ç¦»
 		bool Dist(size_t idA, size_t idB, double& out)LNOEXCEPT;
 
-		/// @brief ¼ÆËãËÙ¶È·½ÏòºÍ´óĞ¡
+		/// @brief è®¡ç®—é€Ÿåº¦æ–¹å‘å’Œå¤§å°
 		bool GetV(size_t id, double& v, double& a)LNOEXCEPT;
 
-		/// @brief ÉèÖÃËÙ¶È·½ÏòºÍ´óĞ¡
+		/// @brief è®¾ç½®é€Ÿåº¦æ–¹å‘å’Œå¤§å°
 		bool SetV(size_t id, double v, double a, bool updateRot)LNOEXCEPT;
 
-		/// @brief ÉèÖÃÔªËØµÄÍ¼Ïñ×´Ì¬
+		/// @brief è®¾ç½®å…ƒç´ çš„å›¾åƒçŠ¶æ€
 		bool SetImgState(size_t id, BlendMode m, fcyColor c)LNOEXCEPT;
 
-		/// @brief ·¶Î§¼ì²é
+		/// @brief èŒƒå›´æ£€æŸ¥
 		bool BoxCheck(size_t id, double left, double right, double top, double bottom, bool& ret)LNOEXCEPT;
 		
-		/// @brief Çå¿Õ¶ÔÏó³Ø
+		/// @brief æ¸…ç©ºå¯¹è±¡æ± 
 		void ResetPool()LNOEXCEPT;
 
-		/// @brief Ö´ĞĞÄ¬ÈÏäÖÈ¾
+		/// @brief æ‰§è¡Œé»˜è®¤æ¸²æŸ“
 		bool DoDefaultRender(size_t id)LNOEXCEPT;
 
-		/// @brief »ñÈ¡ÏÂÒ»¸öÔªËØµÄID
-		/// @return ·µ»Ø-1±íÊ¾ÎŞÔªËØ
+		/// @brief è·å–ä¸‹ä¸€ä¸ªå…ƒç´ çš„ID
+		/// @return è¿”å›-1è¡¨ç¤ºæ— å…ƒç´ 
 		int NextObject(int groupId, int id)LNOEXCEPT;
 
 		int NextObject(lua_State* L)LNOEXCEPT;
 
-		/// @brief »ñÈ¡ÁĞ±íÖĞµÄµÚÒ»¸öÔªËØID
-		/// @note Îªµü´úÆ÷Ê¹ÓÃ
-		/// @return ·µ»Ø-1±íÊ¾ÎŞÔªËØ
+		/// @brief è·å–åˆ—è¡¨ä¸­çš„ç¬¬ä¸€ä¸ªå…ƒç´ ID
+		/// @note ä¸ºè¿­ä»£å™¨ä½¿ç”¨
+		/// @return è¿”å›-1è¡¨ç¤ºæ— å…ƒç´ 
 		int FirstObject(int groupId)LNOEXCEPT;
 
-		/// @brief ÊôĞÔ¶Á·½·¨
+		/// @brief å±æ€§è¯»æ–¹æ³•
 		int GetAttr(lua_State* L)LNOEXCEPT;
 
-		/// @brief ÊôĞÔĞ´·½·¨
+		/// @brief å±æ€§å†™æ–¹æ³•
 		int SetAttr(lua_State* L)LNOEXCEPT;
 
-		/// @brief ³õÊ¼»¯·½·¨
+		/// @brief åˆå§‹åŒ–æ–¹æ³•
 		int InitAttr(lua_State* L)LNOEXCEPT;
 
-		/// @brief µ÷ÊÔÄ¿µÄ£¬»ñÈ¡¶ÔÏóÁĞ±í
+		/// @brief è°ƒè¯•ç›®çš„ï¼Œè·å–å¯¹è±¡åˆ—è¡¨
 		int GetObjectTable(lua_State* L)LNOEXCEPT;
 
-		/// @brief ¶ÔÏóÁ£×Ó³ØÏà¹Ø²Ù×÷
+		/// @brief å¯¹è±¡ç²’å­æ± ç›¸å…³æ“ä½œ
 		int ParticleStop(lua_State* L)LNOEXCEPT;
 		int ParticleFire(lua_State* L)LNOEXCEPT;
 		int ParticleGetn(lua_State* L)LNOEXCEPT;
 		int ParticleGetEmission(lua_State* L)LNOEXCEPT;
 		int ParticleSetEmission(lua_State* L)LNOEXCEPT;
-	public:  // ÄÚ²¿Ê¹ÓÃ
+	public:  // å†…éƒ¨ä½¿ç”¨
 		void DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer* grender, int groupId, fcyColor fillColor);
 		static bool CheckWorld(lua_Integer gameworld, lua_Integer objworld){
 			return (gameworld == objworld) || (gameworld&objworld);

@@ -3,9 +3,9 @@
 
 namespace LuaSTGPlus
 {
-	//Ê¹ÓÃ×îÐ¡ÍêÃÀ¹þÏ£Ëã·¨½øÐÐ×Ö·û´®ºÍÃ¶¾ÙÖµÅä¶Ô
-	//¸Ã´úÂëÓÉstring2enum.py+GameObjectPropertyHash.jsonÉú³É£¬Ô´´úÂëby 9CHU£¬ÊÊÅäpython3 by Xiliusha
-	//ÖØÒªÌáÊ¾£ºÖ»¿´ÕâÀïµÄ´úÂëÀ´ÑÐ¾¿Æä¹¤×÷Ô­ÀíÊÇÃ»ÓÐÓÃµÄ
+	//ä½¿ç”¨æœ€å°å®Œç¾Žå“ˆå¸Œç®—æ³•è¿›è¡Œå­—ç¬¦ä¸²å’Œæžšä¸¾å€¼é…å¯¹
+	//è¯¥ä»£ç ç”±string2enum.py+GameObjectPropertyHash.jsonç”Ÿæˆï¼Œæºä»£ç by 9CHUï¼Œé€‚é…python3 by Xiliusha
+	//é‡è¦æç¤ºï¼šåªçœ‹è¿™é‡Œçš„ä»£ç æ¥ç ”ç©¶å…¶å·¥ä½œåŽŸç†æ˜¯æ²¡æœ‰ç”¨çš„
 
 	enum class GameObjectProperty
 	{
@@ -137,13 +137,13 @@ namespace LuaSTGPlus
 
 namespace LuaSTGPlusESC
 {
-	//ESCÐ´µÄhashÅä¶ÔËã·¨£¬ÓÉÓÚÆäÊµÏÖÏÞÖÆ£¬Ö§³ÖµÄÊôÐÔÊýÁ¿µ½33ÒÔÉÏºó¾Í³öÏÖÖØ¸´ÖµÁË
-	//¸ÃÊµÏÖÏÖÒÑ¸éÖÃ£¬µÈ´ýÓÅ»¯
+	//ESCå†™çš„hashé…å¯¹ç®—æ³•ï¼Œç”±äºŽå…¶å®žçŽ°é™åˆ¶ï¼Œæ”¯æŒçš„å±žæ€§æ•°é‡åˆ°33ä»¥ä¸ŠåŽå°±å‡ºçŽ°é‡å¤å€¼äº†
+	//è¯¥å®žçŽ°çŽ°å·²æç½®ï¼Œç­‰å¾…ä¼˜åŒ–
 	
-	//ÊôÐÔÊýÁ¿
+	//å±žæ€§æ•°é‡
 	static const char s_propertyCount = 32;
 
-	//ÊôÐÔÃ¶¾Ù
+	//å±žæ€§æžšä¸¾
 	enum class GameObjectProperty
 	{
 		X = 0,
@@ -181,7 +181,7 @@ namespace LuaSTGPlusESC
 		_KEY_NOT_FOUND = -1
 	};
 	
-	//¶ÔÓ¦µÄ×Ö·û´®
+	//å¯¹åº”çš„å­—ç¬¦ä¸²
 	static const char* s_orgKeyList[] = {
 		"x",
 		"y",
@@ -217,7 +217,7 @@ namespace LuaSTGPlusESC
 		"world"
 	};
 	
-	//³õÊ¼»¯hash±í
+	//åˆå§‹åŒ–hashè¡¨
 	static const int HLEN = 173;
 	static char g_FullHashIndex[65536] = { 0 };
 	bool _init_hash_table(){
@@ -228,7 +228,7 @@ namespace LuaSTGPlusESC
 	}
 	bool g_HashInit = _init_hash_table();
 
-	//´Ó×Ö·û´®µ½Ã¶¾Ù
+	//ä»Žå­—ç¬¦ä¸²åˆ°æžšä¸¾
 	inline GameObjectProperty GameObjectPropertyHash(const char* key){
 		char hash = g_FullHashIndex[((const unsigned short *)(key))[0] % HLEN] - 1;
 		if (hash >= 0 && (strcmp(s_orgKeyList[hash], key) == 0))

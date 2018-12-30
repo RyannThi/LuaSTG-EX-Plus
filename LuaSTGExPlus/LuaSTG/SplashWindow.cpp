@@ -91,10 +91,10 @@ void SplashWindow::createWindow()
 		0);
 	SetWindowLongPtr(m_hHandle, GWLP_USERDATA, (LONG)(LONG_PTR)this);
 
-	// ÉèÖÃ²ãµşÊôĞÔ
+	// è®¾ç½®å±‚å å±æ€§
 	SetWindowLong(m_hHandle, GWL_EXSTYLE, WS_EX_TOOLWINDOW | WS_EX_LAYERED);
 
-	// ¸üĞÂ´°¿ÚÊı¾İ
+	// æ›´æ–°çª—å£æ•°æ®
 	HDC dcDest = GetDC(m_hHandle);
 	HDC dcSrc;
 	dcSrc = CreateCompatibleDC(dcDest);
@@ -121,17 +121,17 @@ void SplashWindow::createWindow()
 	g.ReleaseHDC(dcSrc);
 	ReleaseDC(m_hHandle, dcDest);
 
-	// ÏÔÊ¾´°¿Ú
+	// æ˜¾ç¤ºçª—å£
 	int scrWidth, scrHeight;
 	RECT rect;
-	// »ñµÃÆÁÄ»³ß´ç
+	// è·å¾—å±å¹•å°ºå¯¸
 	scrWidth = GetSystemMetrics(SM_CXSCREEN);
 	scrHeight = GetSystemMetrics(SM_CYSCREEN);
-	// »ñÈ¡´°Ìå³ß´ç
+	// è·å–çª—ä½“å°ºå¯¸
 	GetWindowRect(m_hHandle, &rect);
 	rect.left = (scrWidth - rect.right) / 2;
 	rect.top = (scrHeight - rect.bottom) / 2;
-	// ÉèÖÃ´°ÌåÎ»ÖÃ
+	// è®¾ç½®çª—ä½“ä½ç½®
 	SetWindowPos(m_hHandle, 0, rect.left, rect.top, rect.right, rect.bottom, SWP_SHOWWINDOW);
 	SetWindowPos(m_hHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 }
@@ -140,7 +140,7 @@ void SplashWindow::threadJob()
 {
 	createWindow();
 
-	// ÁíÒ»¸öÏûÏ¢Ñ­»·
+	// å¦ä¸€ä¸ªæ¶ˆæ¯å¾ªç¯
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))
 	{

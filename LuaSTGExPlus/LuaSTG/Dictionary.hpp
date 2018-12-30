@@ -1,11 +1,11 @@
 /// @file Dictionary.h
-/// @brief »ùÓÚMPQ¹şÏ£µÄ×Öµä
+/// @brief åŸºäºMPQå“ˆå¸Œçš„å­—å…¸
 #pragma once
 #include "Global.h"
 
 namespace LuaSTGPlus
 {
-	/// @brief MPQHash±í
+	/// @brief MPQHashè¡¨
 	class MPQHashCryptTable
 	{
 	public:
@@ -40,7 +40,7 @@ namespace LuaSTGPlus
 		}
 	};
 
-	/// @brief MPQ HashËã·¨
+	/// @brief MPQ Hashç®—æ³•
 	template <uint32_t dwHashType>
 	uint32_t MPQHash(const char* key)
 	{
@@ -55,7 +55,7 @@ namespace LuaSTGPlus
 		return seed1;
 	}
 
-	/// @brief ×Öµä¼ü
+	/// @brief å­—å…¸é”®
 	struct DictionaryKey
 	{
 		uint32_t HashKey;
@@ -114,7 +114,7 @@ namespace LuaSTGPlus
 		}
 	};
 
-	/// @brief ×Öµä¼ühasher£¬ÓÃÀ´»ñÈ¡hashÖµ
+	/// @brief å­—å…¸é”®hasherï¼Œç”¨æ¥è·å–hashå€¼
 	struct DictionaryKeyHasher
 	{
 		size_t operator()(const DictionaryKey& k)const
@@ -123,8 +123,8 @@ namespace LuaSTGPlus
 		}
 	};
 
-	/// @brief ×Öµä£¬ÒÔDictionaryKeyÎª¼ü£¬ÒÔDictionaryKeyHasherÎª¼üµÄhashÖµ»ñÈ¡·½·¨
-	/// @brief ÔÚµ±Ç°ÊµÏÖÖĞ£¬DictionaryKeyÎªMPQ hash¼ü
+	/// @brief å­—å…¸ï¼Œä»¥DictionaryKeyä¸ºé”®ï¼Œä»¥DictionaryKeyHasherä¸ºé”®çš„hashå€¼è·å–æ–¹æ³•
+	/// @brief åœ¨å½“å‰å®ç°ä¸­ï¼ŒDictionaryKeyä¸ºMPQ hashé”®
 	template <typename Value>
 	using Dictionary = std::unordered_map<DictionaryKey, Value, DictionaryKeyHasher>;
 }

@@ -17,8 +17,8 @@ namespace LuaSTGPlus
 		fCos = c;
 	}
 
-	/// @brief Ïß¶Î¸²¸Ç²âÊÔ
-	/// @note  ÐèÒª±£Ö¤lineA.x < lineA.y ºÍ lineB.x < lineB.y
+	/// @brief çº¿æ®µè¦†ç›–æµ‹è¯•
+	/// @note  éœ€è¦ä¿è¯lineA.x < lineA.y å’Œ lineB.x < lineB.y
 	inline bool OverlapTest(fcyVec2 lineA, fcyVec2 lineB)
 	{
 		if (lineA.x < lineB.x)
@@ -27,7 +27,7 @@ namespace LuaSTGPlus
 			return lineB.y > lineA.x;
 	}
 
-	/// @brief Ô²ÐÎÏà½»²âÊÔ
+	/// @brief åœ†å½¢ç›¸äº¤æµ‹è¯•
 	inline bool CircleHitTest(fcyVec2 P1, float R1, fcyVec2 P2, float R2)
 	{
 		fcyVec2 tOffset = P1 - P2;
@@ -36,11 +36,11 @@ namespace LuaSTGPlus
 		return tOffset.Length2() < tRTotal * tRTotal;
 	}
 
-	/// @brief ÎÞÏò¾ØÐÎ(AABB)Ïà½»²âÊÔ
-	/// @param[in] P1    ¾ØÐÎ1µÄÖÐÐÄÎ»ÖÃ
-	/// @param[in] Size1 ¾ØÐÎ1µÄ°ë±ß³¤
-	/// @param[in] P2    ¾ØÐÎ2µÄÖÐÐÄÎ»ÖÃ
-	/// @param[in] Size2 ¾ØÐÎ2µÄ°ë±ß³¤
+	/// @brief æ— å‘çŸ©å½¢(AABB)ç›¸äº¤æµ‹è¯•
+	/// @param[in] P1    çŸ©å½¢1çš„ä¸­å¿ƒä½ç½®
+	/// @param[in] Size1 çŸ©å½¢1çš„åŠè¾¹é•¿
+	/// @param[in] P2    çŸ©å½¢2çš„ä¸­å¿ƒä½ç½®
+	/// @param[in] Size2 çŸ©å½¢2çš„åŠè¾¹é•¿
 	inline bool AABBHitTest(fcyVec2 P1, fcyVec2 Size1, fcyVec2 P2, fcyVec2 Size2)
 	{
 		fcyRect tRect1(P1.x - Size1.x, P1.y - Size1.y, P1.x + Size1.x, P1.y + Size1.y);
@@ -49,30 +49,30 @@ namespace LuaSTGPlus
 		return tRect1.Intersect(tRect2, NULL);
 	}
 
-	/// @brief OBBÓÐÏò¾ØÐÎÅö×²¼ì²â
-	/// @param[in] P1     ¾ØÐÎ1ÖÐÐÄ
-	/// @param[in] Size1  ¾ØÐÎ1°ë±ß³¤
-	/// @param[in] Angle1 ¾ØÐÎ1Ðý×ª
-	/// @param[in] P2     ¾ØÐÎ2ÖÐÐÄ
-	/// @param[in] Size2  ¾ØÐÎ2°ë±ß³¤
-	/// @param[in] Angle2 ¾ØÐÎ2Ðý×ª
+	/// @brief OBBæœ‰å‘çŸ©å½¢ç¢°æ’žæ£€æµ‹
+	/// @param[in] P1     çŸ©å½¢1ä¸­å¿ƒ
+	/// @param[in] Size1  çŸ©å½¢1åŠè¾¹é•¿
+	/// @param[in] Angle1 çŸ©å½¢1æ—‹è½¬
+	/// @param[in] P2     çŸ©å½¢2ä¸­å¿ƒ
+	/// @param[in] Size2  çŸ©å½¢2åŠè¾¹é•¿
+	/// @param[in] Angle2 çŸ©å½¢2æ—‹è½¬
 	bool OBBHitTest(fcyVec2 P1, fcyVec2 Size1, float Angle1,
 					fcyVec2 P2, fcyVec2 Size2, float Angle2);
 
-	/// @brief OBBÓÐÏò¾ØÐÎÓëÔ²Åö×²¼ì²â
-	/// @param[in] P1    ¾ØÐÎÖÐÐÄ
-	/// @param[in] Size  ¾ØÐÎ°ë±ß³¤
-	/// @param[in] Angle ¾ØÐÎÐý×ª
-	/// @param[in] P2    Ô²ÖÐÐÄ
-	/// @param[in] R     Ô²°ë¾¶
+	/// @brief OBBæœ‰å‘çŸ©å½¢ä¸Žåœ†ç¢°æ’žæ£€æµ‹
+	/// @param[in] P1    çŸ©å½¢ä¸­å¿ƒ
+	/// @param[in] Size  çŸ©å½¢åŠè¾¹é•¿
+	/// @param[in] Angle çŸ©å½¢æ—‹è½¬
+	/// @param[in] P2    åœ†ä¸­å¿ƒ
+	/// @param[in] R     åœ†åŠå¾„
 	bool OBBCircleHitTest(	fcyVec2 P1, fcyVec2 Size, float Angle,
 							fcyVec2 P2, float R);
 
-	/// @brief OBBÓÐÏò¾ØÐÎÓëAABB°üÎ§ºÐÅö×²¼ì²â
-	/// @param[in] P     ¾ØÐÎÖÐÐÄ
-	/// @param[in] Size  ¾ØÐÎ°ë±ß³¤
-	/// @param[in] Angle ¾ØÐÎÐý×ª
-	/// @param[in] Rect  AABBÎ»ÖÃ
+	/// @brief OBBæœ‰å‘çŸ©å½¢ä¸ŽAABBåŒ…å›´ç›’ç¢°æ’žæ£€æµ‹
+	/// @param[in] P     çŸ©å½¢ä¸­å¿ƒ
+	/// @param[in] Size  çŸ©å½¢åŠè¾¹é•¿
+	/// @param[in] Angle çŸ©å½¢æ—‹è½¬
+	/// @param[in] Rect  AABBä½ç½®
 	bool OBBAABBHitTest(fcyVec2 P, fcyVec2 Size, float Angle,
 						fcyRect Rect);
 

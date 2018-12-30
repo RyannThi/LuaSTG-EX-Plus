@@ -1,5 +1,5 @@
 /// @file AppFrame.h
-/// @brief ¶¨ÒåÓ¦ÓÃ³ÌĞò¿ò¼Ü
+/// @brief å®šä¹‰åº”ç”¨ç¨‹åºæ¡†æ¶
 #pragma once
 #include "Global.h"
 #include "SplashWindow.h"
@@ -17,7 +17,7 @@
 
 namespace LuaSTGPlus
 {
-	/// @brief Ó¦ÓÃ³ÌĞò×´Ì¬
+	/// @brief åº”ç”¨ç¨‹åºçŠ¶æ€
 	enum class AppStatus
 	{
 		NotInitialized,
@@ -28,14 +28,14 @@ namespace LuaSTGPlus
 		Destroyed
 	};
 
-	/// @brief µ±Ç°¼¤»îµÄäÖÈ¾Æ÷
+	/// @brief å½“å‰æ¿€æ´»çš„æ¸²æŸ“å™¨
 	enum class GraphicsType
 	{
 		Graph2D,
 		Graph3D
 	};
 
-	/// @brief Ó¦ÓÃ³ÌĞò¿ò¼Ü
+	/// @brief åº”ç”¨ç¨‹åºæ¡†æ¶
 	class AppFrame :
 		public f2dEngineEventListener
 	{
@@ -61,37 +61,37 @@ namespace LuaSTGPlus
 		AppStatus m_iStatus = AppStatus::NotInitialized;
 
 #if (defined LDEVVERSION) || (defined LDEBUG)
-		// Ô¶¶Ëµ÷ÊÔÆ÷
+		// è¿œç«¯è°ƒè¯•å™¨
 		std::unique_ptr<RemoteDebuggerClient> m_DebuggerClient;
 
-		// ĞÔÄÜ¼ÆÊıÆ÷
+		// æ€§èƒ½è®¡æ•°å™¨
 		float m_UpdateTimer = 0.f;
 		float m_RenderTimer = 0.f;
 
-		float m_PerformanceUpdateTimer = 0.f;  // ¼ÇÂ¼ĞÔÄÜ²ÎÊıµÄÀÛ¼Æ²ÉÑùÊ±¼ä
-		float m_PerformanceUpdateCounter = 0.f;  // ¼ÇÂ¼²ÉÑù´ÎÊı
-		float m_FPSTotal = 0.f;  // ¼ÇÂ¼ÔÚ²ÉÑùÊ±¼äÄÚÀÛ¼ÆµÄFPS
-		float m_ObjectTotal = 0.f;  // ¼ÇÂ¼ÔÚ²ÉÑùÊ±¼äÄÚÀÛ¼ÆµÄ¶ÔÏóÊı
-		float m_UpdateTimerTotal = 0.f;  // ¼ÇÂ¼ÔÚ²ÉÑùÊ±¼äÄÚÀÛ¼ÆµÄ¸üĞÂÊ±¼ä
-		float m_RenderTimerTotal = 0.f;  // ¼ÇÂ¼ÔÚ²ÉÑùÊ±¼äÄÚÀÛ¼ÆµÄäÖÈ¾Ê±¼ä
+		float m_PerformanceUpdateTimer = 0.f;  // è®°å½•æ€§èƒ½å‚æ•°çš„ç´¯è®¡é‡‡æ ·æ—¶é—´
+		float m_PerformanceUpdateCounter = 0.f;  // è®°å½•é‡‡æ ·æ¬¡æ•°
+		float m_FPSTotal = 0.f;  // è®°å½•åœ¨é‡‡æ ·æ—¶é—´å†…ç´¯è®¡çš„FPS
+		float m_ObjectTotal = 0.f;  // è®°å½•åœ¨é‡‡æ ·æ—¶é—´å†…ç´¯è®¡çš„å¯¹è±¡æ•°
+		float m_UpdateTimerTotal = 0.f;  // è®°å½•åœ¨é‡‡æ ·æ—¶é—´å†…ç´¯è®¡çš„æ›´æ–°æ—¶é—´
+		float m_RenderTimerTotal = 0.f;  // è®°å½•åœ¨é‡‡æ ·æ—¶é—´å†…ç´¯è®¡çš„æ¸²æŸ“æ—¶é—´
 
 		bool m_bShowCollider = false;
 #endif
 
-		// ÔØÈë´°¿Ú
+		// è½½å…¥çª—å£
 		GdiPlusScope m_GdiScope;
 		SplashWindow m_SplashWindow;
 
-		// ×ÊÔ´¹ÜÀíÆ÷
+		// èµ„æºç®¡ç†å™¨
 		ResourceMgr m_ResourceMgr;
 
-		// ¶ÔÏó³Ø
+		// å¯¹è±¡æ± 
 		std::unique_ptr<GameObjectPool> m_GameObjectPool;
 
-		// LuaĞéÄâ»ú
+		// Luaè™šæ‹Ÿæœº
 		lua_State* L = nullptr;
 
-		// Ñ¡ÏîÓëÖµ
+		// é€‰é¡¹ä¸å€¼
 		bool m_bSplashWindowEnabled = false;
 		bool m_OptionWindowed = true;
 		fuInt m_OptionFPSLimit = 60;
@@ -101,7 +101,7 @@ namespace LuaSTGPlus
 		std::wstring m_OptionTitle = L"LuaSTGPlus";
 		fDouble m_fFPS = 0.;
 
-		// ÒıÇæ
+		// å¼•æ“
 		fcyRefPointer<f2dEngine> m_pEngine;
 		f2dWindow* m_pMainWindow = nullptr;
 		f2dRenderer* m_pRenderer = nullptr;
@@ -112,7 +112,7 @@ namespace LuaSTGPlus
 		GraphicsType m_GraphType = GraphicsType::Graph2D;
 		bool m_bRenderStarted = false;
 
-		// 2DÄ£Ê½
+		// 2Dæ¨¡å¼
 		BlendMode m_Graph2DLastBlendMode;
 		f2dBlendState m_Graph2DBlendState;
 		F2DGRAPH2DBLENDTYPE m_Graph2DColorBlendState;
@@ -120,16 +120,16 @@ namespace LuaSTGPlus
 		fcyRefPointer<f2dFontRenderer> m_FontRenderer;
 		fcyRefPointer<f2dGraphics2D> m_Graph2D;
 
-		// 3DÄ£Ê½
+		// 3Dæ¨¡å¼
 		BlendMode m_Graph3DLastBlendMode;
 		f2dBlendState m_Graph3DBlendState;
 		fcyRefPointer<f2dGraphics3D> m_Graph3D;
 
-		// PostEffect¿ØÖÆ
+		// PostEffectæ§åˆ¶
 		bool m_bPostEffectCaptureStarted = false;
 		fcyRefPointer<f2dTexture2D> m_PostEffectBuffer;
 
-		// RenderTarget¿ØÖÆ
+		// RenderTargetæ§åˆ¶
 		std::vector<fcyRefPointer<f2dTexture2D>> m_stRenderTargetStack;
 
 		fcyRefPointer<f2dInputKeyboard> m_Keyboard;
@@ -245,7 +245,7 @@ namespace LuaSTGPlus
 			}
 		}
 #if (defined LDEVVERSION) || (defined LDEBUG)
-	public: // µ÷ÊÔÓÃ½Ó¿Ú
+	public: // è°ƒè¯•ç”¨æ¥å£
 		void SendResourceLoadedHint(ResourceType Type, ResourcePoolType PoolType, const char* Name, const wchar_t* Path, float LoadingTime)
 		{
 			if (m_DebuggerClient)
@@ -262,8 +262,8 @@ namespace LuaSTGPlus
 				m_DebuggerClient->SendResourceClearedHint(PoolType);
 		}
 #endif
-	public: // ½Å±¾µ÷ÓÃ½Ó¿Ú£¬º¬Òå²Î¼ûAPIÎÄµµ
-		LNOINLINE void ShowSplashWindow(const char* imgPath = nullptr)LNOEXCEPT;  // UTF8±àÂë
+	public: // è„šæœ¬è°ƒç”¨æ¥å£ï¼Œå«ä¹‰å‚è§APIæ–‡æ¡£
+		LNOINLINE void ShowSplashWindow(const char* imgPath = nullptr)LNOEXCEPT;  // UTF8ç¼–ç 
 
 		lua_Integer GetSuperPauseTime()LNOEXCEPT{
 			return m_superpause;
@@ -307,53 +307,53 @@ namespace LuaSTGPlus
 		void SetVsync(bool v)LNOEXCEPT;
 		void SetResolution(fuInt width, fuInt height)LNOEXCEPT;
 		void SetSplash(bool v)LNOEXCEPT;
-		LNOINLINE void SetTitle(const char* v)LNOEXCEPT;  // UTF8±àÂë
+		LNOINLINE void SetTitle(const char* v)LNOEXCEPT;  // UTF8ç¼–ç 
 
-		/// @brief Ê¹ÓÃĞÂµÄÊÓÆµ²ÎÊı¸üĞÂÏÔÊ¾Ä£Ê½
-		/// @note ÈôÇĞ»»Ê§°ÜÔò½øĞĞ»Ø¹ö
+		/// @brief ä½¿ç”¨æ–°çš„è§†é¢‘å‚æ•°æ›´æ–°æ˜¾ç¤ºæ¨¡å¼
+		/// @note è‹¥åˆ‡æ¢å¤±è´¥åˆ™è¿›è¡Œå›æ»š
 		LNOINLINE bool ChangeVideoMode(int width, int height, bool windowed, bool vsync)LNOEXCEPT;
 
 		LNOINLINE bool UpdateVideoMode()LNOEXCEPT;
-		/// @brief »ñÈ¡µ±Ç°µÄFPS
+		/// @brief è·å–å½“å‰çš„FPS
 		double GetFPS()LNOEXCEPT { return m_fFPS; }
 
-		/// @brief Ö´ĞĞ×ÊÔ´°üÖĞµÄÎÄ¼ş
-		/// @note ¸Ãº¯ÊıÎª½Å±¾ÏµÍ³Ê¹ÓÃ
+		/// @brief æ‰§è¡Œèµ„æºåŒ…ä¸­çš„æ–‡ä»¶
+		/// @note è¯¥å‡½æ•°ä¸ºè„šæœ¬ç³»ç»Ÿä½¿ç”¨
 		LNOINLINE void LoadScript(const char* path,const char *packname)LNOEXCEPT;
 
-		/// @brief ¼ì²é°´¼üÊÇ·ñ°´ÏÂ
+		/// @brief æ£€æŸ¥æŒ‰é”®æ˜¯å¦æŒ‰ä¸‹
 		fBool GetKeyState(int VKCode)LNOEXCEPT;
 
-		/// @brief »ñµÃ×îºóÒ»´Î×Ö·ûÊäÈë£¨UTF-8£©
+		/// @brief è·å¾—æœ€åä¸€æ¬¡å­—ç¬¦è¾“å…¥ï¼ˆUTF-8ï¼‰
 		LNOINLINE int GetLastChar(lua_State* L)LNOEXCEPT;
 
-		/// @brief »ñµÃ×îºóÒ»´Î°´¼üÊäÈë
+		/// @brief è·å¾—æœ€åä¸€æ¬¡æŒ‰é”®è¾“å…¥
 		int GetLastKey()LNOEXCEPT { return m_LastKey; }
 
-		/// @brief »ñÈ¡Êó±êÎ»ÖÃ£¨ÒÔ´°¿Ú×óÏÂ½ÇÎªÔ­µã£©
+		/// @brief è·å–é¼ æ ‡ä½ç½®ï¼ˆä»¥çª—å£å·¦ä¸‹è§’ä¸ºåŸç‚¹ï¼‰
 		fcyVec2 GetMousePosition()LNOEXCEPT { return m_MousePosition; }
 
-		/// @brief ¼ì²éÊó±êÊÇ·ñ°´ÏÂ
+		/// @brief æ£€æŸ¥é¼ æ ‡æ˜¯å¦æŒ‰ä¸‹
 		fBool GetMouseState(int button)LNOEXCEPT
 		{
 			if (button >= 0 && button < 3)
 				return m_MouseState[button];
 			return false;
 		}
-	public:  // äÖÈ¾Æ÷½Ó¿Ú
-		/// @brief Í¨Öª¿ªÊ¼äÖÈ¾
+	public:  // æ¸²æŸ“å™¨æ¥å£
+		/// @brief é€šçŸ¥å¼€å§‹æ¸²æŸ“
 		bool BeginScene()LNOEXCEPT;
 
-		/// @brief Í¨Öª½áÊøäÖÈ¾
+		/// @brief é€šçŸ¥ç»“æŸæ¸²æŸ“
 		bool EndScene()LNOEXCEPT;
 
-		/// @brief ÇåÆÁ
+		/// @brief æ¸…å±
 		void ClearScreen(const fcyColor& c)LNOEXCEPT
 		{
 			m_pRenderDev->Clear(c);
 		}
 
-		/// @brief ÉèÖÃÊÓ¿Ú
+		/// @brief è®¾ç½®è§†å£
 		bool SetViewport(double left, double right, double bottom, double top)LNOEXCEPT
 		{
 			if (FCYFAILED(m_pRenderDev->SetViewport(fcyRect(
@@ -363,18 +363,18 @@ namespace LuaSTGPlus
 				static_cast<float>((int)m_pRenderDev->GetBufferHeight() - (int)bottom)
 			))))
 			{
-				LERROR("ÉèÖÃÊÓ¿Ú(left: %lf, right: %lf, bottom: %lf, top: %lf)Ê§°Ü", left, right, bottom, top);
+				LERROR("è®¾ç½®è§†å£(left: %lf, right: %lf, bottom: %lf, top: %lf)å¤±è´¥", left, right, bottom, top);
 				return false;
 			}
 			return true;
 		}
 
-		/// @brief ÉèÖÃÕıÍ¶Ó°¾ØÕó¡£
+		/// @brief è®¾ç½®æ­£æŠ•å½±çŸ©é˜µã€‚
 		void SetOrtho(float left, float right, float bottom, float top)LNOEXCEPT
 		{
 			if (m_GraphType == GraphicsType::Graph2D)
 			{
-				// luastgµÄlua²¿·ÖÒÑ¾­×öÁË×ø±êĞŞÕı
+				// luastgçš„luaéƒ¨åˆ†å·²ç»åšäº†åæ ‡ä¿®æ­£
 				// m_Graph2D->SetWorldTransform(fcyMatrix4::GetTranslateMatrix(fcyVec3(-0.5f, -0.5f, 0.f)));
 				m_Graph2D->SetWorldTransform(fcyMatrix4::GetIdentity());
 				m_Graph2D->SetViewTransform(fcyMatrix4::GetIdentity());
@@ -382,7 +382,7 @@ namespace LuaSTGPlus
 			}
 		}
 
-		/// @brief ÉèÖÃÍ¸ÊÓÍ¶Ó°¾ØÕó
+		/// @brief è®¾ç½®é€è§†æŠ•å½±çŸ©é˜µ
 		void SetPerspective(float eyeX, float eyeY, float eyeZ, float atX, float atY, float atZ, 
 			float upX, float upY, float upZ, float fovy, float aspect, float zn, float zf)LNOEXCEPT
 		{
@@ -394,11 +394,11 @@ namespace LuaSTGPlus
 			}
 		}
 
-		/// @brief ÉèÖÃÎíÖµ
-		/// @note À©Õ¹·½·¨£¬ÊÓÇé¿öÒÆ³ı¡£
+		/// @brief è®¾ç½®é›¾å€¼
+		/// @note æ‰©å±•æ–¹æ³•ï¼Œè§†æƒ…å†µç§»é™¤ã€‚
 		void SetFog(float start, float end, fcyColor color);
 
-		/// @brief ÉèÖÃZBUFFER
+		/// @brief è®¾ç½®ZBUFFER
 		void SetZBufferEnable(bool enable)LNOEXCEPT
 		{
 			if (m_GraphType == GraphicsType::Graph2D)
@@ -415,119 +415,119 @@ namespace LuaSTGPlus
 			}
 		}
 
-		/// @brief äÖÈ¾Í¼Ïñ
+		/// @brief æ¸²æŸ“å›¾åƒ
 		bool Render(ResSprite* p, float x, float y, float rot = 0, float hscale = 1, float vscale = 1, float z = 0.5)LNOEXCEPT
 		{
 			LASSERT(p);
 			if (m_GraphType != GraphicsType::Graph2D)
 			{
-				LERROR("Render: Ö»ÓĞ2DäÖÈ¾Æ÷¿ÉÒÔÖ´ĞĞ¸Ã·½·¨");
+				LERROR("Render: åªæœ‰2Dæ¸²æŸ“å™¨å¯ä»¥æ‰§è¡Œè¯¥æ–¹æ³•");
 				return false;
 			}
 
-			// ÉèÖÃ»ìºÏ
+			// è®¾ç½®æ··åˆ
 			updateGraph2DBlendMode(p->GetBlendMode());
 
-			// äÖÈ¾
+			// æ¸²æŸ“
 			f2dSprite* pSprite = p->GetSprite();
 			pSprite->SetZ(z);
 			pSprite->Draw2(m_Graph2D, fcyVec2(x, y), fcyVec2(hscale, vscale), rot, false);
 			return true;
 		}
 
-		/// @brief äÖÈ¾¶¯»­
+		/// @brief æ¸²æŸ“åŠ¨ç”»
 		bool Render(ResAnimation* p, int ani_timer, float x, float y, float rot = 0, float hscale = 1, float vscale = 1)LNOEXCEPT
 		{
 			LASSERT(p);
 			if (m_GraphType != GraphicsType::Graph2D)
 			{
-				LERROR("Render: Ö»ÓĞ2DäÖÈ¾Æ÷¿ÉÒÔÖ´ĞĞ¸Ã·½·¨");
+				LERROR("Render: åªæœ‰2Dæ¸²æŸ“å™¨å¯ä»¥æ‰§è¡Œè¯¥æ–¹æ³•");
 				return false;
 			}
 
-			// ÉèÖÃ»ìºÏ
+			// è®¾ç½®æ··åˆ
 			updateGraph2DBlendMode(p->GetBlendMode());
 
-			// äÖÈ¾
+			// æ¸²æŸ“
 			f2dSprite* pSprite = p->GetSprite(((fuInt)ani_timer / p->GetInterval()) % p->GetCount());
 			pSprite->Draw2(m_Graph2D, fcyVec2(x, y), fcyVec2(hscale, vscale), rot, false);
 			return true;
 		}
 
-		/// @brief äÖÈ¾Á£×Ó
+		/// @brief æ¸²æŸ“ç²’å­
 		bool Render(ResParticle::ParticlePool* p, float hscale = 1, float vscale = 1)LNOEXCEPT
 		{
 			LASSERT(p);
 			if (m_GraphType != GraphicsType::Graph2D)
 			{
-				LERROR("Render: Ö»ÓĞ2DäÖÈ¾Æ÷¿ÉÒÔÖ´ĞĞ¸Ã·½·¨");
+				LERROR("Render: åªæœ‰2Dæ¸²æŸ“å™¨å¯ä»¥æ‰§è¡Œè¯¥æ–¹æ³•");
 				return false;
 			}
 
-			// ÉèÖÃ»ìºÏ
+			// è®¾ç½®æ··åˆ
 			updateGraph2DBlendMode(p->GetBlendMode());
 
-			// äÖÈ¾
+			// æ¸²æŸ“
 			p->Render(m_Graph2D, hscale, vscale);
 			return true;
 		}
 
-		/// @brief äÖÈ¾Í¼Ïñ
+		/// @brief æ¸²æŸ“å›¾åƒ
 		bool Render(const char* name, float x, float y, float rot = 0, float hscale = 1, float vscale = 1, float z = 0.5)LNOEXCEPT
 		{
 			fcyRefPointer<ResSprite> p = m_ResourceMgr.FindSprite(name);
 			if (!p)
 			{
-				LERROR("Render: ÕÒ²»µ½Í¼Ïñ×ÊÔ´'%m'", name);
+				LERROR("Render: æ‰¾ä¸åˆ°å›¾åƒèµ„æº'%m'", name);
 				return false;
 			}
 			return Render(p, x, y, rot, hscale, vscale, z);
 		}
 
-		/// @brief äÖÈ¾Í¼Ïñ
+		/// @brief æ¸²æŸ“å›¾åƒ
 		bool RenderRect(const char* name, float x1, float y1, float x2, float y2)LNOEXCEPT
 		{
 			if (m_GraphType != GraphicsType::Graph2D)
 			{
-				LERROR("RenderRect: Ö»ÓĞ2DäÖÈ¾Æ÷¿ÉÒÔÖ´ĞĞ¸Ã·½·¨");
+				LERROR("RenderRect: åªæœ‰2Dæ¸²æŸ“å™¨å¯ä»¥æ‰§è¡Œè¯¥æ–¹æ³•");
 				return false;
 			}
 
 			fcyRefPointer<ResSprite> p = m_ResourceMgr.FindSprite(name);
 			if (!p)
 			{
-				LERROR("RenderRect: ÕÒ²»µ½Í¼Ïñ×ÊÔ´'%m'", name);
+				LERROR("RenderRect: æ‰¾ä¸åˆ°å›¾åƒèµ„æº'%m'", name);
 				return false;
 			}
 
-			// ÉèÖÃ»ìºÏ
+			// è®¾ç½®æ··åˆ
 			updateGraph2DBlendMode(p->GetBlendMode());
 
-			// äÖÈ¾
+			// æ¸²æŸ“
 			f2dSprite* pSprite = p->GetSprite();
 			pSprite->SetZ(0.5f);
 			pSprite->Draw(m_Graph2D, fcyRect(x1, y1, x2, y2), false);
 			return true;
 		}
 
-		/// @brief äÖÈ¾Í¼Ïñ
+		/// @brief æ¸²æŸ“å›¾åƒ
 		bool Render4V(const char* name, float x1, float y1, float z1, float x2, float y2, float z2, 
 			float x3, float y3, float z3, float x4, float y4, float z4)LNOEXCEPT
 		{
 			if (m_GraphType != GraphicsType::Graph2D)
 			{
-				LERROR("Render4V: Ö»ÓĞ2DäÖÈ¾Æ÷¿ÉÒÔÖ´ĞĞ¸Ã·½·¨");
+				LERROR("Render4V: åªæœ‰2Dæ¸²æŸ“å™¨å¯ä»¥æ‰§è¡Œè¯¥æ–¹æ³•");
 				return false;
 			}
 
 			fcyRefPointer<ResSprite> p = m_ResourceMgr.FindSprite(name);
 			if (!p)
 			{
-				LERROR("Render4V: ÕÒ²»µ½Í¼Ïñ×ÊÔ´'%m'", name);
+				LERROR("Render4V: æ‰¾ä¸åˆ°å›¾åƒèµ„æº'%m'", name);
 				return false;
 			}
 			
-			// ÉèÖÃ»ìºÏ
+			// è®¾ç½®æ··åˆ
 			updateGraph2DBlendMode(p->GetBlendMode());
 
 			f2dSprite* pSprite = p->GetSprite();
@@ -536,23 +536,23 @@ namespace LuaSTGPlus
 			return true;
 		}
 
-		/// @brief äÖÈ¾ÎÆÀí
+		/// @brief æ¸²æŸ“çº¹ç†
 		bool RenderTexture(ResTexture* tex, BlendMode blend, const f2dGraphics2DVertex vertex[])LNOEXCEPT
 		{
 			if (m_GraphType != GraphicsType::Graph2D)
 			{
-				LERROR("RenderTexture: Ö»ÓĞ2DäÖÈ¾Æ÷¿ÉÒÔÖ´ĞĞ¸Ã·½·¨");
+				LERROR("RenderTexture: åªæœ‰2Dæ¸²æŸ“å™¨å¯ä»¥æ‰§è¡Œè¯¥æ–¹æ³•");
 				return false;
 			}
 			
-			// ÉèÖÃ»ìºÏ
+			// è®¾ç½®æ··åˆ
 			updateGraph2DBlendMode(blend);
 
-			// ¸´ÖÆ×ø±ê
+			// å¤åˆ¶åæ ‡
 			f2dGraphics2DVertex tVertex[4];
 			memcpy(tVertex, vertex, sizeof(tVertex));
 
-			// ĞŞÕıUVµ½[0,1]Çø¼ä
+			// ä¿®æ­£UVåˆ°[0,1]åŒºé—´
 			for (int i = 0; i < 4; ++i)
 			{
 				tVertex[i].u /= (float)tex->GetTexture()->GetWidth();
@@ -563,26 +563,26 @@ namespace LuaSTGPlus
 			return true;
 		}
 
-		/// @brief äÖÈ¾ÎÆÀí
+		/// @brief æ¸²æŸ“çº¹ç†
 		bool RenderTexture(const char* name, BlendMode blend, f2dGraphics2DVertex vertex[])LNOEXCEPT
 		{
 			if (m_GraphType != GraphicsType::Graph2D)
 			{
-				LERROR("RenderTexture: Ö»ÓĞ2DäÖÈ¾Æ÷¿ÉÒÔÖ´ĞĞ¸Ã·½·¨");
+				LERROR("RenderTexture: åªæœ‰2Dæ¸²æŸ“å™¨å¯ä»¥æ‰§è¡Œè¯¥æ–¹æ³•");
 				return false;
 			}
 
 			fcyRefPointer<ResTexture> p = m_ResourceMgr.FindTexture(name);
 			if (!p)
 			{
-				LERROR("RenderTexture: ÕÒ²»µ½ÎÆÀí×ÊÔ´'%m'", name);
+				LERROR("RenderTexture: æ‰¾ä¸åˆ°çº¹ç†èµ„æº'%m'", name);
 				return false;
 			}
 
-			// ÉèÖÃ»ìºÏ
+			// è®¾ç½®æ··åˆ
 			updateGraph2DBlendMode(blend);
 
-			// ĞŞÕıUVµ½[0,1]Çø¼ä
+			// ä¿®æ­£UVåˆ°[0,1]åŒºé—´
 			for (int i = 0; i < 4; ++i)
 			{
 				vertex[i].u /= (float)p->GetTexture()->GetWidth();
@@ -597,16 +597,16 @@ namespace LuaSTGPlus
 		{
 			if (m_GraphType != GraphicsType::Graph2D)
 			{
-				LERROR("RenderTexture: Ö»ÓĞ2DäÖÈ¾Æ÷¿ÉÒÔÖ´ĞĞ¸Ã·½·¨");
+				LERROR("RenderTexture: åªæœ‰2Dæ¸²æŸ“å™¨å¯ä»¥æ‰§è¡Œè¯¥æ–¹æ³•");
 				return false;
 			}
 			fcyRefPointer<ResTexture> p = m_ResourceMgr.FindTexture(name);
 			if (!p)
 			{
-				LERROR("RenderTexture: ÕÒ²»µ½ÎÆÀí×ÊÔ´'%m'", name);
+				LERROR("RenderTexture: æ‰¾ä¸åˆ°çº¹ç†èµ„æº'%m'", name);
 				return false;
 			}
-			// ÉèÖÃ»ìºÏ
+			// è®¾ç½®æ··åˆ
 			updateGraph2DBlendMode(blend);
 
 			m_Graph2D->DrawRaw(p->GetTexture(), vcount, icount, vertex, indexs, false);
@@ -620,7 +620,7 @@ namespace LuaSTGPlus
 		{
 			if (m_GraphType != GraphicsType::Graph2D)
 			{
-				LERROR("Render4V: Ö»ÓĞ2DäÖÈ¾Æ÷¿ÉÒÔÖ´ĞĞ¸Ã·½·¨");
+				LERROR("Render4V: åªæœ‰2Dæ¸²æŸ“å™¨å¯ä»¥æ‰§è¡Œè¯¥æ–¹æ³•");
 				return false;
 			}
 			void RenderObj(std::string id);
@@ -647,7 +647,7 @@ namespace LuaSTGPlus
 		}
 
 
-		/// @brief äÖÈ¾ÎÄ×Ö
+		/// @brief æ¸²æŸ“æ–‡å­—
 		bool RenderText(ResFont* p, wchar_t* strBuf, fcyRect rect, fcyVec2 scale, ResFont::FontAlignHorizontal halign, ResFont::FontAlignVertical valign, bool bWordBreak)LNOEXCEPT;
 
 		fcyVec2 CalcuTextSize(ResFont* p, const wchar_t* strBuf, fcyVec2 scale)LNOEXCEPT;
@@ -683,26 +683,26 @@ namespace LuaSTGPlus
 		f2dRenderDevice* GetRenderDev()LNOEXCEPT { return m_pRenderDev; }
 		f2dSoundSys* GetSoundSys()LNOEXCEPT { return m_pSoundSys; }
 
-		/// @brief ³õÊ¼»¯¿ò¼Ü
-		/// @note ¸Ãº¯Êı±ØĞëÔÚÒ»¿ªÊ¼±»µ÷ÓÃ£¬ÇÒ½öÄÜµ÷ÓÃÒ»´Î
-		/// @return Ê§°Ü·µ»Øfalse
+		/// @brief åˆå§‹åŒ–æ¡†æ¶
+		/// @note è¯¥å‡½æ•°å¿…é¡»åœ¨ä¸€å¼€å§‹è¢«è°ƒç”¨ï¼Œä¸”ä»…èƒ½è°ƒç”¨ä¸€æ¬¡
+		/// @return å¤±è´¥è¿”å›false
 		bool Init()LNOEXCEPT;
-		/// @brief ÖÕÖ¹¿ò¼Ü²¢»ØÊÕ×ÊÔ´
-		/// @note ¸Ãº¯Êı¿ÉÒÔÓÉ¿ò¼Ü×ÔĞĞµ÷ÓÃ£¬ÇÒ½öÄÜµ÷ÓÃÒ»´Î
+		/// @brief ç»ˆæ­¢æ¡†æ¶å¹¶å›æ”¶èµ„æº
+		/// @note è¯¥å‡½æ•°å¯ä»¥ç”±æ¡†æ¶è‡ªè¡Œè°ƒç”¨ï¼Œä¸”ä»…èƒ½è°ƒç”¨ä¸€æ¬¡
 		void Shutdown()LNOEXCEPT;
 
-		/// @brief Ö´ĞĞ¿ò¼Ü£¬½øÈëÓÎÏ·Ñ­»·
+		/// @brief æ‰§è¡Œæ¡†æ¶ï¼Œè¿›å…¥æ¸¸æˆå¾ªç¯
 		void Run()LNOEXCEPT;
 
-		/// @brief ±£»¤Ä£Ê½Ö´ĞĞ½Å±¾
-		/// @note ¸Ãº¯Êı½öÏŞ¿ò¼Üµ÷ÓÃ£¬ÎªÖ÷Âß¼­×îÍâ²ãµ÷ÓÃ¡£Èô½Å±¾ÔËĞĞÊ±·¢Éú´íÎó£¬¸Ãº¯Êı¸ºÔğ½Ø»ñ´íÎó·¢³ö´íÎóÏûÏ¢¡£
+		/// @brief ä¿æŠ¤æ¨¡å¼æ‰§è¡Œè„šæœ¬
+		/// @note è¯¥å‡½æ•°ä»…é™æ¡†æ¶è°ƒç”¨ï¼Œä¸ºä¸»é€»è¾‘æœ€å¤–å±‚è°ƒç”¨ã€‚è‹¥è„šæœ¬è¿è¡Œæ—¶å‘ç”Ÿé”™è¯¯ï¼Œè¯¥å‡½æ•°è´Ÿè´£æˆªè·é”™è¯¯å‘å‡ºé”™è¯¯æ¶ˆæ¯ã€‚
 		bool SafeCallScript(const char* source, size_t len, const char* desc)LNOEXCEPT;
 
-		/// @brief ±£»¤Ä£Ê½µ÷ÓÃÈ«¾Öº¯Êı
-		/// @note ¸Ãº¯Êı½öÏŞ¿ò¼Üµ÷ÓÃ£¬ÎªÖ÷Âß¼­×îÍâ²ãµ÷ÓÃ¡£Èô½Å±¾ÔËĞĞÊ±·¢Éú´íÎó£¬¸Ãº¯Êı¸ºÔğ½Ø»ñ´íÎó·¢³ö´íÎóÏûÏ¢¡£
+		/// @brief ä¿æŠ¤æ¨¡å¼è°ƒç”¨å…¨å±€å‡½æ•°
+		/// @note è¯¥å‡½æ•°ä»…é™æ¡†æ¶è°ƒç”¨ï¼Œä¸ºä¸»é€»è¾‘æœ€å¤–å±‚è°ƒç”¨ã€‚è‹¥è„šæœ¬è¿è¡Œæ—¶å‘ç”Ÿé”™è¯¯ï¼Œè¯¥å‡½æ•°è´Ÿè´£æˆªè·é”™è¯¯å‘å‡ºé”™è¯¯æ¶ˆæ¯ã€‚
 		bool SafeCallGlobalFunction(const char* name, int retc = 0)LNOEXCEPT;
 		void DrawCollider()LNOEXCEPT;
-	protected:  // fancy2dÂß¼­Ñ­»·»Øµ÷
+	protected:  // fancy2dé€»è¾‘å¾ªç¯å›è°ƒ
 		fBool OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, f2dMsgPump* pMsgPump);
 		fBool OnRender(fDouble ElapsedTime, f2dFPSController* pFPSController);
 		

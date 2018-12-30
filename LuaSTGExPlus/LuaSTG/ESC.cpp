@@ -269,7 +269,7 @@ public:
 };
 
 struct EX_CLIENT_DECLARE{
-	unsigned long local_player_mask;//ÑÚÂëĞÎÊ½µÄ±¾µØÍæ¼Ò×é£¬0ÔòÎª¹Û²ìÕß
+	unsigned long local_player_mask;//æ©ç å½¢å¼çš„æœ¬åœ°ç©å®¶ç»„ï¼Œ0åˆ™ä¸ºè§‚å¯Ÿè€…
 
 };
 
@@ -320,7 +320,7 @@ public:
 	}
 
 	bool ProceedInput(bool *localInput){
-		//Çå¿Õ×ÜÏß
+		//æ¸…ç©ºæ€»çº¿
 		memset(m_keys, 0, sizeof(EX_KEY)*MAX_INPUT);
 		if (m_ignoreinput > 0){
 			m_ignoreinput--;
@@ -329,7 +329,7 @@ public:
 		int i = 0;
 		int j = 0;
 		ExInputInterface *input;
-		//²¶»ñ±¾µØÊäÈë
+		//æ•è·æœ¬åœ°è¾“å…¥
 		for (i = 0; i < MAX_INPUT_CLIENTS; i++){
 			if (input = m_clients[i]){
 				if (input->IsWriter()){
@@ -337,25 +337,25 @@ public:
 				}
 			}
 		}
-		//²¶»ñÍøÂçÊäÈë
+		//æ•è·ç½‘ç»œè¾“å…¥
 		if (m_network){
 			char buf[1000];
-			while (m_network->Receive(buf, 1000)){//°ÑËùÓĞÍøÂçÊäÈë¶¼ÄÃ³öÀ´
-				if (buf[0] == 'K'){//µÃµ½µÄÊäÈë²åÈë
+			while (m_network->Receive(buf, 1000)){//æŠŠæ‰€æœ‰ç½‘ç»œè¾“å…¥éƒ½æ‹¿å‡ºæ¥
+				if (buf[0] == 'K'){//å¾—åˆ°çš„è¾“å…¥æ’å…¥
 					int stamp0,slot,key;
 					sscanf_s(buf, "K%d,%d,%d",&slot,&stamp0, &key);
 					if (m_clients[slot]){
 						m_clients[slot]->ProceedRemoteInput(stamp0, key);
 					}
 				}
-				else if (buf[0] == 'U'){//ÆäËûµÄ·ÅÔÚÒ»±ß
+				else if (buf[0] == 'U'){//å…¶ä»–çš„æ”¾åœ¨ä¸€è¾¹
 					m_buffer->Push(buf + 1);
 				}
 			}
 		}
 
 
-		//¼ì²éËùÓĞµÄÊäÈëÊä³öÉè±¸ÊÇ·ñ¾ÍĞ÷
+		//æ£€æŸ¥æ‰€æœ‰çš„è¾“å…¥è¾“å‡ºè®¾å¤‡æ˜¯å¦å°±ç»ª
 		int un_ready_count = 0;
 		for (i = 0; i < MAX_INPUT_CLIENTS; i++){
 			if (input = m_clients[i]){
@@ -368,8 +368,8 @@ public:
 			return false;
 		}
 
-		//Èç¹û¼ì²é³É¹¦£¬Ôò¿ªÊ¼´«µİÊäÈëÊä³ö
-		//Ê×ÏÈ½«ÊäÈë´«µİ¸ø×ÜÏß
+		//å¦‚æœæ£€æŸ¥æˆåŠŸï¼Œåˆ™å¼€å§‹ä¼ é€’è¾“å…¥è¾“å‡º
+		//é¦–å…ˆå°†è¾“å…¥ä¼ é€’ç»™æ€»çº¿
 		for (i = 0; i < MAX_INPUT_CLIENTS; i++){
 			if (input = m_clients[i]){
 				if (input->IsWriter()){
@@ -384,7 +384,7 @@ public:
 			}
 		}
 
-		//ÔÙ½«×ÜÏß´«µİ¸øÊä³ö
+		//å†å°†æ€»çº¿ä¼ é€’ç»™è¾“å‡º
 		for (i = 0; i < MAX_INPUT_CLIENTS; i++){
 			if (input = m_clients[i]){
 				if (input->IsReader()){
@@ -400,7 +400,7 @@ public:
 			}
 		}
 
-		//¸æÖªËùÓĞÊäÈëÊä³ö¿ÉÒÔ½øĞĞÏÂÒ»Ö¡´¦Àí
+		//å‘ŠçŸ¥æ‰€æœ‰è¾“å…¥è¾“å‡ºå¯ä»¥è¿›è¡Œä¸‹ä¸€å¸§å¤„ç†
 
 		for (i = 0; i < MAX_INPUT_CLIENTS; i++){
 			if (input = m_clients[i]){
@@ -511,17 +511,17 @@ void ExInputClient::ProceedLocalInput(bool rkeys[])
 {
 	char buf[1000];
 	EX_KEY key = 0;
-	if (m_isremote == 0){//ÊÇ±¾µØÊäÈë
+	if (m_isremote == 0){//æ˜¯æœ¬åœ°è¾“å…¥
 		key = ParseInput(rkeys, m_alias);
 		int cur = m_framestamp + m_delay;
 		if (cur <= m_laststamp){
-			//delayµ÷Õûµ¼ÖÂÒÑ¾­¶ÁÈ¡ÁËµ±Ç°µÄÊäÈë£¬ÕâÀï·ÅÆú
+			//delayè°ƒæ•´å¯¼è‡´å·²ç»è¯»å–äº†å½“å‰çš„è¾“å…¥ï¼Œè¿™é‡Œæ”¾å¼ƒ
 			return;
 		}
 		m_laststamp++;
 		while (m_laststamp <= cur){
 			InsertInput(m_laststamp, key);
-			//todo ·¢ËÍÏûÏ¢
+			//todo å‘é€æ¶ˆæ¯
 			sprintf_s<1000>(buf, "K%d,%d,%d", m_slot, m_laststamp, key);
 			//m_network = m_main->m_network;
 			if (m_network)m_network->Send(buf, strlen(buf));
@@ -529,10 +529,10 @@ void ExInputClient::ProceedLocalInput(bool rkeys[])
 		}
 		m_laststamp = cur;
 	}
-	else{//²»ÊÇ±¾µØÊäÈë
+	else{//ä¸æ˜¯æœ¬åœ°è¾“å…¥
 		/*
-		while (m_network.Receive(buf, 1000)){//°ÑËùÓĞÍøÂçÊäÈë¶¼ÄÃ³öÀ´
-		if (buf[0] == 'K'){//µÃµ½µÄÊäÈë²åÈë
+		while (m_network.Receive(buf, 1000)){//æŠŠæ‰€æœ‰ç½‘ç»œè¾“å…¥éƒ½æ‹¿å‡ºæ¥
+		if (buf[0] == 'K'){//å¾—åˆ°çš„è¾“å…¥æ’å…¥
 		int stamp0;
 		sscanf_s(buf, "K%d,%d", &stamp0, &key);
 		InsertInput(stamp0, key);
@@ -540,7 +540,7 @@ void ExInputClient::ProceedLocalInput(bool rkeys[])
 		m_laststamp = stamp0;
 		}
 		}
-		else if (buf[0] == 'U'){//ÆäËûµÄ·ÅÔÚÒ»±ß
+		else if (buf[0] == 'U'){//å…¶ä»–çš„æ”¾åœ¨ä¸€è¾¹
 		m_buffer->Push(buf + 1);
 		}
 		}*/
@@ -576,9 +576,9 @@ public:
 	}
 };
 void MtlObj::getLineNum(const string &pathi) {
-	istringstream infile(pathi.c_str()); //´ò¿ªÖ¸¶¨ÎÄ¼ş  
-	string sline;//Ã¿Ò»ĞĞ  
-	while (getline(infile, sline)) {//´ÓÖ¸¶¨ÎÄ¼şÖğĞĞ¶ÁÈ¡  
+	istringstream infile(pathi.c_str()); //æ‰“å¼€æŒ‡å®šæ–‡ä»¶  
+	string sline;//æ¯ä¸€è¡Œ  
+	while (getline(infile, sline)) {//ä»æŒ‡å®šæ–‡ä»¶é€è¡Œè¯»å–  
 		if (sline[0] == 'n'&&sline[1] == 'e')//newmtl  
 			mtlNum++;
 	}
@@ -592,11 +592,11 @@ void MtlObj::readfile(const string &pathi) {
 	int n = 0;
 	int t = 0;
 
-	istringstream infile(pathi.c_str()); //´ò¿ªÖ¸¶¨ÎÄ¼ş  
-	string sline;//Ã¿Ò»ĞĞ  
+	istringstream infile(pathi.c_str()); //æ‰“å¼€æŒ‡å®šæ–‡ä»¶  
+	string sline;//æ¯ä¸€è¡Œ  
 
 	string value, name, texture;
-	while (getline(infile, sline)) {//´ÓÖ¸¶¨ÎÄ¼şÖğĞĞ¶ÁÈ¡  
+	while (getline(infile, sline)) {//ä»æŒ‡å®šæ–‡ä»¶é€è¡Œè¯»å–  
 		if (sline != "") {
 			istringstream ins(sline);
 			ins >> value;
@@ -672,9 +672,9 @@ public:
 };
 
 void ModelObj::getLineNum(const string &pathi) {
-	istringstream infile(pathi.c_str());; //´ò¿ªÖ¸¶¨ÎÄ¼ş  
-	string sline;//Ã¿Ò»ĞĞ  
-	while (getline(infile, sline)) {//´ÓÖ¸¶¨ÎÄ¼şÖğĞĞ¶ÁÈ¡  
+	istringstream infile(pathi.c_str());; //æ‰“å¼€æŒ‡å®šæ–‡ä»¶  
+	string sline;//æ¯ä¸€è¡Œ  
+	while (getline(infile, sline)) {//ä»æŒ‡å®šæ–‡ä»¶é€è¡Œè¯»å–  
 		if (sline[0] == 'v') {
 			if (sline[1] == 'n')
 				vnNum++;
@@ -725,7 +725,7 @@ void ModelObj::readfile(const string &pathi) {
 	vertices = new NormalTexVertex[fNum * 3];
 	indices = new int[fNum * 3];
 
-	//new¶şÎ¬Êı×é  
+	//newäºŒç»´æ•°ç»„  
 	vArr = new float*[vNum];
 	for (int i = 0; i < vNum; i++)
 		vArr[i] = new float[3];
@@ -747,7 +747,7 @@ void ModelObj::readfile(const string &pathi) {
 		fnArr[i] = new int[3];
 	}
 	istringstream infile(pathi.c_str());
-	string sline;//Ã¿Ò»ĞĞ  
+	string sline;//æ¯ä¸€è¡Œ  
 	int ii = 0, tt = 0, jj = 0, kk = 0;
 
 	std::string s1;
@@ -780,14 +780,14 @@ void ModelObj::readfile(const string &pathi) {
 				jj++;
 			}
 		}
-		if (sline[0] == 'f') { //´æ´¢Ãæ  
+		if (sline[0] == 'f') { //å­˜å‚¨é¢  
 			istringstream in(sline);
 			float a;
-			in >> s1;//È¥µôf  
+			in >> s1;//å»æ‰f  
 			int i, k, flag;
 			for (i = 0; i < 3; i++) {
 				in >> s1;
-				//È¡³öµÚÒ»¸ö¶¥µãºÍ·¨ÏßË÷Òı  
+				//å–å‡ºç¬¬ä¸€ä¸ªé¡¶ç‚¹å’Œæ³•çº¿ç´¢å¼•  
 				a = 0;
 				flag = 1;
 				for (k = 0; s1[k] != '/'; k++)
@@ -1030,9 +1030,9 @@ int ExSampleBezierA1(lua_State* L, int count, int sampleBy, float length,float r
 	}
 
 
-	//ÉêÇë¿Õ¼ä
+	//ç”³è¯·ç©ºé—´
 	ExBezierNode *cache = count > 256 ? new ExBezierNode[count] : g_NodeCache;
-	//Ìî³ä¿Õ¼ä
+	//å¡«å……ç©ºé—´
 	ExBezierNode *last_cache = NULL;
 	int i;
 	for (i = 1; i <= count; i++){
@@ -1047,14 +1047,14 @@ int ExSampleBezierA1(lua_State* L, int count, int sampleBy, float length,float r
 
 		lua_pop(L, 1);// ... t(list)
 	}
-	//¼ÆËãNodeÁ¬½Ó·½Ïò
+	//è®¡ç®—Nodeè¿æ¥æ–¹å‘
 	for (i = 1; i < count; i++){
 		cache[i].pin = cache[i].pos - cache[i - 1].pos;
 		cache[i - 1].pout = cache[i].pin;
 	}
 	cache[0].pin = cache[0].pout;
 	cache[count - 1].pout = cache[count - 1].pin;
-	//¼ÆËãNode±¾µØ·½Ïò
+	//è®¡ç®—Nodeæœ¬åœ°æ–¹å‘
 	fcyVec2 dir;
 	for (i = 0; i < count ; i++){
 		dir = cache[i].pin + cache[i].pout;
@@ -1111,7 +1111,7 @@ int ExSampleBezierA1(lua_State* L, int count, int sampleBy, float length,float r
 			}
 			if (left <= 0){
 				float l = (1 - t);
-				//¼ÆËãÎ»ÖÃ
+				//è®¡ç®—ä½ç½®
 				fcyVec2 P = A*(l*l*l) + B*(3 * l*l*t) + C*(3 * l* t *t) + D*(t*t*t);
 				float angle = dir.CalcuAngle()*LRAD2DEGREE;
 				lua_newtable(L); //... t(list) t(object)
@@ -1126,7 +1126,7 @@ int ExSampleBezierA1(lua_State* L, int count, int sampleBy, float length,float r
 				left = length;
 				flag = 1;
 			}
-			//ÏòÇ°²½½ø
+			//å‘å‰æ­¥è¿›
 			simulated_length = speed * dt;
 			if (flag == 0 || left < simulated_length){
 				left = 0;
@@ -1137,7 +1137,7 @@ int ExSampleBezierA1(lua_State* L, int count, int sampleBy, float length,float r
 			t = t + dt;
 		} while (flag != 2);
 	}
-	//ÊÍ·Å¿Õ¼ä
+	//é‡Šæ”¾ç©ºé—´
 	if (cache != g_NodeCache){
 		delete [] cache;
 	}

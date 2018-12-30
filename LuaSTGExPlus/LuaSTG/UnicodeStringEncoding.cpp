@@ -6,16 +6,16 @@ using namespace LuaSTGPlus;
 class Utf8Decoder
 {
 private:
-	// ÄÚ²¿×´Ì¬
+	// å†…éƒ¨çŠ¶æ€
 	int      m_iState = 0;
 	char32_t m_incpChar = 0;
 public:
 	bool operator() (uint8_t input, char32_t& output)
 	{
-		// ×´Ì¬»ú
+		// çŠ¶æ€æœº
 		if (m_iState == 0)
 		{
-			// Ç°µ¼×Ö½Ú
+			// å‰å¯¼å­—èŠ‚
 			if (input >= 0xFCu && input <= 0xFDu)  // UCS4 1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
 			{
 				m_incpChar = input & 0x01u;
@@ -66,7 +66,7 @@ public:
 			}
 		}
 
-		// Êä³ö
+		// è¾“å‡º
 		if (m_iState == 0)
 		{
 			output = m_incpChar;
@@ -80,14 +80,14 @@ public:
 class Utf16Decoder
 {
 private:
-	// ÄÚ²¿×´Ì¬
+	// å†…éƒ¨çŠ¶æ€
 	uint8_t  m_cBuf[2];
 	int      m_iState = 0;
 	char16_t m_leadChar = 0;
 public:
 	bool operator() (uint8_t input, char32_t& output)
 	{
-		// ×´Ì¬»ú
+		// çŠ¶æ€æœº
 		switch (m_iState)
 		{
 		case 0:
@@ -98,7 +98,7 @@ public:
 			m_cBuf[1] = input;
 			*(uint8_t*)&m_leadChar = m_cBuf[0];
 			*((uint8_t*)&m_leadChar + 1) = m_cBuf[1];
-			// ¼ì²éÊÇ·ñÎª´úÀíÎ»
+			// æ£€æŸ¥æ˜¯å¦ä¸ºä»£ç†ä½
 			if (m_leadChar >= 0xD800u && m_leadChar < 0xDC00)
 			{
 				m_leadChar -= 0xD800u;
@@ -121,7 +121,7 @@ public:
 				char16_t tempChar;
 				*(uint8_t*)&tempChar = m_cBuf[0];
 				*((uint8_t*)&tempChar + 1) = m_cBuf[1];
-				// ×éºÏ²¢Êä³ö
+				// ç»„åˆå¹¶è¾“å‡º
 				if (tempChar >= 0xDC00u && tempChar < 0xE000)
 				{
 					output = static_cast<char32_t>((m_leadChar << 16) | (tempChar - 0xDC00u));
@@ -146,7 +146,7 @@ public:
 class Utf8Encoder
 {
 private:
-	// ÄÚ²¿×´Ì¬
+	// å†…éƒ¨çŠ¶æ€
 	uint8_t m_cBuf[6];
 public:
 	bool operator() (char32_t input, uint8_t*& output, size_t& size)
@@ -178,18 +178,18 @@ public:
 			m_cBuf[0] = uinput;
 		else
 		{
-			// Ìî³ä×Ö½Ú
+			// å¡«å……å­—èŠ‚
 			for (int i = c; i > 0; --i)
 			{
 				m_cBuf[i] = (uinput & 0x3Fu) | 0x80u;
 				uinput >>= 6;
 			}
 
-			// Ìî³äÊ××Ö
+			// å¡«å……é¦–å­—
 			m_cBuf[0] = (0xFEu << (6 - c)) | uinput;
 		}
 
-		// Ğ´³ö
+		// å†™å‡º
 		output = m_cBuf;
 		size = c + 1;
 		return true;
@@ -199,17 +199,17 @@ public:
 class Utf16Encoder
 {
 private:
-	// ÄÚ²¿×´Ì¬
+	// å†…éƒ¨çŠ¶æ€
 	char16_t m_cBuf[2];
 public:
 	bool operator() (char32_t input, uint8_t*& output, size_t& size)
 	{
-		// ¼ì²éÊÇ·ñĞèÒª´úÀíÎ»
+		// æ£€æŸ¥æ˜¯å¦éœ€è¦ä»£ç†ä½
 		if (input >= 0x10000u)
 		{
 			input -= 0x10000u;
-			m_cBuf[0] = (input >> 10) | 0xD800u;    // Ç°µ¼×Ö½Ú
-			m_cBuf[1] = (input & 0x3FFu) | 0xDC00u; // ºóÎ²×Ö½Ú
+			m_cBuf[0] = (input >> 10) | 0xD800u;    // å‰å¯¼å­—èŠ‚
+			m_cBuf[1] = (input & 0x3FFu) | 0xDC00u; // åå°¾å­—èŠ‚
 			output = reinterpret_cast<uint8_t*>(m_cBuf);
 			size = 2 * sizeof(char16_t);
 			return true;

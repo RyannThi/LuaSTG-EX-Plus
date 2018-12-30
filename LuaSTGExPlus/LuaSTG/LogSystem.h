@@ -1,12 +1,12 @@
 /// @file LogSystem.h
-/// @brief ¶¨ÒåÈÕÖ¾ÏµÍ³
-/// @note ÓÉÓÚÈÕÖ¾ÏµÍ³½«±»Common.h°üº¬£¬Òò´Ë¶ÀÁ¢ÓÚCommon.h
+/// @brief å®šä¹‰æ—¥å¿—ç³»ç»Ÿ
+/// @note ç”±äºæ—¥å¿—ç³»ç»Ÿå°†è¢«Common.håŒ…å«ï¼Œå› æ­¤ç‹¬ç«‹äºCommon.h
 #pragma once
 #include <fstream>
 
 namespace LuaSTGPlus
 {
-	/// @brief ÈÕÖ¾¼¶±ğ
+	/// @brief æ—¥å¿—çº§åˆ«
 	enum class LogType
 	{
 		Information,
@@ -14,18 +14,18 @@ namespace LuaSTGPlus
 		Error
 	};
 
-	/// @brief ÈÕÖ¾ÏµÍ³
+	/// @brief æ—¥å¿—ç³»ç»Ÿ
 	class LogSystem
 	{
 	private:
 		std::fstream m_LogFile;
 	public:
-		/// @brief »ñÈ¡ÈÕÖ¾ÏµÍ³ÊµÀı
+		/// @brief è·å–æ—¥å¿—ç³»ç»Ÿå®ä¾‹
 		static __declspec(noinline) LogSystem& GetInstance();
 
-		/// @brief ¼ÇÂ¼ÈÕÖ¾
-		/// @param type ÈÕÖ¾ÀàĞÍ
-		/// @param info ¸ñÊ½»¯ÎÄ±¾
+		/// @brief è®°å½•æ—¥å¿—
+		/// @param type æ—¥å¿—ç±»å‹
+		/// @param info æ ¼å¼åŒ–æ–‡æœ¬
 		__declspec(noinline) void Log(LogType type, const wchar_t* info, ...)throw();
 	public:
 		LogSystem();

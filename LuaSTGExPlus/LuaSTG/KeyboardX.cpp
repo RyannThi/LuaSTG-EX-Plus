@@ -27,10 +27,10 @@ LRESULT CALLBACK MessageBoxProc(
 	if (nCode < 0)
 		return CallNextHookEx(g_hHook, nCode, wParam, lParam);
 
-	if (wParam >= 0 && wParam<=MAX_KEY)//µ±°´¡°F3¡±¼üÊ±Ð¶ÔØHook  
+	if (wParam >= 0 && wParam<=MAX_KEY)//å½“æŒ‰â€œF3â€é”®æ—¶å¸è½½Hook  
 	{
 
-		//UnhookWindowsHookEx(g_hHook);//Ð¶ÔØHOOkº¯Êý  
+		//UnhookWindowsHookEx(g_hHook);//å¸è½½HOOkå‡½æ•°  
 	}
 	else
 	{

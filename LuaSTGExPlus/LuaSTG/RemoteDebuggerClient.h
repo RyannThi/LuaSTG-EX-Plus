@@ -5,7 +5,7 @@
 
 namespace LuaSTGPlus
 {
-	/// @brief 远端调试器客户端
+	/// @brief 杩滅璋冭瘯鍣ㄥ鎴风
 	class RemoteDebuggerClient
 	{
 	private:

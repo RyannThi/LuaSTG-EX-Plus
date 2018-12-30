@@ -6,7 +6,7 @@ using namespace LuaSTGPlus;
 bool LuaSTGPlus::OBBHitTest(fcyVec2 P1, fcyVec2 Size1, float Angle1,
 							fcyVec2 P2, fcyVec2 Size2, float Angle2)
 {
-	// ¼ÆËã³ö¾ØĞÎµÄ4¸ö¶¥µã
+	// è®¡ç®—å‡ºçŸ©å½¢çš„4ä¸ªé¡¶ç‚¹
 	fcyVec2 tFinalPos[2][4] =
 	{
 		{
@@ -51,7 +51,7 @@ bool LuaSTGPlus::OBBHitTest(fcyVec2 P1, fcyVec2 Size1, float Angle1,
 		}
 	}
 
-	// ´¦ÀíÁ½¸ö¾ØĞÎµÄËÄÌõÖá
+	// å¤„ç†ä¸¤ä¸ªçŸ©å½¢çš„å››æ¡è½´
 	for (int i = 0; i<2; i++)
 	{
 		fcyVec2 tAxis[2] =
@@ -60,21 +60,21 @@ bool LuaSTGPlus::OBBHitTest(fcyVec2 P1, fcyVec2 Size1, float Angle1,
 			tFinalPos[i][2] - tFinalPos[i][1]
 		};
 
-		// µ¥Î»»¯ÖáÏò
+		// å•ä½åŒ–è½´å‘
 		tAxis[0].Normalize();
 		tAxis[1].Normalize();
 
-		// ÖáµÄÍ¶Ó°Ïß¶Î
+		// è½´çš„æŠ•å½±çº¿æ®µ
 		fcyVec2 tAxisLine[2] =
 		{
 			fcyVec2(tFinalPos[i][0] * tAxis[0], tFinalPos[i][1] * tAxis[0]),
 			fcyVec2(tFinalPos[i][1] * tAxis[1], tFinalPos[i][2] * tAxis[1])
 		};
 
-		// ¶ÔÃ¿Ò»ÌõÖáÏò
+		// å¯¹æ¯ä¸€æ¡è½´å‘
 		for (int j = 0; j<2; j++)
 		{
-			// ¼ÆËãÁíÒ»¾ØĞÎÔÚÖáÉÏµÄÍ¶Ó°²úÉúµÄÏß¶Î
+			// è®¡ç®—å¦ä¸€çŸ©å½¢åœ¨è½´ä¸Šçš„æŠ•å½±äº§ç”Ÿçš„çº¿æ®µ
 			fcyVec2 tProjLine(tFinalPos[1 - i][0] * tAxis[j], tFinalPos[1 - i][1] * tAxis[j]);
 			if (tProjLine.y < tProjLine.x)
 				std::swap(tProjLine.x, tProjLine.y);
@@ -87,10 +87,10 @@ bool LuaSTGPlus::OBBHitTest(fcyVec2 P1, fcyVec2 Size1, float Angle1,
 					tProjLine.y = v;
 			}
 
-			// ½øĞĞ¸²¸Ç²âÊÔ
+			// è¿›è¡Œè¦†ç›–æµ‹è¯•
 			if (!OverlapTest(tAxisLine[j], tProjLine))
 			{
-				// ·ÖÀëÖá¶¨ÂÉ£¬µ±ÓĞÒ»ÌõÖáµÄÍ¶Ó°²»Ïà½»¼´ÎŞÅö×²
+				// åˆ†ç¦»è½´å®šå¾‹ï¼Œå½“æœ‰ä¸€æ¡è½´çš„æŠ•å½±ä¸ç›¸äº¤å³æ— ç¢°æ’
 				return false;
 			}
 		}
@@ -101,7 +101,7 @@ bool LuaSTGPlus::OBBHitTest(fcyVec2 P1, fcyVec2 Size1, float Angle1,
 bool LuaSTGPlus::OBBCircleHitTest(	fcyVec2 P1, fcyVec2 Size, float Angle,
 									fcyVec2 P2, float R)
 {
-	// ¼ÆËã³ö¾ØĞÎµÄ4¸ö¶¥µã
+	// è®¡ç®—å‡ºçŸ©å½¢çš„4ä¸ªé¡¶ç‚¹
 	fcyVec2 tFinalPos[4] =
 	{
 		fcyVec2(-Size.x, -Size.y),
@@ -114,48 +114,48 @@ bool LuaSTGPlus::OBBCircleHitTest(	fcyVec2 P1, fcyVec2 Size, float Angle,
 	float tSin, tCos;
 	SinCos(Angle, tSin, tCos);
 
-	// ±ä»»
+	// å˜æ¢
 	for (int i = 0; i<4; i++)
 	{
 		tFinalPos[i].RotationSC(tSin, tCos);
 		tFinalPos[i] += P1;
 	}
 
-	// ¼ÆËãÁ½ÌõÖáÏò
+	// è®¡ç®—ä¸¤æ¡è½´å‘
 	fcyVec2 tAxis[2] =
 	{
 		tFinalPos[1] - tFinalPos[0],
 		tFinalPos[2] - tFinalPos[1]
 	};
 
-	// Öá³¤¶È
+	// è½´é•¿åº¦
 	float tAxisLen[2] =
 	{
 		tAxis[0].Length(),
 		tAxis[1].Length(),
 	};
 
-	// µ¥Î»»¯ÖáÏò
+	// å•ä½åŒ–è½´å‘
 	if (tAxisLen[0] != 0.f)
 		tAxis[0] /= tAxisLen[0];
 	if (tAxisLen[1] != 0.f)
 		tAxis[1] /= tAxisLen[1];
 
-	// ¼ÆËã¸÷±ßÖĞĞÄ²Î¿¼µãÔÚÖáÏòÉÏµÄÍ¶Ó°
+	// è®¡ç®—å„è¾¹ä¸­å¿ƒå‚è€ƒç‚¹åœ¨è½´å‘ä¸Šçš„æŠ•å½±
 	float tProjValue[2] =
 	{
 		((tFinalPos[1] + tFinalPos[0]) / 2.f) * tAxis[0],
 		((tFinalPos[2] + tFinalPos[1]) / 2.f) * tAxis[1]
 	};
 
-	// ¼ÆËãÔ²ÔÚÖáÉÏµÄÍ¶Ó°
+	// è®¡ç®—åœ†åœ¨è½´ä¸Šçš„æŠ•å½±
 	float tCircleCenterProjValue[2] =
 	{
 		P2 * tAxis[0],
 		P2 * tAxis[1]
 	};
 
-	// ¼ì²é±ßÅö×²
+	// æ£€æŸ¥è¾¹ç¢°æ’
 	if (fabs(tCircleCenterProjValue[0] - tProjValue[0]) < tAxisLen[0] / 2.f)
 	{
 		if (fabs(tCircleCenterProjValue[1] - tProjValue[1]) < tAxisLen[1] / 2.f + R)
@@ -171,7 +171,7 @@ bool LuaSTGPlus::OBBCircleHitTest(	fcyVec2 P1, fcyVec2 Size, float Angle,
 			return false;
 	}
 
-	// ¼ì²éËÄ¸ö½Ç
+	// æ£€æŸ¥å››ä¸ªè§’
 	float tDist2 = R;
 	tDist2 *= tDist2;
 	for (int i = 0; i < 4; i++)
@@ -185,7 +185,7 @@ bool LuaSTGPlus::OBBCircleHitTest(	fcyVec2 P1, fcyVec2 Size, float Angle,
 
 bool LuaSTGPlus::OBBAABBHitTest(fcyVec2 P, fcyVec2 Size, float Angle, fcyRect Rect)
 {
-	// ¼ÆËã³öOBB¾ØĞÎµÄ4¸ö¶¥µã
+	// è®¡ç®—å‡ºOBBçŸ©å½¢çš„4ä¸ªé¡¶ç‚¹
 	fcyVec2 tFinalPos[2][4] =
 	{
 		{
@@ -217,7 +217,7 @@ bool LuaSTGPlus::OBBAABBHitTest(fcyVec2 P, fcyVec2 Size, float Angle, fcyRect Re
 		}
 	}
 
-	// ´¦ÀíÁ½¸ö¾ØĞÎµÄËÄÌõÖá
+	// å¤„ç†ä¸¤ä¸ªçŸ©å½¢çš„å››æ¡è½´
 	for (int i = 0; i<2; i++)
 	{
 		fcyVec2 tAxis[2] =
@@ -226,21 +226,21 @@ bool LuaSTGPlus::OBBAABBHitTest(fcyVec2 P, fcyVec2 Size, float Angle, fcyRect Re
 			tFinalPos[i][2] - tFinalPos[i][1]
 		};
 
-		// µ¥Î»»¯ÖáÏò
+		// å•ä½åŒ–è½´å‘
 		tAxis[0].Normalize();
 		tAxis[1].Normalize();
 
-		// ÖáµÄÍ¶Ó°Ïß¶Î
+		// è½´çš„æŠ•å½±çº¿æ®µ
 		fcyVec2 tAxisLine[2] =
 		{
 			fcyVec2(tFinalPos[i][0] * tAxis[0], tFinalPos[i][1] * tAxis[0]),
 			fcyVec2(tFinalPos[i][1] * tAxis[1], tFinalPos[i][2] * tAxis[1])
 		};
 
-		// ¶ÔÃ¿Ò»ÌõÖáÏò
+		// å¯¹æ¯ä¸€æ¡è½´å‘
 		for (int j = 0; j<2; j++)
 		{
-			// ¼ÆËãÁíÒ»¾ØĞÎÔÚÖáÉÏµÄÍ¶Ó°²úÉúµÄÏß¶Î
+			// è®¡ç®—å¦ä¸€çŸ©å½¢åœ¨è½´ä¸Šçš„æŠ•å½±äº§ç”Ÿçš„çº¿æ®µ
 			fcyVec2 tProjLine(tFinalPos[1 - i][0] * tAxis[j], tFinalPos[1 - i][1] * tAxis[j]);
 			if (tProjLine.y < tProjLine.x)
 				std::swap(tProjLine.x, tProjLine.y);
@@ -253,10 +253,10 @@ bool LuaSTGPlus::OBBAABBHitTest(fcyVec2 P, fcyVec2 Size, float Angle, fcyRect Re
 					tProjLine.y = v;
 			}
 
-			// ½øĞĞ¸²¸Ç²âÊÔ
+			// è¿›è¡Œè¦†ç›–æµ‹è¯•
 			if (!OverlapTest(tAxisLine[j], tProjLine))
 			{
-				// ·ÖÀëÖá¶¨ÂÉ£¬µ±ÓĞÒ»ÌõÖáµÄÍ¶Ó°²»Ïà½»¼´ÎŞÅö×²
+				// åˆ†ç¦»è½´å®šå¾‹ï¼Œå½“æœ‰ä¸€æ¡è½´çš„æŠ•å½±ä¸ç›¸äº¤å³æ— ç¢°æ’
 				return false;
 			}
 		}
@@ -282,13 +282,13 @@ bool LuaSTGPlus::ElliTest(fcyVec2 P1, float a1, float b1, float rot1, fcyVec2 P2
 		if (a2 == b2){
 			return CircleHitTest(P1, a1, P2, a2);
 		}
-		//Õâ¸öÒ²ÊÇ½üËÆËã·¨£¬½«³¤¶ÌÖá¶¼Ôö¼Ór
+		//è¿™ä¸ªä¹Ÿæ˜¯è¿‘ä¼¼ç®—æ³•ï¼Œå°†é•¿çŸ­è½´éƒ½å¢åŠ r
 		return ElliTestPoint(P2, a2 + a1, b2 + a1, rot2, P1);
 	}
 	if (a2 == b2){
 		return ElliTestPoint(P1, a1 + a2, b1 + a2, rot1, P2);
 	}
-	//½üËÆËã·¨
+	//è¿‘ä¼¼ç®—æ³•
 	float a1b1 = b1 / a1;
 
 	fcyVec2 A2(a2, 0);
@@ -304,6 +304,6 @@ bool LuaSTGPlus::ElliTest(fcyVec2 P1, float a1, float b1, float rot1, fcyVec2 P2
 	P12.x = P12.x / a1b1;
 
 	fcyVec2 P0(0, 0);
-	//ÎÒÃÇ¼ÙÉè±ä»»ºóµÄ»¹ÊÇ³¤¶ÌÖá
+	//æˆ‘ä»¬å‡è®¾å˜æ¢åçš„è¿˜æ˜¯é•¿çŸ­è½´
 	return ElliTestPoint(P12, A2.Length() + b1, B2.Length() + b1, A2.CalcuAngle(), P0);
 }
