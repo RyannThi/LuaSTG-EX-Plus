@@ -1,4 +1,4 @@
-#include "Utility.h"
+﻿#include "Utility.h"
 
 using namespace std;
 using namespace LuaSTGPlus;

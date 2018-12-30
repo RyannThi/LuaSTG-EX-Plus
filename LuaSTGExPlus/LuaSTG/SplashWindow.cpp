@@ -1,4 +1,4 @@
-#include "SplashWindow.h"
+﻿#include "SplashWindow.h"
 
 #include "resource.h"
 

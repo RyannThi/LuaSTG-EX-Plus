@@ -1,4 +1,4 @@
-/// @file AppFrame.h
+﻿/// @file AppFrame.h
 /// @brief 定义应用程序框架
 #pragma once
 #include "Global.h"

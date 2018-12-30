@@ -1,4 +1,4 @@
-#include "AppFrame.h"
+﻿#include "AppFrame.h"
 #include "Utility.h"
 
 #define INIT_DX_NOT_FOUND L"未能加载D3DX9_43.DLL，这可能是由于没有安装DirectX运行时导致的。\n\n请前往微软官网下载安装DirectX 9 Runtime。"

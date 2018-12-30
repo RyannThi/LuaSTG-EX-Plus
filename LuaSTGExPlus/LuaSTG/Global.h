@@ -1,4 +1,4 @@
-/// @file Global.h
+﻿/// @file Global.h
 /// @brief 全局定义文件
 #pragma once
 

@@ -1,4 +1,4 @@
-#include "AppFrame.h"
+﻿#include "AppFrame.h"
 #include "lstgsteam.h"
 
 #define _ACH_ID( id, name ) { id, #id, name, "", 0, 0 }

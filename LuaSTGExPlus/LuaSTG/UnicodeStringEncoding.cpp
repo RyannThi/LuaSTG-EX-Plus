@@ -1,4 +1,4 @@
-#include "UnicodeStringEncoding.h"
+﻿#include "UnicodeStringEncoding.h"
 
 using namespace std;
 using namespace LuaSTGPlus;

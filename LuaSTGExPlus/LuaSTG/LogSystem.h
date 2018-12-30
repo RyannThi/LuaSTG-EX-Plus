@@ -1,4 +1,4 @@
-/// @file LogSystem.h
+﻿/// @file LogSystem.h
 /// @brief 定义日志系统
 /// @note 由于日志系统将被Common.h包含，因此独立于Common.h
 #pragma once

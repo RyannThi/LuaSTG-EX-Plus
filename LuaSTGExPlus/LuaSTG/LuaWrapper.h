@@ -1,4 +1,4 @@
-/// @file LuaWrapper.h
+﻿/// @file LuaWrapper.h
 /// @brief lua包装层 用于导出C++函数和类
 #pragma once
 #include "Global.h"

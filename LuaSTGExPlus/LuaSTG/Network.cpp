@@ -1,4 +1,4 @@
-#include "Network.h"
+﻿#include "Network.h"
 #include "Global.h"
 int EXTCPDEBUG = 0;
 EXTCPIPSERVERCLIENTINFO::EXTCPIPSERVERCLIENTINFO()

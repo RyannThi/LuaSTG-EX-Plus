@@ -1,4 +1,4 @@
-// Added by ESC 20171023
+﻿// Added by ESC 20171023
 #include "ESC.h"
 #include <WinSock2.h>
 #include "ResourceMgr.h"

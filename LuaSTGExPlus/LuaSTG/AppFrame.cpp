@@ -1,4 +1,4 @@
-#include "AppFrame.h"
+﻿#include "AppFrame.h"
 #include "Utility.h"
 #include "LuaWrapper.h"
 

@@ -1,4 +1,4 @@
-#include "ResourceMgr.h"
+﻿#include "ResourceMgr.h"
 #include "AppFrame.h"
 
 #include "Utility.h"

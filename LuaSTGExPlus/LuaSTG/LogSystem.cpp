@@ -1,4 +1,4 @@
-#include "LogSystem.h"
+﻿#include "LogSystem.h"
 #include "Utility.h"
 
 using namespace std;

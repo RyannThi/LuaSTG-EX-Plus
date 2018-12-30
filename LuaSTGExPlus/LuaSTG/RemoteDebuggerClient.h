@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Global.h"
 #include "ResourceMgr.h"
 #include "Bencode.h"

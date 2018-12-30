@@ -1,4 +1,4 @@
-/// @file Utility.h
+﻿/// @file Utility.h
 /// @brief 实用工具
 #pragma once
 #include "Global.h"

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #define MAX_INPUT_CLIENTS 32 
 #define MAX_INPUT 16

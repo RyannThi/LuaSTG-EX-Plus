@@ -1,4 +1,4 @@
-/// @file Dictionary.h
+﻿/// @file Dictionary.h
 /// @brief 基于MPQ哈希的字典
 #pragma once
 #include "Global.h"

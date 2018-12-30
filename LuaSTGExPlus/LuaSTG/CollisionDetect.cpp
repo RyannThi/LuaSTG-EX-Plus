@@ -1,4 +1,4 @@
-#include "CollisionDetect.h"
+﻿#include "CollisionDetect.h"
 
 using namespace std;
 using namespace LuaSTGPlus;

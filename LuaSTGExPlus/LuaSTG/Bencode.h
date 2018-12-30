@@ -1,4 +1,4 @@
-// Bencode
+﻿// Bencode
 // https://github.com/9chu/Bencode
 #pragma once
 #include <cstdint>
