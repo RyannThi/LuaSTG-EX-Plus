@@ -1,12 +1,12 @@
-#LuaSTG EX Plus  
+# LuaSTG EX Plus  
 
-##说明  
+## 说明  
 
 LuaSTG EX Plus 是 LuaSTG Plus 的衍生版本，其大部分代码基于9chu的 LuaSTG Plus ，并由ExboCooope、Xiliusha进行维护。此衍生版本增加了更多的功能，以便开发者进行游戏开发。  
 
-##使用的第三方库  
+## 使用的第三方库  
 
-###此项目采用了以下第三方库：  
+### 此项目采用了以下第三方库：  
 
 1.lua file system(unkown version)  
 2.cjson to lua(unkown version)  
@@ -15,9 +15,9 @@ LuaSTG EX Plus 是 LuaSTG Plus 的衍生版本，其大部分代码基于9chu的
 5.zlib(1.2.11)  
 6.fancy2d(0.6)  
 
-###！除了fancy2d外，以上用到的项目的源代码、文档均完整地复制在本项目文件夹下，便于构建可执行文件。  
+### ！除了fancy2d外，以上用到的项目的源代码、文档均完整地复制在本项目文件夹下，便于构建可执行文件。  
 
-##工程构建  
+## 工程构建  
 
 除了本项目内的文件，还需前往9chu的主页获取fancy2d，并放置在和项目根目录同级的位置：  
 
