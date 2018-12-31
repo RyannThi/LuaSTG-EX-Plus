@@ -873,6 +873,38 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 					return luaL_error(L, "invalid lstg object for 'Dist'.");
 				lua_pushnumber(L, tRet);
 			}
+			else if (lua_gettop(L) == 3) {
+				// a b c ，此时是未知的
+				if (lua_istable(L, 1)) {
+					//如果第一个参数是object
+					lua_rawgeti(L, 1, 2);  // t(object) x y ??? id
+					GameObject* p = LPOOL.GetPooledObject((size_t)luaL_checkint(L, -1));
+					if (!p) {
+						return luaL_error(L, "invalid lstg object for 'Dist'.");
+					}
+					lua_Number dx = luaL_checknumber(L, 2) - p->x;
+					lua_Number dy = luaL_checknumber(L, 3) - p->y;
+					lua_pushnumber(L,
+						sqrt(dx * dx + dy * dy)
+					);
+				}
+				else if (lua_istable(L, 3)) {
+					//如果第三个参数是object
+					lua_rawgeti(L, 3, 2);  // x y t(object) ??? id
+					GameObject* p = LPOOL.GetPooledObject((size_t)luaL_checkint(L, -1));
+					if (!p) {
+						return luaL_error(L, "invalid lstg object for 'Dist'.");
+					}
+					lua_Number dx = p->x - luaL_checknumber(L, 1);
+					lua_Number dy = p->y - luaL_checknumber(L, 2);
+					lua_pushnumber(L,
+						sqrt(dx * dx + dy * dy)
+					);
+				}
+				else {
+					return luaL_error(L, "invalid lstg object for 'Dist'.");
+				}
+			}
 			else
 			{
 				lua_Number dx = luaL_checknumber(L, 3) - luaL_checknumber(L, 1);
@@ -1507,16 +1539,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			);
 			return 0;
 		}
-		static int SetZBufferEnable(lua_State* L)LNOEXCEPT
-		{
-			LAPP.SetZBufferEnable(luaL_checkinteger(L, 1) != 0);
-			return 0;
-		}
-		static int ClearZBuffer(lua_State* L)LNOEXCEPT
-		{
-			LAPP.ClearZBuffer(luaL_optnumber(L, 1, 1.0f));
-			return 0;
-		}
 		static int Render(lua_State* L)LNOEXCEPT
 		{
 			if (!LAPP.Render(
@@ -1784,6 +1806,16 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			return 0;
 		}
 		//EX+ model
+		static int SetZBufferEnable(lua_State* L)LNOEXCEPT
+		{
+			LAPP.SetZBufferEnable(luaL_checkinteger(L, 1) != 0);
+			return 0;
+		}
+		static int ClearZBuffer(lua_State* L)LNOEXCEPT
+		{
+			LAPP.ClearZBuffer(luaL_optnumber(L, 1, 1.0f));
+			return 0;
+		}
 		static int RenderModel(lua_State* L)LNOEXCEPT
 		{
 			if (!LAPP.RenderModel(

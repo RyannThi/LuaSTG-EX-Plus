@@ -954,7 +954,7 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 
 
 	GameObject* p = m_pObjectListHeader.pObjectNext;
-	lua_Number cache1, cache1m, cache2;//速度限制计算时用到的中间变量
+	lua_Number cache1, cache2;//速度限制计算时用到的中间变量
 	while (p && p != &m_pObjectListTail)
 	{
 		// 根据id获取对象的lua绑定table、拿到class再拿到framefunc
