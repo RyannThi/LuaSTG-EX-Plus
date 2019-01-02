@@ -6,4 +6,7 @@
 /LuaSTGExPlus/.vs/*
 /LuaSTGExPlus/build/*
 /LuaSTGExPlus/luajit/backup/*
-/LuaSTGExPlus/zlib/build/*
+/LuaSTGExPlus/zlib/build/dir/*
+/LuaSTGExPlus/libogg/build/dir/*
+/LuaSTGExPlus/libvorbis/build/dir/*
+/LuaSTGExPlus/freetype/build/dir/*
