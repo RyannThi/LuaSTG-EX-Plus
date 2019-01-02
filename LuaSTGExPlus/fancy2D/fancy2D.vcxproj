@@ -155,8 +155,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\fancylib\bin\;extern\DirectShowClass\bin\$(Configuration)\;extern\DXSDK\lib\x86;extern\libvorbis\lib\$(Configuration)\;extern\libogg\lib\$(Configuration)\;extern\freetype\bin\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fancylib.lib;Strmiids.lib;strmbase.lib;dxguid.lib;winmm.lib;libvorbis.lib;libogg.lib;freetype.lib;%(AdditionalDependencies);Imm32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\DirectShowClass\build\;$(SolutionDir)\DXSDK\lib\x86;$(SolutionDir)\libvorbis\build\;$(SolutionDir)\libogg\build\;$(SolutionDir)\freetype\build\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fancylib.lib;Strmiids.lib;strmbase.lib;dxguid.lib;winmm.lib;libvorbis.lib;libogg.lib;freetype.lib;Imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
