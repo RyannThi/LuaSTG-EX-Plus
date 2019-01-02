@@ -1,0 +1,13 @@
+﻿生成启动时间为 2018/5/23 19:27:10。
+     1>项目“J:\luastgplus\fancy2d\fancy2D\extern\libogg\libogg.vcxproj”在节点 2 上(Build 个目标)。
+     1>Lib:
+         G:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"lib\Debug\libogg.lib" /NOLOGO obj\Debug\bitwise.obj
+         obj\Debug\framing.obj
+         libogg.vcxproj -> J:\luastgplus\fancy2d\fancy2D\extern\libogg\lib\Debug\libogg.lib
+       BscMake:
+         G:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\bscmake.exe /nologo /o"lib\Debug\libogg.bsc" /n obj\Debug\bitwise.sbr obj\Debug\framing.sbr
+     1>已完成生成项目“J:\luastgplus\fancy2d\fancy2D\extern\libogg\libogg.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:02.12

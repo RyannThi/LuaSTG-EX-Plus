@@ -1,0 +1,141 @@
+﻿  analysis.c
+  bitrate.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\bitrate.c(42): warning C4244: “=”: 从“double”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\bitrate.c(43): warning C4244: “=”: 从“double”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\bitrate.c(44): warning C4244: “=”: 从“double”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\bitrate.c(51): warning C4244: “初始化”: 从“double”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\bitrate.c(135): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\bitrate.c(83): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\bitrate.c(88): warning C4244: “初始化”: 从“double”转换到“long”，可能丢失数据
+  block.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\block.c(863): warning C4244: “初始化”: 从“ogg_int64_t”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\block.c(901): warning C4244: “初始化”: 从“ogg_int64_t”转换到“long”，可能丢失数据
+  codebook.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\codebook.c(453): warning C4101: “j”: 未引用的局部变量
+  envelope.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\envelope.c(48): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\envelope.c(65): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\envelope.c(68): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\envelope.c(145): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\envelope.c(127): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+  floor0.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\floor0.c(126): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\floor0.c(136): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+  floor1.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\floor1.c(290): warning C4244: “初始化”: 从“const float”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\floor1.c(514): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\floor1.c(515): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+  info.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\info.c(57): warning C4244: “=”: 从“long”转换到“char”，可能丢失数据
+  lookup.c
+  lpc.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\lpc.c(130): warning C4244: “return”: 从“double”转换到“float”，可能丢失数据
+  lsp.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\lsp.c(252): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\lsp.c(276): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\lsp.c(259): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\lsp.c(352): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\lsp.c(399): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\lsp.c(451): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\lsp.c(454): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+  mapping0.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\mapping0.c(272): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\mapping0.c(318): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\mapping0.c(335): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\mapping0.c(393): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+  mdct.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\mdct.c(58): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\mdct.c(66): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\mdct.c(67): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\mdct.c(68): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\mdct.c(69): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\mdct.c(72): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\mdct.c(73): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+  psy.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(137): warning C4244: “函数”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(139): warning C4244: “函数”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(173): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(174): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(175): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(254): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(259): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(192): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(193): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(217): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(218): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(239): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(274): warning C4244: “=”: 从“double”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(276): warning C4244: “=”: 从“double”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(277): warning C4244: “=”: 从“double”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(290): warning C4305: “=”: 从“double”到“float”截断
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(291): warning C4305: “=”: 从“double”到“float”截断
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(301): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(325): warning C4244: “=”: 从“double”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(327): warning C4244: “函数”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(348): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(296): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(312): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(336): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(402): warning C4244: “=”: 从“const float”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(404): warning C4244: “=”: 从“const float”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(571): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(739): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(801): warning C4305: “=”: 从“double”到“float”截断
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(807): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(814): warning C4305: “=”: 从“double”到“float”截断
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(818): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(922): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(953): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(955): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(976): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(978): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(992): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(1050): warning C4244: “=”: 从“const double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(1128): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(1157): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(1176): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(1178): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(1021): warning C4244: “初始化”: 从“const double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\psy.c(1022): warning C4244: “初始化”: 从“const double”转换到“float”，可能丢失数据
+  registry.c
+  res0.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\res0.c(447): warning C4244: “*=”: 从“float”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\res0.c(427): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+  sharedbook.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\sharedbook.c(55): warning C4244: “=”: 从“double”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\sharedbook.c(56): warning C4244: “=”: 从“double”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\sharedbook.c(67): warning C4244: “return”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\sharedbook.c(164): warning C4244: “初始化”: 从“double”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\sharedbook.c(223): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\sharedbook.c(243): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\sharedbook.c(222): warning C4244: “初始化”: 从“long”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\sharedbook.c(242): warning C4244: “初始化”: 从“long”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\sharedbook.c(375): warning C4244: “=”: 从“long”转换到“char”，可能丢失数据
+  smallft.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\smallft.c(99): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\smallft.c(100): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\smallft.c(283): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\smallft.c(284): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\smallft.c(853): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\smallft.c(854): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+  synthesis.c
+  vorbisfile.c
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(259): warning C4244: “函数”: 从“ogg_int64_t”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(273): warning C4244: “=”: 从“ogg_int64_t”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(539): warning C4244: “return”: 从“ogg_int64_t”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(566): warning C4244: “return”: 从“ogg_int64_t”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(570): warning C4244: “return”: 从“ogg_int64_t”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(580): warning C4244: “return”: 从“ogg_int64_t”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(642): warning C4244: “return”: 从“ogg_int64_t”转换到“int”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(875): warning C4244: “函数”: 从“ogg_int64_t”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(1115): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(1116): warning C4244: “return”: 从“double”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(1120): warning C4244: “return”: 从“double”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(1148): warning C4244: “=”: 从“double”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(1676): warning C4244: “=”: 从“ogg_int64_t”转换到“long”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(1713): warning C4244: “初始化”: 从“double”转换到“ogg_int64_t”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(1743): warning C4244: “初始化”: 从“double”转换到“ogg_int64_t”，可能丢失数据
+e:\projects\lstgexp\luastg-explus-esc\fancy2d\fancy2d\extern\libvorbis\src\vorbisfile.c(2079): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+  正在编译...
+  window.c
+  libvorbis.vcxproj -> E:\projects\LSTGexp\LuaSTG-EXplus-ESC\fancy2d\fancy2D\extern\libvorbis\lib\Release\libvorbis.lib
