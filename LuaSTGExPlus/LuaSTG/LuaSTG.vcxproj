@@ -241,14 +241,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\fancy2d\fancy2d\;$(SolutionDir)\..\fancy2d\fancylib\;$(SolutionDir)\steam\;$(SolutionDir)\zlib\;$(SolutionDir)\zlib\contrib\minizip\;$(SolutionDir)\luajit\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\fancy2d\;$(SolutionDir)\fancylib\;$(SolutionDir)\steam\;$(SolutionDir)\zlib\;$(SolutionDir)\zlib\contrib\minizip\;$(SolutionDir)\luajit\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\..\fancy2d\fancy2d\bin\;$(SolutionDir)\..\fancy2d\fancylib\bin\;$(SolutionDir)\zlib\build\;$(SolutionDir)\steam\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\zlib\build\;$(SolutionDir)\steam\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Gdiplus.lib;zlib.lib;lua51.lib;fancy2d.lib;fancylib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
