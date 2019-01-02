@@ -907,14 +907,17 @@ bool ResourcePool::LoadMusic(const char* name, const std::wstring& path, double 
 	{
 		LDEBUG_RESOURCESCOPE;
 
+		//检查音频系统是否已经初始化
 		LASSERT(LAPP.GetSoundSys());
 
+		//加载音频文件流，加载到内存
 		fcyRefPointer<fcyMemStream> tDataBuf;
 		if (!m_pMgr->LoadFile(path.c_str(), tDataBuf))
 			return false;
 
 		try
 		{
+			//加载解码器，优先OGG解码器，加载失败则使用WAV解码器，都失败则error糊脸
 			fcyRefPointer<f2dSoundDecoder> tDecoder;
 			if (FCYFAILED(LAPP.GetSoundSys()->CreateOGGVorbisDecoder(tDataBuf, &tDecoder)))
 			{
@@ -926,9 +929,11 @@ bool ResourcePool::LoadMusic(const char* name, const std::wstring& path, double 
 				}
 			}
 
+			//加载解码器
 			fcyRefPointer<ResMusic::BGMWrapper> tWrapperedBuffer;
 			tWrapperedBuffer.DirectSet(new ResMusic::BGMWrapper(tDecoder, start, end));
 
+			//加载音频缓冲曲，动态缓冲区
 			fcyRefPointer<f2dSoundBuffer> tBuffer;
 			if (FCYFAILED(LAPP.GetSoundSys()->CreateDynamicBuffer(tWrapperedBuffer, LSOUNDGLOBALFOCUS, &tBuffer)))
 			{
@@ -936,6 +941,7 @@ bool ResourcePool::LoadMusic(const char* name, const std::wstring& path, double 
 				return false;
 			}
 
+			//存入资源池
 			fcyRefPointer<ResMusic> tRes;
 			tRes.DirectSet(new ResMusic(name, tBuffer));
 			m_MusicPool.emplace(name, tRes);
