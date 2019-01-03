@@ -16,18 +16,22 @@ LuaSTG EX Plus 是 LuaSTG Plus 的衍生版本，其大部分代码基于9chu的
 6.libogg(1.3.3)(->fancy2d)  
 7.libvorbis(1.3.6)(->fancy2d)  
 8.freetype(2.9.1)(->fancy2d)  
-9.fancy2d(0.6)(->luastg)  
+9.DirectShowClass(unkown version)(->fancy2d)  
+10.fancy2d(0.6)(->luastg)  
 
-### ！除了fancy2d外，以上用到的项目的源代码、文档均完整地复制在本项目文件夹下，便于构建可执行文件。  
+### 以上用到的项目的源代码、文档均完整地复制在本项目文件夹下，便于构建可执行文件。  
 
 ## 工程构建  
 
-除了本项目内的文件，还需前往9chu的主页获取fancy2d，并放置在和项目根目录同级的位置：  
+本人已经生成好了所需的lib和dll文件，便于直接编译luastg  
+如果需要自己编译，需要注意除了LuaSTG外，全部项目应当在release配置下编译（因为其他配置是缺失的）  
+可以按照以下顺序编译：  
 
->LuaSTGExPlus  
->fancy2d  
-
-然后需要构建fancy2d，fancy2d的构建方式请咨询9chu（其实我也不会）  
-构建好fancy2d后，打开LuaSTGExPlus解决方案，构建zlib库  
-luajit的生成文件已经在项目文件夹里生成好了，也可以自行下载其他版本的luajit使用  
-最后一步就是生成LuaSTGPlus可执行文件
+1.zlib  
+2.libogg  
+3.libvorbis  
+4.freetype  
+5.DirectShowClass  
+6.fancy2d(fancylib)  
+7.fancy2d(fancy2d)  
+8.luastg  
