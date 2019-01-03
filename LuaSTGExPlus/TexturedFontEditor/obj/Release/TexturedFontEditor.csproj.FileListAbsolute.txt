@@ -1,0 +1,11 @@
+E:\projects\LSTGexp\LuaSTG-EX-Plus\LuaSTGExPlus\TexturedFontEditor\bin\Release\TexturedFontEditor.exe
+E:\projects\LSTGexp\LuaSTG-EX-Plus\LuaSTGExPlus\TexturedFontEditor\bin\Release\TexturedFontEditor.pdb
+E:\projects\LSTGexp\LuaSTG-EX-Plus\LuaSTGExPlus\TexturedFontEditor\obj\Release\TexturedFontEditor.csprojAssemblyReference.cache
+E:\projects\LSTGexp\LuaSTG-EX-Plus\LuaSTGExPlus\TexturedFontEditor\obj\Release\TexturedFontEditor.Dialog_InputBox.resources
+E:\projects\LSTGexp\LuaSTG-EX-Plus\LuaSTGExPlus\TexturedFontEditor\obj\Release\TexturedFontEditor.FontEditor.resources
+E:\projects\LSTGexp\LuaSTG-EX-Plus\LuaSTGExPlus\TexturedFontEditor\obj\Release\TexturedFontEditor.FontEditor_FromText.resources
+E:\projects\LSTGexp\LuaSTG-EX-Plus\LuaSTGExPlus\TexturedFontEditor\obj\Release\TexturedFontEditor.Properties.Resources.resources
+E:\projects\LSTGexp\LuaSTG-EX-Plus\LuaSTGExPlus\TexturedFontEditor\obj\Release\TexturedFontEditor.csproj.GenerateResource.cache
+E:\projects\LSTGexp\LuaSTG-EX-Plus\LuaSTGExPlus\TexturedFontEditor\obj\Release\TexturedFontEditor.csproj.CoreCompileInputs.cache
+E:\projects\LSTGexp\LuaSTG-EX-Plus\LuaSTGExPlus\TexturedFontEditor\obj\Release\TexturedFontEditor.exe
+E:\projects\LSTGexp\LuaSTG-EX-Plus\LuaSTGExPlus\TexturedFontEditor\obj\Release\TexturedFontEditor.pdb
