@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fancylib", "fancylib\fancyl
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fancy2D", "fancy2D\fancy2D.vcxproj", "{89A4F0A7-53F3-4C4F-AEFF-27074CCAE973}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TCPIP", "TCPIP\TCPIP.vcxproj", "{D98E325B-68D4-48B1-9473-1A97485C1831}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -74,6 +76,12 @@ Global
 		{89A4F0A7-53F3-4C4F-AEFF-27074CCAE973}.Dev|x86.Build.0 = Debug|Win32
 		{89A4F0A7-53F3-4C4F-AEFF-27074CCAE973}.Release|x86.ActiveCfg = Release|Win32
 		{89A4F0A7-53F3-4C4F-AEFF-27074CCAE973}.Release|x86.Build.0 = Release|Win32
+		{D98E325B-68D4-48B1-9473-1A97485C1831}.Debug|x86.ActiveCfg = Debug|Win32
+		{D98E325B-68D4-48B1-9473-1A97485C1831}.Debug|x86.Build.0 = Debug|Win32
+		{D98E325B-68D4-48B1-9473-1A97485C1831}.Dev|x86.ActiveCfg = Debug|Win32
+		{D98E325B-68D4-48B1-9473-1A97485C1831}.Dev|x86.Build.0 = Debug|Win32
+		{D98E325B-68D4-48B1-9473-1A97485C1831}.Release|x86.ActiveCfg = Release|Win32
+		{D98E325B-68D4-48B1-9473-1A97485C1831}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
