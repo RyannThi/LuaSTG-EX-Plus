@@ -1567,8 +1567,8 @@ ResourcePack::ResourcePack(const wchar_t* path, const char* passwd)
 
 	zlib_filefunc64_def tZlibFileFunc;
 	memset(&tZlibFileFunc, 0, sizeof(tZlibFileFunc));
-	//fill_wfopen64_filefunc(&tZlibFileFunc);
-	fill_fopen64_filefunc(&tZlibFileFunc);
+	fill_wfopen64_filefunc(&tZlibFileFunc);
+	//fill_fopen64_filefunc(&tZlibFileFunc);
 	m_zipFile = unzOpen2_64(reinterpret_cast<const char*>(path), &tZlibFileFunc);
 	if (!m_zipFile){
 		CODEDSTR path_unicode(CP_UNICODE);
@@ -1622,6 +1622,8 @@ bool ResourcePack::LoadFile(const wchar_t* path, fcyRefPointer<fcyMemStream>& ou
 				LINFO("ResourcePack: 资源包'%s'命中文件'%s'", m_Path.c_str(), path);
 #endif
 				if (unzOpenCurrentFilePassword(m_zipFile, m_Password.length() > 0 ? m_Password.c_str() : nullptr) != UNZ_OK)
+				//const char pw[] = "password";
+				//if (unzOpenCurrentFilePassword(m_zipFile, pw) != UNZ_OK)
 				{
 					LERROR("ResourcePack: 尝试打开资源包'%s'中的文件'%s'失败(密码错误?)", m_Path.c_str(), path);
 					return false;
