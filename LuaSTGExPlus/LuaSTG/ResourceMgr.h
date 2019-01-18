@@ -236,6 +236,7 @@ namespace LuaSTGPlus
 			fcyRefPointer<ResParticle> m_pInstance;  // 信息
 
 			BlendMode m_BlendMode = BlendMode::MulAlpha;
+			fcyColor m_MixColor;//渲染时整体颜色
 			Status m_iStatus = Status::Alive;  // 状态
 			fcyVec2 m_vCenter;  // 中心
 			fcyVec2 m_vPrevCenter;  // 上一个中心
@@ -249,6 +250,8 @@ namespace LuaSTGPlus
 			size_t GetAliveCount()const LNOEXCEPT { return m_iAlive; }
 			BlendMode GetBlendMode()const LNOEXCEPT { return m_BlendMode; }
 			void SetBlendMode(BlendMode m)LNOEXCEPT { m_BlendMode = m; }
+			fcyColor GetMixColor()LNOEXCEPT { return m_MixColor; }
+			void SetMixColor(fcyColor c)LNOEXCEPT { m_MixColor = c; }
 			float GetEmission()const LNOEXCEPT { return m_fEmission; }
 			void SetEmission(float e)LNOEXCEPT { m_fEmission = e; }
 			bool IsActived()const LNOEXCEPT { return m_iStatus == Status::Alive; }

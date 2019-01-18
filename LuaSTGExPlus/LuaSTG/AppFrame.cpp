@@ -1047,6 +1047,29 @@ LNOINLINE void AppFrame::SnapShot(const char* path)LNOEXCEPT
 	}
 }
 
+LNOINLINE void AppFrame::SaveTexture(const char* path, f2dTexture2D* Tex)LNOEXCEPT
+{
+	LASSERT(m_pRenderDev);
+
+	try
+	{
+		fcyRefPointer<fcyFileStream> tOutputFile;
+		tOutputFile.DirectSet(new fcyFileStream(fcyStringHelper::MultiByteToWideChar(path, CP_UTF8).c_str(), true));
+		tOutputFile->SetLength(0);
+
+		if (FCYFAILED(m_pRenderDev->SaveTexture(tOutputFile, Tex)))
+			LERROR("Snapshot: 保存纹理到'%m'失败", path);
+	}
+	catch (const bad_alloc&)
+	{
+		LERROR("Snapshot: 内存不足");
+	}
+	catch (const fcyException& e)
+	{
+		LERROR("Snapshot: 保存纹理失败 (异常信息'%m' 源'%m')", e.GetDesc(), e.GetSrc());
+	}
+}
+
 bool AppFrame::CheckRenderTargetInUse(fcyRefPointer<f2dTexture2D> rt)LNOEXCEPT
 {
 	if (!rt || !rt->IsRenderTarget() || m_stRenderTargetStack.empty())

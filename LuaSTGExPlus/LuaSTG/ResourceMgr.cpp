@@ -81,8 +81,11 @@ void ResParticle::FreeInstance(ResParticle::ParticlePool* p)LNOEXCEPT
 	s_MemoryPool.Free(p);
 }
 
-ResParticle::ParticlePool::ParticlePool(fcyRefPointer<ResParticle> ref)
-	: m_pInstance(ref), m_fEmission((float)ref->GetParticleInfo().nEmission) {}
+ResParticle::ParticlePool::ParticlePool(fcyRefPointer<ResParticle> ref) {
+	m_pInstance = ref;
+	m_fEmission = (float)ref->GetParticleInfo().nEmission;
+	m_MixColor.Set(255, 255, 255, 255);
+}
 
 void ResParticle::ParticlePool::Update(float delta)
 {
@@ -192,25 +195,43 @@ void ResParticle::ParticlePool::Render(f2dGraphics2D* graph, float scaleX, float
 {
 	f2dSprite* p = m_pInstance->GetBindedSprite();
 	const ParticleInfo& pInfo = m_pInstance->GetParticleInfo();
-	fcyColor tOrgColor = p->GetColor(0U);
+	fcyColor tOrgColor = p->GetColor(0U);//获取精灵第一个顶点的颜色（总共4个顶点）
 
 	for (size_t i = 0; i < m_iAlive; ++i)
 	{
-		ParticleInstance& pInst = m_ParticlePool[i];
+		ParticleInstance& pInst = m_ParticlePool[i];//实例化的粒子
 		
 		if (pInfo.colColorStart[0] < 0)  // r < 0
+		{
+			/*
 			p->SetColor(fcyColor(
 				(int)(pInst.colColor[3] * 255),
 				tOrgColor.r,
 				tOrgColor.g,
 				tOrgColor.b
 			));
+			*/
+			p->SetColor(fcyColor(
+				(fInt)(pInst.colColor[3] * m_MixColor.a),
+				(fInt)(tOrgColor.r * m_MixColor.r / 255),
+				(fInt)(tOrgColor.g * m_MixColor.g / 255),
+				(fInt)(tOrgColor.b * m_MixColor.b / 255)
+			));
+		}
 		else
-			p->SetColor(fcyColor(pInst.colColor[3], pInst.colColor[0], pInst.colColor[1], pInst.colColor[2]));
+		{
+			//p->SetColor(fcyColor(pInst.colColor[3], pInst.colColor[0], pInst.colColor[1], pInst.colColor[2]));
+			p->SetColor(fcyColor(
+				(fInt)(pInst.colColor[3] * m_MixColor.a),
+				(fInt)(pInst.colColor[0] * m_MixColor.r),
+				(fInt)(pInst.colColor[1] * m_MixColor.g),
+				(fInt)(pInst.colColor[2] * m_MixColor.b)
+			));
+		}
 		p->Draw2(graph, fcyVec2(pInst.vecLocation.x, pInst.vecLocation.y), fcyVec2(scaleX * pInst.fSize, scaleY * pInst.fSize), pInst.fSpin, false);
 	}
-
-	p->SetColor(tOrgColor);
+	
+	p->SetColor(tOrgColor);//恢复精灵顶点颜色
 }
 
 ////////////////////////////////////////////////////////////////////////////////

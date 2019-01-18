@@ -959,6 +959,20 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				return luaL_error(L, "invalid lstg object for 'SetImgState'.");
 			return 0;
 		}
+		static int SetParState(lua_State* L)LNOEXCEPT
+		{
+			if (!lua_istable(L, 1))
+				return luaL_error(L, "invalid lstg object for 'SetParState'.");
+			lua_rawgeti(L, 1, 2);  // t(object) ??? id
+			size_t id = (size_t)luaL_checkinteger(L, -1);
+			lua_pop(L, 1);
+
+			BlendMode m = TranslateBlendMode(L, 2);
+			fcyColor c(luaL_checkinteger(L, 3), luaL_checkinteger(L, 4), luaL_checkinteger(L, 5), luaL_checkinteger(L, 6));
+			if (!LPOOL.SetParState(id, m, c))
+				return luaL_error(L, "invalid lstg object for 'SetParState'.");
+			return 0;
+		}
 		static int BoxCheck(lua_State* L)LNOEXCEPT
 		{
 			if (!lua_istable(L, 1))
@@ -2145,6 +2159,18 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			LAPP.SnapShot(luaL_checkstring(L, 1));
 			return 0;
 		}
+		static int SaveTexture(lua_State* L)LNOEXCEPT
+		{
+			const char* tex_name = luaL_checkstring(L, 2);
+			fcyRefPointer<ResTexture> resTex = LRES.FindTexture(tex_name);
+			if (!resTex)
+			{
+				LERROR("RenderTexture: 找不到纹理资源'%m'", tex_name);
+				return false;
+			}
+			LAPP.SaveTexture(luaL_checkstring(L, 1), resTex->GetTexture());
+			return 0;
+		}
 		static int Execute(lua_State* L)LNOEXCEPT
 		{
 			struct Detail_
@@ -2344,6 +2370,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "GetV", &WrapperImplement::GetV },
 		{ "SetV", &WrapperImplement::SetV },
 		{ "SetImgState", &WrapperImplement::SetImgState },
+		{ "SetParState", &WrapperImplement::SetParState },
 		{ "ResetPool", &WrapperImplement::ResetPool },
 		{ "DefaultRenderFunc", &WrapperImplement::DefaultRenderFunc },
 		{ "NextObject", &WrapperImplement::NextObject },
@@ -2434,6 +2461,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		
 			// 杂项
 		{ "Snapshot", &WrapperImplement::Snapshot },
+		{ "SaveTexture", &WrapperImplement::SaveTexture },
 		{ "Execute", &WrapperImplement::Execute },
 		
 			// 调试函数

@@ -1463,6 +1463,26 @@ bool GameObjectPool::SetImgState(size_t id, BlendMode m, fcyColor c)LNOEXCEPT
 	return true;
 }
 
+bool GameObjectPool::SetParState(size_t id, BlendMode m, fcyColor c)LNOEXCEPT
+{
+	GameObject* p = m_ObjectPool.Data(id);
+	if (!p)
+		return false;
+	if (p->res)
+	{
+		switch (p->res->GetType())
+		{
+		case ResourceType::Particle:
+			p->ps->SetBlendMode(m);
+			p->ps->SetMixColor(c);
+			break;
+		default:
+			break;
+		}
+	}
+	return true;
+}
+
 bool GameObjectPool::BoxCheck(size_t id, double left, double right, double top, double bottom, bool& ret)LNOEXCEPT
 {
 	GameObject* p = m_ObjectPool.Data(id);

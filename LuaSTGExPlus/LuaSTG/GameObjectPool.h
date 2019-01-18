@@ -278,6 +278,9 @@ namespace LuaSTGPlus
 		/// @brief 设置元素的图像状态
 		bool SetImgState(size_t id, BlendMode m, fcyColor c)LNOEXCEPT;
 
+		/// @brief 特化设置HGE粒子的渲染状态
+		bool SetParState(size_t id, BlendMode m, fcyColor c)LNOEXCEPT;
+
 		/// @brief 范围检查
 		bool BoxCheck(size_t id, double left, double right, double top, double bottom, bool& ret)LNOEXCEPT;
 		
