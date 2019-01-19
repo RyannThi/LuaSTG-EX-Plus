@@ -1349,11 +1349,7 @@ bool AppFrame::Init()LNOEXCEPT
 	luaL_openlibs(L);  // 内建库
 	luaopen_lfs(L);  // 文件系统库
 	luaopen_cjson(L);  // CJSON库
-	ColorWrapper::Register(L);  // 颜色对象
-	RandomizerWrapper::Register(L);  // 随机数发生器
-	BentLaserDataWrapper::Register(L);  // 曲线激光
-	Fancy2dStopWatchWrapper::Register(L);  // 高精度停表
-	BuiltInFunctionWrapper::Register(L);  // 内建函数库
+	RegistBuiltInClassWrapper(L);  // 注册内建类
 
 	lua_gc(L, LUA_GCRESTART, -1);  // 重启GC
 

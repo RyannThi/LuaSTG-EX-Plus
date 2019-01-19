@@ -59,4 +59,13 @@ namespace LuaSTGPlus
 		/// @brief 向lua注册包装类
 		static void Register(lua_State* L)LNOEXCEPT;
 	};
+
+	/// @brief 加载内建类
+	static inline void RegistBuiltInClassWrapper(lua_State* L)LNOEXCEPT {
+		ColorWrapper::Register(L);  // 颜色对象
+		RandomizerWrapper::Register(L);  // 随机数发生器
+		BentLaserDataWrapper::Register(L);  // 曲线激光
+		Fancy2dStopWatchWrapper::Register(L);  // 高精度停表
+		BuiltInFunctionWrapper::Register(L);  // 内建函数库
+	}
 }

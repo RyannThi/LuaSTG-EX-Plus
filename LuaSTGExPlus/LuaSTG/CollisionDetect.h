@@ -76,8 +76,23 @@ namespace LuaSTGPlus
 	bool OBBAABBHitTest(fcyVec2 P, fcyVec2 Size, float Angle,
 						fcyRect Rect);
 
+	/// @brief 椭圆与点碰撞检测
+	/// @param[in] P1    椭圆中心
+	/// @param[in] a1    长轴
+	/// @param[in] b1    短轴
+	/// @param[in] rot1  旋转
+	/// @param[in] P2    点
 	bool ElliTestPoint(fcyVec2 P1, float a1, float b1, float rot1, fcyVec2 P2);
 
-	bool ElliTest(fcyVec2 P1, float a1, float b1, float rot1, fcyVec2 P2, float a2, float b2, float rot2);
-
+	/// @brief 椭圆近似碰撞检测
+	/// @param[in] P1    椭圆中心
+	/// @param[in] a1    长轴
+	/// @param[in] b1    短轴
+	/// @param[in] rot1  旋转
+	/// @param[in] P2    椭圆中心
+	/// @param[in] a2    长轴
+	/// @param[in] b2    短轴
+	/// @param[in] rot2  旋转
+	bool ElliTest(fcyVec2 P1, float a1, float b1, float rot1,
+				  fcyVec2 P2, float a2, float b2, float rot2);
 }

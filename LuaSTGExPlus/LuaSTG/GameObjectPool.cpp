@@ -12,6 +12,8 @@
 #undef max
 #endif
 
+#include "XCollision.h"
+
 #define GETOBJTABLE \
 	do { \
 		lua_pushlightuserdata(L, (void*)&LAPP); \
@@ -77,9 +79,62 @@ static inline bool RenderListSortFunc(GameObject* p1, GameObject* p2)LNOEXCEPT
 
 static inline bool CollisionCheck(GameObject* p1, GameObject* p2)LNOEXCEPT
 {
+	//忽略不碰撞对象
 	if (!p1->colli || !p2->colli)
-	return false;
+		return false;
 
+	//快速AABB检测
+	if ((p1->x - p1->col_r >= p2->x + p2->col_r) ||
+		(p1->x + p1->col_r <= p2->x - p2->col_r) ||
+		(p1->y - p1->col_r >= p2->y + p2->col_r) ||
+		(p1->y + p1->col_r <= p2->y - p2->col_r))
+	{
+		return false;
+	}
+	
+	fcyVec2 pos1((float)p1->x, (float)p1->y), pos2((float)p2->x, (float)p2->y);
+	fcyVec2 size1((float)p1->a, (float)p1->b), size2((float)p2->a, (float)p2->b); 
+	
+	//外接圆碰撞检测，没发生碰撞则直接PASS
+	float r1((float)p1->col_r), r2((float)p2->col_r);
+	if (!CircleHitTest(pos1, r1, pos2, r2))
+		return false;
+	
+	//精确碰撞检测
+	if (!p1->rect && !p2->rect) {
+		//椭圆、椭圆碰撞检测
+		return xmath::collision::check(cocos2d::Vec2(p1->x, p1->y), p1->a, p1->b, p1->rot, XColliderType::Ellipse,
+									   cocos2d::Vec2(p2->x, p2->y), p2->a, p2->b, p2->rot, XColliderType::Ellipse);
+	}
+	else if (p1->rect && p2->rect) {
+		//矩形、矩形碰撞检测
+		return xmath::collision::check(cocos2d::Vec2(p1->x, p1->y), p1->a, p1->b, p1->rot, XColliderType::OBB,
+									   cocos2d::Vec2(p2->x, p2->y), p2->a, p2->b, p2->rot, XColliderType::OBB);
+	}
+	else
+	{
+		//矩形、椭圆碰撞检测
+		if (p1->rect && (!p2->rect))
+		{
+			return xmath::collision::check(cocos2d::Vec2(p1->x, p1->y), p1->a, p1->b, p1->rot, XColliderType::OBB,
+										   cocos2d::Vec2(p2->x, p2->y), p2->a, p2->b, p2->rot, XColliderType::Ellipse);
+		}
+		else if ((!p1->rect) && p2->rect)
+		{
+			return xmath::collision::check(cocos2d::Vec2(p1->x, p1->y), p1->a, p1->b, p1->rot, XColliderType::Ellipse,
+										   cocos2d::Vec2(p2->x, p2->y), p2->a, p2->b, p2->rot, XColliderType::OBB);
+		}
+	}
+	return false;
+}
+/*
+static inline bool CollisionCheck(GameObject* p1, GameObject* p2)LNOEXCEPT
+{
+	//忽略不碰撞对象
+	if (!p1->colli || !p2->colli)
+		return false;
+
+	//快速AABB检测
 	if ((p1->x - p1->col_r >= p2->x + p2->col_r) ||
 		(p1->x + p1->col_r <= p2->x - p2->col_r) ||
 		(p1->y - p1->col_r >= p2->y + p2->col_r) ||
@@ -89,34 +144,45 @@ static inline bool CollisionCheck(GameObject* p1, GameObject* p2)LNOEXCEPT
 	}
 
 	fcyVec2 pos1((float)p1->x, (float)p1->y), pos2((float)p2->x, (float)p2->y);
-	fcyVec2 size1((float)p1->a, (float)p1->b), size2((float)p2->a, (float)p2->b); 
-	if (!p1->rect && !p2->rect){
-		bool rt = ElliTest(pos1, p1->a, p1->b, p1->rot, pos2, p2->a, p2->b, p2->rot);
-		return rt;
-	}
-	float r1((float)p1->col_r), r2((float)p2->col_r);
+	fcyVec2 size1((float)p1->a, (float)p1->b), size2((float)p2->a, (float)p2->b);
 
+	//外接圆碰撞检测，没发生碰撞则直接PASS
+	float r1((float)p1->col_r), r2((float)p2->col_r);
 	if (!CircleHitTest(pos1, r1, pos2, r2))
 		return false;
 
-
-	if (p1->rect)
-	{
-		if (p2->rect)
-			return OBBHitTest(pos1, size1, (float)p1->rot, pos2, size2, (float)p2->rot);
-		else
-			return OBBCircleHitTest(pos1, size1, (float)p1->rot, pos2, r2);
+	//精确碰撞检测
+	if (!p1->rect && !p2->rect) {
+		//椭圆、椭圆碰撞检测
+		//return ElliTest(pos1, p1->a, p1->b, p1->rot, pos2, p2->a, p2->b, p2->rot);
+		return xmath::collision::check(cocos2d::Vec2(p1->x, p1->y), p1->a, p1->b, p1->rot, XColliderType::Ellipse,
+			cocos2d::Vec2(p2->x, p2->y), p2->a, p2->b, p2->rot, XColliderType::Ellipse);
+	}
+	else if (p1->rect && p2->rect) {
+		//矩形、矩形碰撞检测
+		//return OBBHitTest(pos1, size1, (float)p1->rot, pos2, size2, (float)p2->rot);
+		return xmath::collision::check(cocos2d::Vec2(p1->x, p1->y), p1->a, p1->b, p1->rot, XColliderType::OBB,
+			cocos2d::Vec2(p2->x, p2->y), p2->a, p2->b, p2->rot, XColliderType::OBB);
 	}
 	else
 	{
-		if (p2->rect)
-			return OBBCircleHitTest(pos2, size2, (float)p2->rot, pos1, r1);
-		else
-			return true;  
+		//矩形、椭圆碰撞检测
+		if (p1->rect && (!p2->rect))
+		{
+			//return OBBCircleHitTest(pos1, size1, (float)p1->rot, pos2, r2);
+			return xmath::collision::check(cocos2d::Vec2(p1->x, p1->y), p1->a, p1->b, p1->rot, XColliderType::OBB,
+				cocos2d::Vec2(p2->x, p2->y), p2->a, p2->b, p2->rot, XColliderType::Ellipse);
+		}
+		else if ((!p1->rect) && p2->rect)
+		{
+			//return OBBCircleHitTest(pos2, size2, (float)p2->rot, pos1, r1);
+			return xmath::collision::check(cocos2d::Vec2(p1->x, p1->y), p1->a, p1->b, p1->rot, XColliderType::Ellipse,
+				cocos2d::Vec2(p2->x, p2->y), p2->a, p2->b, p2->rot, XColliderType::OBB);
+		}
 	}
-
-	
+	return false;
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 /// GameObjectBentLaser
@@ -2290,8 +2356,11 @@ void GameObjectPool::DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer
 			}
 			else
 			{
-				grender->FillCircle(graph, fcyVec2((float)p->x, (float)p->y), (float)p->col_r, fillColor, fillColor,
-					p->col_r < 10 ? 3 : (p->col_r < 20 ? 6 : 8));
+				//用外接圆作为判定半径，绝了
+				//grender->FillCircle(graph, fcyVec2((float)p->x, (float)p->y), (float)p->col_r, fillColor, fillColor,
+				//	p->col_r < 10 ? 3 : (p->col_r < 20 ? 6 : 8));
+				grender->FillCircle(graph, fcyVec2((float)p->x, (float)p->y), (float)p->a, fillColor, fillColor,
+					p->a < 10 ? 3 : (p->a < 20 ? 6 : 8));
 			}
 		}
 

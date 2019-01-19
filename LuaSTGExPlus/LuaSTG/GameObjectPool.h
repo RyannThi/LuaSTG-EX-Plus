@@ -107,11 +107,14 @@ namespace LuaSTGPlus
 
 		void UpdateCollisionCirclrRadius()
 		{
-			col_r = ::sqrt(a * a + b * b);
-//			if (rect)
-//				col_r = ::sqrt(a * a + b * b);
-//			else
-//				col_r = (a + b) / 2;
+			if (rect || (a!=b)) {
+				//矩形或者椭圆
+				col_r = ::sqrt(a * a + b * b);
+			}
+			else {
+				//严格的正圆
+				col_r = (a + b) / 2;
+			}
 		}
 
 		void ReleaseResource()
