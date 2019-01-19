@@ -2070,7 +2070,8 @@ LNOINLINE bool ResourceMgr::FindFiles(lua_State *L,const char* path,const char *
 	// 尝试从各个资源包加载
 	lua_newtable(L);
 	int cnt = 1;
-
+	/*
+	//为什么用path，不应该是用packname吗艹
 	wstring tPath;
 	try
 	{
@@ -2081,14 +2082,27 @@ LNOINLINE bool ResourceMgr::FindFiles(lua_State *L,const char* path,const char *
 	{
 		LERROR("ResourceMgr: 转换字符编码时无法分配内存");
 	}
+	*/
+	wstring tPackPath;
+	try
+	{
+		tPackPath = fcyStringHelper::MultiByteToWideChar(packname, CP_UTF8);
+		pathUniform(tPackPath.begin(), tPackPath.end());
+	}
+	catch (const bad_alloc&)
+	{
+		LERROR("ResourceMgr: 转换字符编码时无法分配内存");
+	}
 
 	for (auto& i : m_ResPackList)
 	{
 		if (packname){
-			if (i.GetPathLowerCase() != tPath){
+			//LINFO("尝试将资源包路径'%s'与查找资源包路径'%s'对比", i.GetPathLowerCase().c_str(), tPackPath.c_str());
+			if (i.GetPathLowerCase() != tPackPath){
 				continue;
 			}
 		}
+		//LINFO("资源包'%s'匹配成功", i.GetPathLowerCase().c_str());
 		i.FindFiles(L, &cnt, path, ext);
 	}
 	if (!packname || packname[0]==0)

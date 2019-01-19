@@ -726,7 +726,15 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		static int FindFiles(lua_State* L)LNOEXCEPT
 		{
-			LRES.FindFiles(L, luaL_checkstring(L, 1), luaL_optstring(L, 2, NULL), luaL_optstring(L, 3, NULL));
+			//说好的可变参数呢……
+			//tm不检查第三个参数是否存在，简直作死，崩游戏没商量
+			if (lua_gettop(L) == 2) {
+				const char blankpackname[] = "";
+				LRES.FindFiles(L, luaL_checkstring(L, 1), luaL_optstring(L, 2, NULL), blankpackname);
+			}
+			else if(lua_gettop(L) == 3) {
+				LRES.FindFiles(L, luaL_checkstring(L, 1), luaL_optstring(L, 2, NULL), luaL_optstring(L, 3, NULL));
+			}
 			return 1;
 		}
 		static int ShowSplashWindow(lua_State* L)LNOEXCEPT
