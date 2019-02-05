@@ -272,6 +272,9 @@ namespace LuaSTGPlus
 		/// @brief 求距离
 		bool Dist(size_t idA, size_t idB, double& out)LNOEXCEPT;
 
+		/// @brief 求两个对象是否发生碰撞
+		bool ColliCheck(size_t idA, size_t idB, bool ignoreWorldMask, bool& out)LNOEXCEPT;
+
 		/// @brief 计算速度方向和大小
 		bool GetV(size_t id, double& v, double& a)LNOEXCEPT;
 

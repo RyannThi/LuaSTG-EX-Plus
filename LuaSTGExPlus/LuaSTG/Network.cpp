@@ -132,7 +132,7 @@ void EXTCPIPSERVERCLIENTINFO::_server_listen_thread(void *p)
 {
 	EXTCPIPSERVERCLIENTINFO *self = (EXTCPIPSERVERCLIENTINFO *)p;
 	self->server_listen_thread();
-
+	
 	_endthread();
 }
 

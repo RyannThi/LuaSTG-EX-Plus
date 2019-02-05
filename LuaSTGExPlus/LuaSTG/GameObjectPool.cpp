@@ -1478,6 +1478,25 @@ bool GameObjectPool::Dist(size_t idA, size_t idB, double& out)LNOEXCEPT
 	return true;
 }
 
+bool GameObjectPool::ColliCheck(size_t idA, size_t idB, bool ignoreWorldMask, bool& out)LNOEXCEPT {
+	GameObject* pA = m_ObjectPool.Data(idA);
+	GameObject* pB = m_ObjectPool.Data(idB);
+	if (!pA || !pB)
+		return false;//找不到对象，GG
+	if (ignoreWorldMask) {
+		out = ::CollisionCheck(pA, pB);
+	}
+	else{
+		if (LAPP.CheckWorlds(pA->world, pB->world)) {
+			out = ::CollisionCheck(pA, pB);
+		}
+		else {
+			out = false;//不在同一个world
+		}
+	}
+	return true;
+}
+
 bool GameObjectPool::GetV(size_t id, double& v, double& a)LNOEXCEPT
 {
 	GameObject* p = m_ObjectPool.Data(id);

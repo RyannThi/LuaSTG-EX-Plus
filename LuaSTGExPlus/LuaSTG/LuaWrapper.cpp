@@ -705,6 +705,16 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				return luaL_error(L, "failed to load resource pack '%s'.", p);
 			return 0;
 		}
+		static int LoadPackSub(lua_State* L)LNOEXCEPT
+		{
+			const char* p = luaL_checkstring(L, 1);
+			const char* pwd = nullptr;
+			if (lua_isstring(L, 2))
+				pwd = luaL_checkstring(L, 2);
+			if (!LRES.LoadPack(p, pwd))
+				return luaL_error(L, "failed to load resource pack '%s'.", p);
+			return 0;
+		}
 		static int UnloadPack(lua_State* L)LNOEXCEPT
 		{
 			const char* p = luaL_checkstring(L, 1);
@@ -866,6 +876,25 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 					atan2(luaL_checknumber(L, 4) - luaL_checknumber(L, 2), luaL_checknumber(L, 3) - luaL_checknumber(L, 1)) * LRAD2DEGREE
 				);
 			}
+			return 1;
+		}
+		static int ColliCheck(lua_State* L) {
+			//对两个对象进行单独的碰撞检测
+			// t(object) t(object) ???
+			if (!lua_istable(L, 1) || !lua_istable(L, 2))
+				return luaL_error(L, "invalid lstg object for 'ColliCheck'.");
+			bool ignoreWorldMask = false;
+			if (lua_gettop(L) == 3) {
+				//有第三个参数则检查第三个参数
+				// t(object) t(object) ignoreWorldMask ???
+				ignoreWorldMask = lua_toboolean(L, 3) == 0 ? false : true;
+			}
+			lua_rawgeti(L, 1, 2);
+			lua_rawgeti(L, 2, 2);
+			bool pass;
+			if (!LPOOL.ColliCheck((size_t)luaL_checkint(L, -2), (size_t)luaL_checkint(L, -1), ignoreWorldMask, pass))
+				return luaL_error(L, "invalid lstg object for 'ColliCheck'.");
+			lua_pushboolean(L, pass);
 			return 1;
 		}
 		static int Dist(lua_State* L)LNOEXCEPT
@@ -2352,6 +2381,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "SystemLog", &WrapperImplement::SystemLog },
 		{ "Print", &WrapperImplement::Print },
 		{ "LoadPack", &WrapperImplement::LoadPack },
+		{ "LoadPackSub", &WrapperImplement::LoadPackSub },
 		{ "UnloadPack", &WrapperImplement::UnloadPack },
 		{ "ExtractRes", &WrapperImplement::ExtractRes },
 		{ "DoFile", &WrapperImplement::DoFile },
@@ -2375,6 +2405,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "IsValid", &WrapperImplement::IsValid },
 		{ "Angle", &WrapperImplement::Angle },
 		{ "Dist", &WrapperImplement::Dist },
+		{ "ColliCheck", &WrapperImplement::ColliCheck },
 		{ "GetV", &WrapperImplement::GetV },
 		{ "SetV", &WrapperImplement::SetV },
 		{ "SetImgState", &WrapperImplement::SetImgState },
