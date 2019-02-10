@@ -92,7 +92,7 @@ struct _init
 {
 	_init() { init(); }
 };
-_init __XCollision;
+static _init __XCollision;
 
 bool collision::check(
 	const Vec2& p0, float a0, float b0, float rot0, ColliderType t0,

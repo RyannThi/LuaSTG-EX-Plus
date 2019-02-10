@@ -17,6 +17,7 @@
 // 内置lua扩展
 extern "C" int luaopen_lfs(lua_State *L);
 extern "C" int luaopen_cjson(lua_State* L);
+extern "C" int luaopen_socket_core(lua_State *L);
 
 using namespace std;
 using namespace LuaSTGPlus;
@@ -1349,6 +1350,7 @@ bool AppFrame::Init()LNOEXCEPT
 	luaL_openlibs(L);  // 内建库
 	luaopen_lfs(L);  // 文件系统库
 	luaopen_cjson(L);  // CJSON库
+	luaopen_socket_core(L);  // luasock
 	RegistBuiltInClassWrapper(L);  // 注册内建类
 
 	lua_gc(L, LUA_GCRESTART, -1);  // 重启GC

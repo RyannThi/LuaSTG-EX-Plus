@@ -28,6 +28,9 @@
     <Filter Include="XMath">
       <UniqueIdentifier>{c9deea7f-20b2-40a5-9e23-29e4d293eaae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LuaExtensions\luasock">
+      <UniqueIdentifier>{e8fac02e-f58a-4f97-a95c-a27080f679c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="GameObjectPropertyHash.inl">
@@ -149,6 +152,48 @@
     <ClInclude Include="..\XMath\Vec2.h">
       <Filter>XMath</Filter>
     </ClInclude>
+    <ClInclude Include="..\luasocket\src\auxiliar.h">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\luasocket\src\buffer.h">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\luasocket\src\except.h">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\luasocket\src\inet.h">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\luasocket\src\io.h">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\luasocket\src\luasocket.h">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\luasocket\src\mime.h">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\luasocket\src\options.h">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\luasocket\src\select.h">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\luasocket\src\socket.h">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\luasocket\src\tcp.h">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\luasocket\src\timeout.h">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\luasocket\src\udp.h">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\luasocket\src\wsocket.h">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppFrame.cpp">
@@ -243,6 +288,45 @@
     </ClCompile>
     <ClCompile Include="..\XMath\Vec2.cpp">
       <Filter>XMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\luasocket\src\auxiliar.c">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\luasocket\src\buffer.c">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\luasocket\src\except.c">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\luasocket\src\inet.c">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\luasocket\src\io.c">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\luasocket\src\luasocket.c">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\luasocket\src\mime.c">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\luasocket\src\options.c">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\luasocket\src\select.c">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\luasocket\src\tcp.c">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\luasocket\src\timeout.c">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\luasocket\src\udp.c">
+      <Filter>LuaExtensions\luasock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\luasocket\src\wsocket.c">
+      <Filter>LuaExtensions\luasock</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

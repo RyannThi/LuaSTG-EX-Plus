@@ -5,12 +5,6 @@
 using namespace xmath;
 using namespace cocos2d;
 
-bool intersect::Point_Circle(const Vec2& p0, const Vec2& p1, float r)
-{
-	const auto dsq = distance::Point_Point_squared(p0, p1);
-	return dsq < r*r;
-}
-
 bool intersect::Point_AABB(const Vec2& p0, const Vec2& p1, float halfW, float halfH)
 {
 	const auto dx = p0.x - p1.x;
@@ -79,7 +73,7 @@ bool intersect::OBB_Circle(const Vec2& p0, float halfW, float halfH, float rot,
 	const auto d = p0 - p1;
 	const auto dw = std::max(0.f, abs(tCos * d.x + tSin * d.y) - halfW);
 	const auto dh = std::max(0.f, abs(-tSin * d.x + tCos * d.y) - halfH);
-	return r * r > dh * dh + dw * dw;
+	return r * r >= dh * dh + dw * dw;
 }
 
 bool intersect::OBB_OBB(const Vec2& p0, float halfW0, float halfH0, float rot0,
@@ -130,7 +124,7 @@ bool intersect::OBB_Line(const Vec2& p0, float halfW0, float halfH0, float rot0,
 		std::abs(eProj.dot(halfDiag0)),
 		std::abs(eProj.dot(halfDiag1)));
 	const auto d = distance::Point_Line(p0, p1, tCos1, tSin1);
-	return d < halfProj;
+	return d <= halfProj;
 }
 
 bool intersect::OBB_Triangle(
@@ -181,23 +175,23 @@ bool intersect::OBB_Ellipse(const Vec2& p0, float halfW, float halfH, float rot0
 	const auto halfDiag0_ = vDiag0_ - p0_;
 	const auto halfDiag1_ = vDiag1_ - p0_;
 	const auto d = distance::Point_Parallelogram(p1, p0_, halfDiag0_, halfDiag1_);
-	return d < a;
+	return d <= a;
 }
 
 bool intersect::Circle_Ellipse(const Vec2& p0, float r, const Vec2& p1, float a, float b, float rot)
 {
-	return distance::Point_Ellipse2(p0, p1, a, b, rot) < r;
+	return distance::Point_Ellipse2(p0, p1, a, b, rot) <= r;
 }
 
 bool intersect::Circle_Diamond(const Vec2& p0, float r, const Vec2& p1, float a, float b, float rot)
 {
-	return distance::Point_Diamond(p0, p1, a, b, rot) < r;
+	return distance::Point_Diamond(p0, p1, a, b, rot) <= r;
 }
 
 bool intersect::Circle_Triangle(const Vec2& p, float r,
 	const Vec2& A, const Vec2& B, const Vec2& C)
 {
-	return distance::Point_Triangle(p, A, B, C) < r;
+	return distance::Point_Triangle(p, A, B, C) <= r;
 }
 
 bool intersect::Ellipse_Ellipse(
@@ -226,7 +220,7 @@ bool intersect::Ellipse_Ellipse(
 	d_.y /= b0;
 	return distance::Point_Ellipse2(
 		Vec2::ZERO, d_,
-		std::sqrt(2 / (sum + dif)), std::sqrt(2 / (sum - dif)), std::atan(tanv)) < 1;
+		std::sqrt(2 / (sum + dif)), std::sqrt(2 / (sum - dif)), std::atan(tanv)) <= 1;
 }
 
 bool intersect::Ellipse_Diamond(const Vec2& p0, float a0, float b0, float rot0,
@@ -239,7 +233,7 @@ bool intersect::Ellipse_Diamond(const Vec2& p0, float a0, float b0, float rot0,
 	p.rotate(Vec2::ZERO, -rot0);
 	p.y *= fac;
 	return distance::Point_Parallelogram(
-		Vec2::ZERO, p, Vec2(c*a1, s*a1*fac), Vec2(-s * b1, c*b1*fac)) < a0;
+		Vec2::ZERO, p, Vec2(c*a1, s*a1*fac), Vec2(-s * b1, c*b1*fac)) <= a0;
 }
 
 bool intersect::Ellipse_Triangle(const Vec2& p, float a, float b, float rot,
@@ -254,7 +248,7 @@ bool intersect::Ellipse_Triangle(const Vec2& p, float a, float b, float rot,
 	const Vec2 A_(PA.x*c - PA.y*s, (PA.y*c + PA.x*s)*fac);
 	const Vec2 B_(PB.x*c - PB.y*s, (PB.y*c + PB.x*s)*fac);
 	const Vec2 C_(PC.x*c - PC.y*s, (PC.y*c + PC.x*s)*fac);
-	return distance::Point_Triangle(Vec2::ZERO, A_, B_, C_);
+	return Point_Triangle(Vec2::ZERO, A_, B_, C_);
 }
 
 bool intersect::Segment_Segment(const Vec2& A0, const Vec2& B0,
@@ -364,6 +358,6 @@ bool intersect::Line_Circle(const Vec2& p0, float r, const Vec2& p1, float rot)
 {
 	float tSin0, tCos0;
 	SinCos(rot, tSin0, tCos0);
-	return distance::Point_Line(p0, p1, tCos0, tSin0) < r;
+	return distance::Point_Line(p0, p1, tCos0, tSin0) <= r;
 }
 

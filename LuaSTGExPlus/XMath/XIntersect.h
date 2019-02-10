@@ -5,8 +5,13 @@ namespace xmath
 {
 	namespace intersect
 	{
-		bool Point_Circle(const cocos2d::Vec2& p0,
-			const cocos2d::Vec2& p1, float r);
+		inline bool Point_Circle(const cocos2d::Vec2& p0,
+			const cocos2d::Vec2& p1, float r)
+		{
+			const auto dx = p0.x - p1.x;
+			const auto dy = p0.y - p1.y;
+			return dx * dx + dy * dy <= r * r;
+		}
 		bool Point_AABB(const cocos2d::Vec2& p0, const cocos2d::Vec2& p1, float halfW, float halfH);
 		bool Point_OBB(const cocos2d::Vec2& p0, const cocos2d::Vec2& p1, float halfW, float halfH, float rot);
 		bool Point_Diamond(const cocos2d::Vec2& p0,
@@ -70,13 +75,20 @@ namespace xmath
 			return std::max(p0.x - halfW0, p1.x - halfW1) <= std::min(p0.x + halfW0, p1.x + halfW1) &&
 				std::max(p0.y - halfH0, p1.y - halfH1) <= std::min(p0.y + halfH0, p1.y + halfH1);
 		}
+		inline bool AABB_Circle(const cocos2d::Vec2& p0, float halfW, float halfH,
+			const cocos2d::Vec2& p1, float r)
+		{
+			const auto dw = std::max(0.f, std::abs(p0.x - p1.x) - halfW);
+			const auto dh = std::max(0.f, std::abs(p0.y - p1.y) - halfH);
+			return r * r >= dh * dh + dw * dw;
+		}
 		inline bool Circle_Circle(const cocos2d::Vec2& p0, float r0,
 			const cocos2d::Vec2& p1, float r1)
 		{
 			const auto d = r0 + r1;
 			const auto dx = p0.x - p1.x;
 			const auto dy = p0.y - p1.y;
-			return dx * dx + dy * dy < d * d;
+			return dx * dx + dy * dy <= d * d;
 		}
 	}
 }
