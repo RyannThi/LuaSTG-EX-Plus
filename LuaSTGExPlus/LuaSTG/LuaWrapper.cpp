@@ -1129,6 +1129,23 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				return luaL_error(L, "invalid argument #1 for 'SetResourceStatus', requires 'stage', 'global' or 'none'.");
 			return 0;
 		}
+		static int GetResourceStatus(lua_State* L)LNOEXCEPT
+		{
+			switch (LRES.GetActivedPoolType()) {
+			case ResourcePoolType::Global:
+				lua_pushstring(L, "global");
+				break;
+			case ResourcePoolType::Stage:
+				lua_pushstring(L, "stage");
+				break;
+			case ResourcePoolType::None:
+				lua_pushstring(L, "none");
+				break;
+			default:
+				return luaL_error(L, "can't get resource pool status at this time.");
+			}
+			return 0;
+		}
 		static int LoadTexture(lua_State* L)LNOEXCEPT
 		{
 			const char* name = luaL_checkstring(L, 1);
@@ -2424,6 +2441,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		
 		// 资源控制函数
 		{ "SetResourceStatus", &WrapperImplement::SetResourceStatus },
+		{ "GetResourceStatus", &WrapperImplement::GetResourceStatus },
 		{ "LoadTexture", &WrapperImplement::LoadTexture },
 		{ "LoadImage", &WrapperImplement::LoadImage },
 		{ "LoadAnimation", &WrapperImplement::LoadAnimation },
