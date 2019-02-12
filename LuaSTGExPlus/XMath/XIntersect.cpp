@@ -32,6 +32,8 @@ bool intersect::Point_Diamond(const Vec2& p0, const Vec2& p1, float a, float b, 
 
 bool intersect::Point_Ellipse(const Vec2& p0, const Vec2& p1, float a, float b, float rot)
 {
+	if (a == b)
+		return Point_Circle(p0, p1, a);
 	auto p = p0 - p1;
 	p.rotate(Vec2::ZERO, -rot);
 	const auto x = p.x;
@@ -71,8 +73,8 @@ bool intersect::OBB_Circle(const Vec2& p0, float halfW, float halfH, float rot,
 	float tSin, tCos;
 	SinCos(rot, tSin, tCos);
 	const auto d = p0 - p1;
-	const auto dw = std::max(0.f, abs(tCos * d.x + tSin * d.y) - halfW);
-	const auto dh = std::max(0.f, abs(-tSin * d.x + tCos * d.y) - halfH);
+	const auto dw = std::max(0.f, std::abs(tCos * d.x + tSin * d.y) - halfW);
+	const auto dh = std::max(0.f, std::abs(-tSin * d.x + tCos * d.y) - halfH);
 	return r * r >= dh * dh + dw * dw;
 }
 
@@ -102,7 +104,7 @@ bool intersect::OBB_OBB(const Vec2& p0, float halfW0, float halfH0, float rot0,
 			std::abs(ex*(v0.x + v1.x) + ey * (v0.y + v1.y)),
 			std::abs(ex*(v0.x - v1.x) + ey * (v0.y - v1.y))
 		);
-		if (projHalfDiag + projOther[i] < abs(ex * d.x + ey * d.y))
+		if (projHalfDiag + projOther[i] < std::abs(ex * d.x + ey * d.y))
 			return false;
 	}
 	return true;
@@ -158,6 +160,8 @@ bool intersect::OBB_Diamond(const Vec2& p0, float halfW, float halfH, float rot0
 bool intersect::OBB_Ellipse(const Vec2& p0, float halfW, float halfH, float rot0,
 	const Vec2& p1, float a, float b, float rot1)
 {
+	if (a == b)
+		return OBB_Circle(p0, halfW, halfH, rot0, p1, a);
 	float tSin0, tCos0;
 	SinCos(rot0, tSin0, tCos0);
 	float tSin1, tCos1;
@@ -198,6 +202,10 @@ bool intersect::Ellipse_Ellipse(
 	const Vec2& p0, float a0, float b0, float rot0,
 	const Vec2& p1, float a1, float b1, float rot1)
 {
+	if (a0 == b0)
+		return Circle_Ellipse(p0, a0, p1, a1, b1, rot1);
+	if (a1 == b1)
+		return Circle_Ellipse(p1, a1, p0, a0, b0, rot0);
 	float s, c;
 	SinCos(rot1 - rot0, s, c);
 	const auto c2 = c * c;
@@ -226,6 +234,8 @@ bool intersect::Ellipse_Ellipse(
 bool intersect::Ellipse_Diamond(const Vec2& p0, float a0, float b0, float rot0,
 	const Vec2& p1, float a1, float b1, float rot1)
 {
+	if (a0 == b0)
+		return Circle_Diamond(p0, a0, p1, a1, b1, rot1);
 	float s, c;
 	SinCos(rot1 - rot0, s, c);
 	const auto fac = a0 / b0;
@@ -239,6 +249,8 @@ bool intersect::Ellipse_Diamond(const Vec2& p0, float a0, float b0, float rot0,
 bool intersect::Ellipse_Triangle(const Vec2& p, float a, float b, float rot,
 	const Vec2& A, const Vec2& B, const Vec2& C)
 {
+	if (a == b)
+		return Circle_Triangle(p, a, A, B, C);
 	float s, c;
 	SinCos(-rot, s, c);
 	const auto fac = a / b;
