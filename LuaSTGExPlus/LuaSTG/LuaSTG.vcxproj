@@ -72,7 +72,6 @@
     <ClInclude Include="GameObjectPool.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="LogSystem.h" />
-    <ClInclude Include="lstgsteam.h" />
     <ClInclude Include="LuaWrapper.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="ObjectPool.hpp" />
@@ -119,7 +118,6 @@
     <ClCompile Include="GameObjectPool.cpp" />
     <ClCompile Include="KeyboardX.cpp" />
     <ClCompile Include="LogSystem.cpp" />
-    <ClCompile Include="lstgsteam.cpp" />
     <ClCompile Include="LuaWrapper.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Network.cpp" />
