@@ -11,7 +11,7 @@ LuaSTG EX Plus 是 LuaSTG Plus 的衍生版本，其大部分代码基于9chu的
 1.lua file system(unkown version)(->luastg)  
 2.cjson to lua(unkown version)(->luastg)  
 3.luajit(2.0.5)(->luastg)  
-4.steam API(unkown version)(->luastg)  
+4.【数据删除】  
 5.zlib(1.2.11)(->common)  
 6.libogg(1.3.3)(->fancy2d)  
 7.libvorbis(1.3.6)(->fancy2d)  
