@@ -886,7 +886,7 @@ bool GameObject::ChangeResource(const char* res_name)
 		UpdateCollisionCirclrRadius();
 		return true;
 	}
-
+	
 	fcyRefPointer<ResAnimation> tAnimation = LRES.FindAnimation(res_name);
 	if (tAnimation)
 	{
@@ -925,6 +925,56 @@ bool GameObject::ChangeResource(const char* res_name)
 
 	return false;
 }
+/*
+template <typename T>
+bool GameObject::ChangeResourceEx(T res_set)
+{
+	switch (res_set->GetType()) {
+		case ResourceType::Sprite: {
+			res = res_set;
+			res->AddRef();
+			a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
+			b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+			rect = res_set->IsRectangle();
+			UpdateCollisionCirclrRadius();
+			return true;
+		}
+		case ResourceType::Animation: {
+			res = res_set;
+			res->AddRef();
+			a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
+			b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+			rect = res_set->IsRectangle();
+			UpdateCollisionCirclrRadius();
+			return true;
+		}
+		case ResourceType::Particle: {
+			res = res_set;
+			if (!(ps = res_set->AllocInstance()))
+			{
+				res = nullptr;
+				LERROR("无法构造粒子池，内存不足");
+				return false;
+			}
+			ps->SetInactive();
+			ps->SetCenter(fcyVec2((float)x, (float)y));
+			ps->SetRotation((float)rot);
+			ps->SetActive();
+
+			res->AddRef();
+			a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
+			b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+			rect = res_set->IsRectangle();
+			UpdateCollisionCirclrRadius();
+			return true;
+		}
+	}
+	return false;
+}
+*/
+#pragma endregion
+
+#pragma region GameObjectPool
 
 GameObjectPool::GameObjectPool(lua_State* pL)
 	: L(pL)

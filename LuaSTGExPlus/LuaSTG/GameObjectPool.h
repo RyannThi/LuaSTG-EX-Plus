@@ -133,9 +133,65 @@ namespace LuaSTGPlus
 		}
 
 		bool ChangeResource(const char* res_name);
+
+		template <typename T>
+		//bool ChangeResourceEx(T res_set);
+		bool ChangeResourceEx(T res_set)
+		{
+			if (res) {
+				if (!(res_set->GetType() == res->GetType() && res_set->GetResName() == res->GetResName())) {
+						ReleaseResource();
+				}
+			}
+			switch (res_set->GetType()) {
+			case ResourceType::Sprite: {
+				res = res_set;
+				res->AddRef();
+				a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
+				b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+				rect = res_set->IsRectangle();
+				UpdateCollisionCirclrRadius();
+				return true;
+			}
+			case ResourceType::Animation: {
+				res = res_set;
+				res->AddRef();
+				a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
+				b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+				rect = res_set->IsRectangle();
+				UpdateCollisionCirclrRadius();
+				return true;
+			}
+			case ResourceType::Particle: {
+				//*
+				fcyRefPointer<ResParticle> _res = static_cast<fcyRefPointer<ResParticle>>(res_set);
+				res = _res;
+				if (!(ps = _res->AllocInstance()))
+				{
+					res = nullptr;
+					LERROR("无法构造粒子池，内存不足");
+					return false;
+				}
+				ps->SetInactive();
+				ps->SetCenter(fcyVec2((float)x, (float)y));
+				ps->SetRotation((float)rot);
+				ps->SetActive();
+
+				res->AddRef();
+				a = _res->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
+				b = _res->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+				rect = _res->IsRectangle();
+				UpdateCollisionCirclrRadius();
+				return true;
+				//*/
+			}
+			}
+			return false;
+		}
 	};
 
 	/// @brief 曲线激光特化实现
+#define DEFINE_GAME_OBJECT_BENTLAZER_CLASS //防止重复定义
 	class GameObjectBentLaser
 	{
 	public:
@@ -325,6 +381,9 @@ namespace LuaSTGPlus
 		int ParticleGetn(lua_State* L)LNOEXCEPT;
 		int ParticleGetEmission(lua_State* L)LNOEXCEPT;
 		int ParticleSetEmission(lua_State* L)LNOEXCEPT;
+
+		/// @brief 对象资源相关操作
+		
 	public:  // 内部使用
 		void DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer* grender, int groupId, fcyColor fillColor);
 		static bool CheckWorld(lua_Integer gameworld, lua_Integer objworld){

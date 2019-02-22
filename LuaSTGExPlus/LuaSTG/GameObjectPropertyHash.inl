@@ -21,9 +21,9 @@ namespace LuaSTGPlus
 		MAXV = 9,
 		MAXVX = 10,
 		MAXVY = 11,
-		AX = 12,
-		AY = 13,
-		AG = 14,
+		AG = 12,
+		AX = 13,
+		AY = 14,
 		LAYER = 15,
 		GROUP = 16,
 		HIDE = 17,
@@ -64,9 +64,9 @@ namespace LuaSTGPlus
 			"maxv",
 			"maxvx",
 			"maxvy",
+			"ag",
 			"ax",
 			"ay",
-			"ag",
 			"layer",
 			"group",
 			"hide",
@@ -97,22 +97,22 @@ namespace LuaSTGPlus
 
 		static const unsigned int s_hashTable1[] =
 		{
-			199, 14, 137,
+			4, 201, 154,
 		};
 
 		static const unsigned int s_hashTable2[] =
 		{
-			234, 67, 180,
+			226, 34, 226,
 		};
 
 		static const unsigned int s_hashTableG[] =
 		{
-			0, 3, 11, 0, 9, 14, 35, 6, 0, 0,
-			0, 0, 0, 25, 0, 0, 21, 15, 28, 0,
-			0, 0, 0, 0, 19, 8, 0, 0, 22, 2,
-			34, 7, 15, 18, 24, 0, 3, 8, 0, 9,
-			11, 28, 25, 0, 0, 31, 7, 0, 4, 5,
-			4, 0, 7, 31, 0, 0, 3, 0, 12,
+			0, 0, 0, 0, 0, 10, 0, 0, 1, 13,
+			0, 0, 5, 0, 1, 1, 1, 13, 0, 0,
+			14, 0, 16, 19, 24, 11, 0, 28, 30, 32,
+			0, 5, 0, 5, 20, 33, 0, 0, 7, 35,
+			29, 15, 30, 8, 0, 20, 3, 1, 30, 0,
+			34, 0, 33, 0, 18, 1, 29, 30, 0,
 		};
 
 		unsigned int f1 = 0, f2 = 0, len = strlen(key);
@@ -133,6 +133,7 @@ namespace LuaSTGPlus
 			return static_cast<GameObjectProperty>(hash);
 		return GameObjectProperty::_KEY_NOT_FOUND;
 	}
+
 }
 
 namespace LuaSTGPlusESC

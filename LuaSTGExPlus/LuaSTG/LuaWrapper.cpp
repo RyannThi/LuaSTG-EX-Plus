@@ -6,6 +6,7 @@
 #define TYPENAME_RANDGEN "lstgRand"
 #define TYPENAME_BENTLASER "lstgBentLaserData"
 #define TYPENAME_STOPWATCH "lstgStopWatch"
+#define TYPENAME_RESOURCE "lstgResource"
 
 #ifdef min
 #undef min
@@ -611,6 +612,342 @@ fcyStopWatch* Fancy2dStopWatchWrapper::CreateAndPush(lua_State* L)
 #pragma endregion
 
 ////////////////////////////////////////////////////////////////////////////////
+/// GameResourceWrapper
+////////////////////////////////////////////////////////////////////////////////
+#pragma region GameResourceWrapper
+void GameResourceWrapper::Register(lua_State* L)LNOEXCEPT
+{
+	struct WrapperImplement
+	{
+		/*
+		static int Update(lua_State* L)LNOEXCEPT
+		{
+			Resource* p = static_cast<Resource*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
+			if (!p)
+				return luaL_error(L, "lstgBentLaserData was released.");
+			if (!lua_istable(L, 2))
+				return luaL_error(L, "invalid lstg object for 'Update'.");
+			lua_rawgeti(L, 2, 2);  // self t(object) ??? id
+			size_t id = (size_t)luaL_checkinteger(L, -1);
+			lua_pop(L, 1);
+			if (!p->handle->Update(id, luaL_checkinteger(L, 3), (float)luaL_checknumber(L, 4), luaL_optnumber(L, 5, 0) == 0))
+				return luaL_error(L, "invalid lstg object for 'Update'.");
+			return 0;
+		}
+		static int UpdateNode(lua_State* L)LNOEXCEPT
+		{
+			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
+			if (!p->handle)
+				return luaL_error(L, "lstgBentLaserData was released.");
+			if (!lua_istable(L, 2))
+				return luaL_error(L, "invalid lstg object for 'UpdateNode'.");
+			lua_rawgeti(L, 2, 2);  // self t(object) ??? id
+			size_t id = (size_t)luaL_checkinteger(L, -1);
+			lua_pop(L, 1);
+			if (!p->handle->UpdateByNode(id, luaL_checkinteger(L, 3), luaL_checkinteger(L, 4), (float)luaL_checknumber(L, 5), luaL_optnumber(L, 6, 0) == 0))
+				return luaL_error(L, "invalid lstg object for 'UpdateNode'.");
+			return 0;
+		}
+		static int UpdatePositionByList(lua_State* L)LNOEXCEPT // u(laser) t(list) length width index revert 
+		{
+			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
+			if (!p->handle)
+				return luaL_error(L, "lstgBentLaserData was released.");
+			if (!lua_istable(L, 2))
+				return luaL_error(L, "invalid lstg object for 'Update'.");
+			//lua_rawgeti(L, 2, 2);  // self t(object) ??? id
+			//size_t id = (size_t)luaL_checkinteger(L, -1);
+			//lua_pop(L, 1);
+
+			int i3 = luaL_checkinteger(L, 3);
+			float f4 = luaL_checknumber(L, 4);
+			int i5 = luaL_optinteger(L, 5, 1);
+			bool i6 = luaL_optinteger(L, 6, 0) != 0;
+			// ... t(list)
+			lua_settop(L, 2);
+
+			if (!p->handle->UpdatePositionByList(L,
+				i3,
+				f4,
+				i5,
+				i6
+			))
+				return luaL_error(L, "Update laser data failed.");
+			return 0;
+		}
+		static int SampleByLength(lua_State* L)LNOEXCEPT // t(self) <length>
+		{
+			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
+			if (!p->handle)
+				return luaL_error(L, "lstgBentLaserData was released.");
+			float length = (float)luaL_checknumber(L, 2);
+			lua_pop(L, 2); // 
+			p->handle->SampleL(L, length); // t(list)
+			return 1;
+		}
+		static int SampleByTime(lua_State* L)LNOEXCEPT // t(self) <length>
+		{
+			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
+			if (!p->handle)
+				return luaL_error(L, "lstgBentLaserData was released.");
+			float time = (float)luaL_checknumber(L, 2);
+			lua_pop(L, 2); // 
+			p->handle->SampleT(L, time / 60.0f); // t(list)
+			return 1;
+		}
+
+		static int Release(lua_State* L)LNOEXCEPT
+		{
+			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
+			if (p->handle)
+			{
+				GameObjectBentLaser::FreeInstance(p->handle);
+				p->handle = nullptr;
+			}
+			return 0;
+		}
+		static int Render(lua_State* L)LNOEXCEPT
+		{
+			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
+			if (!p->handle)
+				return luaL_error(L, "lstgBentLaserData was released.");
+			if (!p->handle->Render(
+				luaL_checkstring(L, 2),
+				TranslateBlendMode(L, 3),
+				*static_cast<fcyColor*>(luaL_checkudata(L, 4, TYPENAME_COLOR)),
+				(float)luaL_checknumber(L, 5),
+				(float)luaL_checknumber(L, 6),
+				(float)luaL_checknumber(L, 7),
+				(float)luaL_checknumber(L, 8),
+				(float)luaL_optnumber(L, 9, 1.) * LRES.GetGlobalImageScaleFactor()
+			))
+			{
+				return luaL_error(L, "can't render object with texture '%s'.", luaL_checkstring(L, 2));
+			}
+			return 0;
+		}
+		static int CollisionCheck(lua_State* L)LNOEXCEPT
+		{
+			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
+			if (!p->handle)
+				return luaL_error(L, "lstgBentLaserData was released.");
+			bool r = p->handle->CollisionCheck(
+				(float)luaL_checknumber(L, 2),
+				(float)luaL_checknumber(L, 3),
+				(float)luaL_optnumber(L, 4, 0),
+				(float)luaL_optnumber(L, 5, 0),
+				(float)luaL_optnumber(L, 6, 0),
+				lua_toboolean(L, 7) == 0 ? false : true
+			);
+			lua_pushboolean(L, r);
+			return 1;
+		}
+		static int CollisionCheckWidth(lua_State* L)LNOEXCEPT
+		{
+			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
+			if (!p->handle)
+				return luaL_error(L, "lstgBentLaserData was released.");
+			bool r = p->handle->CollisionCheckW(
+				(float)luaL_checknumber(L, 2),
+				(float)luaL_checknumber(L, 3),
+				(float)luaL_optnumber(L, 5, 0),
+				(float)luaL_optnumber(L, 6, 0),
+				(float)luaL_optnumber(L, 7, 0),
+				lua_toboolean(L, 8) == 0 ? false : true,
+				(float)luaL_checknumber(L, 4)
+			);
+			lua_pushboolean(L, r);
+			return 1;
+		}
+		static int BoundCheck(lua_State* L)LNOEXCEPT
+		{
+			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
+			if (!p->handle)
+				return luaL_error(L, "lstgBentLaserData was released.");
+			bool r = p->handle->BoundCheck();
+			lua_pushboolean(L, r);
+			return 1;
+		}
+		static int SetAllWidth(lua_State* L)LNOEXCEPT
+		{
+			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
+			if (!p->handle)
+				return luaL_error(L, "lstgBentLaserData was released.");
+			p->handle->SetAllWidth((float)luaL_checknumber(L, 2));
+
+			return 0;
+		}
+		*/
+		static int Meta_ToString(lua_State* L)LNOEXCEPT
+		{
+			ResourceWrapper* p = static_cast<ResourceWrapper*>(luaL_checkudata(L, 1, TYPENAME_RESOURCE));
+			string info = "lstg.Resource object,type :";
+			switch (p->m_type) {
+			case ResourceType::Texture:
+				info = info + "texture";
+				break;
+			case ResourceType::Sprite:
+				info = info + "image";
+				break;
+			case ResourceType::Animation:
+				info = info + "animation";
+				break;
+			case ResourceType::Music:
+				info = info + "music";
+				break;
+			case ResourceType::SoundEffect:
+				info = info + "sound";
+				break;
+			case ResourceType::Particle:
+				info = info + "particle";
+				break;
+			case ResourceType::SpriteFont:
+				info = info + "texture font";
+				break;
+			case ResourceType::TrueTypeFont:
+				info = info + "ttf";
+				break;
+			case ResourceType::FX:
+				info = info + "shader";
+				break;
+			}
+			lua_pushfstring(L, info.c_str());
+			return 1;
+		}
+		static int Meta_GC(lua_State* L)LNOEXCEPT
+		{
+			ResourceWrapper* p = static_cast<ResourceWrapper*>(luaL_checkudata(L, 1, TYPENAME_RESOURCE));
+			switch (p->m_type) {
+			case ResourceType::Texture:
+				p->m_tex->Release();
+				break;
+			case ResourceType::Sprite:
+				p->m_img->Release();
+				break;
+			case ResourceType::Animation:
+				p->m_ani->Release();
+				break;
+			case ResourceType::Music:
+				p->m_bgm->Release();
+				break;
+			case ResourceType::SoundEffect:
+				p->m_se->Release();
+				break;
+			case ResourceType::Particle:
+				p->m_ps->Release();
+				break;
+			case ResourceType::SpriteFont:
+			case ResourceType::TrueTypeFont:
+				p->m_fnt->Release();
+				break;
+			case ResourceType::FX:
+				p->m_fx->Release();
+				break;
+			}
+			return 0;
+		}
+	};
+
+	luaL_Reg tMethods[] =
+	{
+		/*
+		{ "Update", &WrapperImplement::Update },
+		{ "UpdateNode", &WrapperImplement::UpdateNode },
+		{ "Release", &WrapperImplement::Release },
+		{ "Render", &WrapperImplement::Render },
+		{ "CollisionCheck", &WrapperImplement::CollisionCheck },
+		{ "CollisionCheckWidth", &WrapperImplement::CollisionCheckWidth },
+		{ "BoundCheck", &WrapperImplement::BoundCheck },
+		{ "SampleByLength", &WrapperImplement::SampleByLength },
+		{ "SampleByTime", &WrapperImplement::SampleByTime },
+		{ "UpdatePositionByList", &WrapperImplement::UpdatePositionByList },
+		{ "SetAllWidth", &WrapperImplement::SetAllWidth },
+		*/
+		{ NULL, NULL }
+	};
+	luaL_Reg tMetaTable[] =
+	{
+		{ "__tostring", &WrapperImplement::Meta_ToString },
+		{ "__gc", &WrapperImplement::Meta_GC },
+		{ NULL, NULL }
+	};
+
+	luaL_openlib(L, TYPENAME_RESOURCE, tMethods, 0);  // t
+	luaL_newmetatable(L, TYPENAME_RESOURCE);  // t mt
+	luaL_openlib(L, 0, tMetaTable, 0);  // t mt
+	lua_pushliteral(L, "__index");  // t mt s
+	lua_pushvalue(L, -3);  // t mt s t
+	lua_rawset(L, -3);  // t mt (mt["__index"] = t)
+	lua_pushliteral(L, "__metatable");  // t mt s
+	lua_pushvalue(L, -3);  // t mt s t
+	lua_rawset(L, -3);  // t mt (mt["__metatable"] = t)  保护metatable不被修改
+	lua_pop(L, 2);
+}
+
+template <typename T>
+T GameResourceWrapper::CreateAndPush(lua_State* L, T res)
+{
+	ResourceWrapper* p = static_cast<ResourceWrapper*>(lua_newuserdata(L, sizeof(ResourceWrapper)));
+	new(p) ResourceWrapper();  // 构造
+	ResourceType tResType = res->GetType();
+	p->m_type = tResType;
+	switch (tResType) {
+	case ResourceType::Texture:
+		p->m_tex = res;
+		p->m_tex->AddRef();
+		luaL_getmetatable(L, TYPENAME_RESOURCE);
+		lua_setmetatable(L, -2);
+		return p->m_tex;
+	case ResourceType::Sprite:
+		p->m_img = res;
+		p->m_img->AddRef();
+		luaL_getmetatable(L, TYPENAME_RESOURCE);
+		lua_setmetatable(L, -2);
+		return p->m_img;
+	case ResourceType::Animation:
+		p->m_ani = res;
+		p->m_ani->AddRef();
+		luaL_getmetatable(L, TYPENAME_RESOURCE);
+		lua_setmetatable(L, -2);
+		return p->m_ani;
+	case ResourceType::Music:
+		p->m_bgm = res;
+		p->m_bgm->AddRef();
+		luaL_getmetatable(L, TYPENAME_RESOURCE);
+		lua_setmetatable(L, -2);
+		return p->m_bgm;
+	case ResourceType::SoundEffect:
+		p->m_se = res;
+		p->m_se->AddRef();
+		luaL_getmetatable(L, TYPENAME_RESOURCE);
+		lua_setmetatable(L, -2);
+		return p->m_se;
+	case ResourceType::Particle:
+		p->m_ps = res;
+		p->m_ps->AddRef();
+		luaL_getmetatable(L, TYPENAME_RESOURCE);
+		lua_setmetatable(L, -2);
+		return p->m_ps;
+	case ResourceType::SpriteFont:
+	case ResourceType::TrueTypeFont:
+		p->m_fnt = res;
+		p->m_fnt->AddRef();
+		luaL_getmetatable(L, TYPENAME_RESOURCE);
+		lua_setmetatable(L, -2);
+		return p->m_fnt;
+	case ResourceType::FX:
+		p->m_fx = res;
+		p->m_fx->AddRef();
+		luaL_getmetatable(L, TYPENAME_RESOURCE);
+		lua_setmetatable(L, -2);
+		return p->m_fx;
+	default:
+		return nullptr;
+	}
+}
+#pragma endregion
+
+////////////////////////////////////////////////////////////////////////////////
 /// BuiltInFunctionWrapper
 ////////////////////////////////////////////////////////////////////////////////
 #pragma region BuiltInFunctionWrapper
@@ -618,6 +955,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 {
 	struct WrapperImplement
 	{
+		#pragma region 框架函数
 		// 框架函数
 		static int SetWindowed(lua_State* L)LNOEXCEPT
 		{
@@ -755,7 +1093,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				LAPP.ShowSplashWindow(luaL_checkstring(L, 1));
 			return 0;
 		}
+		#pragma endregion
 
+		#pragma region 对象控制函数
 		// 对象控制函数（这些方法将被转发到对象池）
 		static int GetnObj(lua_State* L)LNOEXCEPT
 		{
@@ -1114,7 +1454,41 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			lua_pushinteger(L, LAPP.GetSuperPauseTime());
 			return 1;
 		}
+		//ETC 对象资源设置
+		static int ObjChangeRes(lua_State* L)LNOEXCEPT
+		{
+			//t(object) res(lstgResource) ???
+			if (!lua_istable(L, 1))
+				return luaL_error(L, "invalid lstg object for 'ObjectChangeResource'.");
+			lua_rawgeti(L, 1, 2);  // t(object) res(lstgResource) ??? id
+			size_t id = (size_t)luaL_checkinteger(L, -1);
+			lua_pop(L, 1);
 
+			GameResourceWrapper::ResourceWrapper* pRes = static_cast<GameResourceWrapper::ResourceWrapper*>(luaL_checkudata(L, 2, TYPENAME_RESOURCE));
+			GameObject* pObj = LPOOL.GetPooledObject(id);
+			//*
+			switch (pRes->m_type) {
+			case ResourceType::Sprite: {
+				pObj->ChangeResourceEx<fcyRefPointer<ResSprite>>(pRes->m_img);
+				break;
+			}
+			case ResourceType::Animation: {
+				pObj->ChangeResourceEx<fcyRefPointer<ResAnimation>>(pRes->m_ani);
+				break;
+			}
+			case ResourceType::Particle: {
+				pObj->ChangeResourceEx<fcyRefPointer<ResParticle>>(pRes->m_ps);
+				break;
+			}
+			default:
+				return luaL_error(L, "invalid resource type for 'ObjectChangeResource'.");
+			}
+			//*/
+			return 0;
+		}
+		#pragma endregion
+
+		#pragma region 资源控制函数
 		// 资源控制函数
 		static int SetResourceStatus(lua_State* L)LNOEXCEPT
 		{
@@ -1545,6 +1919,30 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			}
 			return 0;
 		}
+		//ETC
+		static int SetImageStateEx(lua_State* L)LNOEXCEPT
+		{
+			GameResourceWrapper::ResourceWrapper* pRes = static_cast<GameResourceWrapper::ResourceWrapper*>(luaL_checkudata(L, 1, TYPENAME_RESOURCE));
+			if (pRes->m_type != ResourceType::Sprite) {
+				return luaL_error(L, "InValid resource type for image state set.");
+			}
+			ResSprite* p = pRes->m_img;
+			p->SetBlendMode(TranslateBlendMode(L, 2));
+			if (lua_gettop(L) == 3)
+				p->GetSprite()->SetColor(*static_cast<fcyColor*>(luaL_checkudata(L, 3, TYPENAME_COLOR)));
+			else if (lua_gettop(L) == 6)
+			{
+				fcyColor tColors[] = {
+					*static_cast<fcyColor*>(luaL_checkudata(L, 3, TYPENAME_COLOR)),
+					*static_cast<fcyColor*>(luaL_checkudata(L, 4, TYPENAME_COLOR)),
+					*static_cast<fcyColor*>(luaL_checkudata(L, 5, TYPENAME_COLOR)),
+					*static_cast<fcyColor*>(luaL_checkudata(L, 6, TYPENAME_COLOR))
+				};
+				p->GetSprite()->SetColor(tColors);
+			}
+			return 0;
+		}
+		#pragma endregion
 
 		// 绘图函数
 		static int BeginScene(lua_State* L)LNOEXCEPT
@@ -1936,6 +2334,27 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			int a2 = luaL_checkinteger(L, 2);
 			lua_pushboolean(L, LAPP.CheckWorlds(a1, a2));
 			return 1;
+		}
+		//ETC
+		static int RenderEx(lua_State* L)LNOEXCEPT
+		{
+			GameResourceWrapper::ResourceWrapper* pRes = static_cast<GameResourceWrapper::ResourceWrapper*>(luaL_checkudata(L, 1, TYPENAME_RESOURCE));
+			if (pRes->m_type != ResourceType::Sprite) {
+				return luaL_error(L, "Invalid resource type render");
+			}
+			if (!LAPP.Render(
+				pRes->m_img,
+				static_cast<float>(luaL_checknumber(L, 2)),
+				static_cast<float>(luaL_checknumber(L, 3)),
+				static_cast<float>(luaL_optnumber(L, 4, 0.) * LDEGREE2RAD),
+				static_cast<float>(luaL_optnumber(L, 5, 1.) * LRES.GetGlobalImageScaleFactor()),
+				static_cast<float>(luaL_optnumber(L, 6, luaL_optnumber(L, 5, 1.)) * LRES.GetGlobalImageScaleFactor()),
+				static_cast<float>(luaL_optnumber(L, 7, 0.5))
+			))
+			{
+				return luaL_error(L, "can't render '%m'", luaL_checkstring(L, 1));
+			}
+			return 0;
 		}
 
 		// 声音控制函数
@@ -2352,7 +2771,201 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			Fancy2dStopWatchWrapper::CreateAndPush(L);
 			return 1;
 		}
-		
+		static int ResourceRef(lua_State* L)LNOEXCEPT
+		{
+			//ResourceRef(ResorseName:string, ResourceType:number[, ResourcePool:number])
+			//从资源池中获取一个资源并包装成对象使用
+			
+			//获取资源名
+			string resName = luaL_checkstring(L, 1);
+			//获取资源类型
+			int _tResourceType = luaL_checkint(L, 2);
+			if ( _tResourceType > static_cast<int>(ResourceType::FX) || _tResourceType < static_cast<int>(ResourceType::Texture) ) {
+				//在这里检查
+				return luaL_error(L, "Unkown resource type.");
+			}
+			ResourceType tResourceType = static_cast<ResourceType>(_tResourceType);
+			//获取要查找的资源池
+			ResourcePoolType tPoolType = ResourcePoolType::Stage;
+			bool constFind = false;//强制查找某个池
+			if (lua_gettop(L) == 3) {
+				string poolName = luaL_checkstring(L, 3);
+				if (poolName == "global") {
+					tPoolType = ResourcePoolType::Global;
+				}
+				else if (poolName == "stage") {
+					tPoolType = ResourcePoolType::Stage;
+				}
+				else {
+					return luaL_error(L, "Unkown ResourcePool Type.");
+				}
+				constFind = true;
+			}
+			
+			//获取资源
+			if (constFind) {
+				//强制查找某个池
+				if (LRES.GetResourcePool(tPoolType)->CheckResourceExists(tResourceType, resName)) {
+					switch (tResourceType) {
+					case ResourceType::Texture: {
+						fcyRefPointer<ResTexture> pRes = LRES.GetResourcePool(tPoolType)->GetTexture(resName.c_str());
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResTexture>>(L, pRes);
+						break;
+					}
+					case ResourceType::Sprite: {
+						fcyRefPointer<ResSprite> pRes = LRES.GetResourcePool(tPoolType)->GetSprite(resName.c_str());
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResSprite>>(L, pRes);
+						break;
+					}
+					case ResourceType::Animation: {
+						fcyRefPointer<ResAnimation> pRes = LRES.GetResourcePool(tPoolType)->GetAnimation(resName.c_str());
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResAnimation>>(L, pRes);
+						break;
+					}
+					case ResourceType::Music: {
+						fcyRefPointer<ResMusic> pRes = LRES.GetResourcePool(tPoolType)->GetMusic(resName.c_str());
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResMusic>>(L, pRes);
+						break;
+					}
+					case ResourceType::SoundEffect: {
+						fcyRefPointer<ResSound> pRes = LRES.GetResourcePool(tPoolType)->GetSound(resName.c_str());
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResSound>>(L, pRes);
+						break;
+					}
+					case ResourceType::Particle: {
+						fcyRefPointer<ResParticle> pRes = LRES.GetResourcePool(tPoolType)->GetParticle(resName.c_str());
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResParticle>>(L, pRes);
+						break;
+					}
+					case ResourceType::SpriteFont: {
+						fcyRefPointer<ResFont> pRes = LRES.GetResourcePool(tPoolType)->GetSpriteFont(resName.c_str());
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResFont>>(L, pRes);
+						break;
+					}
+					case ResourceType::TrueTypeFont: {
+						fcyRefPointer<ResFont> pRes = LRES.GetResourcePool(tPoolType)->GetTTFFont(resName.c_str());
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResFont>>(L, pRes);
+						break;
+					}
+					case ResourceType::FX: {
+						fcyRefPointer<ResFX> pRes = LRES.GetResourcePool(tPoolType)->GetFX(resName.c_str());
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResFX>>(L, pRes);
+						break;
+					}
+					}
+				}
+				else {
+					//啊找不到，error糊脸
+					return luaL_error(L, "Resources do not exist.");
+				}
+			}
+			else {
+				//没指定哪个池，瞎jb找
+				switch (tResourceType) {
+				case ResourceType::Texture: {
+					fcyRefPointer<ResTexture> pRes = LRES.FindTexture(resName.c_str());
+					if (pRes) {
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResTexture>>(L, pRes);
+					}
+					else {
+						//啊找不到，error糊脸
+						return luaL_error(L, "Resources do not exist.");
+					}
+					break;
+				}
+				case ResourceType::Sprite: {
+					fcyRefPointer<ResSprite> pRes = LRES.FindSprite(resName.c_str());
+					if (pRes) {
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResSprite>>(L, pRes);
+					}
+					else {
+						//啊找不到，error糊脸
+						return luaL_error(L, "Resources do not exist.");
+					}
+					break;
+				}
+				case ResourceType::Animation: {
+					fcyRefPointer<ResAnimation> pRes = LRES.FindAnimation(resName.c_str());
+					if (pRes) {
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResAnimation>>(L, pRes);
+					}
+					else {
+						//啊找不到，error糊脸
+						return luaL_error(L, "Resources do not exist.");
+					}
+					break;
+				}
+				case ResourceType::Music: {
+					fcyRefPointer<ResMusic> pRes = LRES.FindMusic(resName.c_str());
+					if (pRes) {
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResMusic>>(L, pRes);
+					}
+					else {
+						//啊找不到，error糊脸
+						return luaL_error(L, "Resources do not exist.");
+					}
+					break;
+				}
+				case ResourceType::SoundEffect: {
+					fcyRefPointer<ResSound> pRes = LRES.FindSound(resName.c_str());
+					if (pRes) {
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResSound>>(L, pRes);
+					}
+					else {
+						//啊找不到，error糊脸
+						return luaL_error(L, "Resources do not exist.");
+					}
+					break;
+				}
+				case ResourceType::Particle: {
+					fcyRefPointer<ResParticle> pRes = LRES.FindParticle(resName.c_str());
+					if (pRes) {
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResParticle>>(L, pRes);
+					}
+					else {
+						//啊找不到，error糊脸
+						return luaL_error(L, "Resources do not exist.");
+					}
+					break;
+				}
+				case ResourceType::SpriteFont: {
+					fcyRefPointer<ResFont> pRes = LRES.FindSpriteFont(resName.c_str());
+					if (pRes) {
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResFont>>(L, pRes);
+					}
+					else {
+						//啊找不到，error糊脸
+						return luaL_error(L, "Resources do not exist.");
+					}
+					break;
+				}
+				case ResourceType::TrueTypeFont: {
+					fcyRefPointer<ResFont> pRes = LRES.FindTTFFont(resName.c_str());
+					if (pRes) {
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResFont>>(L, pRes);
+					}
+					else {
+						//啊找不到，error糊脸
+						return luaL_error(L, "Resources do not exist.");
+					}
+					break;
+				}
+				case ResourceType::FX: {
+					fcyRefPointer<ResFX> pRes = LRES.FindFX(resName.c_str());
+					if (pRes) {
+						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResFX>>(L, pRes);
+					}
+					else {
+						//啊找不到，error糊脸
+						return luaL_error(L, "Resources do not exist.");
+					}
+					break;
+				}
+				}
+			}
+			return 1;
+		}
+
 		// 调试函数
 		static int ObjTable(lua_State* L)LNOEXCEPT
 		{
@@ -2404,17 +3017,22 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "DoFile", &WrapperImplement::DoFile },
 		{ "ShowSplashWindow", &WrapperImplement::ShowSplashWindow },
 		
-		// 对象控制函数
+		//========游戏对象==========
+		//对象池管理
 		{ "GetnObj", &WrapperImplement::GetnObj },
-		{ "UpdateObjList", &WrapperImplement::UpdateObjList },
+		{ "UpdateObjList", &WrapperImplement::UpdateObjList },//否决的方法，日后清除掉
 		{ "ObjFrame", &WrapperImplement::ObjFrame },
 		{ "ObjRender", &WrapperImplement::ObjRender },
 		{ "BoundCheck", &WrapperImplement::BoundCheck },
 		{ "SetBound", &WrapperImplement::SetBound },
-		{ "BoxCheck", &WrapperImplement::BoxCheck },
 		{ "CollisionCheck", &WrapperImplement::CollisionCheck },
 		{ "UpdateXY", &WrapperImplement::UpdateXY },
 		{ "AfterFrame", &WrapperImplement::AfterFrame },
+		{ "ResetPool", &WrapperImplement::ResetPool },
+		{ "NextObject", &WrapperImplement::NextObject },
+		{ "ObjList", &WrapperImplement::ObjList },
+		// 对象控制函数
+		{ "BoxCheck", &WrapperImplement::BoxCheck },
 		{ "New", &WrapperImplement::New },
 		{ "Add", &WrapperImplement::Add },
 		{ "Del", &WrapperImplement::Del },
@@ -2425,19 +3043,18 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "ColliCheck", &WrapperImplement::ColliCheck },
 		{ "GetV", &WrapperImplement::GetV },
 		{ "SetV", &WrapperImplement::SetV },
-		{ "SetImgState", &WrapperImplement::SetImgState },
-		{ "SetParState", &WrapperImplement::SetParState },
-		{ "ResetPool", &WrapperImplement::ResetPool },
 		{ "DefaultRenderFunc", &WrapperImplement::DefaultRenderFunc },
-		{ "NextObject", &WrapperImplement::NextObject },
-		{ "ObjList", &WrapperImplement::ObjList },
 		{ "GetAttr", &WrapperImplement::ObjMetaIndex },
 		{ "SetAttr", &WrapperImplement::ObjMetaNewIndex },
+		//对象资源控制
+		{ "SetImgState", &WrapperImplement::SetImgState },
+		{ "SetParState", &WrapperImplement::SetParState },
 		{ "ParticleStop", &WrapperImplement::ParticleStop },
 		{ "ParticleFire", &WrapperImplement::ParticleFire },
 		{ "ParticleGetn", &WrapperImplement::ParticleGetn },
 		{ "ParticleGetEmission", &WrapperImplement::ParticleGetEmission },
 		{ "ParticleSetEmission", &WrapperImplement::ParticleSetEmission },
+		{ "ObjectChangeResource", &WrapperImplement::ObjChangeRes },//用于资源包装类
 		
 		// 资源控制函数
 		{ "SetResourceStatus", &WrapperImplement::SetResourceStatus },
@@ -2464,6 +3081,8 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "SetAnimationState", &WrapperImplement::SetAnimationState },
 		{ "SetImageCenter", &WrapperImplement::SetImageCenter },
 		{ "SetAnimationCenter", &WrapperImplement::SetAnimationCenter },
+		//ETC
+		{ "SetImageStateEx", &WrapperImplement::SetImageStateEx },
 		
 		// 绘图函数
 		{ "BeginScene", &WrapperImplement::BeginScene },
@@ -2484,6 +3103,8 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "PostEffect", &WrapperImplement::PostEffect },
 		{ "PostEffectCapture", &WrapperImplement::PostEffectCapture },
 		{ "PostEffectApply", &WrapperImplement::PostEffectApply },
+		//ETC
+		{ "RenderEx", &WrapperImplement::RenderEx },
 		
 		// 声音控制函数
 		{ "PlaySound", &WrapperImplement::PlaySound },
@@ -2529,6 +3150,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "Rand", &WrapperImplement::NewRand },
 		{ "BentLaserData", &WrapperImplement::BentLaserData },
 		{ "StopWatch", &WrapperImplement::StopWatch },
+		{ "ResourceReference", &WrapperImplement::ResourceRef },
 		
 		//ESC
 		{ "SetZBufferEnable", &WrapperImplement::SetZBufferEnable },
