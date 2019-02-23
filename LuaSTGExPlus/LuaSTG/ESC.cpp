@@ -4,30 +4,36 @@
 #include "ResourceMgr.h"
 #pragma comment(lib,"ws2_32.lib")
 
-
 #include "LuaWrapper.h"
 #include "AppFrame.h"
-
 #include "Network.h"
 
 using namespace std;
 using namespace LuaSTGPlus;
 
+//======================================
+//ex+网络传输
 
+//--------------------------------------
+//vkey按键状态链表
 
+//vkey状态链表，veky到VKEYcode的映射
+//链表节点，单向链表
 struct EX_ALIAS_MAP_LIST
 {
-	int vkey;
-	int keycode;
-	int slot;
+	int vkey;//veky虚拟键
+	int keycode;//VKEYcode
+	int slot;//！废弃的变量
 	EX_ALIAS_MAP_LIST *next;
 	EX_ALIAS_MAP_LIST(int vk, int k){
 		vkey = vk;
 		keycode = k;
 		next = 0;
-		slot = 0;
+		slot = 0;//！废弃的变量
 	}
 };
+
+//销毁链表
 void DestroyInputAlias(EX_ALIAS_MAP_LIST *_list){
 	EX_ALIAS_MAP_LIST *ptr = _list;
 	while (_list){
@@ -37,6 +43,7 @@ void DestroyInputAlias(EX_ALIAS_MAP_LIST *_list){
 	}
 }
 
+//将整个vkey按键状态链表编码成EX_KEY(ulong)按键状态码（位操作）
 EX_KEY ParseInput(const bool *buffer, EX_ALIAS_MAP_LIST *keyalias){
 	EX_KEY a = 0;
 	while (keyalias){
@@ -48,11 +55,19 @@ EX_KEY ParseInput(const bool *buffer, EX_ALIAS_MAP_LIST *keyalias){
 	return a;
 }
 
+//将EX_KEY(ulong)按键状态码解码回vkey状态
 bool _GetVKeyState(int vkcode, EX_KEY key){
 	return (key&(1 << vkcode))!=0;
 }
+
+//--------------------------------------
+//网络传输设备，虚拟设备
+
+//最主要的逻辑类，负责与服务器通信，传输数据以及总线的更新
+//类的预定义
 class ExInputControl;
 
+//input端接口
 class ExInputInterface: public IExCommonInput{
 protected:
 	int m_type;
@@ -94,6 +109,8 @@ public:
 	virtual void ProceedRemoteInput(int frame,EX_KEY key){ return; }
 };
 
+//vkey按键状态码链表，用于储存延迟的操作，和vkey状态链表不一样的是，这个储存的是编码好的EX_KEY(ulong)按键状态码
+//链表节点，单向链表
 struct EX_INPUT_BUFFER_LIST
 {
 	int framestamp;
@@ -106,6 +123,8 @@ struct EX_INPUT_BUFFER_LIST
 	}
 };
 
+//vkey按键状态码链表链表，用于管理所有槽位的输入
+//！弃用的代码
 class ExInputAlias{
 public:
 	EX_ALIAS_MAP_LIST *m_pHead;
@@ -117,6 +136,7 @@ public:
 	}
 };
 
+//input客户端，传输与管理按键状态
 class ExInputClient :public ExInputInterface, public IExLocalInput{
 public:
 	EX_INPUT_BUFFER_LIST *m_head;
@@ -137,7 +157,46 @@ public:
 	virtual void SetNetwork(EXTCPIPSERVERCLIENTINFO *p){
 		m_network = p;
 	}
-	virtual void ProceedLocalInput(bool rkeys[]);
+	//获取本地输入状态并广播给其他玩家
+	virtual void ProceedLocalInput(bool rkeys[]) {
+		char buf[1000];
+		EX_KEY key = 0;
+		if (m_isremote == 0) {//是本地输入
+			key = ParseInput(rkeys, m_alias);
+			int cur = m_framestamp + m_delay;
+			if (cur <= m_laststamp) {
+				//delay调整导致已经读取了当前的输入，这里放弃
+				return;
+			}
+			m_laststamp++;
+			while (m_laststamp <= cur) {
+				InsertInput(m_laststamp, key);
+				//todo 发送消息
+				sprintf_s<1000>(buf, "K%d,%d,%d", m_slot, m_laststamp, key);
+				//m_network = m_main->m_network;
+				if (m_network)m_network->Send(buf, strlen(buf));
+				m_laststamp++;
+			}
+			m_laststamp = cur;
+		}
+		else {//不是本地输入
+			/*
+			while (m_network.Receive(buf, 1000)){//把所有网络输入都拿出来
+			if (buf[0] == 'K'){//得到的输入插入
+			int stamp0;
+			sscanf_s(buf, "K%d,%d", &stamp0, &key);
+			InsertInput(stamp0, key);
+			if (stamp0 > m_laststamp){
+			m_laststamp = stamp0;
+			}
+			}
+			else if (buf[0] == 'U'){//其他的放在一边
+			m_buffer->Push(buf + 1);
+			}
+			}*/
+		}
+	};
+	//插入远程输入状态
 	virtual void ProceedRemoteInput(int frame, EX_KEY key){
 		if (m_isremote){
 			InsertInput(frame, key);
@@ -146,6 +205,7 @@ public:
 			}
 		}
 	}
+	//根据framestamp获取应该获取的输入，获取到输入后，会销毁对应的vkey按键状态码节点
 	virtual EX_KEY GetInput(){
 		if (!m_head)return 0;
 		EX_INPUT_BUFFER_LIST *ptr;
@@ -164,6 +224,7 @@ public:
 		delete ptr;
 		return k;
 	}
+	//vkey按键状态码链表中插入一个新的EX_KEY状态码，根据framestamp进行排序
 	bool InsertInput(int framestamp, EX_KEY key){
 		EX_INPUT_BUFFER_LIST *p = new EX_INPUT_BUFFER_LIST(framestamp, key);
 		if (!m_head){
@@ -195,6 +256,8 @@ public:
 	virtual void SetDelay(int delay){ 
 		m_delay = delay;
 	}
+	//向vkey状态链表中插入一个新的vkey到VKEYcode的映射
+	//！有坑警告，没有检查已有的映射是否存在
 	virtual int AddKeyAlias(int vkey, int key){
 		EX_ALIAS_MAP_LIST *p = new EX_ALIAS_MAP_LIST(vkey, key);
 		p->next = m_alias;
@@ -238,11 +301,11 @@ public:
 		m_alias = 0;
 		return 0;
 	}
-
+	//返回基类类型的this指针，多继承的好处（个屁
 	virtual IExCommonInput *ToCommonInput(){
 		return this;
 	};
-
+	//通过检查vkey按键状态码链表是否加载完成、vkey按键状态码链表头的framestamp是否已经和本地同步返回就绪状态
 	virtual bool IsReady(){
 		if (!m_head)return false;
 		return m_head->framestamp==m_framestamp; 
@@ -268,18 +331,17 @@ public:
 	}
 };
 
+//玩家组
+//！弃用的代码
 struct EX_CLIENT_DECLARE{
 	unsigned long local_player_mask;//掩码形式的本地玩家组，0则为观察者
 
 };
 
-
-
-
-
+//最主要的逻辑类，负责与服务器通信，传输数据以及总线的更新
 class ExInputControl :public IExInputControl{
 public:
-	EX_CLIENT_DECLARE m_current_state;
+	EX_CLIENT_DECLARE m_current_state;//！弃用的代码
 	ExInputInterface *m_clients[MAX_INPUT_CLIENTS];
 	EX_KEY m_keys[MAX_INPUT];
 	EXTCPIPSERVERCLIENTINFO *m_network;
@@ -288,7 +350,9 @@ public:
 		return m_buffer;
 	}
 	virtual bool ConnectTo(const char *dest, int port){
-		if (!m_network)m_network = new EXTCPIPSERVERCLIENTINFO;
+		if (!m_network) {
+			m_network = new EXTCPIPSERVERCLIENTINFO;
+		}
 		m_network->Stop();
 		if (m_buffer)delete m_buffer;
 		m_buffer = new EXSTRINGBUFFER(30000);
@@ -304,6 +368,7 @@ public:
 	int m_delay;
 	int m_ignoreinput;
 
+	//重置计数器
 	virtual void Reset(){
 		m_currentframe = 0;
 		m_nextframe = 1;
@@ -319,6 +384,7 @@ public:
 		m_buffer = NULL;
 	}
 
+	//每帧的更新逻辑
 	bool ProceedInput(bool *localInput){
 		//清空总线
 		memset(m_keys, 0, sizeof(EX_KEY)*MAX_INPUT);
@@ -348,7 +414,7 @@ public:
 						m_clients[slot]->ProceedRemoteInput(stamp0, key);
 					}
 				}
-				else if (buf[0] == 'U'){//其他的放在一边
+				else if (buf[0] == 'U'){//其他的放在一边，这些都是用户的消息，保存到缓冲区中，以便读取
 					m_buffer->Push(buf + 1);
 				}
 			}
@@ -385,6 +451,7 @@ public:
 		}
 
 		//再将总线传递给输出
+		//！废弃的代码？
 		for (i = 0; i < MAX_INPUT_CLIENTS; i++){
 			if (input = m_clients[i]){
 				if (input->IsReader()){
@@ -395,13 +462,12 @@ public:
 							key |= m_keys[j];
 						}
 					}
-					input->SetInput(key);
+					input->SetInput(key);//这个方法是空方法，别找了，估计其实现转到lua逻辑里面了
 				}
 			}
 		}
 
 		//告知所有输入输出可以进行下一帧处理
-
 		for (i = 0; i < MAX_INPUT_CLIENTS; i++){
 			if (input = m_clients[i]){
 				input->NextFrame(m_nextframe);
@@ -438,8 +504,9 @@ public:
 	virtual int GetIgnoreInput(){
 		return m_ignoreinput;
 	}
+	
+	//未用到的部分，可能是遗留代码
 	EX_ALIAS_MAP_LIST *m_alias;
-
 	virtual int SPAddKeyAlias(int vkey, int key, int slot){
 		EX_ALIAS_MAP_LIST *p = new EX_ALIAS_MAP_LIST(vkey, key);
 		p->slot = slot;
@@ -497,16 +564,18 @@ public:
 	}
 };
 
+//创建一个本地输入
 IExLocalInput *CreateLocalInput(){
 	return new ExInputClient;
 }
 
+//创建一个ex+InputEx类
 IExInputControl * CreateInputEx()
 {
 	return new ExInputControl;
 }
 
-
+/*
 void ExInputClient::ProceedLocalInput(bool rkeys[])
 {
 	char buf[1000];
@@ -530,7 +599,7 @@ void ExInputClient::ProceedLocalInput(bool rkeys[])
 		m_laststamp = cur;
 	}
 	else{//不是本地输入
-		/*
+		
 		while (m_network.Receive(buf, 1000)){//把所有网络输入都拿出来
 		if (buf[0] == 'K'){//得到的输入插入
 		int stamp0;
@@ -543,11 +612,13 @@ void ExInputClient::ProceedLocalInput(bool rkeys[])
 		else if (buf[0] == 'U'){//其他的放在一边
 		m_buffer->Push(buf + 1);
 		}
-		}*/
+		}
 	}
 }
+*/
 
-
+//======================================
+//ex+模型读取
 
 #include "AppFrame.h"
 #include <ios>

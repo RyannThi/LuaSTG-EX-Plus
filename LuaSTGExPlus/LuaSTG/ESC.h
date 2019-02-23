@@ -1,4 +1,6 @@
 ﻿#pragma once
+//======================================
+//ex+网络传输
 
 #define MAX_INPUT_CLIENTS 32 
 #define MAX_INPUT 16
@@ -16,16 +18,19 @@ typedef unsigned long EX_KEY;
 #define EX_SLOT_PLAYER3 3
 #define EX_SLOT_PLAYER4 4
 
-
 struct EX_REMOTE_DEST{
 	unsigned long addr;
 	unsigned long port;
 };
 
 class IExReplayInput;
+
 class IExLocalInput;
+
 class IExCommonInput;
+
 class EXTCPIPSERVERCLIENTINFO;
+
 class EXSTRINGBUFFER;
 
 class IExInputControl{
@@ -53,7 +58,6 @@ public:
 
 class ExInputInterface;
 
-
 class IExCommonInput{
 public:
 	virtual void SetMask(unsigned long mask) = 0;
@@ -77,6 +81,7 @@ public:
 	virtual void Release() =0;
 	virtual void SetNetwork(EXTCPIPSERVERCLIENTINFO *p) = 0;
 };
+
 class IExRemoteInput{
 public:
 	virtual IExCommonInput *ToCommonInput() = 0;
@@ -95,7 +100,11 @@ public:
 };
 
 IExInputControl *CreateInputEx();
+
 IExLocalInput *CreateLocalInput();
+
+//======================================
+//ex+模型读取
 
 #include <stdio.h>
 #include <string>

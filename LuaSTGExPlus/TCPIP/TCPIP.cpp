@@ -443,11 +443,12 @@ void EXTCPIPSERVERCLIENTINFO::server_listen_thread()
 	}
 }
 
+
 class EXTCPIPSERVER{
 private:
 	int status;
 	volatile bool stop;
-	volatile bool stop_boardcast;
+	volatile bool stop_boardcast;//用来停止广播
 	EXTCPIPSERVERCLIENTINFO m_clients[MAX_TCPIP_CLIENT];
 	SOCKET serversocket;
 public:
@@ -508,15 +509,20 @@ bool EXTCPIPSERVER::Start(int port)
 void EXTCPIPSERVER::Stop()
 {
 	if (serversocket){
+		//发出停止广播信号
 		stop_boardcast = true;
+		//等待广播线程停止广播
 		while (stop_boardcast){
 			Sleep(0);
 		}
+		//发出停止接受客户端的信号
 		stop = true;
-		closesocket(serversocket);
+		closesocket(serversocket);//不是很明白为什么要在这里就关闭套接字（
+		//等待客户端处理线程跳出循环
 		while (stop){
 			Sleep(0);
 		}
+		//停止所有TCP长连接
 		for (int i = 0; i < MAX_TCPIP_CLIENT; i++){
 			m_clients[i].Stop();
 		}
@@ -534,11 +540,13 @@ void EXTCPIPSERVER::static_server_thread(void *p)
 
 void EXTCPIPSERVER::server_thread()
 {
+	//进入监听状态
 	if (listen(serversocket, 5) != 0)
 	{
 		printf("Listen fail!\n");
 		//return -1;
 	}
+	//接收客户端循环
 	while (!stop){
 		SOCKET temp_client = NULL;
 		SOCKADDR_IN temp_addr;
@@ -553,6 +561,7 @@ void EXTCPIPSERVER::server_thread()
 			for (int i = 0; i < MAX_TCPIP_CLIENT; i++){
 				if (m_clients[i].status == EXCI_FREE){
 					m_clients[i].Create(temp_client, temp_addr);
+					//发送hello消息23333
 					char hellos[10];
 					hellos[0] = 'U';
 					hellos[1] = 'S';
@@ -565,6 +574,7 @@ void EXTCPIPSERVER::server_thread()
 		}
 		Sleep(0);
 	}
+	//跳出接收客户端循环，反馈信号
 	stop = false;
 }
 
@@ -578,6 +588,7 @@ void EXTCPIPSERVER::static_server_boardcast_thread(void *p)
 void EXTCPIPSERVER::server_boardcast_thread()
 {
 	char *temp_buffer = new char[LOCAL_BUFFER_LENGTH];
+	//广播循环，不过为什么是1ms的间隔时间……
 	while (!stop_boardcast){
 		for (int i = 0; i < MAX_TCPIP_CLIENT; i++){
 			int t;
@@ -585,9 +596,11 @@ void EXTCPIPSERVER::server_boardcast_thread()
 				m_clients[i].status = EXCI_FREE;
 			}
 			if ((t = m_clients[i].Receive(temp_buffer, LOCAL_BUFFER_LENGTH - 1))){
+				//如果是用户消息则打印出来
 				if (temp_buffer[0] != 'K'){
 					printf_s("%d : %s\n", i + 1, temp_buffer,t);
 				}
+				//广播
 				for (int j = 0; j < MAX_TCPIP_CLIENT; j++){
 					if (j != i){
 						m_clients[j].Send(temp_buffer, t);
@@ -597,6 +610,7 @@ void EXTCPIPSERVER::server_boardcast_thread()
 		}
 		Sleep(1);
 	}
+	//跳出跳出广播循环，反馈广播停止信号
 	stop_boardcast = false;
 }
 

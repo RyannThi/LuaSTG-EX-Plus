@@ -1,6 +1,9 @@
 ﻿#include "Network.h"
 #include "Global.h"
+
 int EXTCPDEBUG = 0;
+
+
 EXTCPIPSERVERCLIENTINFO::EXTCPIPSERVERCLIENTINFO()
 {
 	buffer = NULL;
@@ -190,7 +193,6 @@ void EXTCPIPSERVERCLIENTINFO::server_listen_thread()
 }
 
 
-
 EXTCPIPSERVER::EXTCPIPSERVER()
 {
 	status = EXCI_FREE;
@@ -330,4 +332,3 @@ void EXTCPIPSERVER::Send(const char *data, int count)
 		}
 	}
 }
-

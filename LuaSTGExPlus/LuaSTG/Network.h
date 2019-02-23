@@ -1,6 +1,6 @@
 ﻿#include "AppFrame.h"
 #include <stdio.h>
-//#include <winsock2.h>
+//#include <winsock2.h>//windows.h里面已经包含winsock老版本，与winsock2版本会有冲突
 #include <process.h>
 #include <assert.h>
 
@@ -13,8 +13,7 @@
 #define EXCI_FULL 4
 #define EXCI_CLOSE 5
 
-
-
+//多线程锁，通过原子操作来锁定代码区
 struct EX_RW_LOCK{
 	volatile long mode;
 	EX_RW_LOCK(){
@@ -50,6 +49,7 @@ struct EX_RW_LOCK{
 	}
 };
 
+//TCP连接类
 class EXTCPIPSERVERCLIENTINFO :public EX_RW_LOCK{
 public:
 	EXTCPIPSERVERCLIENTINFO();
@@ -72,6 +72,8 @@ public:
 
 };
 
+//游戏联机服务器
+//目前该功能在独立的控制台应用中使用
 class EXTCPIPSERVER{
 private:
 	int status;
@@ -95,6 +97,9 @@ public:
 
 };
 
+//定长字符串缓冲区
+//可回环式储存数据，当到达缓冲区尾部，则自动跳转到缓冲区头
+//！警告，如果获取数据时数据长度过长，会获得重复的数据
 class EXSTRINGBUFFER :public EX_RW_LOCK{
 	volatile int buffer_head;
 	volatile int buffer_tail;
