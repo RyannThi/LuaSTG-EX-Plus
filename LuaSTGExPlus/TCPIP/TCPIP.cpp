@@ -4,10 +4,11 @@
 #include "stdafx.h"
 
 #include <stdio.h>
-#include <winsock2.h>
 #include <process.h>
 #include <assert.h>
-#pragma comment(lib,"ws2_32.lib")
+
+#include "netsock.h"
+
 void cmain(void *p);
 void smain(void *p);
 volatile long finish = 0;
@@ -20,16 +21,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	WSACleanup();
 	return 0;
 }
-
-//TCP server
-//listen port 9102
-//receive string and display it
-
-//Visual C++ 6.0
-
-
-
-
 
 #define BUFLEN 1024
 
@@ -140,99 +131,20 @@ void cmain(void *p)
 	//return 0;
 }
 
-struct EX_RW_LOCK{
-	volatile long mode;
-	EX_RW_LOCK(){
-		mode = 1;//0 write 1 none 2+ read
-	}
-	void ReadStart(){
-		volatile long current_mode = mode;//Create A SnapShot of current mode
-		while (current_mode == 0 || //In read mode
-			InterlockedCompareExchange(&mode, current_mode + 1, current_mode) != current_mode){ //mode has changed by another thread
-			Sleep(0);//Sleep a little time
-			current_mode = mode;//Update snapshot
-		}
-	}
-	void ReadEnd(){
-#ifdef _DEBUG
-		assert(InterlockedDecrement(&mode) != 0);
-#else
-		InterlockedDecrement(&mode);
-#endif // _DEBUG
-	}
-	void WriteStart(){
-		while (InterlockedCompareExchange(&mode, 0, 1) != 1)
-		{ 
-			Sleep(0);//Sleep a little time
-		}
-	}
-	void WriteEnd(){
-#ifdef _DEBUG
-		assert(InterlockedIncrement(&mode) == 1);
-#else
-		InterlockedIncrement(&mode);
-#endif // _DEBUG	
-	}
-};
+
 
 
 
 #define MAX_TCPIP_CLIENT 16
 #define LOCAL_BUFFER_LENGTH 2048
-#define EXCI_FREE 0
+#define EXCI_FREE 0 //空闲状态，没有被使用
 #define EXCI_CONNECTING 1
-#define EXCI_CONNECTED 2
-#define EXCI_DISCONNECTED 3
-#define EXCI_FULL 4
-#define EXCI_CLOSE 5
+#define EXCI_CONNECTED 2 //已经连接
+#define EXCI_DISCONNECTED 3 //断开连接
+#define EXCI_FULL 4 //缓冲区满
+#define EXCI_CLOSE 5 //正在关闭线程
 
 int EXTCPDEBUG = 1;
-
-
-class EXSTRINGBUFFER:public EX_RW_LOCK{
-	volatile int buffer_head;
-	volatile int buffer_tail;
-	char *buffer;
-	int size;
-public:
-	EXSTRINGBUFFER(int count){
-		size = count;
-		buffer = new char[size + 1];
-		buffer_head = 0;
-		buffer_tail = 0;
-	}
-	~EXSTRINGBUFFER(){
-		delete buffer;
-	}
-	int Push(const char *p){
-		while (*p){
-			buffer[buffer_head++] = *(p++);
-			buffer_head = buffer_head%size;
-			if (buffer_head == buffer_tail){
-				return 0;
-			}
-		}
-	}
-	int Get(char *out_data, int max_count)
-	{
-		int i = 0;
-		WriteStart();
-		if (buffer){
-			while (buffer[buffer_tail] && i < max_count && buffer_tail != buffer_head)
-			{
-				out_data[i] = buffer[buffer_tail];
-				buffer_tail = (buffer_tail + 1) % size;
-				i++;
-			}
-			if (i && !buffer[buffer_tail]){
-				buffer_tail = (buffer_tail + 1) % size;
-			}
-		}
-		out_data[i] = 0;
-		WriteEnd();
-		return i;
-	}
-};
 
 class EXTCPIPSERVERCLIENTINFO:public EX_RW_LOCK{
 public:

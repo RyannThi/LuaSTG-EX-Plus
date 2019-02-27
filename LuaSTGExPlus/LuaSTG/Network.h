@@ -13,7 +13,8 @@
 #define EXCI_FULL 4
 #define EXCI_CLOSE 5
 
-//多线程锁，通过原子操作来锁定代码区
+//读写锁，通过原子操作和自旋锁定来实现读写互斥
+/*
 struct EX_RW_LOCK{
 	volatile long mode;
 	EX_RW_LOCK(){
@@ -48,6 +49,43 @@ struct EX_RW_LOCK{
 #endif // _DEBUG	
 	}
 };
+*/
+//即将根据C++17重写的读写锁
+struct EX_RW_LOCK {
+	volatile long mode;
+	EX_RW_LOCK() {
+		mode = 1;//0 write 1 none 2+ read
+	}
+	void ReadStart() {
+		volatile long current_mode = mode;//Create A SnapShot of current mode
+		while (current_mode == 0 || //In read mode
+			InterlockedCompareExchange(&mode, current_mode + 1, current_mode) != current_mode) { //mode has changed by another thread
+			Sleep(0);//Sleep a little time
+			current_mode = mode;//Update snapshot
+		}
+	}
+	void ReadEnd() {
+#ifdef _DEBUG
+		assert(InterlockedDecrement(&mode) != 0);
+#else
+		InterlockedDecrement(&mode);
+#endif // _DEBUG
+	}
+	void WriteStart() {
+		while (InterlockedCompareExchange(&mode, 0, 1) != 1)
+		{
+			Sleep(0);//Sleep a little time
+		}
+	}
+	void WriteEnd() {
+#ifdef _DEBUG
+		assert(InterlockedIncrement(&mode) == 1);
+#else
+		InterlockedIncrement(&mode);
+#endif // _DEBUG	
+	}
+};
+
 
 //TCP连接类
 class EXTCPIPSERVERCLIENTINFO :public EX_RW_LOCK{
