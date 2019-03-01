@@ -17,6 +17,8 @@
 /LuaSTGExPlus/TCPIP/build/*
 /LuaSTGExPlus/SimpleServer/bin/*
 /LuaSTGExPlus/SimpleServer/obj/*
+/LuaSTGExPlus/TexturedFontEditor/bin/*
+/LuaSTGExPlus/TexturedFontEditor/obj/*
 
 /cocos/*
 /steam/*

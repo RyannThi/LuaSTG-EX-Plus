@@ -2634,14 +2634,14 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		static int SaveTexture(lua_State* L)LNOEXCEPT
 		{
-			const char* tex_name = luaL_checkstring(L, 2);
+			const char* tex_name = luaL_checkstring(L, 1);
 			fcyRefPointer<ResTexture> resTex = LRES.FindTexture(tex_name);
 			if (!resTex)
 			{
 				LERROR("RenderTexture: 找不到纹理资源'%m'", tex_name);
 				return false;
 			}
-			LAPP.SaveTexture(luaL_checkstring(L, 1), resTex->GetTexture());
+			LAPP.SaveTexture(resTex->GetTexture(), luaL_checkstring(L, 2));
 			return 0;
 		}
 		static int Execute(lua_State* L)LNOEXCEPT

@@ -658,7 +658,7 @@ namespace LuaSTGPlus
 
 		LNOINLINE void SnapShot(const char* path)LNOEXCEPT;
 
-		LNOINLINE void SaveTexture(const char* path, f2dTexture2D* Tex)LNOEXCEPT;
+		LNOINLINE void SaveTexture(f2dTexture2D* Tex, const char* path)LNOEXCEPT;
 
 		bool CheckRenderTargetInUse(fcyRefPointer<f2dTexture2D> rt)LNOEXCEPT;
 

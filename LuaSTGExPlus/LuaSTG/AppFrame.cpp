@@ -1048,7 +1048,7 @@ LNOINLINE void AppFrame::SnapShot(const char* path)LNOEXCEPT
 	}
 }
 
-LNOINLINE void AppFrame::SaveTexture(const char* path, f2dTexture2D* Tex)LNOEXCEPT
+LNOINLINE void AppFrame::SaveTexture(f2dTexture2D* Tex, const char* path)LNOEXCEPT
 {
 	LASSERT(m_pRenderDev);
 
