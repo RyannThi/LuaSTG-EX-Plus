@@ -953,6 +953,8 @@ T GameResourceWrapper::CreateAndPush(lua_State* L, T res)
 #pragma region BuiltInFunctionWrapper
 void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 {
+	//警告：函数的返回值为向lua栈推入的变量数量
+	
 	struct WrapperImplement
 	{
 		#pragma region 框架函数
@@ -1518,7 +1520,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			default:
 				return luaL_error(L, "can't get resource pool status at this time.");
 			}
-			return 0;
+			return 1;
 		}
 		static int LoadTexture(lua_State* L)LNOEXCEPT
 		{
@@ -1816,6 +1818,12 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				return luaL_error(L, "invalid argument #1 for 'SetImageScale'.");
 			LRES.SetGlobalImageScaleFactor(x);
 			return 0;
+		}
+		static int GetImageScale(lua_State* L)LNOEXCEPT
+		{
+			lua_Number ret = LRES.GetGlobalImageScaleFactor();
+			lua_pushnumber(L, ret);
+			return 1;
 		}
 		static int SetImageState(lua_State* L)LNOEXCEPT
 		{
@@ -3076,7 +3084,8 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "CheckRes", &WrapperImplement::CheckRes },
 		{ "EnumRes", &WrapperImplement::EnumRes },
 		{ "SetImageScale", &WrapperImplement::SetImageScale },
-		{ "SetImageState", &WrapperImplement::SetImageState },
+		{ "GetImageScale", &WrapperImplement::GetImageScale },
+		{ "SetImageState", &WrapperImplement::SetImageState },//这个不一样
 		{ "SetFontState", &WrapperImplement::SetFontState },
 		{ "SetAnimationState", &WrapperImplement::SetAnimationState },
 		{ "SetImageCenter", &WrapperImplement::SetImageCenter },

@@ -880,8 +880,13 @@ bool GameObject::ChangeResource(const char* res_name)
 	{
 		res = tSprite;
 		res->AddRef();
+#ifdef GLOBAL_SCALE_COLLI_SHAPE
 		a = tSprite->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
 		b = tSprite->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+#else
+		a = tSprite->GetHalfSizeX();
+		b = tSprite->GetHalfSizeY();
+#endif // GLOBAL_SCALE_COLLI_SHAPE
 		rect = tSprite->IsRectangle();
 		UpdateCollisionCirclrRadius();
 		return true;
@@ -892,8 +897,13 @@ bool GameObject::ChangeResource(const char* res_name)
 	{
 		res = tAnimation;
 		res->AddRef();
+#ifdef GLOBAL_SCALE_COLLI_SHAPE
 		a = tAnimation->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
 		b = tAnimation->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+#else
+		a = tAnimation->GetHalfSizeX();
+		b = tAnimation->GetHalfSizeY();
+#endif // GLOBAL_SCALE_COLLI_SHAPE
 		rect = tAnimation->IsRectangle();
 		UpdateCollisionCirclrRadius();
 		return true;
@@ -916,8 +926,13 @@ bool GameObject::ChangeResource(const char* res_name)
 		ps->SetActive();
 
 		res->AddRef();
+#ifdef GLOBAL_SCALE_COLLI_SHAPE
 		a = tParticle->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
 		b = tParticle->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+#else
+		a = tParticle->GetHalfSizeX();
+		b = tParticle->GetHalfSizeY();
+#endif // GLOBAL_SCALE_COLLI_SHAPE
 		rect = tParticle->IsRectangle();
 		UpdateCollisionCirclrRadius();
 		return true;
@@ -925,53 +940,7 @@ bool GameObject::ChangeResource(const char* res_name)
 
 	return false;
 }
-/*
-template <typename T>
-bool GameObject::ChangeResourceEx(T res_set)
-{
-	switch (res_set->GetType()) {
-		case ResourceType::Sprite: {
-			res = res_set;
-			res->AddRef();
-			a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
-			b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
-			rect = res_set->IsRectangle();
-			UpdateCollisionCirclrRadius();
-			return true;
-		}
-		case ResourceType::Animation: {
-			res = res_set;
-			res->AddRef();
-			a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
-			b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
-			rect = res_set->IsRectangle();
-			UpdateCollisionCirclrRadius();
-			return true;
-		}
-		case ResourceType::Particle: {
-			res = res_set;
-			if (!(ps = res_set->AllocInstance()))
-			{
-				res = nullptr;
-				LERROR("无法构造粒子池，内存不足");
-				return false;
-			}
-			ps->SetInactive();
-			ps->SetCenter(fcyVec2((float)x, (float)y));
-			ps->SetRotation((float)rot);
-			ps->SetActive();
 
-			res->AddRef();
-			a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
-			b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
-			rect = res_set->IsRectangle();
-			UpdateCollisionCirclrRadius();
-			return true;
-		}
-	}
-	return false;
-}
-*/
 #pragma endregion
 
 #pragma region GameObjectPool
@@ -1861,10 +1830,18 @@ int GameObjectPool::GetAttr(lua_State* L)LNOEXCEPT
 		lua_rawgeti(L, 1, 1);
 		break;
 	case GameObjectProperty::A:
+#ifdef GLOBAL_SCALE_COLLI_SHAPE
 		lua_pushnumber(L, p->a / LRES.GetGlobalImageScaleFactor());
+#else
+		lua_pushnumber(L, p->a);
+#endif // GLOBAL_SCALE_COLLI_SHAPE
 		break;
 	case GameObjectProperty::B:
+#ifdef GLOBAL_SCALE_COLLI_SHAPE
 		lua_pushnumber(L, p->b / LRES.GetGlobalImageScaleFactor());
+#else
+		lua_pushnumber(L, p->b);
+#endif // GLOBAL_SCALE_COLLI_SHAPE
 		break;
 	case GameObjectProperty::RECT:
 		lua_pushboolean(L, p->rect);
@@ -2048,11 +2025,19 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 		lua_rawseti(L, 1, 1);
 		break;
 	case GameObjectProperty::A:
+#ifdef GLOBAL_SCALE_COLLI_SHAPE
 		p->a = luaL_checknumber(L, 3) * LRES.GetGlobalImageScaleFactor();
+#else
+		p->a = luaL_checknumber(L, 3);
+#endif // GLOBAL_SCALE_COLLI_SHAPE
 		p->UpdateCollisionCirclrRadius();
 		break;
 	case GameObjectProperty::B:
+#ifdef GLOBAL_SCALE_COLLI_SHAPE
 		p->b = luaL_checknumber(L, 3) * LRES.GetGlobalImageScaleFactor();
+#else
+		p->b = luaL_checknumber(L, 3);
+#endif // GLOBAL_SCALE_COLLI_SHAPE
 		p->UpdateCollisionCirclrRadius();
 		break;
 	case GameObjectProperty::RECT:
@@ -2243,11 +2228,19 @@ int GameObjectPool::InitAttr(lua_State* L)LNOEXCEPT  // t(object)
 				lua_pushinteger(L, 0);
 				break;
 			case GameObjectProperty::A:
+#ifdef GLOBAL_SCALE_COLLI_SHAPE
 				p->a = luaL_checknumber(L, 3) * LRES.GetGlobalImageScaleFactor();
+#else
+				p->a = luaL_checknumber(L, 3);
+#endif // GLOBAL_SCALE_COLLI_SHAPE
 				p->UpdateCollisionCirclrRadius();
 				break;
 			case GameObjectProperty::B:
+#ifdef GLOBAL_SCALE_COLLI_SHAPE
 				p->b = luaL_checknumber(L, 3) * LRES.GetGlobalImageScaleFactor();
+#else
+				p->b = luaL_checknumber(L, 3);
+#endif // GLOBAL_SCALE_COLLI_SHAPE
 				p->UpdateCollisionCirclrRadius();
 				break;
 			case GameObjectProperty::RECT:

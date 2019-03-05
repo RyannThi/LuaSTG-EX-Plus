@@ -147,8 +147,13 @@ namespace LuaSTGPlus
 			case ResourceType::Sprite: {
 				res = res_set;
 				res->AddRef();
+#ifdef GLOBAL_SCALE_COLLI_SHAPE
 				a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
 				b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+#else
+				a = res_set->GetHalfSizeX();
+				b = res_set->GetHalfSizeY();
+#endif // GLOBAL_SCALE_COLLI_SHAPE
 				rect = res_set->IsRectangle();
 				UpdateCollisionCirclrRadius();
 				return true;
@@ -156,8 +161,13 @@ namespace LuaSTGPlus
 			case ResourceType::Animation: {
 				res = res_set;
 				res->AddRef();
+#ifdef GLOBAL_SCALE_COLLI_SHAPE
 				a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
 				b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+#else
+				a = res_set->GetHalfSizeX();
+				b = res_set->GetHalfSizeY();
+#endif // GLOBAL_SCALE_COLLI_SHAPE
 				rect = res_set->IsRectangle();
 				UpdateCollisionCirclrRadius();
 				return true;
@@ -178,8 +188,13 @@ namespace LuaSTGPlus
 				ps->SetActive();
 
 				res->AddRef();
+#ifdef GLOBAL_SCALE_COLLI_SHAPE
 				a = _res->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
 				b = _res->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+#else
+				a = _res->GetHalfSizeX();
+				b = _res->GetHalfSizeY();
+#endif // GLOBAL_SCALE_COLLI_SHAPE
 				rect = _res->IsRectangle();
 				UpdateCollisionCirclrRadius();
 				return true;
