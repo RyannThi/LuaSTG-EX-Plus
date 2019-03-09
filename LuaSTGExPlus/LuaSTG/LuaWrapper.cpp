@@ -91,6 +91,34 @@ static inline void TranslateAlignMode(lua_State* L, int argnum, ResFont::FontAli
 	}
 }
 
+static inline F2DTEXTUREADDRESS TranslateTextureSamplerAddress(lua_State* L, int argnum) {
+	const char* s = luaL_checkstring(L, argnum);
+	if (strcmp(s, "wrap") == 0)
+		return F2DTEXTUREADDRESS_WRAP;
+	else if (strcmp(s, "mirror") == 0)
+		return F2DTEXTUREADDRESS_MIRROR;
+	else if (strcmp(s, "clamp") == 0 || strcmp(s, "") == 0)
+		return F2DTEXTUREADDRESS_CLAMP;
+	else if (strcmp(s, "border") == 0)
+		return F2DTEXTUREADDRESS_BORDER;
+	else if (strcmp(s, "mirroronce") == 0)
+		return F2DTEXTUREADDRESS_MIRRORONCE;
+	else
+		luaL_error(L, "Invalid texture sampler address mode '%s'.", s);
+	return F2DTEXTUREADDRESS_CLAMP;
+}
+
+static inline F2DTEXFILTERTYPE TranslateTextureSamplerFilter(lua_State* L, int argnum) {
+	const char* s = luaL_checkstring(L, argnum);
+	if (strcmp(s, "point") == 0)
+		return F2DTEXFILTER_POINT;
+	else if (strcmp(s, "linear") == 0 || strcmp(s, "") == 0)
+		return F2DTEXFILTER_LINEAR;
+	else
+		luaL_error(L, "Invalid texture sampler filter type '%s'.", s);
+	return F2DTEXFILTER_LINEAR;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 /// ColorWrapper
 ////////////////////////////////////////////////////////////////////////////////
@@ -414,7 +442,11 @@ void BentLaserDataWrapper::Register(lua_State* L)LNOEXCEPT
 				(float)luaL_checknumber(L, 6),
 				(float)luaL_checknumber(L, 7),
 				(float)luaL_checknumber(L, 8),
+#ifdef GLOBAL_SCALE_COLLI_SHAPE
 				(float)luaL_optnumber(L, 9, 1.) * LRES.GetGlobalImageScaleFactor()
+#else
+				(float)luaL_optnumber(L, 9, 1.)
+#endif // GLOBAL_SCALE_COLLI_SHAPE
 				))
 			{
 				return luaL_error(L, "can't render object with texture '%s'.", luaL_checkstring(L, 2));
@@ -619,165 +651,6 @@ void GameResourceWrapper::Register(lua_State* L)LNOEXCEPT
 {
 	struct WrapperImplement
 	{
-		/*
-		static int Update(lua_State* L)LNOEXCEPT
-		{
-			Resource* p = static_cast<Resource*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			if (!lua_istable(L, 2))
-				return luaL_error(L, "invalid lstg object for 'Update'.");
-			lua_rawgeti(L, 2, 2);  // self t(object) ??? id
-			size_t id = (size_t)luaL_checkinteger(L, -1);
-			lua_pop(L, 1);
-			if (!p->handle->Update(id, luaL_checkinteger(L, 3), (float)luaL_checknumber(L, 4), luaL_optnumber(L, 5, 0) == 0))
-				return luaL_error(L, "invalid lstg object for 'Update'.");
-			return 0;
-		}
-		static int UpdateNode(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			if (!lua_istable(L, 2))
-				return luaL_error(L, "invalid lstg object for 'UpdateNode'.");
-			lua_rawgeti(L, 2, 2);  // self t(object) ??? id
-			size_t id = (size_t)luaL_checkinteger(L, -1);
-			lua_pop(L, 1);
-			if (!p->handle->UpdateByNode(id, luaL_checkinteger(L, 3), luaL_checkinteger(L, 4), (float)luaL_checknumber(L, 5), luaL_optnumber(L, 6, 0) == 0))
-				return luaL_error(L, "invalid lstg object for 'UpdateNode'.");
-			return 0;
-		}
-		static int UpdatePositionByList(lua_State* L)LNOEXCEPT // u(laser) t(list) length width index revert 
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			if (!lua_istable(L, 2))
-				return luaL_error(L, "invalid lstg object for 'Update'.");
-			//lua_rawgeti(L, 2, 2);  // self t(object) ??? id
-			//size_t id = (size_t)luaL_checkinteger(L, -1);
-			//lua_pop(L, 1);
-
-			int i3 = luaL_checkinteger(L, 3);
-			float f4 = luaL_checknumber(L, 4);
-			int i5 = luaL_optinteger(L, 5, 1);
-			bool i6 = luaL_optinteger(L, 6, 0) != 0;
-			// ... t(list)
-			lua_settop(L, 2);
-
-			if (!p->handle->UpdatePositionByList(L,
-				i3,
-				f4,
-				i5,
-				i6
-			))
-				return luaL_error(L, "Update laser data failed.");
-			return 0;
-		}
-		static int SampleByLength(lua_State* L)LNOEXCEPT // t(self) <length>
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			float length = (float)luaL_checknumber(L, 2);
-			lua_pop(L, 2); // 
-			p->handle->SampleL(L, length); // t(list)
-			return 1;
-		}
-		static int SampleByTime(lua_State* L)LNOEXCEPT // t(self) <length>
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			float time = (float)luaL_checknumber(L, 2);
-			lua_pop(L, 2); // 
-			p->handle->SampleT(L, time / 60.0f); // t(list)
-			return 1;
-		}
-
-		static int Release(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (p->handle)
-			{
-				GameObjectBentLaser::FreeInstance(p->handle);
-				p->handle = nullptr;
-			}
-			return 0;
-		}
-		static int Render(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			if (!p->handle->Render(
-				luaL_checkstring(L, 2),
-				TranslateBlendMode(L, 3),
-				*static_cast<fcyColor*>(luaL_checkudata(L, 4, TYPENAME_COLOR)),
-				(float)luaL_checknumber(L, 5),
-				(float)luaL_checknumber(L, 6),
-				(float)luaL_checknumber(L, 7),
-				(float)luaL_checknumber(L, 8),
-				(float)luaL_optnumber(L, 9, 1.) * LRES.GetGlobalImageScaleFactor()
-			))
-			{
-				return luaL_error(L, "can't render object with texture '%s'.", luaL_checkstring(L, 2));
-			}
-			return 0;
-		}
-		static int CollisionCheck(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			bool r = p->handle->CollisionCheck(
-				(float)luaL_checknumber(L, 2),
-				(float)luaL_checknumber(L, 3),
-				(float)luaL_optnumber(L, 4, 0),
-				(float)luaL_optnumber(L, 5, 0),
-				(float)luaL_optnumber(L, 6, 0),
-				lua_toboolean(L, 7) == 0 ? false : true
-			);
-			lua_pushboolean(L, r);
-			return 1;
-		}
-		static int CollisionCheckWidth(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			bool r = p->handle->CollisionCheckW(
-				(float)luaL_checknumber(L, 2),
-				(float)luaL_checknumber(L, 3),
-				(float)luaL_optnumber(L, 5, 0),
-				(float)luaL_optnumber(L, 6, 0),
-				(float)luaL_optnumber(L, 7, 0),
-				lua_toboolean(L, 8) == 0 ? false : true,
-				(float)luaL_checknumber(L, 4)
-			);
-			lua_pushboolean(L, r);
-			return 1;
-		}
-		static int BoundCheck(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			bool r = p->handle->BoundCheck();
-			lua_pushboolean(L, r);
-			return 1;
-		}
-		static int SetAllWidth(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			p->handle->SetAllWidth((float)luaL_checknumber(L, 2));
-
-			return 0;
-		}
-		*/
 		static int Meta_ToString(lua_State* L)LNOEXCEPT
 		{
 			ResourceWrapper* p = static_cast<ResourceWrapper*>(luaL_checkudata(L, 1, TYPENAME_RESOURCE));
@@ -850,19 +723,6 @@ void GameResourceWrapper::Register(lua_State* L)LNOEXCEPT
 
 	luaL_Reg tMethods[] =
 	{
-		/*
-		{ "Update", &WrapperImplement::Update },
-		{ "UpdateNode", &WrapperImplement::UpdateNode },
-		{ "Release", &WrapperImplement::Release },
-		{ "Render", &WrapperImplement::Render },
-		{ "CollisionCheck", &WrapperImplement::CollisionCheck },
-		{ "CollisionCheckWidth", &WrapperImplement::CollisionCheckWidth },
-		{ "BoundCheck", &WrapperImplement::BoundCheck },
-		{ "SampleByLength", &WrapperImplement::SampleByLength },
-		{ "SampleByTime", &WrapperImplement::SampleByTime },
-		{ "UpdatePositionByList", &WrapperImplement::UpdatePositionByList },
-		{ "SetAllWidth", &WrapperImplement::SetAllWidth },
-		*/
 		{ NULL, NULL }
 	};
 	luaL_Reg tMetaTable[] =
@@ -1952,6 +1812,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		#pragma endregion
 
+		#pragma region 绘图函数
 		// 绘图函数
 		static int BeginScene(lua_State* L)LNOEXCEPT
 		{
@@ -2011,6 +1872,41 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				static_cast<float>(luaL_checknumber(L, 12)),
 				static_cast<float>(luaL_checknumber(L, 13))
 			);
+			return 0;
+		}
+		static int SetTextureSamplerState(lua_State* L)LNOEXCEPT
+		{
+			bool ret;
+			if (lua_gettop(L) == 2) {
+				// string string
+				const char* s = luaL_checkstring(L, 1);
+				if (strcmp(s, "address") == 0) {
+					// "address" string
+					fcyColor color(0,0,0,0);
+					ret = LAPP.SetTextureSamplerAddress(TranslateTextureSamplerAddress(L, 2), color);
+					if (!ret) {
+						return luaL_error(L, "Failed to set texture sampler address mode.");
+					}
+				}
+				else if (strcmp(s, "filter") == 0) {
+					// "filter" string
+					ret = LAPP.SetTextureSamplerFilter(TranslateTextureSamplerFilter(L, 2));
+					if (!ret) {
+						return luaL_error(L, "Failed to set texture sampler filter type.");
+					}
+				}
+				else {
+					return luaL_error(L, "Invalid argument '%m'.",s);
+				}
+			}
+			else if (lua_gettop(L) == 3) {
+				// "address" string color
+				fcyColor* p = static_cast<fcyColor*>(luaL_checkudata(L, 3, TYPENAME_COLOR));
+				ret = LAPP.SetTextureSamplerAddress(TranslateTextureSamplerAddress(L, 2), *p);
+				if (!ret) {
+					return luaL_error(L, "Failed to set texture sampler address mode.");
+				}
+			}
 			return 0;
 		}
 		static int Render(lua_State* L)LNOEXCEPT
@@ -2364,7 +2260,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			}
 			return 0;
 		}
+		#pragma endregion
 
+		#pragma region 声音控制函数
 		// 声音控制函数
 		static int PlaySound(lua_State* L)LNOEXCEPT
 		{
@@ -2495,7 +2393,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			}
 			return 0;
 		}
+		#pragma endregion
 
+		#pragma region 输入控制函数
 		// 输入控制函数
 		static int GetKeyState(lua_State* L)LNOEXCEPT
 		{
@@ -2594,6 +2494,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			LAPP.m_Input->Reset();
 			return 0;
 		}
+		#pragma endregion
 
 		//EX+ 网络
 		static int ConnectTo(lua_State* L)LNOEXCEPT
@@ -3100,6 +3001,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "SetViewport", &WrapperImplement::SetViewport },
 		{ "SetOrtho", &WrapperImplement::SetOrtho },
 		{ "SetPerspective", &WrapperImplement::SetPerspective },
+		{ "SetTextureSamplerState", &WrapperImplement::SetTextureSamplerState },
 		{ "Render", &WrapperImplement::Render },
 		{ "RenderRect", &WrapperImplement::RenderRect },
 		{ "Render4V", &WrapperImplement::Render4V },

@@ -1365,3 +1365,61 @@ fResult f2dRenderDeviceImpl::UpdateScreenToWindow(fcyColor KeyColor, fByte Alpha
 
 	return FCYERR_OK;
 }
+
+fResult f2dRenderDeviceImpl::SetTextureAddress(F2DTEXTUREADDRESS address, const fcyColor& borderColor) {
+	if (m_pCurGraphics && m_pCurGraphics->IsInRender())
+		m_pCurGraphics->Flush();
+	
+	D3DTEXTUREADDRESS d3daddress;
+	switch (address) {
+	case F2DTEXTUREADDRESS_WRAP:
+		d3daddress = D3DTADDRESS_WRAP;
+		break;
+	case F2DTEXTUREADDRESS_MIRROR:
+		d3daddress = D3DTADDRESS_MIRROR;
+		break;
+	case F2DTEXTUREADDRESS_CLAMP:
+		d3daddress = D3DTADDRESS_CLAMP;
+		break;
+	case F2DTEXTUREADDRESS_BORDER:
+		d3daddress = D3DTADDRESS_BORDER;
+		break;
+	case F2DTEXTUREADDRESS_MIRRORONCE:
+		d3daddress = D3DTADDRESS_MIRRORONCE;
+		break;
+	default:
+		return FCYERR_INVAILDPARAM;
+	}
+	if (FAILED(m_pDev->SetSamplerState(0, D3DSAMP_ADDRESSU, d3daddress)))
+		return FCYERR_INTERNALERR;
+	if (FAILED(m_pDev->SetSamplerState(0, D3DSAMP_ADDRESSV, d3daddress)))
+		return FCYERR_INTERNALERR;
+	if (FAILED(m_pDev->SetSamplerState(0, D3DSAMP_BORDERCOLOR, borderColor.argb)))
+		return FCYERR_INTERNALERR;
+	return FCYERR_OK;
+}
+
+fResult f2dRenderDeviceImpl::SetTextureFilter(F2DTEXFILTERTYPE filter) {
+	if (m_pCurGraphics && m_pCurGraphics->IsInRender())
+		m_pCurGraphics->Flush();
+
+	D3DTEXTUREFILTERTYPE d3dfilter;
+	switch (filter)
+	{
+	case F2DTEXFILTER_POINT:
+		d3dfilter = D3DTEXF_POINT;
+		break;
+	case F2DTEXFILTER_LINEAR:
+		d3dfilter = D3DTEXF_LINEAR;
+		break;
+	default:
+		return FCYERR_INVAILDPARAM;
+	}
+	if (FAILED(m_pDev->SetSamplerState(0, D3DSAMP_MAGFILTER, d3dfilter)))
+		return FCYERR_INTERNALERR;
+	if (FAILED(m_pDev->SetSamplerState(0, D3DSAMP_MIPFILTER, d3dfilter)))
+		return FCYERR_INTERNALERR;
+	if (FAILED(m_pDev->SetSamplerState(0, D3DSAMP_MINFILTER, d3dfilter)))
+		return FCYERR_INTERNALERR;
+	return FCYERR_OK;
+}

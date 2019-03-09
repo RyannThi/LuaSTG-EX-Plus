@@ -171,6 +171,10 @@ public: // 接口实现
 	fResult SaveScreen(f2dStream* pStream);
 	fResult SaveTexture(f2dStream* pStream, f2dTexture2D* pTex);
 	fResult UpdateScreenToWindow(fcyColor KeyColor, fByte Alpha);
+
+	//纹理采样设置
+	fResult SetTextureAddress(F2DTEXTUREADDRESS address, const fcyColor& borderColor);
+	fResult SetTextureFilter(F2DTEXFILTERTYPE filter);
 public:
 	f2dRenderDeviceImpl(f2dEngineImpl* pEngine, fuInt BackBufferWidth, fuInt BackBufferHeight, fBool Windowed, fBool VSync, F2DAALEVEL AALevel);
 	~f2dRenderDeviceImpl();

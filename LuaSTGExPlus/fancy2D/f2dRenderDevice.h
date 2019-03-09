@@ -255,6 +255,44 @@ struct f2dEffect :
 
 // ============================= 渲染器包装 ===================================
 
+// 纹理采样选项：
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief 采样状态
+////////////////////////////////////////////////////////////////////////////////
+enum F2DSAMPLERSTATETYPE {
+	F2DSAMPLERSTATE_ADDRESSU    = 1, //纹理U坐标采样方式
+	F2DSAMPLERSTATE_ADDRESSV    = 2, //纹理V坐标采样方式
+
+	F2DSAMPLERSTATE_BORDERCOLOR = 4, //纹理界外颜色，默认0x00000000
+
+	F2DSAMPLERSTATE_MAGFILTER   = 5, //放大采样过滤器
+	F2DSAMPLERSTATE_MINFILTER   = 6, //缩小采样过滤器
+	F2DSAMPLERSTATE_MIPFILTER   = 7, //mipmap过滤器
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief 采样寻址
+////////////////////////////////////////////////////////////////////////////////
+enum F2DTEXTUREADDRESS {
+	F2DTEXTUREADDRESS_WRAP       = 1, //重复平铺
+	F2DTEXTUREADDRESS_MIRROR     = 2, //镜像重复平铺
+	F2DTEXTUREADDRESS_CLAMP      = 3, //限制界外为纹理边缘颜色
+	F2DTEXTUREADDRESS_BORDER     = 4, //界外为设置的边缘颜色
+	F2DTEXTUREADDRESS_MIRRORONCE = 5, //绕一个轴镜像重复平铺
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief 采样过滤器
+////////////////////////////////////////////////////////////////////////////////
+enum F2DTEXFILTERTYPE {
+	F2DTEXFILTER_POINT         = 1, //邻近插值
+	F2DTEXFILTER_LINEAR        = 2, //三线性插值
+	F2DTEXFILTER_ANISOTROPIC   = 3, //各项异性过滤插值，不适用于MIPFILTER
+	F2DTEXFILTER_PYRAMIDALQUAD = 6, //4向柔和采样过滤器，一般不使用
+	F2DTEXFILTER_GAUSSIANQUAD  = 7, //4向高斯采样过滤器，一般不使用
+};
+
 // 混合选项：
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -801,6 +839,15 @@ struct f2dRenderDevice
 	/// @param[in] KeyColor 关键色
 	/// @param[in] Alpha    透明度
 	virtual fResult UpdateScreenToWindow(fcyColor KeyColor, fByte Alpha)=0;
+
+	/// @brief     设置纹理采样时地址取值方式
+	/// @param[in] address     取值方式
+	/// @param[in] borderColor 界外颜色
+	virtual fResult SetTextureAddress(F2DTEXTUREADDRESS address, const fcyColor& borderColor) = 0;
+
+	/// @brief     纹理采样器
+	/// @param[in] filter 采样器类型
+	virtual fResult SetTextureFilter(F2DTEXFILTERTYPE filter) = 0;
 };
 
 /// @}

@@ -12,7 +12,9 @@
 /LuaSTGExPlus/libvorbis/build/dir/*
 /LuaSTGExPlus/freetype/build/dir/*
 /LuaSTGExPlus/DirectShowClass/build/dir/*
+/LuaSTGExPlus/fancylib/build/*
 /LuaSTGExPlus/fancylib/build/dir/*
+/LuaSTGExPlus/fancy2D/build/*
 /LuaSTGExPlus/fancy2D/build/dir/*
 /LuaSTGExPlus/TCPIP/build/*
 /LuaSTGExPlus/SimpleServer/bin/*

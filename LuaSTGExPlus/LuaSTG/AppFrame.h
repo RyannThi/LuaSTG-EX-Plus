@@ -677,6 +677,18 @@ namespace LuaSTGPlus
 		LNOINLINE bool PostEffectCapture()LNOEXCEPT;
 
 		LNOINLINE bool PostEffectApply(ResFX* shader, BlendMode blend)LNOEXCEPT;
+
+		// 设置贴图采样地址
+		bool SetTextureSamplerAddress(F2DTEXTUREADDRESS addr, const fcyColor &c)LNOEXCEPT
+		{
+			return (m_pRenderDev->SetTextureAddress(addr, c) == FCYERR_OK) ? true : false;
+		}
+
+		// 设置贴图采样器
+		bool SetTextureSamplerFilter(F2DTEXFILTERTYPE filter)LNOEXCEPT
+		{
+			return (m_pRenderDev->SetTextureFilter(filter) == FCYERR_OK) ? true : false;
+		}
 	public:
 		ResourceMgr& GetResourceMgr()LNOEXCEPT { return m_ResourceMgr; }
 		GameObjectPool& GetGameObjectPool()LNOEXCEPT{ return *m_GameObjectPool.get(); }
