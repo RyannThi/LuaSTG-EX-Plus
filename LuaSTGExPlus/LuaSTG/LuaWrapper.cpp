@@ -931,8 +931,15 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		static int DoFile(lua_State* L)LNOEXCEPT
 		{
+			int args = lua_gettop(L);//获取此时栈上的值的数量
 			LAPP.LoadScript(luaL_checkstring(L, 1),luaL_optstring(L,2,NULL));
-			return 0;
+			//LINFO("返回%d个值",lua_gettop(L)-1);
+			return (lua_gettop(L)- args);
+		}
+		static int LoadTextFile(lua_State* L)LNOEXCEPT
+		{
+			LAPP.LoadTextFile(luaL_checkstring(L, 1), luaL_optstring(L, 2, NULL));
+			return 1;//必返回一个string给lua
 		}
 		static int FindFiles(lua_State* L)LNOEXCEPT
 		{
@@ -1555,9 +1562,11 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			if (!pActivedPool)
 				return luaL_error(L, "can't load resource at this time.");
 
-			if (!pActivedPool->LoadTTFFont(name, path, (float)luaL_checknumber(L, 3), (float)luaL_checknumber(L, 4)))
-				return luaL_error(L, "load ttf font failed (name=%s, path=%s)", name, path);
-			return 0;
+			bool result = pActivedPool->LoadTTFFont(name, path, (float)luaL_checknumber(L, 3), (float)luaL_checknumber(L, 4));
+			//if (!result)
+				//return luaL_error(L, "load ttf font failed (name=%s, path=%s)", name, path);
+			lua_pushboolean(L, result);
+			return 1;
 		}
 		static int LoadFX(lua_State* L)LNOEXCEPT
 		{
@@ -2924,6 +2933,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "UnloadPack", &WrapperImplement::UnloadPack },
 		{ "ExtractRes", &WrapperImplement::ExtractRes },
 		{ "DoFile", &WrapperImplement::DoFile },
+		{ "LoadTextFile", &WrapperImplement::LoadTextFile },
 		{ "ShowSplashWindow", &WrapperImplement::ShowSplashWindow },
 		
 		//========游戏对象==========

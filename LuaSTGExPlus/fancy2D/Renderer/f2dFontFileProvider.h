@@ -51,7 +51,7 @@ protected:
 	FT_Face m_Face;
 
 	// --- 纹理缓冲区属性 ---
-	fuInt m_TexSize;                // 纹理大小 1024或者2048
+	fuInt m_TexSize;                // 纹理大小 1024或者2048 （还是用更大的尺寸好一些）
 	fuInt m_CacheXCount;            // 缓冲横向数量
 	fuInt m_CacheYCount;            // 缓冲纵向数量
 	fcyVec2 m_PerGlyphSize;         // 单个字形大小
@@ -128,6 +128,8 @@ public: // 接口实现
 	}
 	fResult CacheString(fcStrW String);
 	fResult QueryGlyph(f2dGraphics* pGraph, fCharW Character, f2dGlyphInfo* InfoOut);
+	fInt GetCacheCount() { return m_CacheXCount * m_CacheYCount; }
+	fInt GetCacheTexSize() { return m_TexSize; }
 protected:
 	f2dFontFileProvider(f2dRenderDevice* pParent, f2dStream* pStream, const fcyVec2& FontSize, fuInt FaceIndex, F2DFONTFLAG Flag);
 	~f2dFontFileProvider();

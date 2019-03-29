@@ -321,6 +321,10 @@ namespace LuaSTGPlus
 		/// @note 该函数为脚本系统使用
 		LNOINLINE void LoadScript(const char* path,const char *packname)LNOEXCEPT;
 
+		/// @brief 读取资源包中的文本文件
+		/// @note 也能读取其他类型的文件，但是会得到无意义的结果
+		LNOINLINE void LoadTextFile(const char* path, const char *packname)LNOEXCEPT;
+
 		/// @brief 检查按键是否按下
 		fBool GetKeyState(int VKCode)LNOEXCEPT;
 

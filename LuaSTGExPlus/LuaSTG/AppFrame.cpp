@@ -557,7 +557,8 @@ LNOINLINE void AppFrame::LoadScript(const char* path,const char *packname)LNOEXC
 		return;
 	}
 	tMemStream = nullptr;
-	lua_call(L, 0, 0);
+	//lua_call(L, 0, 0);
+	lua_call(L, 0, LUA_MULTRET);//保证DoFile后有返回值
 	/*
 	if (lua_pcall(L, 0, 0, 0))
 	{
@@ -567,6 +568,30 @@ LNOINLINE void AppFrame::LoadScript(const char* path,const char *packname)LNOEXC
 		return;
 	}
 	*/
+}
+
+LNOINLINE void AppFrame::LoadTextFile(const char* path, const char *packname)LNOEXCEPT
+{
+	LINFO("读取文本文件'%m'", path);
+	fcyRefPointer<fcyMemStream> tMemStream;
+	if (!m_ResourceMgr.LoadFile(path, tMemStream, packname))
+	{
+		luaL_error(L, "can't load file '%s'", path);
+		return;
+	}
+	const char *fstr = (fcStr)tMemStream->GetInternalBuffer();
+	lua_pushstring(L, fstr);
+	/*
+	if (luaL_loadbuffer(L, (fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), luaL_checkstring(L, 1)))
+	{
+		tMemStream = nullptr;
+		const char* tDetail = lua_tostring(L, -1);
+		LERROR("编译脚本'%m'失败: %m", path, tDetail);
+		luaL_error(L, "failed to compile '%s': %s", path, tDetail);
+		return;
+	}
+	*/
+	tMemStream = nullptr;
 }
 
 fBool AppFrame::GetKeyState(int VKCode)LNOEXCEPT

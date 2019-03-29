@@ -334,6 +334,8 @@ namespace LuaSTGPlus
 			f2dTexture2D* GetCacheTexture();
 			fResult CacheString(fcStrW String);
 			fResult QueryGlyph(f2dGraphics* pGraph, fCharW Character, f2dGlyphInfo* InfoOut);
+			fInt GetCacheCount() { return 0; }
+			fInt GetCacheTexSize() { return 0; }
 		public:
 			HGEFont(std::unordered_map<wchar_t, f2dGlyphInfo>&& org, fcyRefPointer<f2dTexture2D> pTex);
 		};

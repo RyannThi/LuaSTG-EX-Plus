@@ -277,6 +277,12 @@ struct f2dFontProvider :
 	/// @param[in]  Character 请求的字符
 	/// @param[out] InfoOut   返回的字形数据
 	virtual fResult QueryGlyph(f2dGraphics* pGraph, fCharW Character, f2dGlyphInfo* InfoOut)=0;
+
+	/// @brief      获取可用的字形缓存数量
+	virtual fInt GetCacheCount() = 0;
+
+	/// @brief      获取字形缓存贴图大小
+	virtual fInt GetCacheTexSize() = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

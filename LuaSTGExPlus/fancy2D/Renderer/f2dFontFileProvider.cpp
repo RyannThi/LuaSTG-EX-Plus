@@ -49,6 +49,7 @@ f2dFontFileProvider::f2dFontFileProvider(f2dRenderDevice* pParent, f2dStream* pS
 	m_PerGlyphSize.x = ceil(widthSizeToPixel(abs(m_Face->bbox.xMax - m_Face->bbox.xMin)) + s_Magin * 2.f);
 	m_PerGlyphSize.y = ceil(heightSizeToPixel(abs(m_Face->bbox.yMax - m_Face->bbox.yMin)) + s_Magin * 2.f);
 
+	/*
 	// 计算行列的文字数
 	if(1024.f / m_PerGlyphSize.x < 10.f || 1024.f / m_PerGlyphSize.y < 10.f)
 	{
@@ -75,6 +76,59 @@ f2dFontFileProvider::f2dFontFileProvider(f2dRenderDevice* pParent, f2dStream* pS
 		m_TexSize = 1024;
 		m_CacheXCount = (int)(1024.f / m_PerGlyphSize.x);
 		m_CacheYCount = (int)(1024.f / m_PerGlyphSize.y);
+	}
+	*/
+
+	// 计算行列的文字数
+	{
+		//贴图宽高
+		int SizeTypeCount = 3;
+		float TexSizeList[] = {
+			512.0f,
+			1024.0f,
+			2048.0f };
+		//每行列数量
+		int LevelCount = 7;
+		float CountLevel[] = {
+			64.0f,
+			32.0f,
+			16.0f,
+			8.0f,
+			4.0f,
+			2.0f,
+			1.0f };
+		//开始查询
+		float s_size, n_level;
+		bool check = false;
+		for (int lv = 0; lv < LevelCount; lv++) {
+			n_level = CountLevel[lv];//每行列数量
+			for (int select = 0; select < SizeTypeCount; select++) {
+				s_size = TexSizeList[select];//贴图宽高
+				if (s_size / m_PerGlyphSize.x < n_level || s_size / m_PerGlyphSize.y < n_level) {
+					continue;
+				}
+				else {
+					m_TexSize = (int)s_size;
+					m_CacheXCount = (int)(s_size / m_PerGlyphSize.x);
+					m_CacheYCount = (int)(s_size / m_PerGlyphSize.y);
+					check = true;
+					break;
+				}
+			}
+			//已经匹配到适合的每行列数量以及贴图大小
+			if (check) {
+				break;
+			}
+		}
+		//没有匹配到，可能是字体过大？
+		if (!check) {
+			FT_Done_Face(m_Face);
+			FT_Done_FreeType(m_FontLib);
+
+			FCYSAFEKILL(m_pStream);
+
+			throw fcyException("f2dFontFileProvider::f2dFontFileProvider", "Font size is too big.");
+		}
 	}
 
 	// 产生字体缓冲纹理

@@ -1403,7 +1403,8 @@ bool ResourcePool::LoadTTFFont(const char* name, const std::wstring& path, float
 			LINFO("LoadTTFFont: 无法在路径'%s'上加载字体，尝试以系统字体对待并加载系统字体", path.c_str());
 			if (FCYFAILED(LAPP.GetRenderer()->CreateSystemFont(path.c_str(), 0, fcyVec2(width, height), F2DFONTFLAG_NONE, &tFontProvider)))
 			{
-				LERROR("LoadTTFFont: 尝试失败，无法从路径'%s'上加载字体", path.c_str());
+				//LERROR("LoadTTFFont: 尝试失败，无法从路径'%s'上加载字体", path.c_str());
+				LWARNING("LoadTTFFont: 尝试失败，无法从系统字体库加载字体'%s'", path.c_str());//向lua层返回错误，而不是直接崩游戏
 				return false;
 			}
 		}
@@ -1415,11 +1416,13 @@ bool ResourcePool::LoadTTFFont(const char* name, const std::wstring& path, float
 			{
 				if (FCYFAILED(LAPP.GetRenderer()->CreateFontFromFile(tDataBuf, 0, fcyVec2(width, height), F2DFONTFLAG_NONE, &tFontProvider)))
 				{
-					LERROR("LoadTTFFont: 从文件'%s'创建纹理字体失败", path.c_str());
+					LERROR("LoadTTFFont: 从文件'%s'创建TrueType字体失败", path.c_str());
 					return false;
 				}
 			}
-
+#ifdef LSHOWRESLOADINFO
+			LINFO("字形缓存数量：%d，字形缓存贴图大小：%dx%d", tFontProvider->GetCacheCount(), tFontProvider->GetCacheTexSize(), tFontProvider->GetCacheTexSize());
+#endif
 			fcyRefPointer<ResFont> tRes;
 			tRes.DirectSet(new ResFont(name, tFontProvider));
 			tRes->SetBlendMode(BlendMode::AddAlpha);

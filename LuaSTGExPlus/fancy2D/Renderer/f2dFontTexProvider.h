@@ -53,6 +53,8 @@ public:
 		return FCYERR_NOTSUPPORT;
 	}
 	fResult QueryGlyph(f2dGraphics* pGraph, fCharW Character, f2dGlyphInfo* InfoOut);
+	fInt GetCacheCount() { return 0; }
+	fInt GetCacheTexSize() { return 0; }
 protected:
 	f2dFontTexProvider(f2dStream* pDefineFile, f2dTexture2D* pTex);
 	f2dFontTexProvider(fcStrW pDefineFile, f2dTexture2D* pTex);
