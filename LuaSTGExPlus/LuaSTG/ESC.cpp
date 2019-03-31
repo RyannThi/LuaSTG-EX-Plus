@@ -47,9 +47,12 @@ void DestroyInputAlias(EX_ALIAS_MAP_LIST *_list){
 EX_KEY ParseInput(const bool *buffer, EX_ALIAS_MAP_LIST *keyalias){
 	EX_KEY a = 0;
 	while (keyalias){
-		if (buffer[keyalias->keycode]){
+		if (LAPP.GetKeyState(keyalias->keycode)) {
 			a |= 1 << keyalias->vkey;
 		}
+		//if (buffer[keyalias->keycode]){
+			//a |= 1 << keyalias->vkey;
+		//}
 		keyalias = keyalias->next;
 	}
 	return a;
