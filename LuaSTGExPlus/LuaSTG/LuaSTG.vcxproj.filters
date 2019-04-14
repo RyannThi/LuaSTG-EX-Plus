@@ -31,6 +31,12 @@
     <Filter Include="LuaExtensions\luasock">
       <UniqueIdentifier>{e8fac02e-f58a-4f97-a95c-a27080f679c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LuaWrapper">
+      <UniqueIdentifier>{866134f9-f4a5-4098-a240-9a40f56c4127}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debuger">
+      <UniqueIdentifier>{d608d663-128f-46b3-ba0f-00a40bc43095}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="GameObjectPropertyHash.inl">
@@ -74,16 +80,10 @@
     <ClInclude Include="LogSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="LuaWrapper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Network.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ObjectPool.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="RemoteDebuggerClient.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -191,6 +191,12 @@
     <ClInclude Include="..\luasocket\src\wsocket.h">
       <Filter>LuaExtensions\luasock</Filter>
     </ClInclude>
+    <ClInclude Include="LuaWrapper.h">
+      <Filter>LuaWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteDebuggerClient.h">
+      <Filter>Debuger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppFrame.cpp">
@@ -214,16 +220,10 @@
     <ClCompile Include="LogSystem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="LuaWrapper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Network.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="RemoteDebuggerClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ResourceMgr.cpp">
@@ -321,6 +321,12 @@
     </ClCompile>
     <ClCompile Include="..\luasocket\src\wsocket.c">
       <Filter>LuaExtensions\luasock</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaWrapper.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteDebuggerClient.cpp">
+      <Filter>Debuger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -102,14 +102,18 @@ fuInt f2dEngineImpl::UpdateAndRenderThread::ThreadJob()
 		tTime = tFPSController.Update(tTimer);
 		
 		// 执行显示事件
-		if(bDoPresent)
-			m_pEngine->DoPresent(tpRenderDev);
+		//if(bDoPresent)
+			//m_pEngine->DoPresent(tpRenderDev);
 
 		// 执行更新事件
 		m_pEngine->DoUpdate(tTime, &tFPSController);
 
 		// 执行渲染事件
 		bDoPresent = m_pEngine->DoRender(tTime, &tFPSController, tpRenderDev);
+
+		// 执行显示事件
+		if (bDoPresent)
+			m_pEngine->DoPresent(tpRenderDev);
 	}
 
 	// 投递终止消息

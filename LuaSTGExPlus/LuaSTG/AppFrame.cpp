@@ -1478,7 +1478,8 @@ bool AppFrame::Init()LNOEXCEPT
 	LINFO("CPU %m %m / GPU %m", stCPUInfo.CPUBrandString, stCPUInfo.CPUString, m_pRenderDev->GetDeviceName());
 
 	// 创建渲染器
-	if (FCYFAILED(m_pRenderDev->CreateGraphics2D(20000, 20000, &m_Graph2D)))
+	//原来的大小只有20000，20000
+	if (FCYFAILED(m_pRenderDev->CreateGraphics2D(32768, 65536, &m_Graph2D)))
 	{
 		LERROR("无法创建渲染器 (fcyRenderDevice::CreateGraphics2D failed)");
 		return false;
@@ -1560,6 +1561,7 @@ bool AppFrame::Init()LNOEXCEPT
 	m_LastKey = 0;
 	::memset(m_KeyStateMap, 0, sizeof(m_KeyStateMap));
 	::memset(m_MouseState, 0, sizeof(m_MouseState));
+	m_MouseWheelDelta = 0.0f;
 
 	//////////////////////////////////////// 装载核心脚本并执行GameInit
 	LINFO("装载核心脚本'%s'", LCORE_SCRIPT);
@@ -1851,6 +1853,9 @@ fBool AppFrame::OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, 
 		case F2DMSG_WINDOW_ONMOUSEMOVE:
 			m_MousePosition.x = (float)static_cast<fInt>(tMsg.Param1);
 			m_MousePosition.y = m_OptionResolution.y - (float)static_cast<fInt>(tMsg.Param2);  // ! 潜在大小不匹配问题
+			break;
+		case F2DMSG_WINDOW_ONMOUSEWHEEL:
+			m_MouseWheelDelta = tMsg.Param3;
 			break;
 		case F2DMSG_JOYSTICK_ONXPOSCHANGE:
 			do

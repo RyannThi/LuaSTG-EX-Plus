@@ -138,6 +138,7 @@ namespace LuaSTGPlus
 		fInt m_LastKey;
 		fBool m_KeyStateMap[256];
 		fcyVec2 m_MousePosition;
+		fDouble m_MouseWheelDelta;
 		fBool m_MouseState[3];
 
 		lua_Integer m_superpause;
@@ -321,8 +322,8 @@ namespace LuaSTGPlus
 		/// @note 该函数为脚本系统使用
 		LNOINLINE void LoadScript(const char* path,const char *packname)LNOEXCEPT;
 
-		/// @brief 读取资源包中的文本文件
-		/// @note 也能读取其他类型的文件，但是会得到无意义的结果
+		//读取资源包中的文本文件
+		//也能读取其他类型的文件，但是会得到无意义的结果
 		LNOINLINE void LoadTextFile(const char* path, const char *packname)LNOEXCEPT;
 
 		/// @brief 检查按键是否按下
@@ -336,6 +337,9 @@ namespace LuaSTGPlus
 
 		/// @brief 获取鼠标位置（以窗口左下角为原点）
 		fcyVec2 GetMousePosition()LNOEXCEPT { return m_MousePosition; }
+
+		/// @brief 获取鼠标滚轮增量
+		fDouble GetMouseWheelDelta()LNOEXCEPT { return m_MouseWheelDelta; }
 
 		/// @brief 检查鼠标是否按下
 		fBool GetMouseState(int button)LNOEXCEPT

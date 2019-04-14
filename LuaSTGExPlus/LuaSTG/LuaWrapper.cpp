@@ -2427,6 +2427,11 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			lua_pushnumber(L, tPos.y);
 			return 2;
 		}
+		static int GetMouseWheelDelta(lua_State* L)LNOEXCEPT
+		{
+			lua_pushnumber(L, LAPP.GetMouseWheelDelta());
+			return 1;
+		}
 		static int GetMouseState(lua_State* L)LNOEXCEPT
 		{
 			lua_pushboolean(L, LAPP.GetMouseState(luaL_checkinteger(L, 1)));
@@ -3047,6 +3052,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "GetLastKey", &WrapperImplement::GetLastKey },
 		{ "GetLastChar", &WrapperImplement::GetLastChar },
 		{ "GetMousePosition", &WrapperImplement::GetMousePosition },
+		{ "GetMouseWheelDelta", &WrapperImplement::GetMouseWheelDelta },
 		{ "GetMouseState", &WrapperImplement::GetMouseState },
 		
 			// 内置数学函数

@@ -137,6 +137,8 @@ f2dEffectImpl::f2dEffectImpl(f2dRenderDeviceImpl* pDev, f2dStream* pStream, fBoo
 
 			FCYSAFEKILL(pErr);
 
+			MessageBoxA(NULL, tErrBuffer.data(), "Fancy2D Error", MB_OK | MB_ICONERROR);
+
 			// 强制截断以满足fcyException大小
 			if(tErrBuffer.size() > 453)
 			{
