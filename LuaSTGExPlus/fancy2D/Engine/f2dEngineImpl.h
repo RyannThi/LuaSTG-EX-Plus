@@ -127,6 +127,7 @@ public: // 接口实现
 	fResult InitRenderer(fuInt BufferWidth, fuInt BufferHeight, fBool Windowed, fBool VSync, F2DAALEVEL AALevel);
 	fResult InitVideoSys();
 
+	fcyCriticalSection& GetCriticalSection() { return m_Sec; }
 	f2dWindow* GetMainWindow() { return m_pWindow;   }
 	f2dFileSys* GetFileSys()   { return &m_FileSys;  }
 	f2dSoundSys* GetSoundSys();

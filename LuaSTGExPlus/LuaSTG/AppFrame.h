@@ -100,6 +100,11 @@ namespace LuaSTGPlus
 		bool m_OptionSplash = false;
 		std::wstring m_OptionTitle = L"LuaSTGPlus";
 		fDouble m_fFPS = 0.;
+#if (defined LDEVVERSION) || (defined LDEBUG)
+		bool m_bShowConsole = false;
+		HANDLE m_hConsoleWrite = NULL;
+		HANDLE m_hConsoleRead = NULL;
+#endif
 
 		// 引擎
 		fcyRefPointer<f2dEngine> m_pEngine;
@@ -309,7 +314,18 @@ namespace LuaSTGPlus
 		void SetResolution(fuInt width, fuInt height)LNOEXCEPT;
 		void SetSplash(bool v)LNOEXCEPT;
 		LNOINLINE void SetTitle(const char* v)LNOEXCEPT;  // UTF8编码
-
+#if (defined LDEVVERSION) || (defined LDEBUG)
+		bool ShowConsole(bool key)LNOEXCEPT {
+			if (m_iStatus == AppStatus::Initializing) {
+				m_bShowConsole = key;
+				return true;
+			}
+			else if (m_iStatus == AppStatus::Running) {
+				return false;
+			}
+		}
+#endif
+		
 		/// @brief 使用新的视频参数更新显示模式
 		/// @note 若切换失败则进行回滚
 		LNOINLINE bool ChangeVideoMode(int width, int height, bool windowed, bool vsync)LNOEXCEPT;
@@ -601,7 +617,8 @@ namespace LuaSTGPlus
 			return true;
 		}
 
-			bool RenderTexture(const char* name, BlendMode blend, int vcount, const f2dGraphics2DVertex vertex[], int icount, unsigned short *indexs)LNOEXCEPT
+		//渲染纹理，多顶点
+		bool RenderTexture(const char* name, BlendMode blend, int vcount, const f2dGraphics2DVertex vertex[], int icount, unsigned short *indexs)LNOEXCEPT
 		{
 			if (m_GraphType != GraphicsType::Graph2D)
 			{
@@ -623,8 +640,8 @@ namespace LuaSTGPlus
 			return true;
 		}
 
-			bool RenderModel(const char* name, float x, float y, float z, float sx, float sy, float sz,float
-			rx,float ry ,float rz)LNOEXCEPT
+		//渲染模型
+		bool RenderModel(const char* name, float x, float y, float z, float sx, float sy, float sz,float rx,float ry ,float rz)LNOEXCEPT
 		{
 			if (m_GraphType != GraphicsType::Graph2D)
 			{
@@ -632,7 +649,6 @@ namespace LuaSTGPlus
 				return false;
 			}
 			void RenderObj(std::string id);
-
 
 			fcyMatrix4 f0 = m_Graph2D->GetWorldTransform();
 			fcyVec3 r(x, y, z);
@@ -650,10 +666,8 @@ namespace LuaSTGPlus
 			RenderObj(name);
 			m_Graph2D->SetWorldTransform(f0);
 
-
 			return true;
 		}
-
 
 		/// @brief 渲染文字
 		bool RenderText(ResFont* p, wchar_t* strBuf, fcyRect rect, fcyVec2 scale, ResFont::FontAlignHorizontal halign, ResFont::FontAlignVertical valign, bool bWordBreak)LNOEXCEPT;

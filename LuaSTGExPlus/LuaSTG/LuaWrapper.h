@@ -4,6 +4,13 @@
 #include "Global.h"
 #include "ResourceMgr.h"
 
+#define LUASTG_LUA_TYPENAME_COLOR "lstgColor"
+#define LUASTG_LUA_TYPENAME_RANDGEN "lstgRand"
+#define LUASTG_LUA_TYPENAME_BENTLASER "lstgBentLaserData"
+#define LUASTG_LUA_TYPENAME_STOPWATCH "lstgStopWatch"
+#define LUASTG_LUA_TYPENAME_XINPUTWRAPPER "lstgXInputWrapper"
+#define LUASTG_LUA_TYPENAME_RESOURCE "lstgResource"
+
 namespace LuaSTGPlus
 {
 	/// @brief 颜色包装
@@ -64,11 +71,10 @@ namespace LuaSTGPlus
 		/// @brief 向lua注册包装类
 		static void Register(lua_State* L)LNOEXCEPT;
 	};
-
+	
 	//游戏资源包装对象，通过一个结构来保存多种资源（其实我应该用union的23333）
 	//ResourceWrapper结构内有多个指针，以及一个枚举量，用于判断当前保存的资源对象指针
 	//该lua类会对保存的资源进行引用次数+1，被GC回收后解除引用
-	/// @brief 游戏资源
 	class GameResourceWrapper
 	{
 	public:
@@ -87,12 +93,20 @@ namespace LuaSTGPlus
 	public:
 		/// @brief 向lua注册包装类
 		static void Register(lua_State* L)LNOEXCEPT;
-		/// @brief 推入一个游戏资源类到堆栈中
-		template <typename T>
-		static T CreateAndPush(lua_State* L, T res);
+		//推入一个游戏资源类到堆栈中
+		static ResourceWrapper* CreateAndPush(lua_State* L);
 	};
 
-	/// @brief 加载内建类
+	//XInput的lua包装
+	class XInputManagerWrapper {
+	public:
+		//向lua注册包装类
+		static void Register(lua_State* L)LNOEXCEPT;
+		//创建一个XInput包装类并推入堆栈
+		static void CreateAndPush(lua_State* L);
+	};
+
+	//注册内建类
 	static inline void RegistBuiltInClassWrapper(lua_State* L)LNOEXCEPT {
 		ColorWrapper::Register(L);  // 颜色对象
 		RandomizerWrapper::Register(L);  // 随机数发生器
@@ -100,5 +114,35 @@ namespace LuaSTGPlus
 		Fancy2dStopWatchWrapper::Register(L);  // 高精度停表
 		BuiltInFunctionWrapper::Register(L);  // 内建函数库
 		GameResourceWrapper::Register(L);  // 游戏资源对象
+		XInputManagerWrapper::Register(L);  //XInput
+	}
+
+	//翻译字符串到混合模式
+	static inline BlendMode TranslateBlendMode(lua_State* L, int argnum)
+	{
+		const char* s = luaL_checkstring(L, argnum);
+		if (strcmp(s, "mul+add") == 0)
+			return BlendMode::MulAdd;
+		else if (strcmp(s, "") == 0)
+			return BlendMode::MulAlpha;
+		else if (strcmp(s, "mul+alpha") == 0)
+			return BlendMode::MulAlpha;
+		else if (strcmp(s, "add+add") == 0)
+			return BlendMode::AddAdd;
+		else if (strcmp(s, "add+alpha") == 0)
+			return BlendMode::AddAlpha;
+		else if (strcmp(s, "add+rev") == 0)
+			return BlendMode::AddRev;
+		else if (strcmp(s, "mul+rev") == 0)
+			return BlendMode::MulRev;
+		else if (strcmp(s, "add+sub") == 0)
+			return BlendMode::AddSub;
+		else if (strcmp(s, "mul+sub") == 0)
+			return BlendMode::MulSub;
+		else if (strcmp(s, "alpha+bal") == 0)
+			return BlendMode::AlphaBal;
+		else
+			luaL_error(L, "invalid blend mode '%s'.", s);
+		return BlendMode::MulAlpha;
 	}
 }

@@ -236,6 +236,7 @@ struct f2dEngine : f2dInterface
 	virtual fResult InitVideoSys()=0;
 
 	// --- 获得组件 ---
+	virtual fcyCriticalSection& GetCriticalSection() = 0;
 	virtual f2dWindow* GetMainWindow()=0;  ///< @brief 获得主窗口
 	virtual f2dFileSys* GetFileSys()=0;    ///< @brief 获得文件系统
 	virtual f2dSoundSys* GetSoundSys()=0;  ///< @brief 获得声音系统

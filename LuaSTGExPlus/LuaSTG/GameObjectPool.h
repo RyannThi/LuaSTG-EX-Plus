@@ -225,9 +225,12 @@ namespace LuaSTGPlus
 			bool sharp;
 
 			LaserNode(){
+				half_width = 0.0f;
+				x_dir = 0.0f;
+				y_dir = 0.0f;
 				active = true;
-				rot = 0;
-				dis = 0;
+				rot = 0.0f;
+				dis = 0.0f;
 				sharp = false;
 			}
 		};

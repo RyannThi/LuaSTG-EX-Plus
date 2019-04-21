@@ -2,12 +2,6 @@
 #include "AppFrame.h"
 #include "Network.h"
 
-#define TYPENAME_COLOR "lstgColor"
-#define TYPENAME_RANDGEN "lstgRand"
-#define TYPENAME_BENTLASER "lstgBentLaserData"
-#define TYPENAME_STOPWATCH "lstgStopWatch"
-#define TYPENAME_RESOURCE "lstgResource"
-
 #ifdef min
 #undef min
 #endif
@@ -24,37 +18,8 @@
 #undef PlaySound
 #endif
 
-
 using namespace std;
 using namespace LuaSTGPlus;
-
-static inline BlendMode TranslateBlendMode(lua_State* L, int argnum)
-{
-	const char* s = luaL_checkstring(L, argnum);
-	if (strcmp(s, "mul+add") == 0)
-		return BlendMode::MulAdd;
-	else if (strcmp(s, "") == 0)
-		return BlendMode::MulAlpha;
-	else if (strcmp(s, "mul+alpha") == 0)
-		return BlendMode::MulAlpha;
-	else if (strcmp(s, "add+add") == 0)
-		return BlendMode::AddAdd;
-	else if (strcmp(s, "add+alpha") == 0)
-		return BlendMode::AddAlpha;
-	else if (strcmp(s, "add+rev") == 0)
-		return BlendMode::AddRev;
-	else if (strcmp(s, "mul+rev") == 0)
-		return BlendMode::MulRev;
-	else if (strcmp(s, "add+sub") == 0)
-		return BlendMode::AddSub;
-	else if (strcmp(s, "mul+sub") == 0)
-		return BlendMode::MulSub;
-	else if (strcmp(s, "alpha+bal") == 0)
-		return BlendMode::AlphaBal;
-	else
-		luaL_error(L, "invalid blend mode '%s'.", s);
-	return BlendMode::MulAlpha;
-}
 
 static inline void TranslateAlignMode(lua_State* L, int argnum, ResFont::FontAlignHorizontal& halign, ResFont::FontAlignVertical& valign)
 {
@@ -119,698 +84,6 @@ static inline F2DTEXFILTERTYPE TranslateTextureSamplerFilter(lua_State* L, int a
 	return F2DTEXFILTER_LINEAR;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-/// ColorWrapper
-////////////////////////////////////////////////////////////////////////////////
-#pragma region ColorWrapper
-void ColorWrapper::Register(lua_State* L)LNOEXCEPT
-{
-	struct WrapperImplement
-	{
-		static int ARGB(lua_State* L)LNOEXCEPT
-		{
-			fcyColor* p = static_cast<fcyColor*>(luaL_checkudata(L, 1, TYPENAME_COLOR));
-			lua_pushnumber(L, p->a);
-			lua_pushnumber(L, p->r);
-			lua_pushnumber(L, p->g);
-			lua_pushnumber(L, p->b);
-			return 4;
-		}
-		static int Meta_Eq(lua_State* L)LNOEXCEPT
-		{
-			fcyColor* pA = static_cast<fcyColor*>(luaL_checkudata(L, 1, TYPENAME_COLOR));
-			fcyColor* pB = static_cast<fcyColor*>(luaL_checkudata(L, 2, TYPENAME_COLOR));
-			lua_pushboolean(L, pA->argb == pB->argb);
-			return 1;
-		}
-		static int Meta_Add(lua_State* L)LNOEXCEPT
-		{
-			fcyColor* pA = static_cast<fcyColor*>(luaL_checkudata(L, 1, TYPENAME_COLOR));
-			fcyColor* pB = static_cast<fcyColor*>(luaL_checkudata(L, 2, TYPENAME_COLOR));
-			fcyColor* pResult = CreateAndPush(L);
-			pResult->Set(
-				::min((int)pA->a + pB->a, 255),
-				::min((int)pA->r + pB->r, 255),
-				::min((int)pA->g + pB->g, 255),
-				::min((int)pA->b + pB->b, 255)
-			);
-			return 1;
-		}
-		static int Meta_Sub(lua_State* L)LNOEXCEPT
-		{
-			fcyColor* pA = static_cast<fcyColor*>(luaL_checkudata(L, 1, TYPENAME_COLOR));
-			fcyColor* pB = static_cast<fcyColor*>(luaL_checkudata(L, 2, TYPENAME_COLOR));
-			fcyColor* pResult = CreateAndPush(L);
-			pResult->Set(
-				::max((int)pA->a - pB->a, 0),
-				::max((int)pA->r - pB->r, 0),
-				::max((int)pA->g - pB->g, 0),
-				::max((int)pA->b - pB->b, 0)
-			);
-			return 1;
-		}
-		static int Meta_Mul(lua_State* L)LNOEXCEPT
-		{
-			lua_Number tFactor;
-			fcyColor *p = nullptr, *pResult = nullptr;
-			if (lua_isnumber(L, 1))  // arg1为数字，则arg2必为lstgColor
-			{
-				tFactor = luaL_checknumber(L, 1);
-				p = static_cast<fcyColor*>(luaL_checkudata(L, 2, TYPENAME_COLOR));
-			}
-			else if (lua_isnumber(L, 2))  // arg2为数字，则arg1必为lstgColor
-			{
-				tFactor = luaL_checknumber(L, 2);
-				p = static_cast<fcyColor*>(luaL_checkudata(L, 1, TYPENAME_COLOR));
-			}
-			else  // arg1和arg2都必为lstgColor
-			{
-				fcyColor* pA = static_cast<fcyColor*>(luaL_checkudata(L, 1, TYPENAME_COLOR));
-				fcyColor* pB = static_cast<fcyColor*>(luaL_checkudata(L, 2, TYPENAME_COLOR));
-				pResult = CreateAndPush(L);
-				pResult->Set(
-					::min((int)pA->a * pB->a, 255),
-					::min((int)pA->r * pB->r, 255),
-					::min((int)pA->g * pB->g, 255),
-					::min((int)pA->b * pB->b, 255)
-				);
-				return 1;
-			}
-			pResult = CreateAndPush(L);
-			pResult->Set(
-				(int)::min((double)p->a * tFactor, 255.),
-				(int)::min((double)p->r * tFactor, 255.),
-				(int)::min((double)p->g * tFactor, 255.),
-				(int)::min((double)p->b * tFactor, 255.)
-			);
-			return 1;
-		}
-		static int Meta_ToString(lua_State* L)LNOEXCEPT
-		{
-			fcyColor* p = static_cast<fcyColor*>(luaL_checkudata(L, 1, TYPENAME_COLOR));
-			lua_pushfstring(L, "lstg.Color(%d,%d,%d,%d)", p->a, p->r, p->g, p->b);
-			return 1;
-		}
-	};
-
-	luaL_Reg tMethods[] =
-	{
-		{ "ARGB", &WrapperImplement::ARGB },
-		{ NULL, NULL }
-	};
-	luaL_Reg tMetaTable[] =
-	{
-		{ "__eq", &WrapperImplement::Meta_Eq },
-		{ "__add", &WrapperImplement::Meta_Add },
-		{ "__sub", &WrapperImplement::Meta_Sub },
-		{ "__mul", &WrapperImplement::Meta_Mul },
-		{ "__tostring", &WrapperImplement::Meta_ToString },
-		{ NULL, NULL }
-	};
-
-	luaL_openlib(L, TYPENAME_COLOR, tMethods, 0);  // t
-	luaL_newmetatable(L, TYPENAME_COLOR);  // t mt
-	luaL_openlib(L, 0, tMetaTable, 0);  // t mt
-	lua_pushliteral(L, "__index");  // t mt s
-	lua_pushvalue(L, -3);  // t mt s t
-	lua_rawset(L, -3);  // t mt (mt["__index"] = t)
-	lua_pushliteral(L, "__metatable");  // t mt s
-	lua_pushvalue(L, -3);  // t mt s t
-	lua_rawset(L, -3);  // t mt (mt["__metatable"] = t)  保护metatable不被修改
-	lua_pop(L, 2);
-}
-
-fcyColor* ColorWrapper::CreateAndPush(lua_State* L)
-{
-	fcyColor* p = static_cast<fcyColor*>(lua_newuserdata(L, sizeof(fcyColor)));
-	new(p) fcyColor();  // 构造
-	luaL_getmetatable(L, TYPENAME_COLOR);
-	lua_setmetatable(L, -2);
-	return p;
-}
-#pragma endregion
-
-////////////////////////////////////////////////////////////////////////////////
-/// RandomizerWrapper
-////////////////////////////////////////////////////////////////////////////////
-#pragma region RandomizerWrapper
-void RandomizerWrapper::Register(lua_State* L)LNOEXCEPT
-{
-	struct WrapperImplement
-	{
-		static int Seed(lua_State* L)LNOEXCEPT
-		{
-			fcyRandomWELL512* p = static_cast<fcyRandomWELL512*>(luaL_checkudata(L, 1, TYPENAME_RANDGEN));
-			p->SetSeed((fuInt)luaL_checknumber(L, 2));
-			return 0;
-		}
-		static int GetSeed(lua_State* L)LNOEXCEPT
-		{
-			fcyRandomWELL512* p = static_cast<fcyRandomWELL512*>(luaL_checkudata(L, 1, TYPENAME_RANDGEN));
-			lua_pushnumber(L, (lua_Number)p->GetRandSeed());
-			return 1;
-		}
-		static int Int(lua_State* L)LNOEXCEPT
-		{
-			fcyRandomWELL512* p = static_cast<fcyRandomWELL512*>(luaL_checkudata(L, 1, TYPENAME_RANDGEN));
-			int a = luaL_checkinteger(L, 2), b = luaL_checkinteger(L, 3);
-			lua_pushinteger(L, a + static_cast<fInt>(p->GetRandUInt(::max(static_cast<fuInt>(b - a), 0U))));
-			return 1;
-		}
-		static int Float(lua_State* L)LNOEXCEPT
-		{
-			fcyRandomWELL512* p = static_cast<fcyRandomWELL512*>(luaL_checkudata(L, 1, TYPENAME_RANDGEN));
-			double a = luaL_checknumber(L, 2), b = luaL_checknumber(L, 3);
-			lua_pushnumber(L, p->GetRandFloat((float)a, (float)b));
-			return 1;
-		}
-		static int Sign(lua_State* L)LNOEXCEPT
-		{
-			fcyRandomWELL512* p = static_cast<fcyRandomWELL512*>(luaL_checkudata(L, 1, TYPENAME_RANDGEN));
-			lua_pushinteger(L, p->GetRandUInt(1) * 2 - 1);
-			return 1;
-		}
-		static int Meta_ToString(lua_State* L)LNOEXCEPT
-		{
-			fcyRandomWELL512* p = static_cast<fcyRandomWELL512*>(luaL_checkudata(L, 1, TYPENAME_RANDGEN));
-			lua_pushfstring(L, "lstg.Rand object");
-			return 1;
-		}
-	};
-
-	luaL_Reg tMethods[] =
-	{
-		{ "Seed", &WrapperImplement::Seed },
-		{ "GetSeed", &WrapperImplement::GetSeed },
-		{ "Int", &WrapperImplement::Int },
-		{ "Float", &WrapperImplement::Float },
-		{ "Sign", &WrapperImplement::Sign },
-		{ NULL, NULL }
-	};
-	luaL_Reg tMetaTable[] =
-	{
-		{ "__tostring", &WrapperImplement::Meta_ToString },
-		{ NULL, NULL }
-	};
-
-	luaL_openlib(L, TYPENAME_RANDGEN, tMethods, 0);  // t
-	luaL_newmetatable(L, TYPENAME_RANDGEN);  // t mt
-	luaL_openlib(L, 0, tMetaTable, 0);  // t mt
-	lua_pushliteral(L, "__index");  // t mt s
-	lua_pushvalue(L, -3);  // t mt s t
-	lua_rawset(L, -3);  // t mt (mt["__index"] = t)
-	lua_pushliteral(L, "__metatable");  // t mt s
-	lua_pushvalue(L, -3);  // t mt s t
-	lua_rawset(L, -3);  // t mt (mt["__metatable"] = t)  保护metatable不被修改
-	lua_pop(L, 2);
-}
-
-fcyRandomWELL512* RandomizerWrapper::CreateAndPush(lua_State* L)
-{
-	fcyRandomWELL512* p = static_cast<fcyRandomWELL512*>(lua_newuserdata(L, sizeof(fcyRandomWELL512)));
-	new(p) fcyRandomWELL512();  // 构造
-	luaL_getmetatable(L, TYPENAME_RANDGEN);
-	lua_setmetatable(L, -2);
-	return p;
-}
-#pragma endregion
-
-////////////////////////////////////////////////////////////////////////////////
-/// BentLaserDataWrapper
-////////////////////////////////////////////////////////////////////////////////
-#pragma region BentLaserDataWrapper
-void BentLaserDataWrapper::Register(lua_State* L)LNOEXCEPT
-{
-	struct WrapperImplement
-	{
-		static int Update(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			if (!lua_istable(L, 2))
-				return luaL_error(L, "invalid lstg object for 'Update'.");
-			lua_rawgeti(L, 2, 2);  // self t(object) ??? id
-			size_t id = (size_t)luaL_checkinteger(L, -1);
-			lua_pop(L, 1);
-			if (!p->handle->Update(id, luaL_checkinteger(L, 3), (float)luaL_checknumber(L, 4),luaL_optnumber(L,5,0)==0))
-				return luaL_error(L, "invalid lstg object for 'Update'.");
-			return 0;
-		}
-		static int UpdateNode(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			if (!lua_istable(L, 2))
-				return luaL_error(L, "invalid lstg object for 'UpdateNode'.");
-			lua_rawgeti(L, 2, 2);  // self t(object) ??? id
-			size_t id = (size_t)luaL_checkinteger(L, -1);
-			lua_pop(L, 1);
-			if (!p->handle->UpdateByNode(id, luaL_checkinteger(L, 3),luaL_checkinteger(L, 4), (float)luaL_checknumber(L, 5), luaL_optnumber(L, 6, 0) == 0))
-				return luaL_error(L, "invalid lstg object for 'UpdateNode'.");
-			return 0;
-		}
-		static int UpdatePositionByList(lua_State* L)LNOEXCEPT // u(laser) t(list) length width index revert 
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			if (!lua_istable(L, 2))
-				return luaL_error(L, "invalid lstg object for 'Update'.");
-			//lua_rawgeti(L, 2, 2);  // self t(object) ??? id
-			//size_t id = (size_t)luaL_checkinteger(L, -1);
-			//lua_pop(L, 1);
-
-			int i3 = luaL_checkinteger(L, 3);
-			float f4 = luaL_checknumber(L, 4);
-			int i5 = luaL_optinteger(L, 5, 1);
-			bool i6 = luaL_optinteger(L, 6, 0) != 0;
-			// ... t(list)
-			lua_settop(L, 2);
-
-			if (!p->handle->UpdatePositionByList(L,
-				i3,
-				f4,
-				i5,
-				i6
-				))
-				return luaL_error(L, "Update laser data failed.");
-			return 0;
-		}
-		static int SampleByLength(lua_State* L)LNOEXCEPT // t(self) <length>
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			float length = (float)luaL_checknumber(L, 2);
-			lua_pop(L, 2); // 
-			p->handle->SampleL(L, length); // t(list)
-			return 1;
-		}
-		static int SampleByTime(lua_State* L)LNOEXCEPT // t(self) <length>
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			float time = (float)luaL_checknumber(L, 2);
-			lua_pop(L, 2); // 
-			p->handle->SampleT(L, time/60.0f); // t(list)
-			return 1;
-		}
-
-		static int Release(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (p->handle)
-			{
-				GameObjectBentLaser::FreeInstance(p->handle);
-				p->handle = nullptr;
-			}
-			return 0;
-		}
-		static int Render(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			if (!p->handle->Render(
-				luaL_checkstring(L, 2),
-				TranslateBlendMode(L, 3),
-				*static_cast<fcyColor*>(luaL_checkudata(L, 4, TYPENAME_COLOR)),
-				(float)luaL_checknumber(L, 5),
-				(float)luaL_checknumber(L, 6),
-				(float)luaL_checknumber(L, 7),
-				(float)luaL_checknumber(L, 8),
-#ifdef GLOBAL_SCALE_COLLI_SHAPE
-				(float)luaL_optnumber(L, 9, 1.) * LRES.GetGlobalImageScaleFactor()
-#else
-				(float)luaL_optnumber(L, 9, 1.)
-#endif // GLOBAL_SCALE_COLLI_SHAPE
-				))
-			{
-				return luaL_error(L, "can't render object with texture '%s'.", luaL_checkstring(L, 2));
-			}
-			return 0;
-		}
-		static int CollisionCheck(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			bool r = p->handle->CollisionCheck(
-				(float)luaL_checknumber(L, 2),
-				(float)luaL_checknumber(L, 3),
-				(float)luaL_optnumber(L, 4, 0),
-				(float)luaL_optnumber(L, 5, 0),
-				(float)luaL_optnumber(L, 6, 0),
-				lua_toboolean(L, 7) == 0 ? false : true
-				);
-			lua_pushboolean(L, r);
-			return 1;
-		}
-		static int CollisionCheckWidth(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			bool r = p->handle->CollisionCheckW(
-				(float)luaL_checknumber(L, 2),
-				(float)luaL_checknumber(L, 3),
-				(float)luaL_optnumber(L, 5, 0),
-				(float)luaL_optnumber(L, 6, 0),
-				(float)luaL_optnumber(L, 7, 0),
-				lua_toboolean(L, 8) == 0 ? false : true,
-				(float)luaL_checknumber(L, 4)
-				);
-			lua_pushboolean(L, r);
-			return 1;
-		}
-		static int BoundCheck(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			bool r = p->handle->BoundCheck();
-			lua_pushboolean(L, r);
-			return 1;
-		}
-		static int SetAllWidth(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
-			p->handle->SetAllWidth((float)luaL_checknumber(L, 2));
-
-			return 0;
-		}
-		static int Meta_ToString(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			lua_pushfstring(L, "lstg.BentLaserData object");
-			return 1;
-		}
-		static int Meta_GC(lua_State* L)LNOEXCEPT
-		{
-			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, TYPENAME_BENTLASER));
-			if (p->handle)
-			{
-				GameObjectBentLaser::FreeInstance(p->handle);
-				p->handle = nullptr;
-			}
-			return 0;
-		}
-	};
-
-	luaL_Reg tMethods[] =
-	{
-		{ "Update", &WrapperImplement::Update },
-		{ "UpdateNode", &WrapperImplement::UpdateNode },
-		{ "Release", &WrapperImplement::Release },
-		{ "Render", &WrapperImplement::Render },
-		{ "CollisionCheck", &WrapperImplement::CollisionCheck },
-		{ "CollisionCheckWidth", &WrapperImplement::CollisionCheckWidth },
-		{ "BoundCheck", &WrapperImplement::BoundCheck },
-		{ "SampleByLength", &WrapperImplement::SampleByLength },
-		{ "SampleByTime", &WrapperImplement::SampleByTime },
-		{ "UpdatePositionByList", &WrapperImplement::UpdatePositionByList },
-		{ "SetAllWidth", &WrapperImplement::SetAllWidth }, 
-		{ NULL, NULL }
-	};
-	luaL_Reg tMetaTable[] =
-	{
-		{ "__tostring", &WrapperImplement::Meta_ToString },
-		{ "__gc", &WrapperImplement::Meta_GC },
-		{ NULL, NULL }
-	};
-
-	luaL_openlib(L, TYPENAME_BENTLASER, tMethods, 0);  // t
-	luaL_newmetatable(L, TYPENAME_BENTLASER);  // t mt
-	luaL_openlib(L, 0, tMetaTable, 0);  // t mt
-	lua_pushliteral(L, "__index");  // t mt s
-	lua_pushvalue(L, -3);  // t mt s t
-	lua_rawset(L, -3);  // t mt (mt["__index"] = t)
-	lua_pushliteral(L, "__metatable");  // t mt s
-	lua_pushvalue(L, -3);  // t mt s t
-	lua_rawset(L, -3);  // t mt (mt["__metatable"] = t)  保护metatable不被修改
-	lua_pop(L, 2);
-}
-
-GameObjectBentLaser* BentLaserDataWrapper::CreateAndPush(lua_State* L)
-{
-	Wrapper* p = static_cast<Wrapper*>(lua_newuserdata(L, sizeof(Wrapper)));
-	p->handle = GameObjectBentLaser::AllocInstance();
-	luaL_getmetatable(L, TYPENAME_BENTLASER);
-	lua_setmetatable(L, -2);
-	return p->handle;
-}
-#pragma endregion
-
-////////////////////////////////////////////////////////////////////////////////
-/// Fancy2dStopWatchWrapper
-////////////////////////////////////////////////////////////////////////////////
-#pragma region Fancy2dStopWatchWrapper
-void Fancy2dStopWatchWrapper::Register(lua_State* L)LNOEXCEPT
-{
-	struct WrapperImplement
-	{
-		static int Reset(lua_State* L)
-		{
-			fcyStopWatch* p = static_cast<fcyStopWatch*>(luaL_checkudata(L, 1, TYPENAME_STOPWATCH));
-			p->Reset();
-			return 1;
-		}
-		static int Pause(lua_State* L)
-		{
-			fcyStopWatch* p = static_cast<fcyStopWatch*>(luaL_checkudata(L, 1, TYPENAME_STOPWATCH));
-			p->Pause();
-			return 1;
-		}
-		static int Resume(lua_State* L)
-		{
-			fcyStopWatch* p = static_cast<fcyStopWatch*>(luaL_checkudata(L, 1, TYPENAME_STOPWATCH));
-			p->Resume();
-			return 1;
-		}
-		static int GetElapsed(lua_State* L)
-		{
-			fcyStopWatch* p = static_cast<fcyStopWatch*>(luaL_checkudata(L, 1, TYPENAME_STOPWATCH));
-			fDouble tCross = p->GetElapsed();
-			lua_pushnumber(L, tCross);
-			return 1;
-		}
-		static int Meta_ToString(lua_State* L)LNOEXCEPT
-		{
-			fcyStopWatch* p = static_cast<fcyStopWatch*>(luaL_checkudata(L, 1, TYPENAME_STOPWATCH));
-			lua_pushfstring(L, "lstg.StopWatch object");
-			return 1;
-		}
-	};
-
-	luaL_Reg tMethods[] =
-	{
-		{ "Reset", &WrapperImplement::Reset },
-		{ "Pause", &WrapperImplement::Pause },
-		{ "Resume", &WrapperImplement::Resume },
-		{ "GetElapsed", &WrapperImplement::GetElapsed },
-		{ NULL, NULL }
-	};
-	luaL_Reg tMetaTable[] =
-	{
-		{ "__tostring", &WrapperImplement::Meta_ToString },
-		{ NULL, NULL }
-	};
-
-	luaL_openlib(L, TYPENAME_STOPWATCH, tMethods, 0);  // t
-	luaL_newmetatable(L, TYPENAME_STOPWATCH);  // t mt
-	luaL_openlib(L, 0, tMetaTable, 0);  // t mt
-	lua_pushliteral(L, "__index");  // t mt s
-	lua_pushvalue(L, -3);  // t mt s t
-	lua_rawset(L, -3);  // t mt (mt["__index"] = t)
-	lua_pushliteral(L, "__metatable");  // t mt s
-	lua_pushvalue(L, -3);  // t mt s t
-	lua_rawset(L, -3);  // t mt (mt["__metatable"] = t)  保护metatable不被修改
-	lua_pop(L, 2);
-}
-
-fcyStopWatch* Fancy2dStopWatchWrapper::CreateAndPush(lua_State* L)
-{
-	fcyStopWatch* p = static_cast<fcyStopWatch*>(lua_newuserdata(L, sizeof(fcyStopWatch)));
-	new(p) fcyStopWatch();  // 构造
-	luaL_getmetatable(L, TYPENAME_STOPWATCH);
-	lua_setmetatable(L, -2);
-	return p;
-}
-#pragma endregion
-
-////////////////////////////////////////////////////////////////////////////////
-/// GameResourceWrapper
-////////////////////////////////////////////////////////////////////////////////
-#pragma region GameResourceWrapper
-void GameResourceWrapper::Register(lua_State* L)LNOEXCEPT
-{
-	struct WrapperImplement
-	{
-		static int Meta_ToString(lua_State* L)LNOEXCEPT
-		{
-			ResourceWrapper* p = static_cast<ResourceWrapper*>(luaL_checkudata(L, 1, TYPENAME_RESOURCE));
-			string info = "lstg.Resource object,type :";
-			switch (p->m_type) {
-			case ResourceType::Texture:
-				info = info + "texture";
-				break;
-			case ResourceType::Sprite:
-				info = info + "image";
-				break;
-			case ResourceType::Animation:
-				info = info + "animation";
-				break;
-			case ResourceType::Music:
-				info = info + "music";
-				break;
-			case ResourceType::SoundEffect:
-				info = info + "sound";
-				break;
-			case ResourceType::Particle:
-				info = info + "particle";
-				break;
-			case ResourceType::SpriteFont:
-				info = info + "texture font";
-				break;
-			case ResourceType::TrueTypeFont:
-				info = info + "ttf";
-				break;
-			case ResourceType::FX:
-				info = info + "shader";
-				break;
-			}
-			lua_pushfstring(L, info.c_str());
-			return 1;
-		}
-		static int Meta_GC(lua_State* L)LNOEXCEPT
-		{
-			ResourceWrapper* p = static_cast<ResourceWrapper*>(luaL_checkudata(L, 1, TYPENAME_RESOURCE));
-			switch (p->m_type) {
-			case ResourceType::Texture:
-				p->m_tex->Release();
-				break;
-			case ResourceType::Sprite:
-				p->m_img->Release();
-				break;
-			case ResourceType::Animation:
-				p->m_ani->Release();
-				break;
-			case ResourceType::Music:
-				p->m_bgm->Release();
-				break;
-			case ResourceType::SoundEffect:
-				p->m_se->Release();
-				break;
-			case ResourceType::Particle:
-				p->m_ps->Release();
-				break;
-			case ResourceType::SpriteFont:
-			case ResourceType::TrueTypeFont:
-				p->m_fnt->Release();
-				break;
-			case ResourceType::FX:
-				p->m_fx->Release();
-				break;
-			}
-			return 0;
-		}
-	};
-
-	luaL_Reg tMethods[] =
-	{
-		{ NULL, NULL }
-	};
-	luaL_Reg tMetaTable[] =
-	{
-		{ "__tostring", &WrapperImplement::Meta_ToString },
-		{ "__gc", &WrapperImplement::Meta_GC },
-		{ NULL, NULL }
-	};
-
-	luaL_openlib(L, TYPENAME_RESOURCE, tMethods, 0);  // t
-	luaL_newmetatable(L, TYPENAME_RESOURCE);  // t mt
-	luaL_openlib(L, 0, tMetaTable, 0);  // t mt
-	lua_pushliteral(L, "__index");  // t mt s
-	lua_pushvalue(L, -3);  // t mt s t
-	lua_rawset(L, -3);  // t mt (mt["__index"] = t)
-	lua_pushliteral(L, "__metatable");  // t mt s
-	lua_pushvalue(L, -3);  // t mt s t
-	lua_rawset(L, -3);  // t mt (mt["__metatable"] = t)  保护metatable不被修改
-	lua_pop(L, 2);
-}
-
-template <typename T>
-T GameResourceWrapper::CreateAndPush(lua_State* L, T res)
-{
-	ResourceWrapper* p = static_cast<ResourceWrapper*>(lua_newuserdata(L, sizeof(ResourceWrapper)));
-	new(p) ResourceWrapper();  // 构造
-	ResourceType tResType = res->GetType();
-	p->m_type = tResType;
-	switch (tResType) {
-	case ResourceType::Texture:
-		p->m_tex = res;
-		p->m_tex->AddRef();
-		luaL_getmetatable(L, TYPENAME_RESOURCE);
-		lua_setmetatable(L, -2);
-		return p->m_tex;
-	case ResourceType::Sprite:
-		p->m_img = res;
-		p->m_img->AddRef();
-		luaL_getmetatable(L, TYPENAME_RESOURCE);
-		lua_setmetatable(L, -2);
-		return p->m_img;
-	case ResourceType::Animation:
-		p->m_ani = res;
-		p->m_ani->AddRef();
-		luaL_getmetatable(L, TYPENAME_RESOURCE);
-		lua_setmetatable(L, -2);
-		return p->m_ani;
-	case ResourceType::Music:
-		p->m_bgm = res;
-		p->m_bgm->AddRef();
-		luaL_getmetatable(L, TYPENAME_RESOURCE);
-		lua_setmetatable(L, -2);
-		return p->m_bgm;
-	case ResourceType::SoundEffect:
-		p->m_se = res;
-		p->m_se->AddRef();
-		luaL_getmetatable(L, TYPENAME_RESOURCE);
-		lua_setmetatable(L, -2);
-		return p->m_se;
-	case ResourceType::Particle:
-		p->m_ps = res;
-		p->m_ps->AddRef();
-		luaL_getmetatable(L, TYPENAME_RESOURCE);
-		lua_setmetatable(L, -2);
-		return p->m_ps;
-	case ResourceType::SpriteFont:
-	case ResourceType::TrueTypeFont:
-		p->m_fnt = res;
-		p->m_fnt->AddRef();
-		luaL_getmetatable(L, TYPENAME_RESOURCE);
-		lua_setmetatable(L, -2);
-		return p->m_fnt;
-	case ResourceType::FX:
-		p->m_fx = res;
-		p->m_fx->AddRef();
-		luaL_getmetatable(L, TYPENAME_RESOURCE);
-		lua_setmetatable(L, -2);
-		return p->m_fx;
-	default:
-		return nullptr;
-	}
-}
-#pragma endregion
-
-////////////////////////////////////////////////////////////////////////////////
-/// BuiltInFunctionWrapper
-////////////////////////////////////////////////////////////////////////////////
-#pragma region BuiltInFunctionWrapper
 void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 {
 	//警告：函数的返回值为向lua栈推入的变量数量
@@ -898,6 +171,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		static int LoadPack(lua_State* L)LNOEXCEPT
 		{
 			const char* p = luaL_checkstring(L, 1);
+			//const char* pwd = "password";
 			const char* pwd = nullptr;
 			if (lua_isstring(L, 2))
 				pwd = luaL_checkstring(L, 2);
@@ -961,6 +235,18 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			else
 				LAPP.ShowSplashWindow(luaL_checkstring(L, 1));
 			return 0;
+		}
+		static int ShowConsole(lua_State* L)LNOEXCEPT
+		{
+#if (defined LDEVVERSION) || (defined LDEBUG)
+			bool key = lua_toboolean(L, 1) == 0 ? false : true;
+			bool ret = LAPP.ShowConsole(key);
+			lua_pushboolean(L, ret);
+			return 1;
+#else
+			lua_pushboolean(L, false);
+			return 1;
+#endif
 		}
 		#pragma endregion
 
@@ -1333,7 +619,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			size_t id = (size_t)luaL_checkinteger(L, -1);
 			lua_pop(L, 1);
 
-			GameResourceWrapper::ResourceWrapper* pRes = static_cast<GameResourceWrapper::ResourceWrapper*>(luaL_checkudata(L, 2, TYPENAME_RESOURCE));
+			GameResourceWrapper::ResourceWrapper* pRes = static_cast<GameResourceWrapper::ResourceWrapper*>(luaL_checkudata(L, 2, LUASTG_LUA_TYPENAME_RESOURCE));
 			GameObject* pObj = LPOOL.GetPooledObject(id);
 			//*
 			switch (pRes->m_type) {
@@ -1702,14 +988,14 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 
 			p->SetBlendMode(TranslateBlendMode(L, 2));
 			if (lua_gettop(L) == 3)
-				p->GetSprite()->SetColor(*static_cast<fcyColor*>(luaL_checkudata(L, 3, TYPENAME_COLOR)));
+				p->GetSprite()->SetColor(*static_cast<fcyColor*>(luaL_checkudata(L, 3, LUASTG_LUA_TYPENAME_COLOR)));
 			else if (lua_gettop(L) == 6)
 			{
 				fcyColor tColors[] = {
-					*static_cast<fcyColor*>(luaL_checkudata(L, 3, TYPENAME_COLOR)),
-					*static_cast<fcyColor*>(luaL_checkudata(L, 4, TYPENAME_COLOR)),
-					*static_cast<fcyColor*>(luaL_checkudata(L, 5, TYPENAME_COLOR)),
-					*static_cast<fcyColor*>(luaL_checkudata(L, 6, TYPENAME_COLOR))
+					*static_cast<fcyColor*>(luaL_checkudata(L, 3, LUASTG_LUA_TYPENAME_COLOR)),
+					*static_cast<fcyColor*>(luaL_checkudata(L, 4, LUASTG_LUA_TYPENAME_COLOR)),
+					*static_cast<fcyColor*>(luaL_checkudata(L, 5, LUASTG_LUA_TYPENAME_COLOR)),
+					*static_cast<fcyColor*>(luaL_checkudata(L, 6, LUASTG_LUA_TYPENAME_COLOR))
 				};
 				p->GetSprite()->SetColor(tColors);
 			}
@@ -1724,7 +1010,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			p->SetBlendMode(TranslateBlendMode(L, 2));
 			if (lua_gettop(L) == 3)
 			{
-				fcyColor c = *static_cast<fcyColor*>(luaL_checkudata(L, 3, TYPENAME_COLOR));
+				fcyColor c = *static_cast<fcyColor*>(luaL_checkudata(L, 3, LUASTG_LUA_TYPENAME_COLOR));
 				p->SetBlendColor(c);
 			}
 			return 0;
@@ -1738,17 +1024,17 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			p->SetBlendMode(TranslateBlendMode(L, 2));
 			if (lua_gettop(L) == 3)
 			{
-				fcyColor c = *static_cast<fcyColor*>(luaL_checkudata(L, 3, TYPENAME_COLOR));
+				fcyColor c = *static_cast<fcyColor*>(luaL_checkudata(L, 3, LUASTG_LUA_TYPENAME_COLOR));
 				for (size_t i = 0; i < p->GetCount(); ++i)
 					p->GetSprite(i)->SetColor(c);
 			}
 			else if (lua_gettop(L) == 6)
 			{
 				fcyColor tColors[] = {
-					*static_cast<fcyColor*>(luaL_checkudata(L, 3, TYPENAME_COLOR)),
-					*static_cast<fcyColor*>(luaL_checkudata(L, 4, TYPENAME_COLOR)),
-					*static_cast<fcyColor*>(luaL_checkudata(L, 5, TYPENAME_COLOR)),
-					*static_cast<fcyColor*>(luaL_checkudata(L, 6, TYPENAME_COLOR))
+					*static_cast<fcyColor*>(luaL_checkudata(L, 3, LUASTG_LUA_TYPENAME_COLOR)),
+					*static_cast<fcyColor*>(luaL_checkudata(L, 4, LUASTG_LUA_TYPENAME_COLOR)),
+					*static_cast<fcyColor*>(luaL_checkudata(L, 5, LUASTG_LUA_TYPENAME_COLOR)),
+					*static_cast<fcyColor*>(luaL_checkudata(L, 6, LUASTG_LUA_TYPENAME_COLOR))
 				};
 				for (size_t i = 0; i < p->GetCount(); ++i)
 					p->GetSprite(i)->SetColor(tColors);
@@ -1799,21 +1085,21 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		//ETC
 		static int SetImageStateEx(lua_State* L)LNOEXCEPT
 		{
-			GameResourceWrapper::ResourceWrapper* pRes = static_cast<GameResourceWrapper::ResourceWrapper*>(luaL_checkudata(L, 1, TYPENAME_RESOURCE));
+			GameResourceWrapper::ResourceWrapper* pRes = static_cast<GameResourceWrapper::ResourceWrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_RESOURCE));
 			if (pRes->m_type != ResourceType::Sprite) {
 				return luaL_error(L, "InValid resource type for image state set.");
 			}
 			ResSprite* p = pRes->m_img;
 			p->SetBlendMode(TranslateBlendMode(L, 2));
 			if (lua_gettop(L) == 3)
-				p->GetSprite()->SetColor(*static_cast<fcyColor*>(luaL_checkudata(L, 3, TYPENAME_COLOR)));
+				p->GetSprite()->SetColor(*static_cast<fcyColor*>(luaL_checkudata(L, 3, LUASTG_LUA_TYPENAME_COLOR)));
 			else if (lua_gettop(L) == 6)
 			{
 				fcyColor tColors[] = {
-					*static_cast<fcyColor*>(luaL_checkudata(L, 3, TYPENAME_COLOR)),
-					*static_cast<fcyColor*>(luaL_checkudata(L, 4, TYPENAME_COLOR)),
-					*static_cast<fcyColor*>(luaL_checkudata(L, 5, TYPENAME_COLOR)),
-					*static_cast<fcyColor*>(luaL_checkudata(L, 6, TYPENAME_COLOR))
+					*static_cast<fcyColor*>(luaL_checkudata(L, 3, LUASTG_LUA_TYPENAME_COLOR)),
+					*static_cast<fcyColor*>(luaL_checkudata(L, 4, LUASTG_LUA_TYPENAME_COLOR)),
+					*static_cast<fcyColor*>(luaL_checkudata(L, 5, LUASTG_LUA_TYPENAME_COLOR)),
+					*static_cast<fcyColor*>(luaL_checkudata(L, 6, LUASTG_LUA_TYPENAME_COLOR))
 				};
 				p->GetSprite()->SetColor(tColors);
 			}
@@ -1837,7 +1123,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		static int RenderClear(lua_State* L)LNOEXCEPT
 		{
-			fcyColor* c = static_cast<fcyColor*>(luaL_checkudata(L, 1, TYPENAME_COLOR));
+			fcyColor* c = static_cast<fcyColor*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_COLOR));
 			LAPP.ClearScreen(*c);
 			return 0;
 		}
@@ -1910,7 +1196,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			}
 			else if (lua_gettop(L) == 3) {
 				// "address" string color
-				fcyColor* p = static_cast<fcyColor*>(luaL_checkudata(L, 3, TYPENAME_COLOR));
+				fcyColor* p = static_cast<fcyColor*>(luaL_checkudata(L, 3, LUASTG_LUA_TYPENAME_COLOR));
 				ret = LAPP.SetTextureSamplerAddress(TranslateTextureSamplerAddress(L, 2), *p);
 				if (!ret) {
 					return luaL_error(L, "Failed to set texture sampler address mode.");
@@ -2020,7 +1306,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 
 				lua_pushinteger(L, 6);
 				lua_gettable(L, 3 + i);
-				vertex[i].color = static_cast<fcyColor*>(luaL_checkudata(L, -1, TYPENAME_COLOR))->argb;
+				vertex[i].color = static_cast<fcyColor*>(luaL_checkudata(L, -1, LUASTG_LUA_TYPENAME_COLOR))->argb;
 
 				lua_pop(L, 6);
 			}
@@ -2040,7 +1326,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				(float)luaL_checknumber(L, 6),
 				LRES.GetGlobalImageScaleFactor() * (float)luaL_optnumber(L, 9, 1.0),
 				luaL_checkinteger(L, 7),
-				*static_cast<fcyColor*>(luaL_checkudata(L, 8, TYPENAME_COLOR))
+				*static_cast<fcyColor*>(luaL_checkudata(L, 8, LUASTG_LUA_TYPENAME_COLOR))
 			))
 			{
 				return luaL_error(L, "can't render font '%s'.", luaL_checkstring(L, 1));
@@ -2058,7 +1344,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				LAPP.SetFog(
 					static_cast<float>(luaL_checknumber(L, 1)),
 					static_cast<float>(luaL_checknumber(L, 2)),
-					*(static_cast<fcyColor*>(luaL_checkudata(L, 3, TYPENAME_COLOR)))
+					*(static_cast<fcyColor*>(luaL_checkudata(L, 3, LUASTG_LUA_TYPENAME_COLOR)))
 				);
 			else if (lua_gettop(L) == 2)
 				LAPP.SetFog(
@@ -2122,7 +1408,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 					}
 					else if (lua_isuserdata(L, -1))
 					{
-						fcyColor c = *static_cast<fcyColor*>(luaL_checkudata(L, -1, TYPENAME_COLOR));
+						fcyColor c = *static_cast<fcyColor*>(luaL_checkudata(L, -1, LUASTG_LUA_TYPENAME_COLOR));
 						p->SetValue(key, c);
 					}
 					else
@@ -2170,7 +1456,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 					}
 					else if (lua_isuserdata(L, -1))
 					{
-						fcyColor c = *static_cast<fcyColor*>(luaL_checkudata(L, -1, TYPENAME_COLOR));
+						fcyColor c = *static_cast<fcyColor*>(luaL_checkudata(L, -1, LUASTG_LUA_TYPENAME_COLOR));
 						p->SetValue(key, c);
 					}
 					else
@@ -2251,7 +1537,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		//ETC
 		static int RenderEx(lua_State* L)LNOEXCEPT
 		{
-			GameResourceWrapper::ResourceWrapper* pRes = static_cast<GameResourceWrapper::ResourceWrapper*>(luaL_checkudata(L, 1, TYPENAME_RESOURCE));
+			GameResourceWrapper::ResourceWrapper* pRes = static_cast<GameResourceWrapper::ResourceWrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_RESOURCE));
 			if (pRes->m_type != ResourceType::Sprite) {
 				return luaL_error(L, "Invalid resource type render");
 			}
@@ -2725,61 +2011,53 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				constFind = true;
 			}
 			
+			GameResourceWrapper::ResourceWrapper ResWrapper;
+
 			//获取资源
 			if (constFind) {
 				//强制查找某个池
 				if (LRES.GetResourcePool(tPoolType)->CheckResourceExists(tResourceType, resName)) {
 					switch (tResourceType) {
 					case ResourceType::Texture: {
-						fcyRefPointer<ResTexture> pRes = LRES.GetResourcePool(tPoolType)->GetTexture(resName.c_str());
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResTexture>>(L, pRes);
+						ResWrapper.m_tex = LRES.GetResourcePool(tPoolType)->GetTexture(resName.c_str());
 						break;
 					}
 					case ResourceType::Sprite: {
-						fcyRefPointer<ResSprite> pRes = LRES.GetResourcePool(tPoolType)->GetSprite(resName.c_str());
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResSprite>>(L, pRes);
+						ResWrapper.m_img = LRES.GetResourcePool(tPoolType)->GetSprite(resName.c_str());
 						break;
 					}
 					case ResourceType::Animation: {
-						fcyRefPointer<ResAnimation> pRes = LRES.GetResourcePool(tPoolType)->GetAnimation(resName.c_str());
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResAnimation>>(L, pRes);
+						ResWrapper.m_ani = LRES.GetResourcePool(tPoolType)->GetAnimation(resName.c_str());
 						break;
 					}
 					case ResourceType::Music: {
-						fcyRefPointer<ResMusic> pRes = LRES.GetResourcePool(tPoolType)->GetMusic(resName.c_str());
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResMusic>>(L, pRes);
+						ResWrapper.m_bgm = LRES.GetResourcePool(tPoolType)->GetMusic(resName.c_str());
 						break;
 					}
 					case ResourceType::SoundEffect: {
-						fcyRefPointer<ResSound> pRes = LRES.GetResourcePool(tPoolType)->GetSound(resName.c_str());
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResSound>>(L, pRes);
+						ResWrapper.m_se = LRES.GetResourcePool(tPoolType)->GetSound(resName.c_str());
 						break;
 					}
 					case ResourceType::Particle: {
-						fcyRefPointer<ResParticle> pRes = LRES.GetResourcePool(tPoolType)->GetParticle(resName.c_str());
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResParticle>>(L, pRes);
+						ResWrapper.m_ps = LRES.GetResourcePool(tPoolType)->GetParticle(resName.c_str());
 						break;
 					}
 					case ResourceType::SpriteFont: {
-						fcyRefPointer<ResFont> pRes = LRES.GetResourcePool(tPoolType)->GetSpriteFont(resName.c_str());
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResFont>>(L, pRes);
+						ResWrapper.m_fnt = LRES.GetResourcePool(tPoolType)->GetSpriteFont(resName.c_str());
 						break;
 					}
 					case ResourceType::TrueTypeFont: {
-						fcyRefPointer<ResFont> pRes = LRES.GetResourcePool(tPoolType)->GetTTFFont(resName.c_str());
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResFont>>(L, pRes);
+						ResWrapper.m_fnt = LRES.GetResourcePool(tPoolType)->GetTTFFont(resName.c_str());
 						break;
 					}
 					case ResourceType::FX: {
-						fcyRefPointer<ResFX> pRes = LRES.GetResourcePool(tPoolType)->GetFX(resName.c_str());
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResFX>>(L, pRes);
+						ResWrapper.m_fx = LRES.GetResourcePool(tPoolType)->GetFX(resName.c_str());
 						break;
 					}
 					}
 				}
 				else {
-					//啊找不到，error糊脸
-					return luaL_error(L, "Resources do not exist.");
+					return luaL_error(L, "Resources do not exist.");//啊找不到，error糊脸
 				}
 			}
 			else {
@@ -2788,10 +2066,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				case ResourceType::Texture: {
 					fcyRefPointer<ResTexture> pRes = LRES.FindTexture(resName.c_str());
 					if (pRes) {
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResTexture>>(L, pRes);
+						ResWrapper.m_tex = pRes;
 					}
 					else {
-						//啊找不到，error糊脸
 						return luaL_error(L, "Resources do not exist.");
 					}
 					break;
@@ -2799,10 +2076,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				case ResourceType::Sprite: {
 					fcyRefPointer<ResSprite> pRes = LRES.FindSprite(resName.c_str());
 					if (pRes) {
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResSprite>>(L, pRes);
+						ResWrapper.m_img = pRes;
 					}
 					else {
-						//啊找不到，error糊脸
 						return luaL_error(L, "Resources do not exist.");
 					}
 					break;
@@ -2810,10 +2086,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				case ResourceType::Animation: {
 					fcyRefPointer<ResAnimation> pRes = LRES.FindAnimation(resName.c_str());
 					if (pRes) {
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResAnimation>>(L, pRes);
+						ResWrapper.m_ani = pRes;
 					}
 					else {
-						//啊找不到，error糊脸
 						return luaL_error(L, "Resources do not exist.");
 					}
 					break;
@@ -2821,10 +2096,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				case ResourceType::Music: {
 					fcyRefPointer<ResMusic> pRes = LRES.FindMusic(resName.c_str());
 					if (pRes) {
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResMusic>>(L, pRes);
+						ResWrapper.m_bgm = pRes;
 					}
 					else {
-						//啊找不到，error糊脸
 						return luaL_error(L, "Resources do not exist.");
 					}
 					break;
@@ -2832,10 +2106,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				case ResourceType::SoundEffect: {
 					fcyRefPointer<ResSound> pRes = LRES.FindSound(resName.c_str());
 					if (pRes) {
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResSound>>(L, pRes);
+						ResWrapper.m_se = pRes;
 					}
 					else {
-						//啊找不到，error糊脸
 						return luaL_error(L, "Resources do not exist.");
 					}
 					break;
@@ -2843,10 +2116,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				case ResourceType::Particle: {
 					fcyRefPointer<ResParticle> pRes = LRES.FindParticle(resName.c_str());
 					if (pRes) {
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResParticle>>(L, pRes);
+						ResWrapper.m_ps = pRes;
 					}
 					else {
-						//啊找不到，error糊脸
 						return luaL_error(L, "Resources do not exist.");
 					}
 					break;
@@ -2854,10 +2126,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				case ResourceType::SpriteFont: {
 					fcyRefPointer<ResFont> pRes = LRES.FindSpriteFont(resName.c_str());
 					if (pRes) {
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResFont>>(L, pRes);
+						ResWrapper.m_fnt = pRes;
 					}
 					else {
-						//啊找不到，error糊脸
 						return luaL_error(L, "Resources do not exist.");
 					}
 					break;
@@ -2865,10 +2136,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				case ResourceType::TrueTypeFont: {
 					fcyRefPointer<ResFont> pRes = LRES.FindTTFFont(resName.c_str());
 					if (pRes) {
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResFont>>(L, pRes);
+						ResWrapper.m_fnt = pRes;
 					}
 					else {
-						//啊找不到，error糊脸
 						return luaL_error(L, "Resources do not exist.");
 					}
 					break;
@@ -2876,16 +2146,22 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				case ResourceType::FX: {
 					fcyRefPointer<ResFX> pRes = LRES.FindFX(resName.c_str());
 					if (pRes) {
-						GameResourceWrapper::CreateAndPush<fcyRefPointer<ResFX>>(L, pRes);
+						ResWrapper.m_fx = pRes;
 					}
 					else {
-						//啊找不到，error糊脸
 						return luaL_error(L, "Resources do not exist.");
 					}
 					break;
 				}
 				}
 			}
+			ResWrapper.m_type = tResourceType;
+			
+			*GameResourceWrapper::CreateAndPush(L) = ResWrapper;
+			return 1;
+		}
+		static int XInputManager(lua_State* L) {
+			XInputManagerWrapper::CreateAndPush(L);
 			return 1;
 		}
 
@@ -2940,6 +2216,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "DoFile", &WrapperImplement::DoFile },
 		{ "LoadTextFile", &WrapperImplement::LoadTextFile },
 		{ "ShowSplashWindow", &WrapperImplement::ShowSplashWindow },
+		{ "ShowConsole", &WrapperImplement::ShowConsole },
 		
 		//========游戏对象==========
 		//对象池管理
@@ -3078,6 +2355,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "BentLaserData", &WrapperImplement::BentLaserData },
 		{ "StopWatch", &WrapperImplement::StopWatch },
 		{ "ResourceReference", &WrapperImplement::ResourceRef },
+		{ "XInputManager", &WrapperImplement::XInputManager },
 		
 		//ESC
 		{ "SetZBufferEnable", &WrapperImplement::SetZBufferEnable },
@@ -3116,4 +2394,4 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 	luaL_register(L, "lstg", tFunctions);  // t
 	lua_pop(L, 1);
 }
-#pragma endregion
+

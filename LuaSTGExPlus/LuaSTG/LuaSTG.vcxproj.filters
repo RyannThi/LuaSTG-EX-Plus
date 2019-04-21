@@ -37,6 +37,18 @@
     <Filter Include="Debuger">
       <UniqueIdentifier>{d608d663-128f-46b3-ba0f-00a40bc43095}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LogSystem">
+      <UniqueIdentifier>{7bd11c36-8698-42e6-805e-98a78d56f8ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{ed4761bc-ca0e-439c-84e0-f5e639f0f888}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Collision">
+      <UniqueIdentifier>{e3f31573-8273-4b6b-9e60-e7001042fe93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{db87f629-9365-4ce3-aa7e-a187c5bd2c04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="GameObjectPropertyHash.inl">
@@ -56,18 +68,6 @@
     <ClInclude Include="AppFrame.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Bencode.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CirularQueue.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionDetect.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Dictionary.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="ESC.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -75,12 +75,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Global.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LogSystem.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Network.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ObjectPool.hpp">
@@ -93,12 +87,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SplashWindow.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="UnicodeStringEncoding.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\lfs\lfs.h">
@@ -197,15 +185,33 @@
     <ClInclude Include="RemoteDebuggerClient.h">
       <Filter>Debuger</Filter>
     </ClInclude>
+    <ClInclude Include="LogSystem.h">
+      <Filter>LogSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Bencode.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="UnicodeStringEncoding.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Dictionary.hpp">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="CirularQueue.hpp">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionDetect.h">
+      <Filter>Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppFrame.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Bencode.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionDetect.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ESC.cpp">
@@ -217,25 +223,13 @@
     <ClCompile Include="KeyboardX.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="LogSystem.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Network.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ResourceMgr.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SplashWindow.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="UnicodeStringEncoding.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\lfs\lfs.c">
@@ -327,6 +321,42 @@
     </ClCompile>
     <ClCompile Include="RemoteDebuggerClient.cpp">
       <Filter>Debuger</Filter>
+    </ClCompile>
+    <ClCompile Include="LogSystem.cpp">
+      <Filter>LogSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="XInputWrapper.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="BentlazerWrapper.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="StopWatchWrapper.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorWrapper.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomizerWrapper.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="GameResourceWrapper.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="Bencode.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="UnicodeStringEncoding.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionDetect.cpp">
+      <Filter>Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Network.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -113,19 +113,25 @@
     <ClCompile Include="..\XMath\XSpline.cpp" />
     <ClCompile Include="AppFrame.cpp" />
     <ClCompile Include="Bencode.cpp" />
+    <ClCompile Include="BentlazerWrapper.cpp" />
     <ClCompile Include="CollisionDetect.cpp" />
+    <ClCompile Include="ColorWrapper.cpp" />
     <ClCompile Include="ESC.cpp" />
     <ClCompile Include="GameObjectPool.cpp" />
+    <ClCompile Include="GameResourceWrapper.cpp" />
     <ClCompile Include="KeyboardX.cpp" />
     <ClCompile Include="LogSystem.cpp" />
     <ClCompile Include="LuaWrapper.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Network.cpp" />
+    <ClCompile Include="RandomizerWrapper.cpp" />
     <ClCompile Include="RemoteDebuggerClient.cpp" />
     <ClCompile Include="ResourceMgr.cpp" />
     <ClCompile Include="SplashWindow.cpp" />
+    <ClCompile Include="StopWatchWrapper.cpp" />
     <ClCompile Include="UnicodeStringEncoding.cpp" />
     <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="XInputWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />
@@ -184,6 +190,7 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
+    <Import Project="..\Eyes2DLib\Eyes2DLib.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />

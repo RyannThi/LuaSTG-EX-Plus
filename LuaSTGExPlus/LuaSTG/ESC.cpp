@@ -578,48 +578,6 @@ IExInputControl * CreateInputEx()
 	return new ExInputControl;
 }
 
-/*
-void ExInputClient::ProceedLocalInput(bool rkeys[])
-{
-	char buf[1000];
-	EX_KEY key = 0;
-	if (m_isremote == 0){//是本地输入
-		key = ParseInput(rkeys, m_alias);
-		int cur = m_framestamp + m_delay;
-		if (cur <= m_laststamp){
-			//delay调整导致已经读取了当前的输入，这里放弃
-			return;
-		}
-		m_laststamp++;
-		while (m_laststamp <= cur){
-			InsertInput(m_laststamp, key);
-			//todo 发送消息
-			sprintf_s<1000>(buf, "K%d,%d,%d", m_slot, m_laststamp, key);
-			//m_network = m_main->m_network;
-			if (m_network)m_network->Send(buf, strlen(buf));
-			m_laststamp++;
-		}
-		m_laststamp = cur;
-	}
-	else{//不是本地输入
-		
-		while (m_network.Receive(buf, 1000)){//把所有网络输入都拿出来
-		if (buf[0] == 'K'){//得到的输入插入
-		int stamp0;
-		sscanf_s(buf, "K%d,%d", &stamp0, &key);
-		InsertInput(stamp0, key);
-		if (stamp0 > m_laststamp){
-		m_laststamp = stamp0;
-		}
-		}
-		else if (buf[0] == 'U'){//其他的放在一边
-		m_buffer->Push(buf + 1);
-		}
-		}
-	}
-}
-*/
-
 //======================================
 //ex+模型读取
 

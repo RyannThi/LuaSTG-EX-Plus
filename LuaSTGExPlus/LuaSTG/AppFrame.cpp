@@ -1,6 +1,7 @@
 ﻿#include "AppFrame.h"
 #include "Utility.h"
 #include "LuaWrapper.h"
+#include "E2DXInputImpl.h"
 
 #include "resource.h"
 
@@ -1358,7 +1359,7 @@ bool AppFrame::Init()LNOEXCEPT
 	Scope tSplashWindowExit([this]() {
 		m_SplashWindow.HideSplashWindow();
 	});
-
+	
 	//////////////////////////////////////// Lua初始化部分
 	LINFO("开始初始化Lua虚拟机 版本: %m", LVERSION_LUA);
 	L = lua_open();
@@ -1438,6 +1439,26 @@ bool AppFrame::Init()LNOEXCEPT
 	if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), "launch"))
 		return false;
 	
+	//////////////////////////////////////// 加载控制台
+#if (defined LDEVVERSION) || (defined LDEBUG)
+	if (m_bShowConsole){
+		BOOL ret = AllocConsole();
+		if (ret == FALSE) {
+			m_bShowConsole = false;
+			LWARNING("无法启动调试控制台");
+		}
+		else {
+			LINFO("启动调试控制台");
+			m_hConsoleWrite = GetStdHandle(STD_OUTPUT_HANDLE);
+			m_hConsoleRead = GetStdHandle(STD_INPUT_HANDLE);
+			SetConsoleTitleW(L"LuaSTGPlus Debug Console");
+			/*wstring out = L"Hello Console!";
+			DWORD outlen;
+			WriteConsoleW(m_hConsoleWrite, out.data(), out.length(), &outlen, NULL);*/
+		}
+	}
+#endif
+
 	//////////////////////////////////////// 初始化fancy2d引擎
 	LINFO("初始化fancy2d 版本 %d.%d (分辨率: %dx%d 垂直同步: %b 窗口化: %b)",
 		(F2DVERSION & 0xFFFF0000) >> 16, F2DVERSION & 0x0000FFFF,
@@ -1600,12 +1621,33 @@ void AppFrame::Shutdown()LNOEXCEPT
 	m_pEngine = nullptr;
 	LINFO("已卸载fancy2d");
 
+#if (defined LDEVVERSION) || (defined LDEBUG)
+	if (m_bShowConsole) {
+		if (m_hConsoleRead != INVALID_HANDLE_VALUE) {
+			CloseHandle(m_hConsoleRead);
+		}
+		if (m_hConsoleWrite != INVALID_HANDLE_VALUE) {
+			CloseHandle(m_hConsoleWrite);
+		}
+		//IDE debug环境下可能会出现无效句柄的错误，貌似不会出事，所以不管了
+		BOOL ret = FreeConsole();
+		if (ret == FALSE) {
+			LWARNING("无法关闭调试控制台");
+		}
+		else {
+			LINFO("关闭调试控制台");
+		}
+		m_bShowConsole = false;
+	}
+#endif
+
 	if (L)
 	{
 		lua_close(L);
 		L = nullptr;
 		LINFO("已卸载Lua虚拟机");
 	}
+
 	m_ResourceMgr.UnloadAllPack();
 	LINFO("已卸载所有资源包");
 
@@ -2033,46 +2075,17 @@ fBool AppFrame::OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, 
 			break;
 		}
 	}
-	
-	//ESC 添加
-	
+
+	//EX+ Network Input
 	if (!m_Input){
 		m_Input = CreateInputEx();
-
-		/*
-		m_Input->ConnectTo("127.0.0.1", 9012);
-		IExLocalInput *i1 = m_Input->CreateLocalInput();
-		i1->SetDelay(2);
-		i1->SetRemote(false);
-		i1->AddKeyAlias(0, 'A');
-		i1->AddKeyAlias(0, 'a');
-		IExCommonInput *j1 = i1->ToCommonInput();
-		j1->SetRead(false);
-		j1->AddMask(EX_MASK_SYSTEM);
-		m_Input->AssignInput(0, j1);
-		
-		IExLocalInput *i2 = m_Input->CreateLocalInput();
-		i2->SetDelay(2);
-		i2->SetRemote(true);
-		//cl->Connect("127.0.0.1", 9012);
-		IExCommonInput *j2 = i2->ToCommonInput();
-		j2->SetRead(false);
-		j2->AddMask(EX_MASK_SYSTEM);
-		m_Input->AssignInput(1, j2);
-		*/
 	}
 	if (m_Input){
 		while (!m_Input->ProceedInput(m_KeyStateMap)){
 			Sleep(0);
 		}
-		bool z = m_Input->GetVKeyState(0, 0);
-		if (z){
-			z = false;
-		}
 	}
 	
-
-
 	// 执行帧函数
 	if (!SafeCallGlobalFunction(LFUNC_FRAME, 1))
 		return false;
