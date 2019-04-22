@@ -473,14 +473,18 @@ void f2dEngineImpl::Run_SingleThread(fuInt UpdateMaxFPS)
 		tTime = tFPSController.Update(tTimer) - tMsgTime;  // 修正由于处理消息额外耗费的时间
 		
 		// 执行显示事件
-		if(bDoPresent)
-			DoPresent(tpRenderDev);
+		//if(bDoPresent)
+			//DoPresent(tpRenderDev);
 
 		// 执行更新事件
 		DoUpdate(tTime, &tFPSController);
 
 		// 执行渲染事件
 		bDoPresent = DoRender(tTime, &tFPSController, tpRenderDev);
+
+		// 执行显示事件
+		if (bDoPresent)
+			DoPresent(tpRenderDev);
 	}
 }
 

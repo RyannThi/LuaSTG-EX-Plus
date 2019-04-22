@@ -7,6 +7,8 @@ using namespace std;
 using namespace Eyes2D;
 using namespace std::chrono_literals;
 
+//测试单例在多线程下的工作情况
+
 void GetState() {
 	while (true) {
 		cout << GetXInput().GetThumbStateLX(1) << endl;
@@ -25,8 +27,8 @@ void UpdateState() {
 int main() {
 	thread t1(GetState);
 	thread t2(UpdateState);
-	t1.join();
 	t2.join();
+	t1.join();
 	system("pause");
 	return 0;
 }

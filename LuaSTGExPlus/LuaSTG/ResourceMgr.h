@@ -11,10 +11,11 @@ namespace LuaSTGPlus
 {
 	class ResourceMgr;
 
+	// TODO:急需做一个音量系统转换
 	inline float VolumeFix(float v)
 	{
-		return -exp(-v * 6.f) + 1;  // 修正音量过小的问题
-		//return v; //似乎不行
+		//return -exp(-v * 6.f) + 1;  // 修正音量过小的问题
+		return v; //似乎不行
 	}
 
 	/// @brief 资源类型
@@ -359,6 +360,8 @@ namespace LuaSTGPlus
 	{
 	private:
 		fcyRefPointer<f2dSoundBuffer> m_pBuffer;
+		int m_status;//0停止1暂停2播放
+		float m_lastfrq;
 	public:
 		void Play(float vol, float pan)
 		{
@@ -371,21 +374,25 @@ namespace LuaSTGPlus
 				m_pBuffer->SetPan(pan);
 
 			m_pBuffer->Play();
+			m_status = 2;
 		}
 
 		void Resume()
 		{
 			m_pBuffer->Play();
+			m_status = 2;
 		}
 
 		void Pause()
 		{
 			m_pBuffer->Pause();
+			m_status = 1;
 		}
 
 		void Stop()
 		{
 			m_pBuffer->Stop();
+			m_status = 0;
 		}
 
 		bool IsPlaying()
@@ -395,11 +402,36 @@ namespace LuaSTGPlus
 
 		bool IsStopped()
 		{
-			return !IsPlaying() && m_pBuffer->GetTime() == 0.;
+			//return !IsPlaying() && m_pBuffer->GetTime() == 0.;
+			return !IsPlaying() || m_status == 0;
+		}
+
+		bool SetSpeed(float speed) {
+			float frq = (float)m_pBuffer->GetFrequency();
+			int newfrq = (int)(frq * speed);
+			if (newfrq > 100000 || newfrq < 100) {
+				return false;
+			}
+			if (m_pBuffer->SetFrequency(newfrq) == FCYERR_OK) {
+				m_lastfrq = speed;
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+
+		float GetSpeed() {
+			if (m_lastfrq <= 0.0f) {
+				return 1.0f;
+			}
+			else {
+				return m_lastfrq;
+			}
 		}
 	public:
 		ResSound(const char* name, fcyRefPointer<f2dSoundBuffer> buffer)
-			: Resource(ResourceType::SoundEffect, name), m_pBuffer(buffer) {}
+			: Resource(ResourceType::SoundEffect, name), m_pBuffer(buffer), m_lastfrq(-1.0f){}
 	};
 
 	/// @brief 背景音乐
@@ -441,6 +473,8 @@ namespace LuaSTGPlus
 		};
 	private:
 		fcyRefPointer<f2dSoundBuffer> m_pBuffer;
+		int m_status;//0停止1暂停2播放
+		float m_lastfrq;
 	public:
 		void Play(float vol, double position)
 		{
@@ -452,21 +486,25 @@ namespace LuaSTGPlus
 				m_pBuffer->SetVolume(nv);
 
 			m_pBuffer->Play();
+			m_status = 2;
 		}
 		
 		void Stop()
 		{
 			m_pBuffer->Stop();
+			m_status = 0;
 		}
 		
 		void Pause()
 		{
 			m_pBuffer->Pause();
+			m_status = 1;
 		}
 		
 		void Resume()
 		{
 			m_pBuffer->Play();
+			m_status = 2;
 		}
 
 		bool IsPlaying()
@@ -476,7 +514,8 @@ namespace LuaSTGPlus
 
 		bool IsStopped()
 		{
-			return !IsPlaying() && m_pBuffer->GetTime() == 0.;
+			//return !IsPlaying() && m_pBuffer->GetTime() == 0.;//用播放时间来判断貌似会遇到[播放然后立即判断状态会返回stop状态]的错误
+			return !IsPlaying() || m_status == 0;
 		}
 
 		void SetVolume(float v)
@@ -485,9 +524,37 @@ namespace LuaSTGPlus
 			if (m_pBuffer->GetVolume() != nv)
 				m_pBuffer->SetVolume(nv);
 		}
+
+		float GetVolume() {
+			return m_pBuffer->GetVolume();
+		}
+
+		bool SetSpeed(float speed) {
+			float frq = (float)m_pBuffer->GetFrequency();
+			int newfrq = (int)(frq * speed);
+			if (newfrq > 100000 || newfrq<100) {
+				return false;
+			}
+			if (m_pBuffer->SetFrequency(newfrq) == FCYERR_OK) {
+				m_lastfrq = speed;
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+
+		float GetSpeed() {
+			if (m_lastfrq <= 0.0f) {
+				return 1.0f;
+			}
+			else {
+				return m_lastfrq;
+			}
+		}
 	public:
 		ResMusic(const char* name, fcyRefPointer<f2dSoundBuffer> buffer)
-			: Resource(ResourceType::Music, name), m_pBuffer(buffer) {}
+			: Resource(ResourceType::Music, name), m_pBuffer(buffer), m_status(0), m_lastfrq(-1.0f) {}
 	};
 
 	/// @brief shader包装

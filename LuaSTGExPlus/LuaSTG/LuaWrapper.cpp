@@ -1670,6 +1670,10 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			LRES.SetGlobalSoundEffectVolume(max(min(x, 1.f), 0.f));
 			return 0;
 		}
+		static int GetSEVolume(lua_State* L) {
+			lua_pushnumber(L, LRES.GetGlobalSoundEffectVolume());
+			return 1;
+		}
 		static int SetBGMVolume(lua_State* L)LNOEXCEPT
 		{
 			if (lua_gettop(L) == 1)
@@ -1687,6 +1691,59 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				p->SetVolume(x * LRES.GetGlobalMusicVolume());
 			}
 			return 0;
+		}
+		static int GetBGMVolume(lua_State* L)LNOEXCEPT
+		{
+			float GV = LRES.GetGlobalMusicVolume();
+			if (lua_gettop(L) == 0)
+			{
+				lua_pushnumber(L, GV);
+			}
+			else if (lua_gettop(L) == 1)
+			{
+				const char* s = luaL_checkstring(L, 1);
+				ResMusic* p = LRES.FindMusic(s);
+				if (!p)
+					return luaL_error(L, "music '%s' not found.", s);
+				lua_pushnumber(L, p->GetVolume() / GV);
+			}
+			return 1;
+		}
+		static int SetSESpeed(lua_State* L) {
+			const char* s = luaL_checkstring(L, 1);
+			float speed = luaL_checknumber(L, 2);
+			ResSound* p = LRES.FindSound(s);
+			if (!p)
+				return luaL_error(L, "sound '%s' not found.", s);
+			if (!p->SetSpeed(speed))
+				return luaL_error(L, "Can't set sound('%s') playing speed.", s);
+			return 0;
+		}
+		static int GetSESpeed(lua_State* L) {
+			const char* s = luaL_checkstring(L, 1);
+			ResSound* p = LRES.FindSound(s);
+			if (!p)
+				return luaL_error(L, "sound '%s' not found.", s);
+			lua_pushnumber(L, p->GetSpeed());
+			return 1;
+		}
+		static int SetBGMSpeed(lua_State* L) {
+			const char* s = luaL_checkstring(L, 1);
+			float speed = luaL_checknumber(L, 2);
+			ResMusic* p = LRES.FindMusic(s);
+			if (!p)
+				return luaL_error(L, "music '%s' not found.", s);
+			if (!p->SetSpeed(speed))
+				return luaL_error(L, "Can't set music('%s') playing speed.", s);
+			return 0;
+		}
+		static int GetBGMSpeed(lua_State* L) {
+			const char* s = luaL_checkstring(L, 1);
+			ResMusic* p = LRES.FindMusic(s);
+			if (!p)
+				return luaL_error(L, "music '%s' not found.", s);
+			lua_pushnumber(L, p->GetSpeed());
+			return 1;
 		}
 		#pragma endregion
 
@@ -2323,6 +2380,10 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "UpdateSound", &WrapperImplement::UpdateSound },
 		{ "SetSEVolume", &WrapperImplement::SetSEVolume },
 		{ "SetBGMVolume", &WrapperImplement::SetBGMVolume },
+		{ "GetSEVolume", &WrapperImplement::GetSEVolume },
+		{ "GetBGMVolume", &WrapperImplement::GetBGMVolume },
+		{ "SetBGMSpeed", &WrapperImplement::SetBGMSpeed },
+		{ "GetBGMSpeed", &WrapperImplement::GetBGMSpeed },
 		
 			// 输入控制函数
 		{ "GetKeyState", &WrapperImplement::GetKeyState },

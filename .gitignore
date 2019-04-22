@@ -45,3 +45,7 @@ LuaSTGExPlus/fancy2D/obj/Debug/fancy2D.log
 
 /xhg/*
 /classic/*
+
+/LuaSTGExPlus/Eyes2DTest/Debug/*
+/LuaSTGExPlus/Eyes2DTest/Release/*
+LuaSTGExPlus/Eyes2DTest/DebugEyes2DTest.log
