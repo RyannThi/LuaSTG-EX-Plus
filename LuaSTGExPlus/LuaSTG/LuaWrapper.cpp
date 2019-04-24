@@ -182,9 +182,10 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		static int LoadPackSub(lua_State* L)LNOEXCEPT
 		{
 			const char* p = luaL_checkstring(L, 1);
-			const char* pwd = nullptr;
-			if (lua_isstring(L, 2))
-				pwd = luaL_checkstring(L, 2);
+			const char* pwd = "pwd";
+			//const char* pwd = nullptr;
+			//if (lua_isstring(L, 2))
+				//pwd = luaL_checkstring(L, 2);
 			if (!LRES.LoadPack(p, pwd))
 				return luaL_error(L, "failed to load resource pack '%s'.", p);
 			return 0;
@@ -1653,10 +1654,13 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				return luaL_error(L, "music '%s' not found.", s);
 			if (p->IsPlaying())
 				lua_pushstring(L, "playing");
-			else if (p->IsStopped())
-				lua_pushstring(L, "stopped");
-			else
+			else if (p->IsPaused())
 				lua_pushstring(L, "paused");
+			//else if (p->IsStopped())
+				//lua_pushstring(L, "stopped");
+			else
+				lua_pushstring(L, "stopped");
+				//lua_pushstring(L, "paused");
 			return 1;
 		}
 		static int UpdateSound(lua_State* L)LNOEXCEPT
@@ -2382,6 +2386,8 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "SetBGMVolume", &WrapperImplement::SetBGMVolume },
 		{ "GetSEVolume", &WrapperImplement::GetSEVolume },
 		{ "GetBGMVolume", &WrapperImplement::GetBGMVolume },
+		{ "SetSESpeed", &WrapperImplement::SetSESpeed },
+		{ "GetSESpeed", &WrapperImplement::GetSESpeed },
 		{ "SetBGMSpeed", &WrapperImplement::SetBGMSpeed },
 		{ "GetBGMSpeed", &WrapperImplement::GetBGMSpeed },
 		

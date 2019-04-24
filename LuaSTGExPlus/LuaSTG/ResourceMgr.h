@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "ObjectPool.hpp"
 #include "Dictionary.hpp"
+#include "E2DMath.h"
 
 #ifdef LoadImage
 #undef LoadImage
@@ -11,7 +12,7 @@ namespace LuaSTGPlus
 {
 	class ResourceMgr;
 
-	// TODO:急需做一个音量系统转换
+	//废弃函数，现在使用另一个函数
 	inline float VolumeFix(float v)
 	{
 		//return -exp(-v * 6.f) + 1;  // 修正音量过小的问题
@@ -100,7 +101,6 @@ namespace LuaSTGPlus
 		ResModel(const char* name, void * model)
 			: Resource(ResourceType::Model, name), m_Model(model) {}
 	};
-
 
 	/// @brief 图像资源
 	class ResSprite :
@@ -362,12 +362,14 @@ namespace LuaSTGPlus
 		fcyRefPointer<f2dSoundBuffer> m_pBuffer;
 		int m_status;//0停止1暂停2播放
 		float m_lastfrq;
+		long m_freq;
 	public:
 		void Play(float vol, float pan)
 		{
 			m_pBuffer->Stop();
 
-			float nv = VolumeFix(vol);
+			//float nv = VolumeFix(vol);
+			float nv = (float)Eyes2D::Math::LinearToLog(vol);
 			if (m_pBuffer->GetVolume() != nv)
 				m_pBuffer->SetVolume(nv);
 			if (m_pBuffer->GetPan() != pan)
@@ -402,12 +404,12 @@ namespace LuaSTGPlus
 
 		bool IsStopped()
 		{
-			//return !IsPlaying() && m_pBuffer->GetTime() == 0.;
-			return !IsPlaying() || m_status == 0;
+			return !IsPlaying() && m_pBuffer->GetTime() == 0.;
+			//return !IsPlaying() || m_status == 0;
 		}
 
 		bool SetSpeed(float speed) {
-			float frq = (float)m_pBuffer->GetFrequency();
+			float frq = (float)m_freq;
 			int newfrq = (int)(frq * speed);
 			if (newfrq > 100000 || newfrq < 100) {
 				return false;
@@ -430,8 +432,11 @@ namespace LuaSTGPlus
 			}
 		}
 	public:
-		ResSound(const char* name, fcyRefPointer<f2dSoundBuffer> buffer)
-			: Resource(ResourceType::SoundEffect, name), m_pBuffer(buffer), m_lastfrq(-1.0f){}
+		ResSound(const char* name, fcyRefPointer<f2dSoundBuffer> buffer) : Resource(ResourceType::SoundEffect, name) {
+			m_pBuffer = buffer;
+			m_lastfrq = -1.0f;
+			m_freq = m_pBuffer->GetFrequency();
+		}
 	};
 
 	/// @brief 背景音乐
@@ -475,13 +480,15 @@ namespace LuaSTGPlus
 		fcyRefPointer<f2dSoundBuffer> m_pBuffer;
 		int m_status;//0停止1暂停2播放
 		float m_lastfrq;
+		long m_freq;
 	public:
 		void Play(float vol, double position)
 		{
 			m_pBuffer->Stop();
 			m_pBuffer->SetTime(position);
 
-			float nv = VolumeFix(vol);
+			//float nv = VolumeFix(vol);
+			float nv = (float)Eyes2D::Math::LinearToLog(vol);
 			if (m_pBuffer->GetVolume() != nv)
 				m_pBuffer->SetVolume(nv);
 
@@ -512,25 +519,33 @@ namespace LuaSTGPlus
 			return m_pBuffer->IsPlaying();
 		}
 
+		bool IsPaused() {
+			return m_status == 1;
+		}
+
 		bool IsStopped()
 		{
-			//return !IsPlaying() && m_pBuffer->GetTime() == 0.;//用播放时间来判断貌似会遇到[播放然后立即判断状态会返回stop状态]的错误
-			return !IsPlaying() || m_status == 0;
+			return !IsPlaying() && m_pBuffer->GetTime() == 0.;//用播放时间来判断貌似会遇到[播放然后立即判断状态会返回stop状态]的错误
+			//return (!IsPlaying() || m_status == 0) && m_pBuffer->GetTime() == 0.;
 		}
 
 		void SetVolume(float v)
 		{
-			float nv = VolumeFix(v);
+			//float nv = VolumeFix(v);
+			float nv = (float)Eyes2D::Math::LinearToLog(v);
 			if (m_pBuffer->GetVolume() != nv)
 				m_pBuffer->SetVolume(nv);
 		}
 
 		float GetVolume() {
-			return m_pBuffer->GetVolume();
+			double dv= (double)m_pBuffer->GetVolume();
+			double tv = Eyes2D::Math::LogToLinear(dv);
+			return (float)tv;
+			//return m_pBuffer->GetVolume();
 		}
 
 		bool SetSpeed(float speed) {
-			float frq = (float)m_pBuffer->GetFrequency();
+			float frq = (float)m_freq;
 			int newfrq = (int)(frq * speed);
 			if (newfrq > 100000 || newfrq<100) {
 				return false;
@@ -553,8 +568,12 @@ namespace LuaSTGPlus
 			}
 		}
 	public:
-		ResMusic(const char* name, fcyRefPointer<f2dSoundBuffer> buffer)
-			: Resource(ResourceType::Music, name), m_pBuffer(buffer), m_status(0), m_lastfrq(-1.0f) {}
+		ResMusic(const char* name, fcyRefPointer<f2dSoundBuffer> buffer) : Resource(ResourceType::Music, name) {
+			m_pBuffer = buffer;
+			m_status = 0;
+			m_lastfrq = -1.0f;
+			m_freq = m_pBuffer->GetFrequency();
+		}
 	};
 
 	/// @brief shader包装

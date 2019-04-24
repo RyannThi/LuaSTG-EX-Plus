@@ -323,6 +323,7 @@ namespace LuaSTGPlus
 			else if (m_iStatus == AppStatus::Running) {
 				return false;
 			}
+			return false;
 		}
 #endif
 		

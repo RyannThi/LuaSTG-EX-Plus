@@ -1,6 +1,5 @@
 #include "LuaWrapper.h"
 #include "E2DXInputImpl.h"
-#include "AppFrame.h"
 
 using namespace std;
 using namespace LuaSTGPlus;

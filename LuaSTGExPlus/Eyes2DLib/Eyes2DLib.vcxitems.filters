@@ -4,6 +4,9 @@
     <Filter Include="InputSystem">
       <UniqueIdentifier>{b2e4018f-a4e7-4d66-8549-a147fa369fad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{e73fa768-c9a6-4c5f-a43e-00a34d95a48d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)E2DException.h" />
@@ -11,11 +14,17 @@
       <Filter>InputSystem</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)E2DInputSystem.h" />
+    <ClInclude Include="E:\projects\LSTGexp\LuaSTG-EX-Plus\LuaSTGExPlus\Eyes2DLib\E2DMath.h">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)E2DXInputImpl.cpp">
       <Filter>InputSystem</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)E2DInputSytem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)E2DMath.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

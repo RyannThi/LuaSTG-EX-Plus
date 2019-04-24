@@ -1897,7 +1897,7 @@ fBool AppFrame::OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, 
 			m_MousePosition.y = m_OptionResolution.y - (float)static_cast<fInt>(tMsg.Param2);  // ! 潜在大小不匹配问题
 			break;
 		case F2DMSG_WINDOW_ONMOUSEWHEEL:
-			m_MouseWheelDelta = tMsg.Param3;
+			//m_MouseWheelDelta = tMsg.Param3;//TODO:SB逻辑cnm
 			break;
 		case F2DMSG_JOYSTICK_ONXPOSCHANGE:
 			do
@@ -2075,6 +2075,8 @@ fBool AppFrame::OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, 
 			break;
 		}
 	}
+	
+	Eyes2D::GetXInput().Update();
 
 	//EX+ Network Input
 	if (!m_Input){

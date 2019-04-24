@@ -6,8 +6,13 @@
 
 #include <string>
 
-#pragma comment(lib, "Xinput9_1_0.lib")
+//#define EYES2D_USING_XINPUT_1_4 //WIN8以后才有……要兼容WIN7得用9_1_0的dll
+
+#ifdef EYES2D_USING_XINPUT_1_4
 #pragma comment(lib, "Xinput.lib")
+#else
+#pragma comment(lib, "Xinput9_1_0.lib")
+#endif // USING_XINPUT_1_4
 
 #include <Windows.h>
 #include <Xinput.h>
@@ -120,7 +125,7 @@ namespace Eyes2D {
 	
 	//获得XInput单例
 	//在多线程环境下，该单例的实现是有问题的……
-	static XInputImpl& GetXInput() {
+	inline XInputImpl& GetXInput() {
 		static XInputImpl gs_XInputInstance;
 		return gs_XInputInstance;
 	}

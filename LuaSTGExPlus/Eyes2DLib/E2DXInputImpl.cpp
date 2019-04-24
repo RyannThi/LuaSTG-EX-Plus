@@ -73,6 +73,8 @@ XDeviceInfo XInputImpl::GetDeviceInfo(int index) {
 			info.HMotorSpeed = features.Vibration.wRightMotorSpeed;
 		}
 	}
+	
+#ifdef EYES2D_USING_XINPUT_1_4
 	//--电池
 	XINPUT_BATTERY_INFORMATION BatteryInfo;
 	memset(&BatteryInfo, 0, sizeof(XINPUT_BATTERY_INFORMATION));
@@ -116,6 +118,8 @@ XDeviceInfo XInputImpl::GetDeviceInfo(int index) {
 			}
 		}
 	}
+#endif // USING_XINPUT_1_4
+
 	return info;
 }
 

@@ -77,9 +77,6 @@
     <ClInclude Include="Global.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectPool.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -208,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="Network.h">
       <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectPool.hpp">
+      <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
