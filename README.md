@@ -20,6 +20,7 @@ LuaSTG EX Plus 是 LuaSTG Plus 的衍生版本，其大部分代码基于9chu的
 10.fancy2d(0.6)(->luastg)  
 11.lstgx_Math(unkown version)(->luastg)  
 12.LuaSocket(2.0.1)(->luastg)  
+13.Eyes2DLib(unkown version)(->luastg)  
 
 ### 以上用到的项目的源代码、文档均完整地复制在本项目文件夹下，便于构建可执行文件。  
 
