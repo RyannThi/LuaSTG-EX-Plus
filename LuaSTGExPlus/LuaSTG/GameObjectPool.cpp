@@ -1794,7 +1794,7 @@ void GameObjectPool::DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer
 			GameObjectCollider* cc = p->collider;
 			cc->caloffset(p->x, p->y, p->rot);
 			while (cc != nullptr) {
-				switch (p->collider->type)
+				switch (cc->type)
 				{
 				case GameObjectColliderType::Circle:
 					grender->FillCircle(graph, fcyVec2((float)cc->absx, (float)cc->absy), (float)cc->a, fillColor, fillColor,

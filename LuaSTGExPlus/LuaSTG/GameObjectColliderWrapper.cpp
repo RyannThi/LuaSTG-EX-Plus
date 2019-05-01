@@ -63,6 +63,7 @@ void GameObjectColliderWrapper::Register(lua_State* L)LNOEXCEPT {
 			newcollider->type = enumtype;
 			newcollider->a = fa;
 			newcollider->b = fb;
+			newcollider->id = id;
 			plast->next = newcollider;
 			newcollider->last = plast;
 
@@ -259,6 +260,18 @@ void GameObjectColliderWrapper::Register(lua_State* L)LNOEXCEPT {
 				else if (key == "id") {
 					lua_pushinteger(L, p->cur->id);
 				}
+				else if (key == "AddCollider") {
+					lua_pushcfunction(L, AddCollider);
+				}
+				else if (key == "DelCollider") {
+					lua_pushcfunction(L, DelCollider);
+				}
+				else if (key == "SetCurCollider") {
+					lua_pushcfunction(L, SetCurCollider);
+				}
+				else if (key == "EnumColliders") {
+					lua_pushcfunction(L, EnumColliders);
+				}
 				else {
 					return luaL_error(L, "Attempts to access nonexistent members.");
 				}
@@ -292,9 +305,9 @@ void GameObjectColliderWrapper::Register(lua_State* L)LNOEXCEPT {
 	luaL_openlib(L, LUASTG_LUA_TYPENAME_COLLIDERWRAPPER, tMethods, 0);  // t
 	luaL_newmetatable(L, LUASTG_LUA_TYPENAME_COLLIDERWRAPPER);  // t mt
 	luaL_openlib(L, 0, tMetaTable, 0);  // t mt
-	lua_pushliteral(L, "__index");  // t mt s
-	lua_pushvalue(L, -3);  // t mt s t
-	lua_rawset(L, -3);  // t mt (mt["__index"] = t)
+	//lua_pushliteral(L, "__index");  // t mt s
+	//lua_pushvalue(L, -3);  // t mt s t
+	//lua_rawset(L, -3);  // t mt (mt["__index"] = t)
 	lua_pushliteral(L, "__metatable");  // t mt s
 	lua_pushvalue(L, -3);  // t mt s t
 	lua_rawset(L, -3);  // t mt (mt["__metatable"] = t)  保护metatable不被修改

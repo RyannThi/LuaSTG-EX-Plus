@@ -423,64 +423,9 @@ namespace LuaSTGPlus
 		GameObjectCollider* cc1;
 		GameObjectCollider* cc2;
 
-		if (true) {
-			cc1 = p1->collider;
-			while (cc1 != nullptr) {
-				cc1->caloffset(p1->x, p1->y, p1->rot);
-
-				x1 = cc1->absx;
-				y1 = cc1->absy;
-				cr1 = cc1->circum_r;
-				a1 = cc1->a;
-				b1 = cc1->b;
-				rot1 = cc1->absrot;
-
-				cc2 = p2->collider;
-				while (cc2 != nullptr) {
-					cc2->caloffset(p2->x, p2->y, p2->rot);
-
-					x2 = cc2->absx;
-					y2 = cc2->absy;
-					cr2 = cc2->circum_r;
-
-					//快速AABB检测
-					la = x1 - cr1; ra = x1 + cr1; ba = y1 - cr1; ta = y1 + cr1;
-					lb = x2 - cr2; rb = x2 + cr2; bb = y2 - cr2; tb = y2 + cr2;
-					if ((la >= rb) || (ra <= lb) || (ba >= tb) || (ta <= bb)) {
-						cc2 = cc2->next;//先切换到下一个
-						continue;//跳过
-					}
-
-					a2 = cc2->a;
-					b2 = cc2->b;
-					rot2 = cc2->absrot;
-
-					//外接圆碰撞检测，没发生碰撞则直接PASS
-					if (!xmath::collision::check(
-						cocos2d::Vec2(x1, y1), cr1, cr1, rot1, XColliderType::Circle,
-						cocos2d::Vec2(x2, y2), cr2, cr2, rot2, XColliderType::Circle)) {
-						cc2 = cc2->next;//先切换到下一个
-						continue;//跳过
-					}
-
-					//精确碰撞检测
-					if (xmath::collision::check(
-						cocos2d::Vec2(x1, y1), a1, b1, rot1, cc1->xtype,
-						cocos2d::Vec2(x2, y2), a2, b2, rot2, cc2->xtype)) {
-						return true;//返回点1
-					}
-
-					cc2 = cc2->next;
-				};
-
-				cc1 = cc1->next;
-			};
-		}
-		else {
-			cc1 = p1->collider;
+		cc1 = p1->collider;
+		while (cc1 != nullptr) {
 			cc1->caloffset(p1->x, p1->y, p1->rot);
-			cc2 = p2->collider;
-			cc2->caloffset(p2->x, p2->y, p2->rot);
 
 			x1 = cc1->absx;
 			y1 = cc1->absy;
@@ -489,34 +434,46 @@ namespace LuaSTGPlus
 			b1 = cc1->b;
 			rot1 = cc1->absrot;
 
-			x2 = cc2->absx;
-			y2 = cc2->absy;
-			cr2 = cc2->circum_r;
-			a2 = cc2->a;
-			b2 = cc2->b;
-			rot2 = cc2->absrot;
+			cc2 = p2->collider;
+			while (cc2 != nullptr) {
+				cc2->caloffset(p2->x, p2->y, p2->rot);
 
-			//快速AABB检测
-			la = x1 - cr1; ra = x1 + cr1; ba = y1 - cr1; ta = y1 + cr1;
-			lb = x2 - cr2; rb = x2 + cr2; bb = y2 - cr2; tb = y2 + cr2;
-			if ((la >= rb) || (ra <= lb) || (ba >= tb) || (ta <= bb)) {
-				return false;
-			}
+				x2 = cc2->absx;
+				y2 = cc2->absy;
+				cr2 = cc2->circum_r;
 
-			//外接圆碰撞检测，没发生碰撞则直接PASS
-			if (!xmath::collision::check(
-				cocos2d::Vec2(x1, y1), cr1, cr1, rot1, XColliderType::Circle,
-				cocos2d::Vec2(x2, y2), cr2, cr2, rot2, XColliderType::Circle)) {
-				return false;
-			}
+				//快速AABB检测
+				la = x1 - cr1; ra = x1 + cr1; ba = y1 - cr1; ta = y1 + cr1;
+				lb = x2 - cr2; rb = x2 + cr2; bb = y2 - cr2; tb = y2 + cr2;
+				if ((la >= rb) || (ra <= lb) || (ba >= tb) || (ta <= bb)) {
+					cc2 = cc2->next;//先切换到下一个
+					continue;//跳过
+				}
 
-			//精确碰撞检测
-			if (xmath::collision::check(
-				cocos2d::Vec2(x1, y1), a1, b1, rot1, cc1->xtype,
-				cocos2d::Vec2(x2, y2), a2, b2, rot2, cc2->xtype)) {
-				return true;//返回点1
-			}
-		}
+				a2 = cc2->a;
+				b2 = cc2->b;
+				rot2 = cc2->absrot;
+
+				//外接圆碰撞检测，没发生碰撞则直接PASS
+				if (!xmath::collision::check(
+					cocos2d::Vec2(x1, y1), cr1, cr1, rot1, XColliderType::Circle,
+					cocos2d::Vec2(x2, y2), cr2, cr2, rot2, XColliderType::Circle)) {
+					cc2 = cc2->next;//先切换到下一个
+					continue;//跳过
+				}
+
+				//精确碰撞检测
+				if (xmath::collision::check(
+					cocos2d::Vec2(x1, y1), a1, b1, rot1, cc1->xtype,
+					cocos2d::Vec2(x2, y2), a2, b2, rot2, cc2->xtype)) {
+					return true;//返回点1
+				}
+
+				cc2 = cc2->next;
+			};
+
+			cc1 = cc1->next;
+		};
 
 		return false;//返回点2
 #else
