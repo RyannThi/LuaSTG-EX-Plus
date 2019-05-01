@@ -1,6 +1,6 @@
 #include "Vec2.h"
 
-#define GP_ASSERT() ;
+#define GP_ASSERT( ... ) ;
 
 namespace cocos2d
 {

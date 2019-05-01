@@ -3,17 +3,19 @@
 #pragma once
 #include "Global.h"
 #include "ResourceMgr.h"
+#include "GameObjectPool.h"
 
 #define LUASTG_LUA_TYPENAME_COLOR "lstgColor"
 #define LUASTG_LUA_TYPENAME_RANDGEN "lstgRand"
 #define LUASTG_LUA_TYPENAME_BENTLASER "lstgBentLaserData"
 #define LUASTG_LUA_TYPENAME_STOPWATCH "lstgStopWatch"
 #define LUASTG_LUA_TYPENAME_XINPUTWRAPPER "lstgXInputWrapper"
+#define LUASTG_LUA_TYPENAME_COLLIDERWRAPPER "lstgColliderWrapper"
 #define LUASTG_LUA_TYPENAME_RESOURCE "lstgResource"
 
 namespace LuaSTGPlus
 {
-	/// @brief 颜色包装
+	//颜色包装
 	class ColorWrapper
 	{
 	public:
@@ -23,7 +25,7 @@ namespace LuaSTGPlus
 		static fcyColor* CreateAndPush(lua_State* L);
 	};
 
-	/// @brief 随机数发生器包装
+	//随机数发生器包装
 	class RandomizerWrapper
 	{
 	public:
@@ -33,13 +35,7 @@ namespace LuaSTGPlus
 		static fcyRandomWELL512* CreateAndPush(lua_State* L);
 	};
 
-	//这里预定义了这个玩意是为了方便BentLaserDataWrapper和GameObjectBentLaser对接
-	//然而如果和另一个正式定义了GameObjectBentLaser的头文件放一起会出事
-#ifndef DEFINE_GAME_OBJECT_BENTLAZER_CLASS
-	class GameObjectBentLaser;
-#endif
-
-	/// @brief 曲线激光包装
+	//曲线激光包装
 	class BentLaserDataWrapper
 	{
 	private:
@@ -54,7 +50,7 @@ namespace LuaSTGPlus
 		static GameObjectBentLaser* CreateAndPush(lua_State* L);
 	};
 	
-	/// @brief f2d高精度纳秒级停表
+	//高精度纳秒级停表
 	class Fancy2dStopWatchWrapper
 	{
 	public:
@@ -64,7 +60,7 @@ namespace LuaSTGPlus
 		static fcyStopWatch* CreateAndPush(lua_State* L);
 	};
 
-	/// @brief 内建函数包装
+	//内建函数包装
 	class BuiltInFunctionWrapper
 	{
 	public:
@@ -106,6 +102,22 @@ namespace LuaSTGPlus
 		static void CreateAndPush(lua_State* L);
 	};
 
+	//游戏碰撞体操作
+	class GameObjectColliderWrapper {
+	private:
+		struct Wrapper
+		{
+			GameObject* handle;
+			GameObjectCollider* cur;
+			Wrapper() { cur = nullptr; handle = nullptr; }
+		};
+	public:
+		//向lua注册包装类
+		static void Register(lua_State* L)LNOEXCEPT;
+		//创建一个游戏碰撞体包装类并推入堆栈
+		static void CreateAndPush(lua_State* L, GameObject* obj);
+	};
+
 	//注册内建类
 	static inline void RegistBuiltInClassWrapper(lua_State* L)LNOEXCEPT {
 		ColorWrapper::Register(L);  // 颜色对象
@@ -115,6 +127,7 @@ namespace LuaSTGPlus
 		BuiltInFunctionWrapper::Register(L);  // 内建函数库
 		GameResourceWrapper::Register(L);  // 游戏资源对象
 		XInputManagerWrapper::Register(L);  //XInput
+		GameObjectColliderWrapper::Register(L);//Collider
 	}
 
 	//翻译字符串到混合模式

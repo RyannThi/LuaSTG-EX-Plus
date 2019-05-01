@@ -49,11 +49,11 @@
     <Filter Include="Network">
       <UniqueIdentifier>{db87f629-9365-4ce3-aa7e-a187c5bd2c04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ObjectPool">
+      <UniqueIdentifier>{fefe8e7c-cf2e-4563-8fc5-513804c54a28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="GameObjectPropertyHash.inl">
-      <Filter>头文件</Filter>
-    </None>
     <None Include="GameObjectPropertyHash.json">
       <Filter>实用工具</Filter>
     </None>
@@ -63,15 +63,15 @@
     <None Include="..\XMath\Vec2.inl">
       <Filter>XMath</Filter>
     </None>
+    <None Include="GameObjectPropertyHash.inl">
+      <Filter>ObjectPool</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppFrame.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ESC.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObjectPool.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Global.h">
@@ -209,15 +209,15 @@
     <ClInclude Include="ObjectPool.hpp">
       <Filter>Utility</Filter>
     </ClInclude>
+    <ClInclude Include="GameObjectPool.h">
+      <Filter>ObjectPool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppFrame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ESC.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObjectPool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="KeyboardX.cpp">
@@ -357,6 +357,15 @@
     </ClCompile>
     <ClCompile Include="Network.cpp">
       <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectPool.cpp">
+      <Filter>ObjectPool</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectBentLaser.cpp">
+      <Filter>ObjectPool</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectColliderWrapper.cpp">
+      <Filter>LuaWrapper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

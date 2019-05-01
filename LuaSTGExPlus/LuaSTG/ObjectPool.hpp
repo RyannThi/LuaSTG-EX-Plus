@@ -9,7 +9,6 @@ namespace LuaSTGPlus
 	{
 	private:
 		static_assert(std::is_pod<T>::value, "T must be a pod type.");
-		//static_assert(std::is_pod<typename T>::value, "T must be a pod type.");
 		
 		std::vector<size_t> m_FreeIndex;  // 空闲空间索引表
 		std::array<bool, AllocCount> m_DataUsed;  // 已用空间标记

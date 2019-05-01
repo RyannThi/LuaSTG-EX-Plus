@@ -219,8 +219,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		static int FindFiles(lua_State* L)LNOEXCEPT
 		{
 			//说好的可变参数呢……
-			//tm不检查第三个参数是否存在，简直作死，崩游戏没商量
-			if (lua_gettop(L) == 2) {
+			if (lua_gettop(L) <= 2) {
 				const char blankpackname[] = "";
 				LRES.FindFiles(L, luaL_checkstring(L, 1), luaL_optstring(L, 2, NULL), blankpackname);
 			}

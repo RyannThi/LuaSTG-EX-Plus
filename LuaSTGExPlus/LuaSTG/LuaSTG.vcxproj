@@ -117,6 +117,8 @@
     <ClCompile Include="CollisionDetect.cpp" />
     <ClCompile Include="ColorWrapper.cpp" />
     <ClCompile Include="ESC.cpp" />
+    <ClCompile Include="GameObjectBentLaser.cpp" />
+    <ClCompile Include="GameObjectColliderWrapper.cpp" />
     <ClCompile Include="GameObjectPool.cpp" />
     <ClCompile Include="GameResourceWrapper.cpp" />
     <ClCompile Include="KeyboardX.cpp" />
@@ -212,12 +214,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)\build\</OutDir>
+    <OutDir>E:\LuaSTG-LuaData\player-active\game\</OutDir>
     <IntDir>$(SolutionDir)\build\dir\</IntDir>
     <TargetName>LuaSTGPlus</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|Win32'">
-    <OutDir>$(SolutionDir)\build\</OutDir>
+    <OutDir>E:\LuaSTG-LuaData\player-active\game\</OutDir>
     <IntDir>$(SolutionDir)\build\dir\</IntDir>
     <TargetName>LuaSTGPlus.dev</TargetName>
     <LinkIncremental>false</LinkIncremental>
