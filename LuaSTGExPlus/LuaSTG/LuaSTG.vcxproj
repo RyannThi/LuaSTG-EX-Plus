@@ -219,7 +219,7 @@
     <TargetName>LuaSTGPlus</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|Win32'">
-    <OutDir>E:\LuaSTG-LuaData\player-active\game\</OutDir>
+    <OutDir>$(SolutionDir)\build\</OutDir>
     <IntDir>$(SolutionDir)\build\dir\</IntDir>
     <TargetName>LuaSTGPlus.dev</TargetName>
     <LinkIncremental>false</LinkIncremental>

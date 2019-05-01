@@ -146,7 +146,7 @@ void GameObjectColliderWrapper::Register(lua_State* L)LNOEXCEPT {
 			return 1;
 		}
 		static int EnumColliders(lua_State* L) {
-			// self
+			// self // {id1, id2 ... }
 			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_COLLIDERWRAPPER));
 			GameObjectCollider* collider = p->handle->collider;
 			
