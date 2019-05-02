@@ -5,6 +5,8 @@
 #include "ResourceMgr.h"
 #include "XCollision.h"
 
+#define MAX_COLLIDERS_COUNT 16
+
 namespace LuaSTGPlus
 {
 	// 游戏对象状态
@@ -18,7 +20,7 @@ namespace LuaSTGPlus
 	
 	//游戏碰撞体类型
 	enum class GameObjectColliderType {
-		NONE      = -1, //关闭
+		None = -1, //关闭
 		
 		Circle    = 0,  //严格圆
 		OBB       = 1,  //矩形
@@ -48,18 +50,15 @@ namespace LuaSTGPlus
 		XColliderType xtype;          //转换后的碰撞体类型
 
 		int id;
-		GameObjectCollider* next;
-		GameObjectCollider* last;
 
 		//重置数值
 		void reset() {
-			type = GameObjectColliderType::Ellipse;
+			type = GameObjectColliderType::None;
 			r = 0.0f; a = 0.0f; b = 0.0f; rot = 0.0f;
 			dx = 0.0f; dy = 0.0f;
 			circum_r = 0.0f;
 			absx = 0.0f; absy = 0.0f; absrot = 0.0f;
 			id = 0;
-			last = next = nullptr;
 			xtype = XColliderType::Ellipse;
 		}
 		//计算外接圆和对应的XMath库碰撞体类型
@@ -98,17 +97,6 @@ namespace LuaSTGPlus
 			absx = x + dx * std::cosf(-_rot) + dy * std::sinf(-_rot);
 			absy = y + dy * std::cosf(-_rot) - dx * std::sinf(-_rot);
 			absrot = _rot + rot;
-		}
-
-		GameObjectCollider() {
-			type = GameObjectColliderType::Ellipse;
-			r = 0.0f; a = 0.0f; b = 0.0f; rot = 0.0f;
-			dx = 0.0f; dy = 0.0f;
-			circum_r = 0.0f;
-			absx = 0.0f; absy = 0.0f; absrot = 0.0f;
-			id = 0;
-			last = next = nullptr;
-			xtype = XColliderType::Ellipse;
 		}
 	};
 	
@@ -151,7 +139,7 @@ namespace LuaSTGPlus
 		ResParticle::ParticlePool* ps;  // 粒子系统
 
 #ifdef USING_ADVANCE_COLLIDER
-		GameObjectCollider* collider;//碰撞体
+		GameObjectCollider colliders[MAX_COLLIDERS_COUNT];//碰撞体
 #else
 		bool rect; //是否为矩形碰撞盒
 		lua_Number a, b; //单位的横向、纵向碰撞大小的一半
@@ -202,7 +190,10 @@ namespace LuaSTGPlus
 			world = 1;
 
 #ifdef USING_ADVANCE_COLLIDER
-			ResetColliderList();
+			for (int select = 0; select < MAX_COLLIDERS_COUNT; select++) {
+				colliders[select].reset();
+			}
+			colliders[0].type = GameObjectColliderType::Ellipse;
 #else
 			rect = false;
 			a = b = 0.;
@@ -210,35 +201,7 @@ namespace LuaSTGPlus
 #endif // USING_ADVANCE_COLLIDER
 		}
 
-#ifdef USING_ADVANCE_COLLIDER
-		void ResetColliderList() {
-			if (collider == nullptr) {
-				collider = new GameObjectCollider();
-				collider->reset();
-			}
-			else {
-				GameObjectCollider* ptr = collider->next;
-				GameObjectCollider* pos = nullptr;
-				while (ptr != nullptr) {
-					pos = ptr->next;
-					delete ptr; ptr = nullptr;
-					ptr = pos; pos = nullptr;
-				}
-				collider->reset();
-			}
-		}
-
-		void ClearColliderList() {
-			GameObjectCollider* ptr = collider;
-			GameObjectCollider* pos = nullptr;
-			while (ptr != nullptr) {
-				pos = ptr->next;
-				delete ptr; ptr = nullptr;
-				ptr = pos; pos = nullptr;
-			}
-			collider = nullptr;
-		}
-#else
+#ifndef USING_ADVANCE_COLLIDER
 		void UpdateCollisionCirclrRadius() {
 			if (rect) {
 				//矩形
@@ -270,9 +233,9 @@ namespace LuaSTGPlus
 			}
 		}
 
-		// TODO:collider
+		// TODO:collider //ok
 		bool ChangeResource(const char* res_name);
-		// TODO:collider
+		// TODO:collider //ok
 		template <typename T>
 		bool ChangeResourceEx(T res_set)
 		{
@@ -287,24 +250,24 @@ namespace LuaSTGPlus
 				res->AddRef();
 #ifdef USING_ADVANCE_COLLIDER
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
-				collider->a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
-				collider->b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+				colliders[0].a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
+				colliders[0].b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
 #else
-				collider->a = res_set->GetHalfSizeX();
-				collider->b = res_set->GetHalfSizeY();
+				colliders[0].a = res_set->GetHalfSizeX();
+				colliders[0].b = res_set->GetHalfSizeY();
 #endif // GLOBAL_SCALE_COLLI_SHAPE
 				if (res_set->IsRectangle()) {
-					collider->type = GameObjectColliderType::OBB;
+					colliders[0].type = GameObjectColliderType::OBB;
 				}
 				else {
 					if (res_set->GetHalfSizeX() == res_set->GetHalfSizeY()) {
-						collider->type = GameObjectColliderType::Circle;
+						colliders[0].type = GameObjectColliderType::Circle;
 					}
 					else {
-						collider->type = GameObjectColliderType::Ellipse;
+						colliders[0].type = GameObjectColliderType::Ellipse;
 					}
 				}
-				collider->calcircum();
+				colliders[0].calcircum();
 #else
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
 				a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
@@ -323,24 +286,24 @@ namespace LuaSTGPlus
 				res->AddRef();
 #ifdef USING_ADVANCE_COLLIDER
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
-				collider->a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
-				collider->b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+				colliders[0].a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
+				colliders[0].b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
 #else
-				collider->a = res_set->GetHalfSizeX();
-				collider->b = res_set->GetHalfSizeY();
+				colliders[0].a = res_set->GetHalfSizeX();
+				colliders[0].b = res_set->GetHalfSizeY();
 #endif // GLOBAL_SCALE_COLLI_SHAPE
 				if (res_set->IsRectangle()) {
-					collider->type = GameObjectColliderType::OBB;
+					colliders[0].type = GameObjectColliderType::OBB;
 				}
 				else {
 					if (res_set->GetHalfSizeX() == res_set->GetHalfSizeY()) {
-						collider->type = GameObjectColliderType::Circle;
+						colliders[0].type = GameObjectColliderType::Circle;
 					}
 					else {
-						collider->type = GameObjectColliderType::Ellipse;
+						colliders[0].type = GameObjectColliderType::Ellipse;
 					}
 				}
-				collider->calcircum();
+				colliders[0].calcircum();
 #else
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
 				a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
@@ -372,24 +335,24 @@ namespace LuaSTGPlus
 				res->AddRef();
 #ifdef USING_ADVANCE_COLLIDER
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
-				collider->a = _res->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
-				collider->b = _res->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+				colliders[0].a = _res->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
+				colliders[0].b = _res->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
 #else
-				collider->a = _res->GetHalfSizeX();
-				collider->b = _res->GetHalfSizeY();
+				colliders[0].a = _res->GetHalfSizeX();
+				colliders[0].b = _res->GetHalfSizeY();
 #endif // GLOBAL_SCALE_COLLI_SHAPE
 				if (_res->IsRectangle()) {
-					collider->type = GameObjectColliderType::OBB;
+					colliders[0].type = GameObjectColliderType::OBB;
 				}
 				else {
 					if (_res->GetHalfSizeX() == _res->GetHalfSizeY()) {
-						collider->type = GameObjectColliderType::Circle;
+						colliders[0].type = GameObjectColliderType::Circle;
 					}
 					else {
-						collider->type = GameObjectColliderType::Ellipse;
+						colliders[0].type = GameObjectColliderType::Ellipse;
 					}
 				}
-				collider->calcircum();
+				colliders[0].calcircum();
 #else
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
 				a = _res->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
@@ -408,7 +371,7 @@ namespace LuaSTGPlus
 			return false;
 		}
 	};
-	// TODO:collider
+	// TODO:collider //ok
 	//计算两个对象之间的碰撞
 	inline bool CollisionCheck(GameObject* p1, GameObject* p2)LNOEXCEPT {
 		//忽略不碰撞对象
@@ -420,60 +383,47 @@ namespace LuaSTGPlus
 		float lb, rb, bb, tb;
 		float x1, x2, y1, y2, a1, a2, b1, b2, rot1, rot2, cr1, cr2;
 
-		GameObjectCollider* cc1;
-		GameObjectCollider* cc2;
+		for (int cc1 = 0; cc1 < MAX_COLLIDERS_COUNT; cc1++) {
+			if (p1->colliders[cc1].type == GameObjectColliderType::None) { continue; }//跳过
+			
+			p1->colliders[cc1].caloffset(p1->x, p1->y, p1->rot);
 
-		cc1 = p1->collider;
-		while (cc1 != nullptr) {
-			cc1->caloffset(p1->x, p1->y, p1->rot);
+			x1 = p1->colliders[cc1].absx;
+			y1 = p1->colliders[cc1].absy;
+			cr1 = p1->colliders[cc1].circum_r;
+			a1 = p1->colliders[cc1].a;
+			b1 = p1->colliders[cc1].b;
+			rot1 = p1->colliders[cc1].absrot;
 
-			x1 = cc1->absx;
-			y1 = cc1->absy;
-			cr1 = cc1->circum_r;
-			a1 = cc1->a;
-			b1 = cc1->b;
-			rot1 = cc1->absrot;
+			for (int cc2 = 0; cc2 < MAX_COLLIDERS_COUNT; cc2++) {
+				if (p2->colliders[cc2].type == GameObjectColliderType::None) { continue; }//跳过
 
-			cc2 = p2->collider;
-			while (cc2 != nullptr) {
-				cc2->caloffset(p2->x, p2->y, p2->rot);
+				p2->colliders[cc2].caloffset(p2->x, p2->y, p2->rot);
 
-				x2 = cc2->absx;
-				y2 = cc2->absy;
-				cr2 = cc2->circum_r;
+				x2 = p2->colliders[cc2].absx;
+				y2 = p2->colliders[cc2].absy;
+				cr2 = p2->colliders[cc2].circum_r;
 
 				//快速AABB检测
 				la = x1 - cr1; ra = x1 + cr1; ba = y1 - cr1; ta = y1 + cr1;
 				lb = x2 - cr2; rb = x2 + cr2; bb = y2 - cr2; tb = y2 + cr2;
-				if ((la >= rb) || (ra <= lb) || (ba >= tb) || (ta <= bb)) {
-					cc2 = cc2->next;//先切换到下一个
-					continue;//跳过
-				}
+				if ((la >= rb) || (ra <= lb) || (ba >= tb) || (ta <= bb)) { continue; }//跳过
 
-				a2 = cc2->a;
-				b2 = cc2->b;
-				rot2 = cc2->absrot;
+				a2 = p2->colliders[cc2].a;
+				b2 = p2->colliders[cc2].b;
+				rot2 = p2->colliders[cc2].absrot;
 
 				//外接圆碰撞检测，没发生碰撞则直接PASS
 				if (!xmath::collision::check(
 					cocos2d::Vec2(x1, y1), cr1, cr1, rot1, XColliderType::Circle,
-					cocos2d::Vec2(x2, y2), cr2, cr2, rot2, XColliderType::Circle)) {
-					cc2 = cc2->next;//先切换到下一个
-					continue;//跳过
-				}
+					cocos2d::Vec2(x2, y2), cr2, cr2, rot2, XColliderType::Circle)) { continue; }//跳过
 
 				//精确碰撞检测
 				if (xmath::collision::check(
-					cocos2d::Vec2(x1, y1), a1, b1, rot1, cc1->xtype,
-					cocos2d::Vec2(x2, y2), a2, b2, rot2, cc2->xtype)) {
-					return true;//返回点1
-				}
-
-				cc2 = cc2->next;
-			};
-
-			cc1 = cc1->next;
-		};
+					cocos2d::Vec2(x1, y1), a1, b1, rot1, p1->colliders[cc1].xtype,
+					cocos2d::Vec2(x2, y2), a2, b2, rot2, p2->colliders[cc2].xtype)) { return true; }//返回点1
+			}
+		}
 
 		return false;//返回点2
 #else
@@ -566,6 +516,7 @@ namespace LuaSTGPlus
 		void Release()LNOEXCEPT;
 		bool Render(const char* tex_name, BlendMode blend, fcyColor c, float tex_left, float tex_top, float tex_width, float tex_height, float scale)LNOEXCEPT;
 		bool CollisionCheck(float x, float y, float rot, float a, float b, bool rect)LNOEXCEPT;
+		void RenderCollider(fcyColor fillColor)LNOEXCEPT;
 		bool CollisionCheckW(float x, float y, float rot, float a, float b, bool rect, float width)LNOEXCEPT;
 		bool BoundCheck()LNOEXCEPT;
 		int SampleL(lua_State *L, float length)LNOEXCEPT;
@@ -660,9 +611,6 @@ namespace LuaSTGPlus
 		/// @brief 检查对象是否有效
 		int IsValid(lua_State* L)LNOEXCEPT;
 		
-		//检查对象是否有效
-		bool IsValid2(size_t id)LNOEXCEPT;
-
 		/// @brief 求夹角
 		bool Angle(size_t idA, size_t idB, double& out)LNOEXCEPT;
 

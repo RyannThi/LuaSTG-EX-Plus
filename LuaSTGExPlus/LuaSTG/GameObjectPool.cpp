@@ -80,7 +80,7 @@ static inline bool RenderListSortFunc(GameObject* p1, GameObject* p2)LNOEXCEPT
 /// GameObject
 ////////////////////////////////////////////////////////////////////////////////
 #pragma region GameObject
-// TODO:collider
+// TODO:collider //ok
 bool GameObject::ChangeResource(const char* res_name)
 {
 	//LASSERT(!res);
@@ -92,24 +92,24 @@ bool GameObject::ChangeResource(const char* res_name)
 		res->AddRef();
 #ifdef USING_ADVANCE_COLLIDER
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
-		collider->a = tSprite->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
-		collider->b = tSprite->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+		colliders[0].a = tSprite->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
+		colliders[0].b = tSprite->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
 #else
-		collider->a = tSprite->GetHalfSizeX();
-		collider->b = tSprite->GetHalfSizeY();
+		colliders[0].a = tSprite->GetHalfSizeX();
+		colliders[0].b = tSprite->GetHalfSizeY();
 #endif // GLOBAL_SCALE_COLLI_SHAPE
 		if (tSprite->IsRectangle()) {
-			collider->type = GameObjectColliderType::OBB;
+			colliders[0].type = GameObjectColliderType::OBB;
 		}
 		else {
 			if (tSprite->GetHalfSizeX() == tSprite->GetHalfSizeY()) {
-				collider->type = GameObjectColliderType::Circle;
+				colliders[0].type = GameObjectColliderType::Circle;
 			}
 			else {
-				collider->type = GameObjectColliderType::Ellipse;
+				colliders[0].type = GameObjectColliderType::Ellipse;
 			}
 		}
-		collider->calcircum();
+		colliders[0].calcircum();
 #else
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
 		a = tSprite->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
@@ -131,24 +131,24 @@ bool GameObject::ChangeResource(const char* res_name)
 		res->AddRef();
 #ifdef USING_ADVANCE_COLLIDER
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
-		collider->a = tAnimation->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
-		collider->b = tAnimation->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+		colliders[0].a = tAnimation->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
+		colliders[0].b = tAnimation->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
 #else
-		collider->a = tAnimation->GetHalfSizeX();
-		collider->b = tAnimation->GetHalfSizeY();
+		colliders[0].a = tAnimation->GetHalfSizeX();
+		colliders[0].b = tAnimation->GetHalfSizeY();
 #endif // GLOBAL_SCALE_COLLI_SHAPE
 		if (tAnimation->IsRectangle()) {
-			collider->type = GameObjectColliderType::OBB;
+			colliders[0].type = GameObjectColliderType::OBB;
 		}
 		else {
 			if (tAnimation->GetHalfSizeX() == tAnimation->GetHalfSizeY()) {
-				collider->type = GameObjectColliderType::Circle;
+				colliders[0].type = GameObjectColliderType::Circle;
 			}
 			else {
-				collider->type = GameObjectColliderType::Ellipse;
+				colliders[0].type = GameObjectColliderType::Ellipse;
 			}
 		}
-		collider->calcircum();
+		colliders[0].calcircum();
 #else
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
 		a = tAnimation->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
@@ -181,24 +181,24 @@ bool GameObject::ChangeResource(const char* res_name)
 		res->AddRef();
 #ifdef USING_ADVANCE_COLLIDER
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
-		collider->a = tParticle->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
-		collider->b = tParticle->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
+		colliders[0].a = tParticle->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
+		colliders[0].b = tParticle->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
 #else
-		collider->a = tParticle->GetHalfSizeX();
-		collider->b = tParticle->GetHalfSizeY();
+		colliders[0].a = tParticle->GetHalfSizeX();
+		colliders[0].b = tParticle->GetHalfSizeY();
 #endif // GLOBAL_SCALE_COLLI_SHAPE
 		if (tParticle->IsRectangle()) {
-			collider->type = GameObjectColliderType::OBB;
+			colliders[0].type = GameObjectColliderType::OBB;
 		}
 		else {
 			if (tParticle->GetHalfSizeX() == tParticle->GetHalfSizeY()) {
-				collider->type = GameObjectColliderType::Circle;
+				colliders[0].type = GameObjectColliderType::Circle;
 			}
 			else {
-				collider->type = GameObjectColliderType::Ellipse;
+				colliders[0].type = GameObjectColliderType::Ellipse;
 			}
 		}
-		collider->calcircum();
+		colliders[0].calcircum();
 #else
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
 		a = tParticle->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
@@ -273,7 +273,7 @@ GameObjectPool::~GameObjectPool()
 {
 	ResetPool();
 }
-// TODO:collider
+
 GameObject* GameObjectPool::freeObject(GameObject* p)LNOEXCEPT
 {
 	GameObject* pRet = p->pObjectNext;
@@ -299,10 +299,6 @@ GameObject* GameObjectPool::freeObject(GameObject* p)LNOEXCEPT
 
 	// 释放引用的资源
 	p->ReleaseResource();
-#ifdef USING_ADVANCE_COLLIDER
-	// 释放碰撞体链表
-	p->ClearColliderList();
-#endif // USING_ADVANCE_COLLIDER
 
 	// 回收到对象池
 	m_ObjectPool.Free(p->id);
@@ -754,14 +750,6 @@ int GameObjectPool::IsValid(lua_State* L)LNOEXCEPT
 	return 1;
 }
 
-bool GameObjectPool::IsValid2(size_t id)LNOEXCEPT
-{
-	if (m_ObjectPool.Data(id))
-		return true;
-	else
-		return false;
-}
-
 bool GameObjectPool::Angle(size_t idA, size_t idB, double& out)LNOEXCEPT
 {
 	GameObject* pA = m_ObjectPool.Data(idA);
@@ -1120,27 +1108,27 @@ int GameObjectPool::GetAttr(lua_State* L)LNOEXCEPT
 #ifdef USING_ADVANCE_COLLIDER
 	case GameObjectProperty::A:
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
-		lua_pushnumber(L, p->collider->a / LRES.GetGlobalImageScaleFactor());
+		lua_pushnumber(L, p->colliders[0].a / LRES.GetGlobalImageScaleFactor());
 #else
-		lua_pushnumber(L, p->collider->a);
+		lua_pushnumber(L, p->colliders[0].a);
 #endif // GLOBAL_SCALE_COLLI_SHAPE
 		break;
 	case GameObjectProperty::B:
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
-		lua_pushnumber(L, p->collider->b / LRES.GetGlobalImageScaleFactor());
+		lua_pushnumber(L, p->colliders[0].b / LRES.GetGlobalImageScaleFactor());
 #else
-		lua_pushnumber(L, p->collider->b);
+		lua_pushnumber(L, p->colliders[0].b);
 #endif // GLOBAL_SCALE_COLLI_SHAPE
 		break;
 	case GameObjectProperty::RECT:
-		if ((p->collider->type == GameObjectColliderType::Circle) || (p->collider->type == GameObjectColliderType::Ellipse)) {
+		if ((p->colliders[0].type == GameObjectColliderType::Circle) || (p->colliders[0].type == GameObjectColliderType::Ellipse)) {
 			lua_pushboolean(L, false);
 		}
-		else if (p->collider->type == GameObjectColliderType::OBB) {
+		else if (p->colliders[0].type == GameObjectColliderType::OBB) {
 			lua_pushboolean(L, true);
 		}
 		else {
-			lua_pushinteger(L, (int)p->collider->type);
+			lua_pushinteger(L, (int)p->colliders[0].type);
 		}
 		break;
 #else
@@ -1354,36 +1342,36 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 #ifdef USING_ADVANCE_COLLIDER
 	case GameObjectProperty::A:
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
-		p->collider->a = luaL_checknumber(L, 3) * LRES.GetGlobalImageScaleFactor();
+		p->colliders[0].a = luaL_checknumber(L, 3) * LRES.GetGlobalImageScaleFactor();
 #else
-		p->collider->a = luaL_checknumber(L, 3);
+		p->colliders[0].a = luaL_checknumber(L, 3);
 #endif // GLOBAL_SCALE_COLLI_SHAPE
-		p->collider->calcircum();
+		p->colliders[0].calcircum();
 		break;
 	case GameObjectProperty::B:
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
-		p->collider->b = luaL_checknumber(L, 3) * LRES.GetGlobalImageScaleFactor();
+		p->colliders[0].b = luaL_checknumber(L, 3) * LRES.GetGlobalImageScaleFactor();
 #else
-		p->collider->b = luaL_checknumber(L, 3);
+		p->colliders[0].b = luaL_checknumber(L, 3);
 #endif // GLOBAL_SCALE_COLLI_SHAPE
-		p->collider->calcircum();
+		p->colliders[0].calcircum();
 		break;
 	case GameObjectProperty::RECT:
 		if (lua_isboolean(L, 3)) {
 			bool ret = lua_toboolean(L, 3) == 0 ? false : true;
 			if (ret) {
-				p->collider->type = GameObjectColliderType::OBB;
+				p->colliders[0].type = GameObjectColliderType::OBB;
 			}
 			else {
-				p->collider->type = GameObjectColliderType::Ellipse;
+				p->colliders[0].type = GameObjectColliderType::Ellipse;
 			}
 		}
 		else {
 			int iret = luaL_checkinteger(L, 3);
 			GameObjectColliderType enumtype = (GameObjectColliderType)iret;
-			p->collider->type = enumtype;
+			p->colliders[0].type = enumtype;
 		}
-		p->collider->calcircum();
+		p->colliders[0].calcircum();
 		break;
 #else
 	case GameObjectProperty::A:
@@ -1457,7 +1445,58 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 	default:
 #ifdef USING_ADVANCE_COLLIDER
 		if (keypp == "collider") {
-			return luaL_error(L, "Property 'collider' is read-only.");
+			for (int select = 0; select < MAX_COLLIDERS_COUNT; select++) {
+				p->colliders[select].reset();
+			}
+			p->colliders[0].type = GameObjectColliderType::Ellipse;
+			// object k t
+			int count = lua_objlen(L, 3);
+			if (count > MAX_COLLIDERS_COUNT)
+				return luaL_error(L, "Out of collider limits.");
+			for (int select = 1; select <= count; select++) {
+				lua_pushinteger(L, select);// object k t select
+				lua_gettable(L, 3);// object k t t
+				//{type, a, b, x, y, rot }
+				for (int index = 1; index <= 6; index++) {
+					lua_pushinteger(L, index);
+					lua_gettable(L, 4);
+				}
+				// object k t t type a b x y rot
+				switch (luaL_checkinteger(L, 5))
+				{
+				case -1:
+					p->colliders[select].type = GameObjectColliderType::None;
+					break;
+				case 0:
+					p->colliders[select].type = GameObjectColliderType::Circle;
+					break;
+				case 1:
+					p->colliders[select].type = GameObjectColliderType::OBB;
+					break;
+				case 2:
+					p->colliders[select].type = GameObjectColliderType::Ellipse;
+					break;
+				case 3:
+					p->colliders[select].type = GameObjectColliderType::Diamond;
+					break;
+				case 4:
+					p->colliders[select].type = GameObjectColliderType::Triangle;
+					break;
+				case 5:
+					p->colliders[select].type = GameObjectColliderType::Point;
+					break;
+				default:
+					return luaL_error(L, "Invalid collider type.");
+				}
+				p->colliders[select].a = luaL_checknumber(L, 6);
+				p->colliders[select].b = luaL_checknumber(L, 7);
+				p->colliders[select].dx = luaL_checknumber(L, 8);
+				p->colliders[select].dy = luaL_checknumber(L, 9);
+				p->colliders[select].rot = luaL_checknumber(L, 10) * LDEGREE2RAD;
+				p->colliders[select].calcircum();//刷新外接圆半径
+				lua_pop(L, 7);
+				// object k t
+			}
 		}
 		else {
 			lua_rawset(L, 1);
@@ -1603,36 +1642,36 @@ int GameObjectPool::InitAttr(lua_State* L)LNOEXCEPT  // t(object)
 #ifdef USING_ADVANCE_COLLIDER
 			case GameObjectProperty::A:
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
-				p->collider->a = luaL_checknumber(L, 3) * LRES.GetGlobalImageScaleFactor();
+				p->colliders[0].a = luaL_checknumber(L, 3) * LRES.GetGlobalImageScaleFactor();
 #else
-				p->collider->a = luaL_checknumber(L, 3);
+				p->colliders[0].a = luaL_checknumber(L, 3);
 #endif // GLOBAL_SCALE_COLLI_SHAPE
-				p->collider->calcircum();
+				p->colliders[0].calcircum();
 				break;
 			case GameObjectProperty::B:
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
-				p->collider->b = luaL_checknumber(L, 3) * LRES.GetGlobalImageScaleFactor();
+				p->colliders[0].b = luaL_checknumber(L, 3) * LRES.GetGlobalImageScaleFactor();
 #else
-				p->collider->b = luaL_checknumber(L, 3);
+				p->colliders[0].b = luaL_checknumber(L, 3);
 #endif // GLOBAL_SCALE_COLLI_SHAPE
-				p->collider->calcircum();
+				p->colliders[0].calcircum();
 				break;
 			case GameObjectProperty::RECT:
 				if (lua_isboolean(L, 3)) {
 					bool ret = lua_toboolean(L, 3) == 0 ? false : true;
 					if (ret) {
-						p->collider->type = GameObjectColliderType::OBB;
+						p->colliders[0].type = GameObjectColliderType::OBB;
 					}
 					else {
-						p->collider->type = GameObjectColliderType::Ellipse;
+						p->colliders[0].type = GameObjectColliderType::Ellipse;
 				}
 			}
 				else {
 					int iret = luaL_checkinteger(L, 3);
 					GameObjectColliderType enumtype = (GameObjectColliderType)iret;
-					p->collider->type = enumtype;
+					p->colliders[0].type = enumtype;
 				}
-				p->collider->calcircum();
+				p->colliders[0].calcircum();
 				break;
 #else
 			case GameObjectProperty::A:
@@ -1788,7 +1827,7 @@ int GameObjectPool::ParticleSetEmission(lua_State* L)LNOEXCEPT
 	p->ps->SetEmission((float)::max(0., luaL_checknumber(L, 2)));
 	return 0;
 }
-// TODO:collider
+
 void GameObjectPool::DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer* grender, int groupId, fcyColor fillColor)
 {
 	GameObject* p = m_pCollisionListHeader[groupId].pCollisionNext;
@@ -1798,150 +1837,7 @@ void GameObjectPool::DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer
 	{
 		if (p->colli && CheckWorld(p->world, world))
 		{
-#ifdef USING_ADVANCE_COLLIDER
-			GameObjectCollider* cc = p->collider;
-			cc->caloffset(p->x, p->y, p->rot);
-			while (cc != nullptr) {
-				switch (cc->type)
-				{
-				case GameObjectColliderType::Circle:
-					grender->FillCircle(graph, fcyVec2((float)cc->absx, (float)cc->absy), (float)cc->a, fillColor, fillColor,
-						cc->a < 10 ? 6 : (cc->a < 20 ? 16 : 32));
-					break;
-				case GameObjectColliderType::OBB:
-				{
-					fcyVec2 tHalfSize((float)cc->a, (float)cc->b);
-					// 计算出矩形的4个顶点
-					f2dGraphics2DVertex tFinalPos[4] =
-					{
-						{ -tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 0.0f },
-						{ tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
-						{ tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },
-						{ -tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
-					};
-					float tSin, tCos;
-					SinCos((float)cc->absrot, tSin, tCos);
-					// 变换
-					for (int i = 0; i < 4; i++)
-					{
-						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
-							ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-						tFinalPos[i].x = tx + (float)cc->absx;
-						tFinalPos[i].y = ty + (float)cc->absy;
-					}
-					graph->DrawQuad(nullptr, tFinalPos);
-					break;
-				}
-				case GameObjectColliderType::Ellipse:
-				{
-					const int vertcount = 37;//分割36份，还要中心一个点
-					const int indexcount = 111;//37*3加一个组成封闭图形
-					//准备顶点索引
-					fuShort index[indexcount];
-					{
-						for (int i = 0; i < (vertcount - 1); i++) {
-							index[i * 3] = 0;//中心点
-							index[i * 3 + 1] = i;//1
-							index[i * 3 + 2] = i + 1;//2
-							//index[i * 3 + 3] = i + 1;//2 //fancy2d貌似不是以三角形为单位……
-						}
-						index[108] = 0;//中心点
-						index[109] = 36;//1
-						index[110] = 1;//2
-					}
-					//准备顶点
-					f2dGraphics2DVertex vert[vertcount];
-					{
-						vert[0].x = 0.0f;
-						vert[0].y = 0.0f;
-						vert[0].z = 0.5f;//2D下固定z0.5
-						vert[0].color = fillColor.argb;
-						vert[0].u = 0.0f; vert[0].v = 0.0f;//没有使用到贴图，uv是多少无所谓
-						float angle;
-						for (int i = 1; i < vertcount; i++) {
-							//椭圆参方
-							angle = 10.0f * (i - 1) * LDEGREE2RAD;
-							vert[i].x = cc->a * std::cosf(angle);
-							vert[i].y = cc->b * std::sinf(angle);
-							vert[i].z = 0.5f;//2D下固定z0.5
-							vert[i].color = fillColor.argb;
-							vert[i].u = 0.0f; vert[i].v = 0.0f;//没有使用到贴图，uv是多少无所谓
-						}
-					}
-					float tSin, tCos;
-					SinCos((float)cc->absrot, tSin, tCos);
-					// 变换
-					{
-						float tSin, tCos;
-						SinCos((float)cc->absrot, tSin, tCos);
-						for (int i = 0; i < vertcount; i++)
-						{
-							fFloat tx = vert[i].x * tCos - vert[i].y * tSin,
-								   ty = vert[i].x * tSin + vert[i].y * tCos;
-							vert[i].x = tx + (float)cc->absx;
-							vert[i].y = ty + (float)cc->absy;
-						}
-					}
-					//绘制
-					graph->DrawRaw(nullptr, vertcount, indexcount, vert, index, false);
-					break;
-				}
-				case GameObjectColliderType::Diamond:
-				{
-					fcyVec2 tHalfSize((float)cc->a, (float)cc->b);
-					// 计算出菱形的4个顶点
-					f2dGraphics2DVertex tFinalPos[4] =
-					{
-						{  tHalfSize.x,         0.0f, 0.5f, fillColor.argb, 0.0f, 0.0f },
-						{         0.0f, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
-						{ -tHalfSize.x,         0.0f, 0.5f, fillColor.argb, 1.0f, 1.0f },
-						{         0.0f,  tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
-					};
-					float tSin, tCos;
-					SinCos((float)cc->absrot, tSin, tCos);
-					// 变换
-					for (int i = 0; i < 4; i++)
-					{
-						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
-							ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-						tFinalPos[i].x = tx + (float)cc->absx;
-						tFinalPos[i].y = ty + (float)cc->absy;
-					}
-					graph->DrawQuad(nullptr, tFinalPos);
-					break;
-				}
-				case GameObjectColliderType::Triangle:
-				{
-					fcyVec2 tHalfSize((float)cc->a, (float)cc->b);
-					// 计算出菱形的4个顶点
-					f2dGraphics2DVertex tFinalPos[4] =
-					{
-						{  tHalfSize.x,         0.0f, 0.5f, fillColor.argb, 0.0f, 0.0f },
-						{ -tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
-						{ -tHalfSize.x,  tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },
-						{ -tHalfSize.x,  tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },//和第三个点相同
-					};
-					float tSin, tCos;
-					SinCos((float)cc->absrot, tSin, tCos);
-					// 变换
-					for (int i = 0; i < 4; i++)
-					{
-						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
-							   ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-						tFinalPos[i].x = tx + (float)cc->absx;
-						tFinalPos[i].y = ty + (float)cc->absy;
-					}
-					graph->DrawQuad(nullptr, tFinalPos);
-					break;
-				}
-				case GameObjectColliderType::Point:
-					//点使用直径1的圆来替代
-					grender->FillCircle(graph, fcyVec2((float)cc->absx, (float)cc->absy), 0.5f, fillColor, fillColor, 3);
-					break;
-				}
-				cc = cc->next;
-			}
-#else
+#ifndef USING_ADVANCE_COLLIDER
 			if (p->rect || p->a != p->b)
 			{
 				fcyVec2 tHalfSize((float)p->a, (float)p->b);
@@ -1979,7 +1875,7 @@ void GameObjectPool::DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer
 		p = p->pCollisionNext;
 	}
 }
-
+// TODO:collider //ok
 void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 {
 	LAPP.GetRenderDev()->ClearZBuffer();
@@ -2004,18 +1900,20 @@ void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 		if (p->colli && CheckWorld(p->world, world))
 		{
 #ifdef USING_ADVANCE_COLLIDER
-			GameObjectCollider* cc = p->collider;
-			cc->caloffset(p->x, p->y, p->rot);
-			while (cc != nullptr) {
-				switch (cc->type)
+			for (int select = 0; select < MAX_COLLIDERS_COUNT; select++) {
+				GameObjectCollider cc = p->colliders[select];
+				if (cc.type == GameObjectColliderType::None) { continue; }
+
+				cc.caloffset(p->x, p->y, p->rot);
+				switch (cc.type)
 				{
 				case GameObjectColliderType::Circle:
-					grender->FillCircle(graph, fcyVec2((float)cc->absx, (float)cc->absy), (float)cc->a, fillColor, fillColor,
-						cc->a < 10 ? 6 : (cc->a < 20 ? 16 : 32));
+					grender->FillCircle(graph, fcyVec2(cc.absx, cc.absy), cc.a, fillColor, fillColor,
+						cc.a < 10.0 ? 6 : (cc.a < 20.0 ? 16 : 32));
 					break;
 				case GameObjectColliderType::OBB:
 				{
-					fcyVec2 tHalfSize((float)cc->a, (float)cc->b);
+					fcyVec2 tHalfSize(cc.a, cc.b);
 					// 计算出矩形的4个顶点
 					f2dGraphics2DVertex tFinalPos[4] =
 					{
@@ -2025,14 +1923,14 @@ void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 						{ -tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
 					};
 					float tSin, tCos;
-					SinCos((float)cc->absrot, tSin, tCos);
+					SinCos(cc.absrot, tSin, tCos);
 					// 变换
 					for (int i = 0; i < 4; i++)
 					{
 						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
 							ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-						tFinalPos[i].x = tx + (float)cc->absx;
-						tFinalPos[i].y = ty + (float)cc->absy;
+						tFinalPos[i].x = tx + cc.absx;
+						tFinalPos[i].y = ty + cc.absy;
 					}
 					graph->DrawQuad(nullptr, tFinalPos);
 					break;
@@ -2066,25 +1964,23 @@ void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 						for (int i = 1; i < vertcount; i++) {
 							//椭圆参方
 							angle = 10.0f * (i - 1) * LDEGREE2RAD;
-							vert[i].x = cc->a * std::cosf(angle);
-							vert[i].y = cc->b * std::sinf(angle);
+							vert[i].x = cc.a * std::cosf(angle);
+							vert[i].y = cc.b * std::sinf(angle);
 							vert[i].z = 0.5f;//2D下固定z0.5
 							vert[i].color = fillColor.argb;
 							vert[i].u = 0.0f; vert[i].v = 0.0f;//没有使用到贴图，uv是多少无所谓
 						}
 					}
-					float tSin, tCos;
-					SinCos((float)cc->absrot, tSin, tCos);
 					// 变换
 					{
 						float tSin, tCos;
-						SinCos((float)cc->absrot, tSin, tCos);
+						SinCos(cc.absrot, tSin, tCos);
 						for (int i = 0; i < vertcount; i++)
 						{
 							fFloat tx = vert[i].x * tCos - vert[i].y * tSin,
 								ty = vert[i].x * tSin + vert[i].y * tCos;
-							vert[i].x = tx + (float)cc->absx;
-							vert[i].y = ty + (float)cc->absy;
+							vert[i].x = tx + cc.absx;
+							vert[i].y = ty + cc.absy;
 						}
 					}
 					//绘制
@@ -2093,7 +1989,7 @@ void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 				}
 				case GameObjectColliderType::Diamond:
 				{
-					fcyVec2 tHalfSize((float)cc->a, (float)cc->b);
+					fcyVec2 tHalfSize(cc.a, cc.b);
 					// 计算出菱形的4个顶点
 					f2dGraphics2DVertex tFinalPos[4] =
 					{
@@ -2103,21 +1999,21 @@ void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 						{         0.0f,  tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
 					};
 					float tSin, tCos;
-					SinCos((float)cc->absrot, tSin, tCos);
+					SinCos(cc.absrot, tSin, tCos);
 					// 变换
 					for (int i = 0; i < 4; i++)
 					{
 						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
 							ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-						tFinalPos[i].x = tx + (float)cc->absx;
-						tFinalPos[i].y = ty + (float)cc->absy;
+						tFinalPos[i].x = tx + cc.absx;
+						tFinalPos[i].y = ty + cc.absy;
 					}
 					graph->DrawQuad(nullptr, tFinalPos);
 					break;
 				}
 				case GameObjectColliderType::Triangle:
 				{
-					fcyVec2 tHalfSize((float)cc->a, (float)cc->b);
+					fcyVec2 tHalfSize(cc.a, cc.b);
 					// 计算出菱形的4个顶点
 					f2dGraphics2DVertex tFinalPos[4] =
 					{
@@ -2127,56 +2023,23 @@ void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 						{ -tHalfSize.x,  tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },//和第三个点相同
 					};
 					float tSin, tCos;
-					SinCos((float)cc->absrot, tSin, tCos);
+					SinCos(cc.absrot, tSin, tCos);
 					// 变换
 					for (int i = 0; i < 4; i++)
 					{
 						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
 							ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-						tFinalPos[i].x = tx + (float)cc->absx;
-						tFinalPos[i].y = ty + (float)cc->absy;
+						tFinalPos[i].x = tx + cc.absx;
+						tFinalPos[i].y = ty + cc.absy;
 					}
 					graph->DrawQuad(nullptr, tFinalPos);
 					break;
 				}
 				case GameObjectColliderType::Point:
 					//点使用直径1的圆来替代
-					grender->FillCircle(graph, fcyVec2((float)cc->absx, (float)cc->absy), 0.5f, fillColor, fillColor, 3);
+					grender->FillCircle(graph, fcyVec2(cc.absx, cc.absy), 0.5f, fillColor, fillColor, 3);
 					break;
 				}
-				cc = cc->next;
-			}
-#else
-			if (p->rect || p->a != p->b)
-			{
-				fcyVec2 tHalfSize((float)p->a, (float)p->b);
-
-				// 计算出矩形的4个顶点
-				f2dGraphics2DVertex tFinalPos[4] =
-				{
-					{ -tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 0.0f },
-					{ tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
-					{ tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },
-					{ -tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
-				};
-
-				float tSin, tCos;
-				SinCos((float)p->rot, tSin, tCos);
-
-				// 变换
-				for (int i = 0; i < 4; i++)
-				{
-					fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
-						ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-					tFinalPos[i].x = tx + (float)p->x; tFinalPos[i].y = ty + (float)p->y;
-				}
-
-				graph->DrawQuad(nullptr, tFinalPos);
-			}
-			else
-			{
-				grender->FillCircle(graph, fcyVec2((float)p->x, (float)p->y), (float)p->a, fillColor, fillColor,
-					p->a < 10 ? 3 : (p->a < 20 ? 6 : 8));
 			}
 #endif // USING_ADVANCE_COLLIDER
 		}

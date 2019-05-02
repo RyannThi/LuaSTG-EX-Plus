@@ -1,6 +1,7 @@
 ﻿#include "Global.h"
 #include "AppFrame.h"
 #include "GameObjectPool.h"
+#include "CollisionDetect.h"
 
 using namespace std;
 using namespace LuaSTGPlus;
@@ -390,7 +391,7 @@ bool GameObjectBentLaser::Render(const char* tex_name, BlendMode blend, fcyColor
 	}
 	return true;
 }
-
+// TODO:collider //ok
 bool GameObjectBentLaser::CollisionCheck(float x, float y, float rot, float a, float b, bool rect)LNOEXCEPT
 {
 	// 忽略只有一个节点的情况
@@ -400,23 +401,24 @@ bool GameObjectBentLaser::CollisionCheck(float x, float y, float rot, float a, f
 #ifdef USING_ADVANCE_COLLIDER
 	GameObject testObjA;
 	testObjA.Reset();
-	testObjA.collider->type = GameObjectColliderType::Ellipse;
+	testObjA.colliders[0].type = GameObjectColliderType::Ellipse;
 
 	GameObject testObjB;
 	testObjB.Reset();
 	testObjB.x = x;
 	testObjB.y = y;
 	testObjB.rot = rot;
-	testObjB.collider->a = a;
-	testObjB.collider->b = b;
+	testObjB.colliders[0].a = a;
+	testObjB.colliders[0].b = b;
 	if (rect) {
-		testObjB.collider->type = GameObjectColliderType::OBB;
+		testObjB.colliders[0].type = GameObjectColliderType::OBB;
 	}
 	else {
-		testObjB.collider->type = GameObjectColliderType::Ellipse;
+		testObjB.colliders[0].type = GameObjectColliderType::Ellipse;
 	}
-	testObjB.collider->calcircum();
-	testObjB.collider->caloffset(x, y, rot);
+	testObjB.colliders[0].calcircum();
+	testObjB.colliders[0].caloffset(x, y, rot);
+
 	int sn = m_Queue.Size();
 	for (size_t i = 0; i < sn; ++i)
 	{
@@ -430,27 +432,24 @@ bool GameObjectBentLaser::CollisionCheck(float x, float y, float rot, float a, f
 					fcyVec2 c = (last.pos + n.pos) * 0.5;
 					testObjA.x = c.x;
 					testObjA.y = c.y;
-					testObjA.collider->type = GameObjectColliderType::OBB;
+					testObjA.colliders[0].type = GameObjectColliderType::OBB;
 					testObjA.rot = n.rot;
-					testObjA.collider->a = df / 2;
-					testObjA.collider->b = n.half_width;
-					testObjB.collider->calcircum();
-					testObjB.collider->caloffset(x, y, rot);
-					if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB))
-						return true;
-
+					testObjA.colliders[0].a = df / 2;
+					testObjA.colliders[0].b = n.half_width;
+					testObjA.colliders[0].calcircum();
+					if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB)) { return true; }
 				}
 			}
 		}
+		
 		testObjA.x = n.pos.x;
 		testObjA.y = n.pos.y;
-		testObjA.collider->a = testObjA.collider->b = n.half_width;
-		testObjA.collider->type = GameObjectColliderType::Ellipse;
-		testObjB.collider->calcircum();
-		testObjB.collider->caloffset(x, y, rot);
-		if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB))
-			return true;
+		testObjA.colliders[0].a = testObjA.colliders[0].b = n.half_width;
+		testObjA.colliders[0].type = GameObjectColliderType::Ellipse;
+		testObjA.colliders[0].calcircum();
+		if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB)) { return true; }
 	}
+	
 	return false;
 #else
 	GameObject testObjA;
@@ -502,7 +501,144 @@ bool GameObjectBentLaser::CollisionCheck(float x, float y, float rot, float a, f
 	return false;
 #endif // USING_ADVANCE_COLLIDER
 }
+// TODO:collider //ok
+void GameObjectBentLaser::RenderCollider(fcyColor fillColor)LNOEXCEPT {
+	// 忽略只有一个节点的情况
+	int sn = m_Queue.Size();
+	if (sn <= 1)
+		return;
 
+#ifdef USING_ADVANCE_COLLIDER
+	LAPP.GetRenderDev()->ClearZBuffer();
+
+	fcyRefPointer<f2dGeometryRenderer> grender = LAPP.GetGeometryRenderer();
+	fcyRefPointer<f2dGraphics2D> graph = LAPP.GetGraphics2D();
+
+	f2dBlendState stState = graph->GetBlendState();
+	f2dBlendState stStateClone = stState;
+	stStateClone.SrcBlend = F2DBLENDFACTOR_SRCALPHA;
+	stStateClone.DestBlend = F2DBLENDFACTOR_INVSRCALPHA;
+	stStateClone.BlendOp = F2DBLENDOPERATOR_ADD;
+	graph->SetBlendState(stStateClone);
+	F2DGRAPH2DBLENDTYPE txState = graph->GetColorBlendType();
+	graph->SetColorBlendType(F2DGRAPH2DBLENDTYPE_ADD);//修复反色混合模式的时候会出现颜色异常的问题
+
+	GameObject testObjA;
+	testObjA.Reset();
+	testObjA.colliders[0].type = GameObjectColliderType::Ellipse;
+
+	for (size_t i = 0; i < sn; ++i)
+	{
+		LaserNode& n = m_Queue[i];
+		if (!n.active)
+			continue;
+		if (i > 0) {
+			LaserNode& last = m_Queue[i - 1];
+			if (!last.active) {
+				float df = n.dis;
+				if (df > n.half_width) {
+					//计算部分
+					fcyVec2 c = (last.pos + n.pos) * 0.5;
+					testObjA.x = c.x;
+					testObjA.y = c.y;
+					testObjA.colliders[0].type = GameObjectColliderType::OBB;
+					testObjA.rot = n.rot;
+					testObjA.colliders[0].a = df / 2;
+					testObjA.colliders[0].b = n.half_width;
+					testObjA.colliders[0].calcircum();
+					testObjA.colliders[0].caloffset(testObjA.x, testObjA.y, testObjA.rot);
+					//渲染部分
+					{
+						fcyVec2 tHalfSize(testObjA.colliders[0].a, testObjA.colliders[0].b);
+						// 计算出矩形的4个顶点
+						f2dGraphics2DVertex tFinalPos[4] =
+						{
+							{ -tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 0.0f },
+							{ tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
+							{ tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },
+							{ -tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
+						};
+						float tSin, tCos;
+						LuaSTGPlus::SinCos(testObjA.colliders[0].absrot, tSin, tCos);
+						// 变换
+						for (int i = 0; i < 4; i++)
+						{
+							fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
+								ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
+							tFinalPos[i].x = tx + testObjA.colliders[0].absx;
+							tFinalPos[i].y = ty + testObjA.colliders[0].absy;
+						}
+						graph->DrawQuad(nullptr, tFinalPos);
+					}
+				}
+			}
+		}
+		
+		//计算部分
+		testObjA.x = n.pos.x;
+		testObjA.y = n.pos.y;
+		testObjA.colliders[0].a = testObjA.colliders[0].b = n.half_width;
+		testObjA.colliders[0].type = GameObjectColliderType::Ellipse;
+		testObjA.colliders[0].calcircum();
+		testObjA.colliders[0].caloffset(testObjA.x, testObjA.y, testObjA.rot);
+		//渲染部分
+		{
+			const int vertcount = 37;//分割36份，还要中心一个点
+			const int indexcount = 111;//37*3加一个组成封闭图形
+			//准备顶点索引
+			fuShort index[indexcount];
+			{
+				for (int i = 0; i < (vertcount - 1); i++) {
+					index[i * 3] = 0;//中心点
+					index[i * 3 + 1] = i;//1
+					index[i * 3 + 2] = i + 1;//2
+					//index[i * 3 + 3] = i + 1;//2 //fancy2d貌似不是以三角形为单位……
+				}
+				index[108] = 0;//中心点
+				index[109] = 36;//1
+				index[110] = 1;//2
+			}
+			//准备顶点
+			f2dGraphics2DVertex vert[vertcount];
+			{
+				vert[0].x = 0.0f;
+				vert[0].y = 0.0f;
+				vert[0].z = 0.5f;//2D下固定z0.5
+				vert[0].color = fillColor.argb;
+				vert[0].u = 0.0f; vert[0].v = 0.0f;//没有使用到贴图，uv是多少无所谓
+				float angle;
+				for (int i = 1; i < vertcount; i++) {
+					//椭圆参方
+					angle = 10.0f * (i - 1) * LDEGREE2RAD;
+					vert[i].x = testObjA.colliders[0].a * std::cosf(angle);
+					vert[i].y = testObjA.colliders[0].b * std::sinf(angle);
+					vert[i].z = 0.5f;//2D下固定z0.5
+					vert[i].color = fillColor.argb;
+					vert[i].u = 0.0f; vert[i].v = 0.0f;//没有使用到贴图，uv是多少无所谓
+				}
+			}
+			// 变换
+			{
+				float tSin, tCos;
+				LuaSTGPlus::SinCos(testObjA.colliders[0].absrot, tSin, tCos);
+				for (int i = 0; i < vertcount; i++)
+				{
+					fFloat tx = vert[i].x * tCos - vert[i].y * tSin,
+						   ty = vert[i].x * tSin + vert[i].y * tCos;
+					vert[i].x = tx + testObjA.colliders[0].absx;
+					vert[i].y = ty + testObjA.colliders[0].absy;
+				}
+			}
+			//绘制
+			graph->DrawRaw(nullptr, vertcount, indexcount, vert, index, false);
+		}
+	}
+
+	graph->SetBlendState(stState);
+	graph->SetColorBlendType(txState);
+#endif // USING_ADVANCE_COLLIDER
+}
+// TODO:collider //ok
 bool GameObjectBentLaser::CollisionCheckW(float x, float y, float rot, float a, float b, bool rect, float width)LNOEXCEPT
 {
 	// 忽略只有一个节点的情况
@@ -513,23 +649,24 @@ bool GameObjectBentLaser::CollisionCheckW(float x, float y, float rot, float a, 
 	width = width / 2;
 	GameObject testObjA;
 	testObjA.Reset();
-	testObjA.collider->type = GameObjectColliderType::Ellipse;
+	testObjA.colliders[0].type = GameObjectColliderType::Ellipse;
 
 	GameObject testObjB;
 	testObjB.Reset();
 	testObjB.x = x;
 	testObjB.y = y;
 	testObjB.rot = rot;
-	testObjB.collider->a = a;
-	testObjB.collider->b = b;
+	testObjB.colliders[0].a = a;
+	testObjB.colliders[0].b = b;
 	if (rect) {
-		testObjB.collider->type = GameObjectColliderType::OBB;
+		testObjB.colliders[0].type = GameObjectColliderType::OBB;
 	}
 	else {
-		testObjB.collider->type = GameObjectColliderType::Ellipse;
+		testObjB.colliders[0].type = GameObjectColliderType::Ellipse;
 	}
-	testObjB.collider->calcircum();
-	testObjB.collider->caloffset(x, y, rot);
+	testObjB.colliders[0].calcircum();
+	testObjB.colliders[0].caloffset(x, y, rot);
+
 	int sn = m_Queue.Size();
 	for (size_t i = 0; i < sn; ++i)
 	{
@@ -543,27 +680,23 @@ bool GameObjectBentLaser::CollisionCheckW(float x, float y, float rot, float a, 
 					fcyVec2 c = (last.pos + n.pos) * 0.5;
 					testObjA.x = c.x;
 					testObjA.y = c.y;
-					testObjA.collider->type = GameObjectColliderType::OBB;
+					testObjA.colliders[0].type = GameObjectColliderType::OBB;
 					testObjA.rot = n.rot;
-					testObjA.collider->a = df / 2;
-					testObjA.collider->b = width;
-					testObjB.collider->calcircum();
-					testObjB.collider->caloffset(x, y, rot);
-					if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB))
-						return true;
-
+					testObjA.colliders[0].a = df / 2;
+					testObjA.colliders[0].b = width;
+					testObjA.colliders[0].calcircum();
+					if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB)) { return true; }
 				}
 			}
 		}
 		testObjA.x = n.pos.x;
 		testObjA.y = n.pos.y;
-		testObjA.collider->a = testObjA.collider->b = n.half_width;
-		testObjA.collider->type = GameObjectColliderType::Ellipse;
-		testObjB.collider->calcircum();
-		testObjB.collider->caloffset(x, y, rot);
-		if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB))
-			return true;
+		testObjA.colliders[0].a = testObjA.colliders[0].b = n.half_width;
+		testObjA.colliders[0].type = GameObjectColliderType::Ellipse;
+		testObjA.colliders[0].calcircum();
+		if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB)) { return true; }
 	}
+	
 	return false;
 #else
 	width = width / 2;

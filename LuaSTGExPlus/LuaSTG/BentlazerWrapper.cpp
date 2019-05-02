@@ -134,6 +134,13 @@ void BentLaserDataWrapper::Register(lua_State* L)LNOEXCEPT
 			lua_pushboolean(L, r);
 			return 1;
 		}
+		static int RenderCollider(lua_State* L) {
+			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_BENTLASER));
+			if (!p->handle)
+				return luaL_error(L, "lstgBentLaserData was released.");
+			p->handle->RenderCollider(*static_cast<fcyColor*>(luaL_checkudata(L, 2, LUASTG_LUA_TYPENAME_COLOR)));
+			return 0;
+		}
 		static int CollisionCheckWidth(lua_State * L)LNOEXCEPT
 		{
 			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_BENTLASER));
@@ -194,6 +201,7 @@ void BentLaserDataWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "Release", &WrapperImplement::Release },
 		{ "Render", &WrapperImplement::Render },
 		{ "CollisionCheck", &WrapperImplement::CollisionCheck },
+		{ "RenderCollider", &WrapperImplement::RenderCollider },
 		{ "CollisionCheckWidth", &WrapperImplement::CollisionCheckWidth },
 		{ "BoundCheck", &WrapperImplement::BoundCheck },
 		{ "SampleByLength", &WrapperImplement::SampleByLength },
