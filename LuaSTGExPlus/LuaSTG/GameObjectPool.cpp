@@ -102,12 +102,7 @@ bool GameObject::ChangeResource(const char* res_name)
 			colliders[0].type = GameObjectColliderType::OBB;
 		}
 		else {
-			if (tSprite->GetHalfSizeX() == tSprite->GetHalfSizeY()) {
-				colliders[0].type = GameObjectColliderType::Circle;
-			}
-			else {
-				colliders[0].type = GameObjectColliderType::Ellipse;
-			}
+			colliders[0].type = GameObjectColliderType::Ellipse;
 		}
 		colliders[0].calcircum();
 #else
@@ -141,12 +136,7 @@ bool GameObject::ChangeResource(const char* res_name)
 			colliders[0].type = GameObjectColliderType::OBB;
 		}
 		else {
-			if (tAnimation->GetHalfSizeX() == tAnimation->GetHalfSizeY()) {
-				colliders[0].type = GameObjectColliderType::Circle;
-			}
-			else {
-				colliders[0].type = GameObjectColliderType::Ellipse;
-			}
+			colliders[0].type = GameObjectColliderType::Ellipse;
 		}
 		colliders[0].calcircum();
 #else
@@ -191,12 +181,7 @@ bool GameObject::ChangeResource(const char* res_name)
 			colliders[0].type = GameObjectColliderType::OBB;
 		}
 		else {
-			if (tParticle->GetHalfSizeX() == tParticle->GetHalfSizeY()) {
-				colliders[0].type = GameObjectColliderType::Circle;
-			}
-			else {
-				colliders[0].type = GameObjectColliderType::Ellipse;
-			}
+			colliders[0].type = GameObjectColliderType::Ellipse;
 		}
 		colliders[0].calcircum();
 #else
@@ -358,6 +343,14 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 					//坐标更新
 					p->x += p->vx;
 					p->y += p->vy;
+
+					//碰撞体位置更新
+					for (int i = 0; i < MAX_COLLIDERS_COUNT; i++) {
+						if (p->colliders[i].type == GameObjectColliderType::None)
+							break;
+						else
+							p->colliders[i].caloffset((float)p->x, (float)p->y, (float)p->rot);
+					}
 				}
 				p->rot += p->omiga;
 				
@@ -387,21 +380,6 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 	m_pCurrentObject = NULL;
 
 	lua_pop(L, 1);
-
-	//更新collider相对位置
-	p = m_pObjectListHeader.pObjectNext;
-	while (p && p != &m_pObjectListTail)
-	{
-		if (superpause <= 0 || p->ignore_superpause) {
-			for (int i = 0; i < MAX_COLLIDERS_COUNT; i++) {
-				if (p->colliders[i].type == GameObjectColliderType::None)
-					break;
-				else
-					p->colliders[i].caloffset(p->x, p->y, p->rot);
-			}
-		}
-		p = p->pObjectNext;
-	}
 }
 
 void GameObjectPool::DoRender()LNOEXCEPT
@@ -1916,7 +1894,7 @@ void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 #ifdef USING_ADVANCE_COLLIDER
 			for (int select = 0; select < MAX_COLLIDERS_COUNT; select++) {
 				GameObjectCollider cc = p->colliders[select];
-				if (cc.type == GameObjectColliderType::None) { continue; }
+				if (cc.type == GameObjectColliderType::None) { break; }
 
 				cc.caloffset(p->x, p->y, p->rot);
 				switch (cc.type)

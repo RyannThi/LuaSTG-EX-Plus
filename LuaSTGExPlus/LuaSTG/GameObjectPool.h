@@ -94,6 +94,10 @@ namespace LuaSTGPlus
 		//根据偏移计算绝对坐标和旋转
 		void caloffset(float x, float y, float _rot) {
 			//可能是计算方法有误
+			/*float tSin, tCos;
+			LuaSTGPlus::SinCos(_rot, tSin, tCos);
+			absx = x + dx * tCos - dy * tSin;
+			absy = y + dx * tSin + dy * tCos;*/
 			absx = x + dx * std::cosf(-_rot) + dy * std::sinf(-_rot);
 			absy = y + dy * std::cosf(-_rot) - dx * std::sinf(-_rot);
 			absrot = _rot + rot;
@@ -259,12 +263,7 @@ namespace LuaSTGPlus
 					colliders[0].type = GameObjectColliderType::OBB;
 				}
 				else {
-					if (res_set->GetHalfSizeX() == res_set->GetHalfSizeY()) {
-						colliders[0].type = GameObjectColliderType::Circle;
-					}
-					else {
-						colliders[0].type = GameObjectColliderType::Ellipse;
-					}
+					colliders[0].type = GameObjectColliderType::Ellipse;
 				}
 				colliders[0].calcircum();
 #else
@@ -295,12 +294,7 @@ namespace LuaSTGPlus
 					colliders[0].type = GameObjectColliderType::OBB;
 				}
 				else {
-					if (res_set->GetHalfSizeX() == res_set->GetHalfSizeY()) {
-						colliders[0].type = GameObjectColliderType::Circle;
-					}
-					else {
-						colliders[0].type = GameObjectColliderType::Ellipse;
-					}
+					colliders[0].type = GameObjectColliderType::Ellipse;
 				}
 				colliders[0].calcircum();
 #else
@@ -344,12 +338,7 @@ namespace LuaSTGPlus
 					colliders[0].type = GameObjectColliderType::OBB;
 				}
 				else {
-					if (_res->GetHalfSizeX() == _res->GetHalfSizeY()) {
-						colliders[0].type = GameObjectColliderType::Circle;
-					}
-					else {
-						colliders[0].type = GameObjectColliderType::Ellipse;
-					}
+					colliders[0].type = GameObjectColliderType::Ellipse;
 				}
 				colliders[0].calcircum();
 #else
@@ -385,8 +374,6 @@ namespace LuaSTGPlus
 		for (int cc1 = 0; cc1 < MAX_COLLIDERS_COUNT; cc1++) {
 			if (p1->colliders[cc1].type == GameObjectColliderType::None) { break; }//跳出
 			
-			//p1->colliders[cc1].caloffset(p1->x, p1->y, p1->rot);
-
 			x1 = p1->colliders[cc1].absx;
 			y1 = p1->colliders[cc1].absy;
 			cr1 = p1->colliders[cc1].circum_r;
@@ -396,8 +383,6 @@ namespace LuaSTGPlus
 
 			for (int cc2 = 0; cc2 < MAX_COLLIDERS_COUNT; cc2++) {
 				if (p2->colliders[cc2].type == GameObjectColliderType::None) { break; }//跳出
-
-				//p2->colliders[cc2].caloffset(p2->x, p2->y, p2->rot);
 
 				x2 = p2->colliders[cc2].absx;
 				y2 = p2->colliders[cc2].absy;
