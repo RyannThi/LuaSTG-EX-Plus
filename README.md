@@ -1,5 +1,10 @@
 # LuaSTG EX Plus  
 
+## 警告  
+**随着一些功能的更新，luastg ex+越来越臃肿、性能低下，而且其只能单核单线程运算，远不及其他游戏引擎，继续维护下去已经没有意义。因此该分支暂停维护，不再更新**。  
+下一代luastg版本：LuaSTG X [https://github.com/Xrysnow/LuaSTG-x]  
+**plus已死，x当立！！！**  
+
 ## 说明  
 
 LuaSTG EX Plus 是 LuaSTG Plus 的衍生版本，其大部分代码基于9chu的 LuaSTG Plus ，并由ExboCooope、Xiliusha、Xrysnow、BAKAOLC进行维护。此衍生版本增加了更多的功能，以便开发者进行游戏开发。  
