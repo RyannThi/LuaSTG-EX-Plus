@@ -190,9 +190,8 @@ namespace LuaSTGPlus
 			world = 1;
 
 #ifdef USING_ADVANCE_COLLIDER
-			for (int select = 0; select < MAX_COLLIDERS_COUNT; select++) {
-				colliders[select].reset();
-			}
+			colliders[1].type = GameObjectColliderType::None;
+			colliders[0].reset();
 			colliders[0].type = GameObjectColliderType::Ellipse;
 #else
 			rect = false;
@@ -386,7 +385,7 @@ namespace LuaSTGPlus
 		for (int cc1 = 0; cc1 < MAX_COLLIDERS_COUNT; cc1++) {
 			if (p1->colliders[cc1].type == GameObjectColliderType::None) { break; }//跳出
 			
-			p1->colliders[cc1].caloffset(p1->x, p1->y, p1->rot);
+			//p1->colliders[cc1].caloffset(p1->x, p1->y, p1->rot);
 
 			x1 = p1->colliders[cc1].absx;
 			y1 = p1->colliders[cc1].absy;
@@ -398,7 +397,7 @@ namespace LuaSTGPlus
 			for (int cc2 = 0; cc2 < MAX_COLLIDERS_COUNT; cc2++) {
 				if (p2->colliders[cc2].type == GameObjectColliderType::None) { break; }//跳出
 
-				p2->colliders[cc2].caloffset(p2->x, p2->y, p2->rot);
+				//p2->colliders[cc2].caloffset(p2->x, p2->y, p2->rot);
 
 				x2 = p2->colliders[cc2].absx;
 				y2 = p2->colliders[cc2].absy;

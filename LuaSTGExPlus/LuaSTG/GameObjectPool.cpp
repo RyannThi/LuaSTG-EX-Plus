@@ -305,13 +305,12 @@ GameObject* GameObjectPool::freeObject(GameObject* p)LNOEXCEPT
 
 	return pRet;
 }
-
+// TODO:collider //ok
 void GameObjectPool::DoFrame()LNOEXCEPT
 {
 	//处理超级暂停
 	GETOBJTABLE;  // ot
 	int superpause = LAPP.UpdateSuperPause();
-
 
 	GameObject* p = m_pObjectListHeader.pObjectNext;
 	lua_Number cache1, cache2;//速度限制计算时用到的中间变量
@@ -386,7 +385,23 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 		p = p->pObjectNext;
 	}
 	m_pCurrentObject = NULL;
+
 	lua_pop(L, 1);
+
+	//更新collider相对位置
+	p = m_pObjectListHeader.pObjectNext;
+	while (p && p != &m_pObjectListTail)
+	{
+		if (superpause <= 0 || p->ignore_superpause) {
+			for (int i = 0; i < MAX_COLLIDERS_COUNT; i++) {
+				if (p->colliders[i].type == GameObjectColliderType::None)
+					break;
+				else
+					p->colliders[i].caloffset(p->x, p->y, p->rot);
+			}
+		}
+		p = p->pObjectNext;
+	}
 }
 
 void GameObjectPool::DoRender()LNOEXCEPT
@@ -1445,9 +1460,8 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 	default:
 #ifdef USING_ADVANCE_COLLIDER
 		if (keypp == "collider") {
-			for (int select = 0; select < MAX_COLLIDERS_COUNT; select++) {
-				p->colliders[select].reset();
-			}
+			p->colliders[1].type = GameObjectColliderType::None;
+			p->colliders[0].reset();
 			p->colliders[0].type = GameObjectColliderType::Ellipse;
 			// object k t
 			int count = lua_objlen(L, 3);
