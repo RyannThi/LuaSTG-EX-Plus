@@ -250,52 +250,68 @@ void GameObjectColliderWrapper::Register(lua_State* L)LNOEXCEPT {
 		{
 			// t, k //v
 			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_COLLIDERWRAPPER));
-			if (p->cur == nullptr) {
-				return luaL_error(L, "The current collider is not specified.");
+			std::string key = luaL_checkstring(L, 2);
+			if (key == "a") {
+				if (p->cur == nullptr) {
+					return luaL_error(L, "The current collider is not specified.");
+				}
+				lua_pushnumber(L, p->cur->a);
+			}
+			else if (key == "b") {
+				if (p->cur == nullptr) {
+					return luaL_error(L, "The current collider is not specified.");
+				}
+				lua_pushnumber(L, p->cur->b);
+			}
+			else if (key == "type") {
+				if (p->cur == nullptr) {
+					return luaL_error(L, "The current collider is not specified.");
+				}
+				int _type = (int)p->cur->type;
+				lua_pushinteger(L, _type);
+			}
+			else if (key == "x") {
+				if (p->cur == nullptr) {
+					return luaL_error(L, "The current collider is not specified.");
+				}
+				lua_pushnumber(L, p->cur->dx);
+			}
+			else if (key == "y") {
+				if (p->cur == nullptr) {
+					return luaL_error(L, "The current collider is not specified.");
+				}
+				lua_pushnumber(L, p->cur->dy);
+			}
+			else if (key == "rot") {
+				if (p->cur == nullptr) {
+					return luaL_error(L, "The current collider is not specified.");
+				}
+				double _rot = (double)p->cur->rot;
+				lua_pushnumber(L, _rot * LRAD2DEGREE);
+			}
+			else if (key == "id") {
+				if (p->cur == nullptr) {
+					return luaL_error(L, "The current collider is not specified.");
+				}
+				lua_pushinteger(L, p->cur->id);
+			}
+			else if (key == "IsValid") {
+				lua_pushcfunction(L, IsValid);
+			}
+			else if (key == "AddCollider") {
+				lua_pushcfunction(L, AddCollider);
+			}
+			else if (key == "DelCollider") {
+				lua_pushcfunction(L, DelCollider);
+			}
+			else if (key == "SetCurCollider") {
+				lua_pushcfunction(L, SetCurCollider);
+			}
+			else if (key == "EnumColliders") {
+				lua_pushcfunction(L, EnumColliders);
 			}
 			else {
-				std::string key = luaL_checkstring(L, 2);
-				if (key == "a") {
-					lua_pushnumber(L, p->cur->a);
-				}
-				else if (key == "b") {
-					lua_pushnumber(L, p->cur->b);
-				}
-				else if (key == "type") {
-					int _type = (int)p->cur->type;
-					lua_pushinteger(L, _type);
-				}
-				else if (key == "x") {
-					lua_pushnumber(L, p->cur->dx);
-				}
-				else if (key == "y") {
-					lua_pushnumber(L, p->cur->dy);
-				}
-				else if (key == "rot") {
-					double _rot = (double)p->cur->rot;
-					lua_pushnumber(L, _rot * LRAD2DEGREE);
-				}
-				else if (key == "id") {
-					lua_pushinteger(L, p->cur->id);
-				}
-				else if (key == "IsValid") {
-					lua_pushcfunction(L, IsValid);
-				}
-				else if (key == "AddCollider") {
-					lua_pushcfunction(L, AddCollider);
-				}
-				else if (key == "DelCollider") {
-					lua_pushcfunction(L, DelCollider);
-				}
-				else if (key == "SetCurCollider") {
-					lua_pushcfunction(L, SetCurCollider);
-				}
-				else if (key == "EnumColliders") {
-					lua_pushcfunction(L, EnumColliders);
-				}
-				else {
-					return luaL_error(L, "Attempts to access nonexistent members.");
-				}
+				return luaL_error(L, "Attempts to access nonexistent members.");
 			}
 			return 1;
 		}
