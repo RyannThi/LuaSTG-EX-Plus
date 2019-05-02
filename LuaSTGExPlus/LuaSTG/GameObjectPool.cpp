@@ -344,6 +344,7 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 					p->x += p->vx;
 					p->y += p->vy;
 
+#ifdef USING_ADVANCE_COLLIDER
 					//碰撞体位置更新
 					for (int i = 0; i < MAX_COLLIDERS_COUNT; i++) {
 						if (p->colliders[i].type == GameObjectColliderType::None)
@@ -351,6 +352,7 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 						else
 							p->colliders[i].caloffset((float)p->x, (float)p->y, (float)p->rot);
 					}
+#endif
 				}
 				p->rot += p->omiga;
 				

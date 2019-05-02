@@ -129,7 +129,9 @@ namespace LuaSTGPlus
 		BuiltInFunctionWrapper::Register(L);  // 内建函数库
 		GameResourceWrapper::Register(L);  // 游戏资源对象
 		XInputManagerWrapper::Register(L);  //XInput
+#ifdef USING_ADVANCE_COLLIDER
 		GameObjectColliderWrapper::Register(L);//Collider
+#endif // USING_ADVANCE_COLLIDER
 	}
 
 	//翻译字符串到混合模式
