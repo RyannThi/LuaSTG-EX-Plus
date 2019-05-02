@@ -109,7 +109,9 @@ namespace LuaSTGPlus
 		{
 			GameObject* handle;
 			GameObjectCollider* cur;
-			Wrapper() { cur = nullptr; handle = nullptr; }
+			size_t id;
+			int64_t uid;
+			Wrapper() { cur = nullptr; handle = nullptr; id = 0; uid = 0; }
 		};
 	public:
 		//向lua注册包装类

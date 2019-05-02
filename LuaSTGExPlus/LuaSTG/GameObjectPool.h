@@ -660,6 +660,9 @@ namespace LuaSTGPlus
 		/// @brief 检查对象是否有效
 		int IsValid(lua_State* L)LNOEXCEPT;
 		
+		//检查对象是否有效
+		bool IsValid2(size_t id)LNOEXCEPT;
+
 		/// @brief 求夹角
 		bool Angle(size_t idA, size_t idB, double& out)LNOEXCEPT;
 

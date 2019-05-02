@@ -1,4 +1,6 @@
-﻿#include "LuaWrapper.h"
+﻿#include "Global.h"
+#include "AppFrame.h"
+#include "LuaWrapper.h"
 #include "GameObjectPool.h"
 
 using namespace LuaSTGPlus;
@@ -162,6 +164,22 @@ void GameObjectColliderWrapper::Register(lua_State* L)LNOEXCEPT {
 
 			return 1;
 		}
+		static int IsValid(lua_State* L) {
+			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_COLLIDERWRAPPER));
+			GameObject* obj = LPOOL.GetPooledObject(p->id);
+			if (obj) {
+				if (obj->uid == p->uid) {
+					lua_pushboolean(L, true);
+				}
+				else {
+					lua_pushboolean(L, false);
+				}
+			}
+			else {
+				lua_pushboolean(L, false);
+			}
+			return 1;
+		}
 
 		static int Meta_NewIndex(lua_State* L)LNOEXCEPT
 		{
@@ -260,6 +278,9 @@ void GameObjectColliderWrapper::Register(lua_State* L)LNOEXCEPT {
 				else if (key == "id") {
 					lua_pushinteger(L, p->cur->id);
 				}
+				else if (key == "IsValid") {
+					lua_pushcfunction(L, IsValid);
+				}
 				else if (key == "AddCollider") {
 					lua_pushcfunction(L, AddCollider);
 				}
@@ -318,6 +339,8 @@ void GameObjectColliderWrapper::CreateAndPush(lua_State* L, GameObject* obj)LNOE
 	Wrapper* p = static_cast<Wrapper*>(lua_newuserdata(L, sizeof(Wrapper)));// udata
 	p->handle = obj;
 	p->cur = obj->collider;
+	p->id = obj->id;
+	p->uid = obj->uid;
 	luaL_getmetatable(L, LUASTG_LUA_TYPENAME_COLLIDERWRAPPER);//udata, mt
 	lua_setmetatable(L, -2);//udata
 }

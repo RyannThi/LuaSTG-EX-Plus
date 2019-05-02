@@ -754,6 +754,14 @@ int GameObjectPool::IsValid(lua_State* L)LNOEXCEPT
 	return 1;
 }
 
+bool GameObjectPool::IsValid2(size_t id)LNOEXCEPT
+{
+	if (m_ObjectPool.Data(id))
+		return true;
+	else
+		return false;
+}
+
 bool GameObjectPool::Angle(size_t idA, size_t idB, double& out)LNOEXCEPT
 {
 	GameObject* pA = m_ObjectPool.Data(idA);
