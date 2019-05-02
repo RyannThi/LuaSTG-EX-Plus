@@ -273,7 +273,7 @@ GameObjectPool::~GameObjectPool()
 {
 	ResetPool();
 }
-
+// TODO:collider
 GameObject* GameObjectPool::freeObject(GameObject* p)LNOEXCEPT
 {
 	GameObject* pRet = p->pObjectNext;
@@ -1981,9 +1981,12 @@ void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 	
 	f2dBlendState stState = graph->GetBlendState();
 	f2dBlendState stStateClone = stState;
+	stStateClone.SrcBlend = F2DBLENDFACTOR_SRCALPHA;
 	stStateClone.DestBlend = F2DBLENDFACTOR_INVSRCALPHA;
 	stStateClone.BlendOp = F2DBLENDOPERATOR_ADD;
 	graph->SetBlendState(stStateClone);
+	F2DGRAPH2DBLENDTYPE txState = graph->GetColorBlendType();
+	graph->SetColorBlendType(F2DGRAPH2DBLENDTYPE_ADD);//修复反色混合模式的时候会出现颜色异常的问题
 
 	GameObject* p = m_pCollisionListHeader[groupId].pCollisionNext;
 	GameObject* pTail = &m_pCollisionListTail[groupId];
@@ -2140,6 +2143,7 @@ void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 	}
 
 	graph->SetBlendState(stState);
+	graph->SetColorBlendType(txState);
 }
 
 int GameObjectPool::PushCurrentObject(lua_State* L) LNOEXCEPT
