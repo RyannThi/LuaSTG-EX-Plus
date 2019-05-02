@@ -2003,6 +2003,7 @@ void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 	{
 		if (p->colli && CheckWorld(p->world, world))
 		{
+#ifdef USING_ADVANCE_COLLIDER
 			GameObjectCollider* cc = p->collider;
 			cc->caloffset(p->x, p->y, p->rot);
 			while (cc != nullptr) {
@@ -2145,6 +2146,39 @@ void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 				}
 				cc = cc->next;
 			}
+#else
+			if (p->rect || p->a != p->b)
+			{
+				fcyVec2 tHalfSize((float)p->a, (float)p->b);
+
+				// 计算出矩形的4个顶点
+				f2dGraphics2DVertex tFinalPos[4] =
+				{
+					{ -tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 0.0f },
+					{ tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
+					{ tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },
+					{ -tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
+				};
+
+				float tSin, tCos;
+				SinCos((float)p->rot, tSin, tCos);
+
+				// 变换
+				for (int i = 0; i < 4; i++)
+				{
+					fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
+						ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
+					tFinalPos[i].x = tx + (float)p->x; tFinalPos[i].y = ty + (float)p->y;
+				}
+
+				graph->DrawQuad(nullptr, tFinalPos);
+			}
+			else
+			{
+				grender->FillCircle(graph, fcyVec2((float)p->x, (float)p->y), (float)p->a, fillColor, fillColor,
+					p->a < 10 ? 3 : (p->a < 20 ? 6 : 8));
+			}
+#endif // USING_ADVANCE_COLLIDER
 		}
 
 		p = p->pCollisionNext;
