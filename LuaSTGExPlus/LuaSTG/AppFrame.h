@@ -151,7 +151,6 @@ namespace LuaSTGPlus
 		
 		lua_Integer m_iWorld;
 		int m_Worlds[4];
-
 	private:
 		void updateGraph2DBlendMode(BlendMode m)
 		{
@@ -327,6 +326,23 @@ namespace LuaSTGPlus
 		}
 #endif
 		
+		struct ColliderDisplayConfig {
+			int group;
+			fcyColor color;
+			ColliderDisplayConfig() {
+				group = 0;
+				color.argb = 0x00000000;
+			}
+			ColliderDisplayConfig(int g, fcyColor c) {
+				group = g;
+				color.argb = c.argb;
+			}
+		};
+	private:
+		std::vector<ColliderDisplayConfig> m_collidercfg;//碰撞盒渲染配置，在构造函数中初始化
+	public:
+		void SetColliderDisplay(int count, ColliderDisplayConfig* cfgs)LNOEXCEPT;
+
 		/// @brief 使用新的视频参数更新显示模式
 		/// @note 若切换失败则进行回滚
 		LNOINLINE bool ChangeVideoMode(int width, int height, bool windowed, bool vsync)LNOEXCEPT;
@@ -719,6 +735,8 @@ namespace LuaSTGPlus
 		f2dRenderer* GetRenderer()LNOEXCEPT { return m_pRenderer; }
 		f2dRenderDevice* GetRenderDev()LNOEXCEPT { return m_pRenderDev; }
 		f2dSoundSys* GetSoundSys()LNOEXCEPT { return m_pSoundSys; }
+		fcyRefPointer<f2dGeometryRenderer> GetGeometryRenderer()LNOEXCEPT { return m_GRenderer; }
+		fcyRefPointer<f2dGraphics2D> GetGraphics2D()LNOEXCEPT { return m_Graph2D; }
 
 		/// @brief 初始化框架
 		/// @note 该函数必须在一开始被调用，且仅能调用一次

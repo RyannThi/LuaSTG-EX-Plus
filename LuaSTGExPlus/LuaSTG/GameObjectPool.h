@@ -724,6 +724,7 @@ namespace LuaSTGPlus
 		
 	public:  // 内部使用
 		void DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer* grender, int groupId, fcyColor fillColor);
+		void DrawGroupCollider2(int groupId, fcyColor fillColor);
 		static bool CheckWorld(lua_Integer gameworld, lua_Integer objworld){
 			return (gameworld == objworld) || (gameworld&objworld);
 		}

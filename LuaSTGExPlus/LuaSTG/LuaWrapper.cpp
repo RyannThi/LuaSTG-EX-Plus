@@ -1555,6 +1555,14 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			}
 			return 0;
 		}
+		static int RenderGroupCollider(lua_State* L) {
+			// group color
+			LPOOL.DrawGroupCollider2(
+				luaL_checkinteger(L, 1),
+				fcyColor(static_cast<fcyColor*>(luaL_checkudata(L, 2, LUASTG_LUA_TYPENAME_COLOR))->argb)
+			);
+			return 0;
+		}
 		#pragma endregion
 
 		#pragma region 声音控制函数
@@ -2368,6 +2376,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "PostEffectApply", &WrapperImplement::PostEffectApply },
 		//ETC
 		{ "RenderEx", &WrapperImplement::RenderEx },
+		{ "RenderGroupCollider", &WrapperImplement::RenderGroupCollider },
 		
 		// 声音控制函数
 		{ "PlaySound", &WrapperImplement::PlaySound },
@@ -2460,4 +2469,3 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 	luaL_register(L, "lstg", tFunctions);  // t
 	lua_pop(L, 1);
 }
-

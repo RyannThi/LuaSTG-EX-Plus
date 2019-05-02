@@ -345,6 +345,12 @@ AppFrame::AppFrame()
 	m_nextsuperpause = 0;
 	WSADATA wsa;
 	WSAStartup(MAKEWORD(1, 1), &wsa);
+
+	m_collidercfg.clear();
+	m_collidercfg.emplace_back(ColliderDisplayConfig(1, fcyColor(150, 163, 73, 164)));// GROUP_ENEMY_BULLET
+	m_collidercfg.emplace_back(ColliderDisplayConfig(2, fcyColor(150, 163, 73, 164)));// GROUP_ENEMY
+	m_collidercfg.emplace_back(ColliderDisplayConfig(5, fcyColor(150, 163, 73,  20)));// GROUP_INDES
+	m_collidercfg.emplace_back(ColliderDisplayConfig(4, fcyColor(100, 175, 15,  20)));// GROUP_PLAYER
 }
 
 AppFrame::~AppFrame()
@@ -354,6 +360,8 @@ AppFrame::~AppFrame()
 		// 若没有销毁框架，则执行销毁
 		Shutdown();
 	}
+
+	m_collidercfg.clear();
 }
 
 #pragma region 脚本接口
@@ -442,6 +450,13 @@ LNOINLINE void AppFrame::SetTitle(const char* v)LNOEXCEPT
 	catch (const bad_alloc&)
 	{
 		LERROR("修改窗口标题时无法分配内存");
+	}
+}
+
+void AppFrame::SetColliderDisplay(int count, ColliderDisplayConfig* cfgs)LNOEXCEPT {
+	m_collidercfg.clear();
+	for (int i = 0; i < count; i++) {
+		m_collidercfg.push_back(cfgs[i]);
 	}
 }
 
@@ -2183,20 +2198,19 @@ void AppFrame::DrawCollider()LNOEXCEPT{
 	{
 		m_pRenderDev->ClearZBuffer();
 
+		//m_Graph2D->Begin();
 		f2dBlendState stState = m_Graph2D->GetBlendState();
 		f2dBlendState stStateClone = stState;
 		stStateClone.DestBlend = F2DBLENDFACTOR_INVSRCALPHA;
 		stStateClone.BlendOp = F2DBLENDOPERATOR_ADD;
 		m_Graph2D->SetBlendState(stStateClone);
-
-	//	m_Graph2D->Begin();
-		m_GameObjectPool->DrawGroupCollider(m_Graph2D, m_GRenderer, 1, fcyColor(150, 163, 73, 164));  // GROUP_ENEMY_BULLET
-		m_GameObjectPool->DrawGroupCollider(m_Graph2D, m_GRenderer, 2, fcyColor(150, 163, 73, 164));  // GROUP_ENEMY
-		m_GameObjectPool->DrawGroupCollider(m_Graph2D, m_GRenderer, 5, fcyColor(150, 163, 73, 20));  // GROUP_INDES
-		m_GameObjectPool->DrawGroupCollider(m_Graph2D, m_GRenderer, 4, fcyColor(100, 175, 15, 20));  // GROUP_PLAYER
-	//	m_Graph2D->End();
+		
+		for (ColliderDisplayConfig cfg : m_collidercfg) {
+			m_GameObjectPool->DrawGroupCollider(m_Graph2D, m_GRenderer, cfg.group, fcyColor(cfg.color.argb));
+		}
 
 		m_Graph2D->SetBlendState(stState);
+		//m_Graph2D->End();
 	}
 	#endif
 }
