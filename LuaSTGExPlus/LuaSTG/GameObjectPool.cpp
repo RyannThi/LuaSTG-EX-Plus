@@ -343,18 +343,18 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 					//坐标更新
 					p->x += p->vx;
 					p->y += p->vy;
-
-#ifdef USING_ADVANCE_COLLIDER
-					//碰撞体位置更新
-					int cc = 0;
-					while (p->colliders[cc].type != GameObjectColliderType::None && cc < MAX_COLLIDERS_COUNT) {
-						p->colliders[cc].caloffset((float)p->x, (float)p->y, (float)p->rot);
-						cc++;
-					}
-#endif
 				}
 				p->rot += p->omiga;
 				
+#ifdef USING_ADVANCE_COLLIDER
+				//碰撞体位置更新
+				int cc = 0;
+				while (p->colliders[cc].type != GameObjectColliderType::None && cc < MAX_COLLIDERS_COUNT) {
+					p->colliders[cc].caloffset((float)p->x, (float)p->y, (float)p->rot);
+					cc++;
+				}
+#endif
+
 				// 更新粒子系统（若有）
 				if (p->res && p->res->GetType() == ResourceType::Particle)
 				{
