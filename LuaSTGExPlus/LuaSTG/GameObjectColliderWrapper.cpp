@@ -80,7 +80,7 @@ void GameObjectColliderWrapper::Register(lua_State* L)LNOEXCEPT {
 				p->handle->colliders[p->cur].rot = (float)(luaL_checknumber(L, 3) * LDEGREE2RAD);
 			}
 			else if (key == "id") {
-				p->cur = luaL_checkinteger(L, 3);
+				p->cur = luaL_checkinteger(L, 3) - 1;//记得lua的数组索引和C++的区别
 			}
 			else {
 				return luaL_error(L, "New members are not allowed to be added.");
@@ -113,7 +113,7 @@ void GameObjectColliderWrapper::Register(lua_State* L)LNOEXCEPT {
 				lua_pushnumber(L, _rot * LRAD2DEGREE);
 			}
 			else if (key == "id") {
-				lua_pushinteger(L, p->cur);
+				lua_pushinteger(L, p->cur + 1);//记得lua的数组索引和C++的区别
 			}
 			else if (key == "IsValid") {
 				lua_pushcfunction(L, IsValid);
