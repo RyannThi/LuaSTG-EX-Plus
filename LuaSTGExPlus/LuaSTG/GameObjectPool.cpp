@@ -346,11 +346,10 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 
 #ifdef USING_ADVANCE_COLLIDER
 					//碰撞体位置更新
-					for (int i = 0; i < MAX_COLLIDERS_COUNT; i++) {
-						if (p->colliders[i].type == GameObjectColliderType::None)
-							break;
-						else
-							p->colliders[i].caloffset((float)p->x, (float)p->y, (float)p->rot);
+					int cc = 0;
+					while (p->colliders[cc].type != GameObjectColliderType::None && cc < MAX_COLLIDERS_COUNT) {
+						p->colliders[cc].caloffset((float)p->x, (float)p->y, (float)p->rot);
+						cc++;
 					}
 #endif
 				}
@@ -1001,17 +1000,18 @@ int GameObjectPool::GetAttr(lua_State* L)LNOEXCEPT
 	std::string keypp = key;
 	
 	// 对x,y作特化处理
-	if (key[0] == 'x' && key[1] == '\0')
-	{
-		lua_pushnumber(L, p->x);
-		return 1;
+	if (key[1] == '\0') {
+		switch (key[0])
+		{
+		case 'x':
+			lua_pushnumber(L, p->x);
+			return 1;
+		case 'y':
+			lua_pushnumber(L, p->y);
+			return 1;
+		}
 	}
-	else if (key[0] == 'y' && key[1] == '\0')
-	{
-		lua_pushnumber(L, p->y);
-		return 1;
-	}
-	
+
 	// 一般属性
 	switch (GameObjectPropertyHash(key))
 	{
@@ -1212,16 +1212,17 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 	std::string keypp = key;
 
 	// 对x,y作特化处理
-	if (key[0] == 'x' && key[1] == '\0')
-	{
-		p->x = luaL_checknumber(L, 3);
-		return 0;
+	if (key[1] == '\0') {
+		switch (key[0])
+		{
+		case 'x':
+			p->x = luaL_checknumber(L, 3);
+			return 0;
+		case 'y':
+			p->y = luaL_checknumber(L, 3);
+			return 0;
+		}
 	}
-	else if (key[0] == 'y' && key[1] == '\0')
-	{
-		p->y = luaL_checknumber(L, 3);
-		return 0;
-	}	
 
 	// 一般属性
 	switch (GameObjectPropertyHash(key))
@@ -1440,13 +1441,15 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 	default:
 #ifdef USING_ADVANCE_COLLIDER
 		if (keypp == "collider") {
-			p->colliders[1].type = GameObjectColliderType::None;
-			p->colliders[0].reset();
-			p->colliders[0].type = GameObjectColliderType::Ellipse;
 			// object k t
 			int count = lua_objlen(L, 3);
-			if (count > MAX_COLLIDERS_COUNT)
+			if (count > MAX_COLLIDERS_COUNT || count < 0) {
 				return luaL_error(L, "Out of collider limits.");
+			}
+			else if (count < (MAX_COLLIDERS_COUNT - 1)) {
+				p->colliders[count].type = GameObjectColliderType::None;
+			}
+			int truei;
 			for (int select = 1; select <= count; select++) {
 				lua_pushinteger(L, select);// object k t select
 				lua_gettable(L, 3);// object k t t
@@ -1455,39 +1458,40 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 					lua_pushinteger(L, index);
 					lua_gettable(L, 4);
 				}
+				truei = select - 1;
 				// object k t t type a b x y rot
 				switch (luaL_checkinteger(L, 5))
 				{
 				case -1:
-					p->colliders[select].type = GameObjectColliderType::None;
+					p->colliders[truei].type = GameObjectColliderType::None;
 					break;
 				case 0:
-					p->colliders[select].type = GameObjectColliderType::Circle;
+					p->colliders[truei].type = GameObjectColliderType::Circle;
 					break;
 				case 1:
-					p->colliders[select].type = GameObjectColliderType::OBB;
+					p->colliders[truei].type = GameObjectColliderType::OBB;
 					break;
 				case 2:
-					p->colliders[select].type = GameObjectColliderType::Ellipse;
+					p->colliders[truei].type = GameObjectColliderType::Ellipse;
 					break;
 				case 3:
-					p->colliders[select].type = GameObjectColliderType::Diamond;
+					p->colliders[truei].type = GameObjectColliderType::Diamond;
 					break;
 				case 4:
-					p->colliders[select].type = GameObjectColliderType::Triangle;
+					p->colliders[truei].type = GameObjectColliderType::Triangle;
 					break;
 				case 5:
-					p->colliders[select].type = GameObjectColliderType::Point;
+					p->colliders[truei].type = GameObjectColliderType::Point;
 					break;
 				default:
 					return luaL_error(L, "Invalid collider type.");
 				}
-				p->colliders[select].a = luaL_checknumber(L, 6);
-				p->colliders[select].b = luaL_checknumber(L, 7);
-				p->colliders[select].dx = luaL_checknumber(L, 8);
-				p->colliders[select].dy = luaL_checknumber(L, 9);
-				p->colliders[select].rot = luaL_checknumber(L, 10) * LDEGREE2RAD;
-				p->colliders[select].calcircum();//刷新外接圆半径
+				p->colliders[truei].a = luaL_checknumber(L, 6);
+				p->colliders[truei].b = luaL_checknumber(L, 7);
+				p->colliders[truei].dx = luaL_checknumber(L, 8);
+				p->colliders[truei].dy = luaL_checknumber(L, 9);
+				p->colliders[truei].rot = luaL_checknumber(L, 10) * LDEGREE2RAD;
+				p->colliders[truei].calcircum();//刷新外接圆半径
 				lua_pop(L, 7);
 				// object k t
 			}

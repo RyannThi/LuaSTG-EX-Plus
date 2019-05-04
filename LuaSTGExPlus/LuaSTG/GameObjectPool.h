@@ -35,7 +35,6 @@ namespace LuaSTGPlus
 	//游戏碰撞体
 	struct GameObjectCollider {
 		GameObjectColliderType type;  //碰撞体类型
-		float r;                      //半径，用于严格圆（未使用）
 		float a;                      //椭圆半长轴、矩形半宽
 		float b;                      //椭圆半短轴、矩形半高
 		float rot;                    //相对旋转
@@ -49,16 +48,13 @@ namespace LuaSTGPlus
 		float absrot;                 //计算后的绝对旋转方向
 		XColliderType xtype;          //转换后的碰撞体类型
 
-		int id;
-
 		//重置数值
 		void reset() {
 			type = GameObjectColliderType::None;
-			r = 0.0f; a = 0.0f; b = 0.0f; rot = 0.0f;
+			a = 0.0f; b = 0.0f; rot = 0.0f;
 			dx = 0.0f; dy = 0.0f;
 			circum_r = 0.0f;
 			absx = 0.0f; absy = 0.0f; absrot = 0.0f;
-			id = 0;
 			xtype = XColliderType::Ellipse;
 		}
 		//计算外接圆和对应的XMath库碰撞体类型
@@ -98,8 +94,10 @@ namespace LuaSTGPlus
 			LuaSTGPlus::SinCos(_rot, tSin, tCos);
 			absx = x + dx * tCos - dy * tSin;
 			absy = y + dx * tSin + dy * tCos;*/
-			absx = x + dx * std::cosf(-_rot) + dy * std::sinf(-_rot);
-			absy = y + dy * std::cosf(-_rot) - dx * std::sinf(-_rot);
+			float tCos = std::cosf(-_rot);
+			float tSin = std::sinf(-_rot);
+			absx = x + dx * tCos + dy * tSin;
+			absy = y + dy * tCos - dx * tSin;
 			absrot = _rot + rot;
 		}
 	};
@@ -194,9 +192,11 @@ namespace LuaSTGPlus
 			world = 1;
 
 #ifdef USING_ADVANCE_COLLIDER
-			colliders[1].type = GameObjectColliderType::None;
 			colliders[0].reset();
 			colliders[0].type = GameObjectColliderType::Ellipse;
+			for (int i = 1; i < MAX_COLLIDERS_COUNT; i++) {
+				colliders[i].type = GameObjectColliderType::None;
+			}
 #else
 			rect = false;
 			a = b = 0.;
@@ -371,19 +371,17 @@ namespace LuaSTGPlus
 		float lb, rb, bb, tb;
 		float x1, x2, y1, y2, a1, a2, b1, b2, rot1, rot2, cr1, cr2;
 
-		for (int cc1 = 0; cc1 < MAX_COLLIDERS_COUNT; cc1++) {
-			if (p1->colliders[cc1].type == GameObjectColliderType::None) { break; }//跳出
-			
+		int cc1 = 0, cc2;
+		while (p1->colliders[cc1].type != GameObjectColliderType::None && cc1 < MAX_COLLIDERS_COUNT) {
 			x1 = p1->colliders[cc1].absx;
 			y1 = p1->colliders[cc1].absy;
 			cr1 = p1->colliders[cc1].circum_r;
 			a1 = p1->colliders[cc1].a;
 			b1 = p1->colliders[cc1].b;
 			rot1 = p1->colliders[cc1].absrot;
-
-			for (int cc2 = 0; cc2 < MAX_COLLIDERS_COUNT; cc2++) {
-				if (p2->colliders[cc2].type == GameObjectColliderType::None) { break; }//跳出
-
+			
+			cc2 = 0;//归位
+			while (p2->colliders[cc2].type != GameObjectColliderType::None && cc2 < MAX_COLLIDERS_COUNT) {
 				x2 = p2->colliders[cc2].absx;
 				y2 = p2->colliders[cc2].absy;
 				cr2 = p2->colliders[cc2].circum_r;
@@ -391,7 +389,10 @@ namespace LuaSTGPlus
 				//快速AABB检测
 				la = x1 - cr1; ra = x1 + cr1; ba = y1 - cr1; ta = y1 + cr1;
 				lb = x2 - cr2; rb = x2 + cr2; bb = y2 - cr2; tb = y2 + cr2;
-				if ((la >= rb) || (ra <= lb) || (ba >= tb) || (ta <= bb)) { continue; }//跳过
+				if ((la >= rb) || (ra <= lb) || (ba >= tb) || (ta <= bb)) {
+					cc2++;
+					continue;
+				}
 
 				a2 = p2->colliders[cc2].a;
 				b2 = p2->colliders[cc2].b;
@@ -400,13 +401,22 @@ namespace LuaSTGPlus
 				//外接圆碰撞检测，没发生碰撞则直接PASS
 				if (!xmath::collision::check(
 					cocos2d::Vec2(x1, y1), cr1, cr1, rot1, XColliderType::Circle,
-					cocos2d::Vec2(x2, y2), cr2, cr2, rot2, XColliderType::Circle)) { continue; }//跳过
+					cocos2d::Vec2(x2, y2), cr2, cr2, rot2, XColliderType::Circle)) {
+					cc2++;
+					continue;
+				}
 
-				//精确碰撞检测
+					//精确碰撞检测
 				if (xmath::collision::check(
 					cocos2d::Vec2(x1, y1), a1, b1, rot1, p1->colliders[cc1].xtype,
-					cocos2d::Vec2(x2, y2), a2, b2, rot2, p2->colliders[cc2].xtype)) { return true; }//返回点1
+					cocos2d::Vec2(x2, y2), a2, b2, rot2, p2->colliders[cc2].xtype)) {
+					return true;
+				}//返回点1
+
+				cc2++;
 			}
+
+			cc1++;
 		}
 
 		return false;//返回点2
@@ -459,7 +469,7 @@ namespace LuaSTGPlus
 		return false;
 #endif // USING_ADVANCE_COLLIDER
 	}
-
+	
 	//曲线激光特化实现
 	class GameObjectBentLaser
 	{
