@@ -1835,7 +1835,149 @@ void GameObjectPool::DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer
 	{
 		if (p->colli && CheckWorld(p->world, world))
 		{
-#ifndef USING_ADVANCE_COLLIDER
+#ifdef USING_ADVANCE_COLLIDER
+			for (int select = 0; select < MAX_COLLIDERS_COUNT; select++) {
+				GameObjectCollider cc = p->colliders[select];
+				if (cc.type == GameObjectColliderType::None) { break; }
+
+				cc.caloffset(p->x, p->y, p->rot);
+				switch (cc.type)
+				{
+				case GameObjectColliderType::Circle:
+					grender->FillCircle(graph, fcyVec2(cc.absx, cc.absy), cc.a, fillColor, fillColor,
+						cc.a < 10.0 ? 6 : (cc.a < 20.0 ? 16 : 32));
+					break;
+				case GameObjectColliderType::OBB:
+				{
+					fcyVec2 tHalfSize(cc.a, cc.b);
+					// 计算出矩形的4个顶点
+					f2dGraphics2DVertex tFinalPos[4] =
+					{
+						{ -tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 0.0f },
+						{ tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
+						{ tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },
+						{ -tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
+					};
+					float tSin, tCos;
+					SinCos(cc.absrot, tSin, tCos);
+					// 变换
+					for (int i = 0; i < 4; i++)
+					{
+						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
+							ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
+						tFinalPos[i].x = tx + cc.absx;
+						tFinalPos[i].y = ty + cc.absy;
+					}
+					graph->DrawQuad(nullptr, tFinalPos);
+					break;
+				}
+				case GameObjectColliderType::Ellipse:
+				{
+					const int vertcount = 37;//分割36份，还要中心一个点
+					const int indexcount = 111;//37*3加一个组成封闭图形
+					//准备顶点索引
+					fuShort index[indexcount];
+					{
+						for (int i = 0; i < (vertcount - 1); i++) {
+							index[i * 3] = 0;//中心点
+							index[i * 3 + 1] = i;//1
+							index[i * 3 + 2] = i + 1;//2
+							//index[i * 3 + 3] = i + 1;//2 //fancy2d貌似不是以三角形为单位……
+						}
+						index[108] = 0;//中心点
+						index[109] = 36;//1
+						index[110] = 1;//2
+					}
+					//准备顶点
+					f2dGraphics2DVertex vert[vertcount];
+					{
+						vert[0].x = 0.0f;
+						vert[0].y = 0.0f;
+						vert[0].z = 0.5f;//2D下固定z0.5
+						vert[0].color = fillColor.argb;
+						vert[0].u = 0.0f; vert[0].v = 0.0f;//没有使用到贴图，uv是多少无所谓
+						float angle;
+						for (int i = 1; i < vertcount; i++) {
+							//椭圆参方
+							angle = 10.0f * (i - 1) * LDEGREE2RAD;
+							vert[i].x = cc.a * std::cosf(angle);
+							vert[i].y = cc.b * std::sinf(angle);
+							vert[i].z = 0.5f;//2D下固定z0.5
+							vert[i].color = fillColor.argb;
+							vert[i].u = 0.0f; vert[i].v = 0.0f;//没有使用到贴图，uv是多少无所谓
+						}
+					}
+					// 变换
+					{
+						float tSin, tCos;
+						SinCos(cc.absrot, tSin, tCos);
+						for (int i = 0; i < vertcount; i++)
+						{
+							fFloat tx = vert[i].x * tCos - vert[i].y * tSin,
+								ty = vert[i].x * tSin + vert[i].y * tCos;
+							vert[i].x = tx + cc.absx;
+							vert[i].y = ty + cc.absy;
+						}
+					}
+					//绘制
+					graph->DrawRaw(nullptr, vertcount, indexcount, vert, index, false);
+					break;
+				}
+				case GameObjectColliderType::Diamond:
+				{
+					fcyVec2 tHalfSize(cc.a, cc.b);
+					// 计算出菱形的4个顶点
+					f2dGraphics2DVertex tFinalPos[4] =
+					{
+						{  tHalfSize.x,         0.0f, 0.5f, fillColor.argb, 0.0f, 0.0f },
+						{         0.0f, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
+						{ -tHalfSize.x,         0.0f, 0.5f, fillColor.argb, 1.0f, 1.0f },
+						{         0.0f,  tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
+					};
+					float tSin, tCos;
+					SinCos(cc.absrot, tSin, tCos);
+					// 变换
+					for (int i = 0; i < 4; i++)
+					{
+						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
+							ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
+						tFinalPos[i].x = tx + cc.absx;
+						tFinalPos[i].y = ty + cc.absy;
+					}
+					graph->DrawQuad(nullptr, tFinalPos);
+					break;
+				}
+				case GameObjectColliderType::Triangle:
+				{
+					fcyVec2 tHalfSize(cc.a, cc.b);
+					// 计算出菱形的4个顶点
+					f2dGraphics2DVertex tFinalPos[4] =
+					{
+						{  tHalfSize.x,         0.0f, 0.5f, fillColor.argb, 0.0f, 0.0f },
+						{ -tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
+						{ -tHalfSize.x,  tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },
+						{ -tHalfSize.x,  tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },//和第三个点相同
+					};
+					float tSin, tCos;
+					SinCos(cc.absrot, tSin, tCos);
+					// 变换
+					for (int i = 0; i < 4; i++)
+					{
+						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
+							ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
+						tFinalPos[i].x = tx + cc.absx;
+						tFinalPos[i].y = ty + cc.absy;
+					}
+					graph->DrawQuad(nullptr, tFinalPos);
+					break;
+				}
+				case GameObjectColliderType::Point:
+					//点使用直径1的圆来替代
+					grender->FillCircle(graph, fcyVec2(cc.absx, cc.absy), 0.5f, fillColor, fillColor, 3);
+					break;
+				}
+			}
+#else
 			if (p->rect || p->a != p->b)
 			{
 				fcyVec2 tHalfSize((float)p->a, (float)p->b);
