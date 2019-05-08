@@ -7,22 +7,32 @@
     <Filter Include="Math">
       <UniqueIdentifier>{e73fa768-c9a6-4c5f-a43e-00a34d95a48d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SoundSystem">
+      <UniqueIdentifier>{e5c4eb03-b654-4194-8164-a52288dcbaa9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)E2DException.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)E2DXInputImpl.h">
       <Filter>InputSystem</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)E2DInputSystem.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)E2DMath.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)E2DWaveDecoder.h">
+      <Filter>SoundSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)E2DMath.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)E2DVersionControl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)E2DXInputImpl.cpp">
       <Filter>InputSystem</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)E2DInputSytem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)E2DMath.cpp">
       <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)E2DWaveDecoder.cpp">
+      <Filter>SoundSystem</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

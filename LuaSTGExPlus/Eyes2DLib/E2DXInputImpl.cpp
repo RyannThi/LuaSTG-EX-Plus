@@ -42,6 +42,7 @@ XDeviceInfo XInputImpl::GetDeviceInfo(int index) {
 			info.DeviceType = XDeviceType::GAMEPAD;
 			info.DeviceTypeDesc = XDeviceTypeDesc[0];
 			break;
+#ifdef EYES2D_USING_XINPUT_1_4
 		case XINPUT_DEVSUBTYPE_WHEEL:
 			info.DeviceType = XDeviceType::WHEEL;
 			info.DeviceTypeDesc = XDeviceTypeDesc[1];
@@ -58,20 +59,21 @@ XDeviceInfo XInputImpl::GetDeviceInfo(int index) {
 			info.DeviceType = XDeviceType::ARCADE_PAD;
 			info.DeviceTypeDesc = XDeviceTypeDesc[9];
 			break;
+#endif // EYES2D_USING_XINPUT_1_4
 		default:
 			break;
 		}
+#ifdef EYES2D_USING_XINPUT_1_4
 		//无线、有线
 		info.Wireless = ((features.Flags & XINPUT_CAPS_WIRELESS) != 0) ? true : false;
 		//力反馈
 		info.ForceFeedback = ((features.Flags & XINPUT_CAPS_FFB_SUPPORTED) != 0) ? true : false;
 		//导航按钮
 		info.Navigation = ((features.Flags & XINPUT_CAPS_NO_NAVIGATION) != 0) ? false : true;//看清楚是NO_NAVIGATION草
+#endif // EYES2D_USING_XINPUT_1_4
 		//马达状态
-		if (info.ForceFeedback) {
-			info.LMotorSpeed = features.Vibration.wLeftMotorSpeed;
-			info.HMotorSpeed = features.Vibration.wRightMotorSpeed;
-		}
+		info.LMotorSpeed = features.Vibration.wLeftMotorSpeed;
+		info.HMotorSpeed = features.Vibration.wRightMotorSpeed;
 	}
 	
 #ifdef EYES2D_USING_XINPUT_1_4
@@ -118,7 +120,7 @@ XDeviceInfo XInputImpl::GetDeviceInfo(int index) {
 			}
 		}
 	}
-#endif // USING_XINPUT_1_4
+#endif // EYES2D_USING_XINPUT_1_4
 
 	return info;
 }

@@ -21,7 +21,10 @@
     <ClCompile Include="singleInstanceTest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="collider_test.cpp">
+    <ClCompile Include="XA2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="XADLL.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

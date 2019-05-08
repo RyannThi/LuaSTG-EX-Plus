@@ -5,17 +5,24 @@
 \*========================================*/
 
 #include <string>
+#include "E2DVersionControl.h"
 
-//#define EYES2D_USING_XINPUT_1_4 //WIN8以后才有……要兼容WIN7得用9_1_0的dll
-
+#ifdef EYES2D_USING_XINPUT_1_3
+#pragma comment(lib, "Xinput.lib")
+#endif
+#ifdef EYES2D_USING_XINPUT_9_1
+#pragma comment(lib, "Xinput9_1_0.lib")
+#endif
 #ifdef EYES2D_USING_XINPUT_1_4
 #pragma comment(lib, "Xinput.lib")
-#else
-#pragma comment(lib, "Xinput9_1_0.lib")
-#endif // USING_XINPUT_1_4
+#endif
 
 #include <Windows.h>
+#ifdef EYES2D_USING_XINPUT_1_3
+#include "XInput.h"
+#else
 #include <Xinput.h>
+#endif //EYES2D_USING_XINPUT_1_3
 
 namespace Eyes2D {
 	//设备类型

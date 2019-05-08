@@ -47,6 +47,9 @@ LuaSTGExPlus/fancy2D/obj/Debug/fancy2D.log
 /classic/*
 /mwy/*
 
+#Eyes2D过滤
+/LuaSTGExPlus/Eyes2D/Debug/*
+/LuaSTGExPlus/Eyes2D/Release/*
 /LuaSTGExPlus/Eyes2DTest/Debug/*
 /LuaSTGExPlus/Eyes2DTest/Release/*
 

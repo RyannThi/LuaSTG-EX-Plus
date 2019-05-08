@@ -1,4 +1,4 @@
-#include "E2DMath.h"
+﻿#include "E2DMath.h"
 
 double Eyes2D::Math::LinearToLog(double v) {
 	if (v <= 0.0) {
