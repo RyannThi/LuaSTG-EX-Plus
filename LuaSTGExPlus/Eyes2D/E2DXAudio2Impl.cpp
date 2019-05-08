@@ -1,4 +1,4 @@
-﻿#include "E2DXAudio2.hpp"
+﻿#include "E2DXAudio2Impl.hpp"
 #include "E2DXAudio2VoicePool.hpp"
 
 using namespace std;

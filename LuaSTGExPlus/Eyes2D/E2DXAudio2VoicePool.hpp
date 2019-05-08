@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "E2DXAudio2.hpp"
+#include "E2DXAudio2Impl.hpp"
 
 namespace Eyes2D {
 	class XAudio2VoicePool {
