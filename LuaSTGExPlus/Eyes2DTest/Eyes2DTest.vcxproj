@@ -82,14 +82,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\Eyes2D\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\Eyes2D\;$(SolutionDir)\fancylib\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
       </SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\Eyes2D\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Eyes2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\Eyes2D\$(Configuration)\;$(SolutionDir)\fancylib\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Eyes2D.lib;fancylib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <BuildLog>
       <Path>$(ProjectDir)$(Configuration)\$(MSBuildProjectName).log</Path>
@@ -115,15 +115,15 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\Eyes2D\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\Eyes2D\;$(SolutionDir)\fancylib\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
       </SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\Eyes2D\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Eyes2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\Eyes2D\$(Configuration)\;$(SolutionDir)\fancylib\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Eyes2D.lib;fancylib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <BuildLog>
       <Path>$(ProjectDir)$(Configuration)\$(MSBuildProjectName).log</Path>
