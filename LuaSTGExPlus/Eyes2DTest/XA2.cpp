@@ -179,13 +179,18 @@ int main() {
 
 	//播放
 	{
-		hr = source->Start();
-		if (FAILED(hr)) {
-			cout << "Start SourceVoice failed:" << hr << endl;
-			return -1;
-		}
-		else {
-			cout << "Start SourceVoice, press 'ESC' to stop" << endl;
+		for (int t = 0; t < 10; t++) {
+			hr = source->Start();
+			if (FAILED(hr)) {
+				cout << "Start SourceVoice failed:" << hr << endl;
+				return -1;
+			}
+			else {
+				cout << "Start SourceVoice, press 'ESC' to stop" << endl;
+			}
+
+			Sleep(100);
+			source->Stop();
 		}
 
 		while (!GetAsyncKeyState(VK_ESCAPE)) {

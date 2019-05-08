@@ -5,9 +5,9 @@ using namespace std;
 using namespace Eyes2D;
 
 int main() {
-	XAudio2Engine* sound = nullptr;
+	XAudio2Impl* sound = nullptr;
 	try {
-		sound = new XAudio2Engine();
+		sound = new XAudio2Impl();
 		sound->SetMasterVolume(1.0f);
 		sound->SetMixerVolume("BGM", 0.8f);
 		cout << "Master:" << sound->GetMasterVolume() << "  BGM Mixer:" << sound->GetMixerVolume("BGM") << endl;

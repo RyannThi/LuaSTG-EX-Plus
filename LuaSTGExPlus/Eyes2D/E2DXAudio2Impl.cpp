@@ -7,24 +7,24 @@ using namespace Eyes2D;
 template<typename T>
 using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-XAudio2Engine::XAudio2Engine() {
+XAudio2Impl::XAudio2Impl() {
 	m_XAudio = nullptr;
 	m_MasteringVoice = nullptr;
 
 	HRESULT hr;
 	hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	if (FAILED(hr))
-		throw E2DException(0, hr, L"Eyes2D::XAudio2Engine::XAudio2Engine", L"Failed to initialize COM.");
+		throw E2DException(0, hr, L"Eyes2D::XAudio2Impl::XAudio2Impl", L"Failed to initialize COM.");
 	hr = XAudio2Create(&m_XAudio, 0, XAUDIO2_DEFAULT_PROCESSOR);
 	if (FAILED(hr))
-		throw E2DException(0, hr, L"Eyes2D::XAudio2Engine::XAudio2Engine", L"Failed to create XAudio2.");
+		throw E2DException(0, hr, L"Eyes2D::XAudio2Impl::XAudio2Impl", L"Failed to create XAudio2.");
 	hr = m_XAudio->CreateMasteringVoice(&m_MasteringVoice, 2, 44000);
 	if (FAILED(hr))
-		throw E2DException(0, hr, L"Eyes2D::XAudio2Engine::XAudio2Engine", L"Failed to create MasteringVoice.");
+		throw E2DException(0, hr, L"Eyes2D::XAudio2Impl::XAudio2Impl", L"Failed to create MasteringVoice.");
 	m_VoicePool = new XAudio2VoicePool(m_XAudio, m_MasteringVoice);
 }
 
-XAudio2Engine::~XAudio2Engine() {
+XAudio2Impl::~XAudio2Impl() {
 	delete m_VoicePool;
 	m_VoicePool = nullptr;
 	if (m_MasteringVoice)
@@ -35,31 +35,31 @@ XAudio2Engine::~XAudio2Engine() {
 	m_XAudio = nullptr;
 }
 
-void XAudio2Engine::SetMasterVolume(float v) {
+void XAudio2Impl::SetMasterVolume(float v) {
 	HRESULT hr = m_MasteringVoice->SetVolume(v);
 	if(FAILED(hr))
-		throw E2DException(0, hr, L"Eyes2D::XAudio2Engine::SetMasterVolume", L"Failed to set Master volume.");
+		throw E2DException(0, hr, L"Eyes2D::XAudio2Impl::SetMasterVolume", L"Failed to set Master volume.");
 }
 
-float XAudio2Engine::GetMasterVolume() {
+float XAudio2Impl::GetMasterVolume() {
 	float v;
 	m_MasteringVoice->GetVolume(&v);
 	return v;
 }
 
-void XAudio2Engine::SetMixerVolume(string name, float v) {
+void XAudio2Impl::SetMixerVolume(string name, float v) {
 	IXAudio2SubmixVoice* mixer = m_VoicePool->GetMixVoice(name);
 	if (mixer != nullptr) {
 		HRESULT hr = mixer->SetVolume(v);
 		if (FAILED(hr))
-			throw E2DException(0, hr, L"Eyes2D::XAudio2Engine::SetMixerVolume", L"Failed to set Mixer volume.");
+			throw E2DException(0, hr, L"Eyes2D::XAudio2Impl::SetMixerVolume", L"Failed to set Mixer volume.");
 	}
 	else {
-		throw E2DException(0, 0, L"Eyes2D::XAudio2Engine::SetMixerVolume", L"Failed to find Mixer.");
+		throw E2DException(0, 0, L"Eyes2D::XAudio2Impl::SetMixerVolume", L"Failed to find Mixer.");
 	}
 }
 
-float XAudio2Engine::GetMixerVolume(string name) {
+float XAudio2Impl::GetMixerVolume(string name) {
 	IXAudio2SubmixVoice* mixer = m_VoicePool->GetMixVoice(name);
 	if (mixer != nullptr) {
 		float v;
@@ -67,6 +67,6 @@ float XAudio2Engine::GetMixerVolume(string name) {
 		return v;
 	}
 	else {
-		throw E2DException(0, 0, L"Eyes2D::XAudio2Engine::SetMixerVolume", L"Failed to find Mixer.");
+		throw E2DException(0, 0, L"Eyes2D::XAudio2Impl::SetMixerVolume", L"Failed to find Mixer.");
 	}
 }

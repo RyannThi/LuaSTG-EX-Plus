@@ -36,6 +36,9 @@
     <ClCompile Include="E2DXAudio2Impl.cpp">
       <Filter>system\sound</Filter>
     </ClCompile>
+    <ClCompile Include="E2DWaveDecoder.cpp">
+      <Filter>system\sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="E2DGlobal.hpp">
@@ -54,6 +57,9 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="E2DXAudio2Impl.hpp">
+      <Filter>system\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="E2DWaveDecoder.hpp">
       <Filter>system\sound</Filter>
     </ClInclude>
   </ItemGroup>
