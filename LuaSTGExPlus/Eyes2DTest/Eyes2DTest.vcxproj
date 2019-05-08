@@ -92,7 +92,7 @@
       <AdditionalDependencies>Eyes2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <BuildLog>
-      <Path>$(ProjectDir)$(Configuration)$(MSBuildProjectName).log</Path>
+      <Path>$(ProjectDir)$(Configuration)\$(MSBuildProjectName).log</Path>
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -126,7 +126,7 @@
       <AdditionalDependencies>Eyes2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <BuildLog>
-      <Path>$(ProjectDir)$(Configuration)$(MSBuildProjectName).log</Path>
+      <Path>$(ProjectDir)$(Configuration)\$(MSBuildProjectName).log</Path>
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
