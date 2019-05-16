@@ -39,6 +39,9 @@
     <ClCompile Include="E2DWaveDecoder.cpp">
       <Filter>system\sound</Filter>
     </ClCompile>
+    <ClCompile Include="E2DOggDecoder.cpp">
+      <Filter>system\sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="E2DGlobal.hpp">
@@ -60,6 +63,9 @@
       <Filter>system\sound</Filter>
     </ClInclude>
     <ClInclude Include="E2DWaveDecoder.hpp">
+      <Filter>system\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="E2DOggDecoder.hpp">
       <Filter>system\sound</Filter>
     </ClInclude>
   </ItemGroup>

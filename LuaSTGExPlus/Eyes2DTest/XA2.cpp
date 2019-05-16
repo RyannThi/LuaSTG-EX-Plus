@@ -186,11 +186,51 @@ int main() {
 				return -1;
 			}
 			else {
-				cout << "Start SourceVoice, press 'ESC' to stop" << endl;
+				cout << "Start SourceVoice" << endl;
 			}
 
 			Sleep(100);
-			source->Stop();
+			hr = source->Stop();
+			if (FAILED(hr)) {
+				cout << "Stop SourceVoice failed:" << hr << endl;
+				return -1;
+			}
+			else {
+				cout << "Stop SourceVoice" << endl;
+			}
+
+			hr = source->FlushSourceBuffers();
+			if (FAILED(hr)) {
+				cout << "Flush source buffers failed:" << hr << endl;
+				return -1;
+			}
+			else {
+				cout << "Flush source buffers" << endl;
+			}
+
+			//推送音频数据
+			{
+
+				XAUDIO2_BUFFER XAbuffer;
+				ZeroMemory(&XAbuffer, sizeof(XAUDIO2_BUFFER));
+				XAbuffer.Flags = XAUDIO2_END_OF_STREAM;
+				XAbuffer.AudioBytes = data_bytes;
+				XAbuffer.pAudioData = buffer;
+				XAbuffer.PlayBegin = 0;
+				XAbuffer.PlayLength = data_bytes / 4;//每个采样有2byte * 2channel = 4byte，所以总的采样数是data chunk size/4byte
+				XAbuffer.LoopBegin = 0;
+				XAbuffer.LoopLength = data_bytes / 4;//同上
+				XAbuffer.LoopCount = XAUDIO2_LOOP_INFINITE;//无限循环
+
+				hr = source->SubmitSourceBuffer(&XAbuffer);
+				if (FAILED(hr)) {
+					cout << "Submit SourceBuffer failed:" << hr << endl;
+					return -1;
+				}
+				else {
+					cout << "Submit SourceBuffer" << endl;
+				}
+			}
 		}
 
 		while (!GetAsyncKeyState(VK_ESCAPE)) {

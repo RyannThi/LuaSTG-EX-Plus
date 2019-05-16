@@ -1,15 +1,14 @@
 ﻿#pragma once
 
-#include <string>
 #include "E2DGlobal.hpp"
 #include "fcyIO/fcyStream.h"
 
 namespace Eyes2D {
 	//不支持fact块、只支持一个RIFF、一个fmt、一个data块的简易WAV解码
 	//反正WAV文件本来就大，直接全部加载出来也没什么（x
-	class WaveDecoder {
+	class EYESDLLAPI WaveDecoder {
 	private:
-		std::string m_Type;        //文件类型，一般为WAVE
+		//std::string m_Type;        //文件类型，一般为WAVE
 		uint16_t m_FormatTag;      //编码方式，一般未压缩的WAV文件此项为1
 		uint16_t m_Channels;       //声道数量
 		uint32_t m_SamplesPerSec;  //每秒采样次数

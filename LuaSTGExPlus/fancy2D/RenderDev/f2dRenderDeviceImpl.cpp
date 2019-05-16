@@ -1230,7 +1230,7 @@ fResult f2dRenderDeviceImpl::SaveScreen(f2dStream* pStream)
 	}
 
 	ID3DXBuffer* pDataBuffer = NULL;
-	HRESULT tHR = m_API.DLLEntry_D3DXSaveSurfaceToFileInMemory(&pDataBuffer, D3DXIFF_PNG, pSurface, NULL, NULL);
+	HRESULT tHR = m_API.DLLEntry_D3DXSaveSurfaceToFileInMemory(&pDataBuffer, D3DXIFF_JPG, pSurface, NULL, NULL);//D3DXIFF_PNG
 	FCYSAFEKILL(pSurface);
 	if(FAILED(tHR))
 	{
@@ -1273,7 +1273,7 @@ fResult f2dRenderDeviceImpl::SaveTexture(f2dStream* pStream, f2dTexture2D* pTex)
 		return FCYERR_INTERNALERR;
 
 	ID3DXBuffer* pDataBuffer = NULL;
-	HRESULT tHR = m_API.DLLEntry_D3DXSaveSurfaceToFileInMemory(&pDataBuffer, D3DXIFF_PNG, pSurface, NULL, NULL);
+	HRESULT tHR = m_API.DLLEntry_D3DXSaveSurfaceToFileInMemory(&pDataBuffer, D3DXIFF_JPG, pSurface, NULL, NULL);//D3DXIFF_PNG
 	FCYSAFEKILL(pSurface);
 	if(FAILED(tHR))
 	{

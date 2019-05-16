@@ -27,7 +27,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\XMath\Vec2.inl" />
     <None Include="GameObjectPropertyHash.inl" />
     <None Include="GameObjectPropertyHash.json" />
     <None Include="string2enum.py" />
@@ -51,18 +50,6 @@
     <ClInclude Include="..\luasocket\src\timeout.h" />
     <ClInclude Include="..\luasocket\src\udp.h" />
     <ClInclude Include="..\luasocket\src\wsocket.h" />
-    <ClInclude Include="..\XMath\meow_fft.h" />
-    <ClInclude Include="..\XMath\Vec2.h" />
-    <ClInclude Include="..\XMath\XCollision.h" />
-    <ClInclude Include="..\XMath\XComplex.h" />
-    <ClInclude Include="..\XMath\XConstant.h" />
-    <ClInclude Include="..\XMath\XDistance.h" />
-    <ClInclude Include="..\XMath\XEquation.h" />
-    <ClInclude Include="..\XMath\XFFT.h" />
-    <ClInclude Include="..\XMath\XIntersect.h" />
-    <ClInclude Include="..\XMath\XMath.h" />
-    <ClInclude Include="..\XMath\XRandom.h" />
-    <ClInclude Include="..\XMath\XSpline.h" />
     <ClInclude Include="AppFrame.h" />
     <ClInclude Include="Bencode.h" />
     <ClInclude Include="CirularQueue.hpp" />
@@ -102,15 +89,6 @@
     <ClCompile Include="..\luasocket\src\timeout.c" />
     <ClCompile Include="..\luasocket\src\udp.c" />
     <ClCompile Include="..\luasocket\src\wsocket.c" />
-    <ClCompile Include="..\XMath\Vec2.cpp" />
-    <ClCompile Include="..\XMath\XCollision.cpp" />
-    <ClCompile Include="..\XMath\XComplex.cpp" />
-    <ClCompile Include="..\XMath\XDistance.cpp" />
-    <ClCompile Include="..\XMath\XEquation.cpp" />
-    <ClCompile Include="..\XMath\XFFT.cpp" />
-    <ClCompile Include="..\XMath\XIntersect.cpp" />
-    <ClCompile Include="..\XMath\XRandom.cpp" />
-    <ClCompile Include="..\XMath\XSpline.cpp" />
     <ClCompile Include="AppFrame.cpp" />
     <ClCompile Include="Bencode.cpp" />
     <ClCompile Include="BentlazerWrapper.cpp" />
@@ -240,10 +218,10 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\..\fancy2d\fancy2d\bin\;$(SolutionDir)\..\fancy2d\fancylib\bin\;$(SolutionDir)\zlib\build\;$(SolutionDir)\steam\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\..\fancy2d\fancy2d\bin\;$(SolutionDir)\..\fancy2d\fancylib\bin\;$(SolutionDir)\zlib\build\;$(SolutionDir)\steam\lib\;$(SolutionDir)\XMath\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;Gdiplus.lib;zlib.lib;lua51.lib;fancy2d_d.lib;fancylib_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;Gdiplus.lib;zlib.lib;lua51.lib;fancy2d_d.lib;fancylib_d.lib;xmath.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -266,8 +244,8 @@
       </LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\zlib\build\;$(SolutionDir)\steam\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib;Gdiplus.lib;zlib.lib;lua51.lib;fancy2d.lib;fancylib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\zlib\build\;$(SolutionDir)\steam\lib\;$(SolutionDir)\XMath\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;Gdiplus.lib;zlib.lib;lua51.lib;fancy2d.lib;fancylib.lib;xmath.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -306,8 +284,8 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\zlib\build\;$(SolutionDir)\steam\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Gdiplus.lib;zlib.lib;lua51.lib;fancy2d.lib;fancylib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\zlib\build\;$(SolutionDir)\steam\lib\;$(SolutionDir)\XMath\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Gdiplus.lib;zlib.lib;lua51.lib;fancy2d.lib;fancylib.lib;xmath.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <Profile>true</Profile>

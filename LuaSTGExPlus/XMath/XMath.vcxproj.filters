@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="XMath">
+      <UniqueIdentifier>{bbd9b89e-a169-4bbd-b604-bbbc8332a73b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CocosMath">
+      <UniqueIdentifier>{9f0706fe-6075-4ead-8942-bb83d4f13d64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="meowMath">
+      <UniqueIdentifier>{aeaa5eb4-1a01-432a-afd7-a65cfeb6a8d1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="XCollision.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="XComplex.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="XConstant.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="XDistance.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="XEquation.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="XFFT.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="XIntersect.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="XMath.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="XRandom.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="XSpline.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec2.h">
+      <Filter>CocosMath</Filter>
+    </ClInclude>
+    <ClInclude Include="meow_fft.h">
+      <Filter>meowMath</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="XCollision.cpp">
+      <Filter>XMath</Filter>
+    </ClCompile>
+    <ClCompile Include="XComplex.cpp">
+      <Filter>XMath</Filter>
+    </ClCompile>
+    <ClCompile Include="XDistance.cpp">
+      <Filter>XMath</Filter>
+    </ClCompile>
+    <ClCompile Include="XEquation.cpp">
+      <Filter>XMath</Filter>
+    </ClCompile>
+    <ClCompile Include="XFFT.cpp">
+      <Filter>XMath</Filter>
+    </ClCompile>
+    <ClCompile Include="XIntersect.cpp">
+      <Filter>XMath</Filter>
+    </ClCompile>
+    <ClCompile Include="XRandom.cpp">
+      <Filter>XMath</Filter>
+    </ClCompile>
+    <ClCompile Include="XSpline.cpp">
+      <Filter>XMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Vec2.cpp">
+      <Filter>CocosMath</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Vec2.inl">
+      <Filter>CocosMath</Filter>
+    </None>
+  </ItemGroup>
+</Project>

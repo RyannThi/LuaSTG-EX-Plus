@@ -17,13 +17,14 @@ namespace Eyes2D {
 		XAudio2Impl();
 		~XAudio2Impl();
 	public:
+		IXAudio2* GetXAudio() { return m_XAudio; }
 		void SetMasterVolume(float v);
 		float GetMasterVolume();
-		void SetMixerVolume(std::string name, float v);
-		float GetMixerVolume(std::string name);
+		void SetMixerVolume(const std::string& name, float v);
+		float GetMixerVolume(const std::string& name);
 	public:
-		long LoadStaticSound(std::string bindmixer, fcyStream* stream); //从流加载静态缓冲区声音
-		long LoadDynamicSound(std::string bindmixer, fcyStream* stream); //从流加载静态缓冲区声音
+		long LoadStaticSound(const std::string& bindmixer, fcyStream* stream); //从流加载静态缓冲区声音
+		long LoadDynamicSound(const std::string& bindmixer, fcyStream* stream); //从流加载静态缓冲区声音
 	};
 
 	inline XAudio2Impl& GetXAudio() {

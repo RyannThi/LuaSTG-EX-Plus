@@ -25,9 +25,6 @@
     <Filter Include="LuaExtensions\lfs">
       <UniqueIdentifier>{325f7dd4-4760-4ba5-b5ef-ff40212bb8bd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="XMath">
-      <UniqueIdentifier>{c9deea7f-20b2-40a5-9e23-29e4d293eaae}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LuaExtensions\luasock">
       <UniqueIdentifier>{e8fac02e-f58a-4f97-a95c-a27080f679c4}</UniqueIdentifier>
     </Filter>
@@ -59,9 +56,6 @@
     </None>
     <None Include="string2enum.py">
       <Filter>实用工具</Filter>
-    </None>
-    <None Include="..\XMath\Vec2.inl">
-      <Filter>XMath</Filter>
     </None>
     <None Include="GameObjectPropertyHash.inl">
       <Filter>ObjectPool</Filter>
@@ -97,42 +91,6 @@
     </ClInclude>
     <ClInclude Include="..\cjson4lua\strbuf.h">
       <Filter>LuaExtensions\cjson4lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XMath\XCollision.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XMath\XComplex.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XMath\XConstant.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XMath\XDistance.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XMath\XEquation.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XMath\XFFT.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XMath\XIntersect.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XMath\XMath.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XMath\XRandom.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XMath\XSpline.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XMath\meow_fft.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XMath\Vec2.h">
-      <Filter>XMath</Filter>
     </ClInclude>
     <ClInclude Include="..\luasocket\src\auxiliar.h">
       <Filter>LuaExtensions\luasock</Filter>
@@ -249,33 +207,6 @@
     </ClCompile>
     <ClCompile Include="..\cjson4lua\strbuf.c">
       <Filter>LuaExtensions\cjson4lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XMath\XCollision.cpp">
-      <Filter>XMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XMath\XComplex.cpp">
-      <Filter>XMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XMath\XDistance.cpp">
-      <Filter>XMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XMath\XEquation.cpp">
-      <Filter>XMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XMath\XFFT.cpp">
-      <Filter>XMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XMath\XIntersect.cpp">
-      <Filter>XMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XMath\XRandom.cpp">
-      <Filter>XMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XMath\XSpline.cpp">
-      <Filter>XMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XMath\Vec2.cpp">
-      <Filter>XMath</Filter>
     </ClCompile>
     <ClCompile Include="..\luasocket\src\auxiliar.c">
       <Filter>LuaExtensions\luasock</Filter>

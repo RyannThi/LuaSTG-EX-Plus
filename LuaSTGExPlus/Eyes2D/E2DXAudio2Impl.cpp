@@ -47,7 +47,7 @@ float XAudio2Impl::GetMasterVolume() {
 	return v;
 }
 
-void XAudio2Impl::SetMixerVolume(string name, float v) {
+void XAudio2Impl::SetMixerVolume(const string& name, float v) {
 	IXAudio2SubmixVoice* mixer = m_VoicePool->GetMixVoice(name);
 	if (mixer != nullptr) {
 		HRESULT hr = mixer->SetVolume(v);
@@ -59,7 +59,7 @@ void XAudio2Impl::SetMixerVolume(string name, float v) {
 	}
 }
 
-float XAudio2Impl::GetMixerVolume(string name) {
+float XAudio2Impl::GetMixerVolume(const string& name) {
 	IXAudio2SubmixVoice* mixer = m_VoicePool->GetMixVoice(name);
 	if (mixer != nullptr) {
 		float v;

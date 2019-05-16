@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Eyes2DTest", "Eyes2DTest\Ey
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Eyes2D", "Eyes2D\Eyes2D.vcxproj", "{B209A1D8-6C6F-4318-9A70-A03A2DE9C4A2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XMath", "XMath\XMath.vcxproj", "{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Eyes2DLib\Eyes2DLib.vcxitems*{2b161889-0e7f-402d-b08a-144012644b43}*SharedItemsImports = 9
@@ -252,6 +254,22 @@ Global
 		{B209A1D8-6C6F-4318-9A70-A03A2DE9C4A2}.Release|x64.Build.0 = Release|x64
 		{B209A1D8-6C6F-4318-9A70-A03A2DE9C4A2}.Release|x86.ActiveCfg = Release|Win32
 		{B209A1D8-6C6F-4318-9A70-A03A2DE9C4A2}.Release|x86.Build.0 = Release|Win32
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Debug|x64.ActiveCfg = Debug|x64
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Debug|x64.Build.0 = Debug|x64
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Debug|x86.ActiveCfg = Debug|Win32
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Debug|x86.Build.0 = Debug|Win32
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Dev|Any CPU.ActiveCfg = Release|x64
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Dev|Any CPU.Build.0 = Release|x64
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Dev|x64.ActiveCfg = Debug|x64
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Dev|x64.Build.0 = Debug|x64
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Dev|x86.ActiveCfg = Debug|Win32
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Dev|x86.Build.0 = Debug|Win32
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Release|Any CPU.ActiveCfg = Release|Win32
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Release|x64.ActiveCfg = Release|x64
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Release|x64.Build.0 = Release|x64
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Release|x86.ActiveCfg = Release|Win32
+		{7FB75646-9EC6-458C-9C79-FCBC2DC7E2A1}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

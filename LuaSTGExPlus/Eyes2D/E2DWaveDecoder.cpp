@@ -1,11 +1,12 @@
-﻿#include "E2DWaveDecoder.hpp"
+﻿#include <string>
+#include "E2DWaveDecoder.hpp"
 #include "fcyIO/fcyBinaryHelper.h"
 
 using namespace std;
 using namespace Eyes2D;
 
 WaveDecoder::WaveDecoder(fcyStream* stream) {
-	m_Type = "???";
+	//m_Type = "???";
 	m_FormatTag = 0;
 	m_Channels = 0;
 	m_SamplesPerSec = 0;
@@ -22,6 +23,7 @@ WaveDecoder::WaveDecoder(fcyStream* stream) {
 	stream->Lock();
 	stream->SetPosition(FCYSEEKORIGIN_BEG, 0);
 
+	string TypeTag;
 	try
 	{
 		fcyBinaryReader Reader(stream);
@@ -39,7 +41,8 @@ WaveDecoder::WaveDecoder(fcyStream* stream) {
 				char format[5];
 				memset(format, 0, 5 * sizeof(char));
 				Reader.ReadChars(format, 4);
-				m_Type = format;
+				//m_Type = format;
+				TypeTag = format;
 			}
 			else if (sID == "fmt ") {
 				m_FormatTag = Reader.ReadUInt16();
@@ -60,10 +63,12 @@ WaveDecoder::WaveDecoder(fcyStream* stream) {
 				}
 			}
 			else if (sID == "data") {
-				m_DataBuffer = new uint8_t[Size];
-				uint64_t Read = 0;
-				stream->ReadBytes(m_DataBuffer, Size, &Read);
-				m_DataSize = Read;
+				if (m_DataBuffer == nullptr) {
+					m_DataBuffer = new uint8_t[Size];
+					uint64_t Read = 0;
+					stream->ReadBytes(m_DataBuffer, Size, &Read);
+					m_DataSize = (uint32_t)Read;//潜在的数据溢出
+				}
 			}
 			else {
 				stream->SetPosition(FCYSEEKORIGIN_CUR, Size);//跳过不支持的chunk
@@ -72,13 +77,19 @@ WaveDecoder::WaveDecoder(fcyStream* stream) {
 	}
 	catch (const fcyException& e) // 处理读取异常
 	{
+		//清理
+		long t = (long)e.GetTime();
 		stream->Unlock();
 		stream->Release();
-		throw;
+		throw E2DException(t, 0, L"Eyes2D::WaveDecoder::WaveDecoder", L"Failed to read wav file.");
 	}
 
+	//清理
 	stream->Unlock();
 	stream->Release();
+	if (TypeTag != "WAVE") {
+		throw E2DException(0, 0, L"Eyes2D::WaveDecoder::WaveDecoder", L"Invalid wav file.");
+	}
 }
 
 WaveDecoder::~WaveDecoder() {
