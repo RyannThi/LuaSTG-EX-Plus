@@ -72,15 +72,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\Dir\</IntDir>
+    <OutDir>$(ProjectDir)\build\</OutDir>
+    <IntDir>$(ProjectDir)\build\Dir\</IntDir>
     <TargetName>Eyes2D</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IntDir>$(ProjectDir)$(Configuration)\Dir\</IntDir>
+    <IntDir>$(ProjectDir)\build\Dir\</IntDir>
     <TargetName>Eyes2D</TargetName>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)\build\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -101,7 +101,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderOutputFile />
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -113,7 +113,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)DXSDK\Lib\x86\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\;$(SolutionDir)\libogg\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\;$(SolutionDir)\libogg\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>fancylib.lib;libvorbis.lib;libogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -128,7 +128,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeaderOutputFile />
     </ClCompile>
@@ -136,7 +136,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)DXSDK\Lib\x86\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\;$(SolutionDir)\libogg\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\;$(SolutionDir)\libogg\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>fancylib.lib;libvorbis.lib;libogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -178,6 +178,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="E2DDXGIImpl.cpp" />
     <ClCompile Include="E2DOggDecoder.cpp" />
     <ClCompile Include="E2DWaveDecoder.cpp" />
     <ClCompile Include="E2DXAudio2Impl.cpp" />
@@ -185,6 +186,7 @@
     <ClCompile Include="E2DXInputImpl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="E2DDXGIImpl.hpp" />
     <ClInclude Include="E2DException.h" />
     <ClInclude Include="E2DGlobal.hpp" />
     <ClInclude Include="E2DMath.hpp" />

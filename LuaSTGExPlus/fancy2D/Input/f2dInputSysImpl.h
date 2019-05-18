@@ -81,6 +81,7 @@ public:  // 接口实现
 	
 	fResult CreateMouse(fInt DevIndex, fBool bGlobalFocus, f2dInputMouse** pOut);
 	fResult CreateKeyboard(fInt DevIndex, fBool bGlobalFocus, f2dInputKeyboard** pOut);
+	fResult CreateDefaultKeyboard(fInt DevIndex, fBool bGlobalFocus, f2dInputKeyboard** pOut);
 	fResult CreateJoystick(fInt DevIndex, fBool bGlobalFocus, f2dInputJoystick** pOut);
 public:
 	f2dInputSysImpl(f2dEngineImpl* pEngine);

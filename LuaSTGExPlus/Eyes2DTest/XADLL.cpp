@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include"fcyIO/fcyStream.h"
 #include"E2DXAudio2Impl.hpp"
 #include"E2DWaveDecoder.hpp"
@@ -40,13 +40,13 @@ int main() {
 		{
 			const int databuffer_size = 4096;
 			const int wavevalue_size = 512;
-			//FFT¹¤×÷ÄÚ´æ
+			//FFTå·¥ä½œå†…å­˜
 			char* fftWorkset = (char*)malloc(xmath::fft::getNeededWorksetSize(wavevalue_size));
 			float* fftOutComplex = (float*)malloc(wavevalue_size * sizeof(float) * 2);//512 * 2 = 1024
-			//ÀëÉ¢´°£¨º¯Êı£©ÊıÁĞ
+			//ç¦»æ•£çª—ï¼ˆå‡½æ•°ï¼‰æ•°åˆ—
 			float fftWindow[wavevalue_size];
 			xmath::fft::getWindow(wavevalue_size, fftWindow);
-			//¸´ÖÆÒ»¶ÎÒª½øĞĞFFTµÄÊı¾İ
+			//å¤åˆ¶ä¸€æ®µè¦è¿›è¡ŒFFTçš„æ•°æ®
 			uint32_t readsize = 0;
 			uint8_t databuffer[databuffer_size] = { 0 };
 			uint32_t pos = 44100 * decoder->GetBlockAlign();
@@ -59,14 +59,14 @@ int main() {
 					break;
 				}
 			}
-			//½âÎö³É¸¡µãÊı¾İ
+			//è§£ææˆæµ®ç‚¹æ•°æ®
 			uint32_t getsize = 0;
 			const auto nBA = decoder->GetBlockAlign();
 			const auto nCh = decoder->GetChannels();
 			const auto factor = 1u << (nBA / nCh * 8 - 1);
 			float wavevalue[wavevalue_size];
 			if (decoder->GetChannels() == 1) {
-				int64_t n;//ÖĞ¼ä±äÁ¿
+				int64_t n;//ä¸­é—´å˜é‡
 				for (uint32_t select = 0; select < wavevalue_size; select++) {
 					if (select * decoder->GetBlockAlign() >= readsize) {
 						break;
@@ -87,7 +87,7 @@ int main() {
 				}
 			}
 			else if (decoder->GetChannels() == 2) {
-				int64_t n;//ÖĞ¼ä±äÁ¿
+				int64_t n;//ä¸­é—´å˜é‡
 				for (uint32_t select = 0; select < wavevalue_size; select++) {
 					if (select * decoder->GetBlockAlign() >= readsize) {
 						break;
@@ -114,7 +114,7 @@ int main() {
 				//cout << outdata[i] << "    ";
 			}
 			//cout << endl;
-			//¼òÒ×´¦Àí
+			//ç®€æ˜“å¤„ç†
 			float printdata[32] = { 0.0f };
 			for (int i = 0; i < 32; i++) {
 				for (int j = 0; j < 8; j++) {
@@ -125,15 +125,15 @@ int main() {
 			for (int i = 1; i < 32; i++) {
 				cout << printdata[i] << endl;
 			}
-			//À¬»ø»ØÊÕ
+			//åƒåœ¾å›æ”¶
 			free(fftWorkset);
 			free(fftOutComplex);
 		}
 
-		//´´½¨ÒôÔ´
+		//åˆ›å»ºéŸ³æº
 		IXAudio2SourceVoice* source;
 		{
-			//ÒôÔ´Êı¾İ¸ñÊ½
+			//éŸ³æºæ•°æ®æ ¼å¼
 			WAVEFORMATEX waveformat;
 			waveformat.wFormatTag = WAVE_FORMAT_PCM;
 			waveformat.nChannels = decoder->GetChannels();
@@ -142,7 +142,7 @@ int main() {
 			waveformat.nBlockAlign = decoder->GetBlockAlign();
 			waveformat.wBitsPerSample = decoder->GetBitsPerSample();
 			waveformat.cbSize = 0;
-			//´´½¨
+			//åˆ›å»º
 			hr = GetXAudio().GetXAudio()->CreateSourceVoice(&source, &waveformat);
 			if (FAILED(hr)) {
 				cout << "Create SourceVoice failed:" << hr << endl;
@@ -152,7 +152,7 @@ int main() {
 			}
 		}
 
-		//ÍÆËÍÒôÆµÊı¾İ
+		//æ¨é€éŸ³é¢‘æ•°æ®
 		{
 
 			XAUDIO2_BUFFER XAbuffer;
@@ -161,10 +161,10 @@ int main() {
 			XAbuffer.AudioBytes = decoder->GetDataSize();
 			XAbuffer.pAudioData = decoder->GetDataBuffer();
 			XAbuffer.PlayBegin = 0;
-			XAbuffer.PlayLength = decoder->GetDataSize() / decoder->GetBlockAlign();//Ã¿¸ö²ÉÑùÓĞ2byte * 2channel = 4byte£¬ËùÒÔ×ÜµÄ²ÉÑùÊıÊÇdata chunk size/4byte
+			XAbuffer.PlayLength = decoder->GetDataSize() / decoder->GetBlockAlign();//æ¯ä¸ªé‡‡æ ·æœ‰2byte * 2channel = 4byteï¼Œæ‰€ä»¥æ€»çš„é‡‡æ ·æ•°æ˜¯data chunk size/4byte
 			XAbuffer.LoopBegin = 0;
-			XAbuffer.LoopLength = decoder->GetDataSize() / decoder->GetBlockAlign();//Í¬ÉÏ
-			XAbuffer.LoopCount = XAUDIO2_LOOP_INFINITE;//ÎŞÏŞÑ­»·
+			XAbuffer.LoopLength = decoder->GetDataSize() / decoder->GetBlockAlign();//åŒä¸Š
+			XAbuffer.LoopCount = XAUDIO2_LOOP_INFINITE;//æ— é™å¾ªç¯
 
 			hr = source->SubmitSourceBuffer(&XAbuffer);
 			if (FAILED(hr)) {
@@ -199,10 +199,10 @@ int main() {
 		fcyStream* stream = new fcyFileStream(path, false);
 		OggDecoder* decoder = new OggDecoder(stream);
 
-		//´´½¨ÒôÔ´
+		//åˆ›å»ºéŸ³æº
 		IXAudio2SourceVoice* source;
 		{
-			//ÒôÔ´Êı¾İ¸ñÊ½
+			//éŸ³æºæ•°æ®æ ¼å¼
 			WAVEFORMATEX waveformat;
 			waveformat.wFormatTag = WAVE_FORMAT_PCM;
 			waveformat.nChannels = decoder->GetChannels();
@@ -211,7 +211,7 @@ int main() {
 			waveformat.nBlockAlign = decoder->GetBlockAlign();
 			waveformat.wBitsPerSample = decoder->GetBitsPerSample();
 			waveformat.cbSize = 0;
-			//´´½¨
+			//åˆ›å»º
 			hr = GetXAudio().GetXAudio()->CreateSourceVoice(&source, &waveformat);
 			if (FAILED(hr)) {
 				cout << "Create SourceVoice failed:" << hr << endl;
@@ -221,7 +221,7 @@ int main() {
 			}
 		}
 
-		//ÍÆËÍÒôÆµÊı¾İ
+		//æ¨é€éŸ³é¢‘æ•°æ®
 		{
 
 			XAUDIO2_BUFFER XAbuffer;
@@ -230,10 +230,10 @@ int main() {
 			XAbuffer.AudioBytes = decoder->GetDataSize();
 			XAbuffer.pAudioData = decoder->GetDataBuffer();
 			XAbuffer.PlayBegin = 0;
-			XAbuffer.PlayLength = decoder->GetDataSize() / decoder->GetBlockAlign();//Ã¿¸ö²ÉÑùÓĞ2byte * 2channel = 4byte£¬ËùÒÔ×ÜµÄ²ÉÑùÊıÊÇdata chunk size/4byte
+			XAbuffer.PlayLength = decoder->GetDataSize() / decoder->GetBlockAlign();//æ¯ä¸ªé‡‡æ ·æœ‰2byte * 2channel = 4byteï¼Œæ‰€ä»¥æ€»çš„é‡‡æ ·æ•°æ˜¯data chunk size/4byte
 			XAbuffer.LoopBegin = 0;
-			XAbuffer.LoopLength = decoder->GetDataSize() / decoder->GetBlockAlign();//Í¬ÉÏ
-			XAbuffer.LoopCount = XAUDIO2_LOOP_INFINITE;//ÎŞÏŞÑ­»·
+			XAbuffer.LoopLength = decoder->GetDataSize() / decoder->GetBlockAlign();//åŒä¸Š
+			XAbuffer.LoopCount = XAUDIO2_LOOP_INFINITE;//æ— é™å¾ªç¯
 
 			hr = source->SubmitSourceBuffer(&XAbuffer);
 			if (FAILED(hr)) {

@@ -2,7 +2,7 @@
 #include "Global.h"
 #include "ObjectPool.hpp"
 #include "Dictionary.hpp"
-#include "E2DMath.h"
+#include "E2DMath.hpp"
 
 #ifdef LoadImage
 #undef LoadImage

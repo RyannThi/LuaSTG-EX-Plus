@@ -1,12 +1,12 @@
-////////////////////////////////////////////////////////////////////////////////
+ï»¿////////////////////////////////////////////////////////////////////////////////
 /// @file  f2dInputSys.h
-/// @brief fancy2DÊäÈëÏµÍ³½Ó¿Ú¶¨Òå
+/// @brief fancy2Dè¾“å…¥ç³»ç»Ÿæ¥å£å®šä¹‰
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "f2dInterface.h"
 
-/// @addtogroup f2dÊäÈëÏµÍ³
-/// @brief fancy2dÒıÇæÊäÈëÏµÍ³
+/// @addtogroup f2dè¾“å…¥ç³»ç»Ÿ
+/// @brief fancy2då¼•æ“è¾“å…¥ç³»ç»Ÿ
 /// @{
 
 struct f2dInputMouse;
@@ -14,116 +14,116 @@ struct f2dInputKeyboard;
 struct f2dInputJoystick;
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief ÊäÈëÉè±¸ÀàĞÍ
+/// @brief è¾“å…¥è®¾å¤‡ç±»å‹
 ////////////////////////////////////////////////////////////////////////////////
 enum F2DINPUTDEVTYPE
 {
-	F2DINPUTDEVTYPE_MOUSE,    ///< @brief Êó±êÀàĞÍ
-	F2DINPUTDEVTYPE_KEYBOARD, ///< @brief ¼üÅÌÀàĞÍ
-	F2DINPUTDEVTYPE_GAMECTRL  ///< @brief ÓÎÏ·¿ØÖÆÆ÷
+	F2DINPUTDEVTYPE_MOUSE,    ///< @brief é¼ æ ‡ç±»å‹
+	F2DINPUTDEVTYPE_KEYBOARD, ///< @brief é”®ç›˜ç±»å‹
+	F2DINPUTDEVTYPE_GAMECTRL  ///< @brief æ¸¸æˆæ§åˆ¶å™¨
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief ÊäÈëÉè±¸½Ó¿Ú
+/// @brief è¾“å…¥è®¾å¤‡æ¥å£
 ////////////////////////////////////////////////////////////////////////////////
 struct f2dInputDevice : public f2dInterface
 {
-	virtual f2dInputMouse* ToMouse()=0;       ///< @brief ×ª»»µ½Êó±êÉè±¸£¨²»Ôö¼ÓÒıÓÃ¼ÆÊı£©
-	virtual f2dInputKeyboard* ToKeyboard()=0; ///< @brief ×ª»»µ½¼üÅÌÉè±¸£¨²»Ôö¼ÓÒıÓÃ¼ÆÊı£©
-	virtual f2dInputJoystick* ToJoystick()=0; ///< @brief ×ª»»µ½ÊÖ±úÉè±¸£¨²»Ôö¼ÓÒıÓÃ¼ÆÊı£©
+	virtual f2dInputMouse* ToMouse()=0;       ///< @brief è½¬æ¢åˆ°é¼ æ ‡è®¾å¤‡ï¼ˆä¸å¢åŠ å¼•ç”¨è®¡æ•°ï¼‰
+	virtual f2dInputKeyboard* ToKeyboard()=0; ///< @brief è½¬æ¢åˆ°é”®ç›˜è®¾å¤‡ï¼ˆä¸å¢åŠ å¼•ç”¨è®¡æ•°ï¼‰
+	virtual f2dInputJoystick* ToJoystick()=0; ///< @brief è½¬æ¢åˆ°æ‰‹æŸ„è®¾å¤‡ï¼ˆä¸å¢åŠ å¼•ç”¨è®¡æ•°ï¼‰
 
-	/// @brief ¸üĞÂÉè±¸×´Ì¬
-	/// @note  ¸Ã·½·¨ÒÑÓÉÒıÇæ×Ô¶¯µ÷ÓÃ¡£
+	/// @brief æ›´æ–°è®¾å¤‡çŠ¶æ€
+	/// @note  è¯¥æ–¹æ³•å·²ç”±å¼•æ“è‡ªåŠ¨è°ƒç”¨ã€‚
 	virtual fResult UpdateState()=0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief Êó±êÊÂ¼ş¼àÌıÆ÷
+/// @brief é¼ æ ‡äº‹ä»¶ç›‘å¬å™¨
 ////////////////////////////////////////////////////////////////////////////////
 struct f2dInputMouseEventListener
 {
-	/// @brief     Êó±êXÎ»ÖÃÒÆ¶¯
-	/// @param[in] Value ÒÆ¶¯µÄÏà¶ÔÖµ
+	/// @brief     é¼ æ ‡Xä½ç½®ç§»åŠ¨
+	/// @param[in] Value ç§»åŠ¨çš„ç›¸å¯¹å€¼
 	virtual void OnMouseMoveX(fInt Value) {}
 
-	/// @brief     Êó±êYÎ»ÖÃÒÆ¶¯
-	/// @param[in] Value ÒÆ¶¯µÄÏà¶ÔÖµ
+	/// @brief     é¼ æ ‡Yä½ç½®ç§»åŠ¨
+	/// @param[in] Value ç§»åŠ¨çš„ç›¸å¯¹å€¼
 	virtual void OnMouseMoveY(fInt Value) {}
 
-	/// @brief     Êó±êZÎ»ÖÃÒÆ¶¯
-	/// @param[in] Value ÒÆ¶¯µÄÏà¶ÔÖµ
+	/// @brief     é¼ æ ‡Zä½ç½®ç§»åŠ¨
+	/// @param[in] Value ç§»åŠ¨çš„ç›¸å¯¹å€¼
 	virtual void OnMouseMoveZ(fInt Value) {}
 
-	/// @brief Êó±ê×ó¼ü°´ÏÂ
+	/// @brief é¼ æ ‡å·¦é”®æŒ‰ä¸‹
 	virtual void OnMouseLBtnDown() {}
 
-	/// @brief Êó±êÓÒ¼ü°´ÏÂ
+	/// @brief é¼ æ ‡å³é”®æŒ‰ä¸‹
 	virtual void OnMouseRBtnDown() {}
 
-	/// @brief Êó±êÖĞ¼ü°´ÏÂ
+	/// @brief é¼ æ ‡ä¸­é”®æŒ‰ä¸‹
 	virtual void OnMouseMBtnDown() {}
 
-	/// @brief     Êó±ê¶îÍâ°´¼ü°´ÏÂ
-	/// @param[in] Index Ë÷Òı£¬´Ó0¿ªÊ¼
+	/// @brief     é¼ æ ‡é¢å¤–æŒ‰é”®æŒ‰ä¸‹
+	/// @param[in] Index ç´¢å¼•ï¼Œä»0å¼€å§‹
 	virtual void OnMouseAdditionBtnDown(fuInt Index) {}
 
-	/// @brief Êó±ê×ó¼ü·Å¿ª
+	/// @brief é¼ æ ‡å·¦é”®æ”¾å¼€
 	virtual void OnMouseLBtnUp() {}
 
-	/// @brief Êó±êÓÒ¼ü·Å¿ª
+	/// @brief é¼ æ ‡å³é”®æ”¾å¼€
 	virtual void OnMouseRBtnUp() {}
 
-	/// @brief Êó±êÖĞ¼ü·Å¿ª
+	/// @brief é¼ æ ‡ä¸­é”®æ”¾å¼€
 	virtual void OnMouseMBtnUp() {}
 
-	/// @brief     Êó±ê¶îÍâ°´¼ü·Å¿ª
-	/// @param[in] Index Ë÷Òı£¬´Ó0¿ªÊ¼
+	/// @brief     é¼ æ ‡é¢å¤–æŒ‰é”®æ”¾å¼€
+	/// @param[in] Index ç´¢å¼•ï¼Œä»0å¼€å§‹
 	virtual void OnMouseAdditionBtnUp(fuInt Index) {}
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief Êó±êÉè±¸
+/// @brief é¼ æ ‡è®¾å¤‡
 ////////////////////////////////////////////////////////////////////////////////
 struct f2dInputMouse : public f2dInputDevice
 {
-	// --- ¼àÌıÆ÷ ---
-	/// @brief »ñµÃ¼àÌıÆ÷
+	// --- ç›‘å¬å™¨ ---
+	/// @brief è·å¾—ç›‘å¬å™¨
 	virtual f2dInputMouseEventListener* GetListener()=0;
 
-	/// @brief ÉèÖÃ¼àÌıÆ÷
+	/// @brief è®¾ç½®ç›‘å¬å™¨
 	virtual fResult SetListener(f2dInputMouseEventListener* pListener)=0;
 	
-	// --- ×´Ì¬²éÑ¯ ---
-	virtual fBool IsLeftBtnDown()=0;                ///< @brief ×ó¼üÊÇ·ñ°´ÏÂ
-	virtual fBool IsRightBtnDown()=0;               ///< @brief ÓÒ¼üÊÇ·ñ°´ÏÂ
-	virtual fBool IsMiddleBtnDown()=0;              ///< @brief ¹öÂÖÊÇ·ñ°´ÏÂ
-	virtual fBool IsAdditionBtnDown(fuInt Index)=0; ///< @brief     ¶îÍâ°´Å¥ÊÇ·ñ°´ÏÂ
-	                                                ///< @param[in] Index Ë÷Òı´Ó0¿ªÊ¼
-	virtual fInt GetOffsetX()=0;  ///< @brief ¾àÀëÉÏ´Î²éÑ¯ÀÛ»ıµÄXÖáÎ»ÒÆ
-	virtual fInt GetOffsetY()=0;  ///< @brief ¾àÀëÉÏ´Î²éÑ¯ÀÛ»ıµÄYÖáÎ»ÒÆ
-	virtual fInt GetOffsetZ()=0;  ///< @brief ¾àÀëÉÏ´Î²éÑ¯ÀÛ»ıµÄZÖáÎ»ÒÆ
+	// --- çŠ¶æ€æŸ¥è¯¢ ---
+	virtual fBool IsLeftBtnDown()=0;                ///< @brief å·¦é”®æ˜¯å¦æŒ‰ä¸‹
+	virtual fBool IsRightBtnDown()=0;               ///< @brief å³é”®æ˜¯å¦æŒ‰ä¸‹
+	virtual fBool IsMiddleBtnDown()=0;              ///< @brief æ»šè½®æ˜¯å¦æŒ‰ä¸‹
+	virtual fBool IsAdditionBtnDown(fuInt Index)=0; ///< @brief     é¢å¤–æŒ‰é’®æ˜¯å¦æŒ‰ä¸‹
+	                                                ///< @param[in] Index ç´¢å¼•ä»0å¼€å§‹
+	virtual fInt GetOffsetX()=0;  ///< @brief è·ç¦»ä¸Šæ¬¡æŸ¥è¯¢ç´¯ç§¯çš„Xè½´ä½ç§»
+	virtual fInt GetOffsetY()=0;  ///< @brief è·ç¦»ä¸Šæ¬¡æŸ¥è¯¢ç´¯ç§¯çš„Yè½´ä½ç§»
+	virtual fInt GetOffsetZ()=0;  ///< @brief è·ç¦»ä¸Šæ¬¡æŸ¥è¯¢ç´¯ç§¯çš„Zè½´ä½ç§»
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief ¼üÅÌ°´¼ü´úÂë
+/// @brief é”®ç›˜æŒ‰é”®ä»£ç 
 ////////////////////////////////////////////////////////////////////////////////
 enum F2DINPUTKEYCODE
 {
-	F2DINPUTKEYCODE_UNKNOWN=0x00,      ///< @brief Î´Öª
-	F2DINPUTKEYCODE_ESCAPE=0x01,       ///< @brief ESC¼ü
-	F2DINPUTKEYCODE_1=0x02,            ///< @brief Ö÷¼üÅÌ1
-	F2DINPUTKEYCODE_2=0x03,            ///< @brief Ö÷¼üÅÌ2
-	F2DINPUTKEYCODE_3=0x04,            ///< @brief Ö÷¼üÅÌ3
-	F2DINPUTKEYCODE_4=0x05,            ///< @brief Ö÷¼üÅÌ4
-	F2DINPUTKEYCODE_5=0x06,            ///< @brief Ö÷¼üÅÌ5
-	F2DINPUTKEYCODE_6=0x07,            ///< @brief Ö÷¼üÅÌ6
-	F2DINPUTKEYCODE_7=0x08,            ///< @brief Ö÷¼üÅÌ7
-	F2DINPUTKEYCODE_8=0x09,            ///< @brief Ö÷¼üÅÌ8
-	F2DINPUTKEYCODE_9=0x0A,            ///< @brief Ö÷¼üÅÌ9
-	F2DINPUTKEYCODE_0=0x0B,            ///< @brief Ö÷¼üÅÌ0
-	F2DINPUTKEYCODE_MINUS=0x0C,        ///< @brief Ö÷¼üÅÌ-
+	F2DINPUTKEYCODE_UNKNOWN=0x00,      ///< @brief æœªçŸ¥
+	F2DINPUTKEYCODE_ESCAPE=0x01,       ///< @brief ESCé”®
+	F2DINPUTKEYCODE_1=0x02,            ///< @brief ä¸»é”®ç›˜1
+	F2DINPUTKEYCODE_2=0x03,            ///< @brief ä¸»é”®ç›˜2
+	F2DINPUTKEYCODE_3=0x04,            ///< @brief ä¸»é”®ç›˜3
+	F2DINPUTKEYCODE_4=0x05,            ///< @brief ä¸»é”®ç›˜4
+	F2DINPUTKEYCODE_5=0x06,            ///< @brief ä¸»é”®ç›˜5
+	F2DINPUTKEYCODE_6=0x07,            ///< @brief ä¸»é”®ç›˜6
+	F2DINPUTKEYCODE_7=0x08,            ///< @brief ä¸»é”®ç›˜7
+	F2DINPUTKEYCODE_8=0x09,            ///< @brief ä¸»é”®ç›˜8
+	F2DINPUTKEYCODE_9=0x0A,            ///< @brief ä¸»é”®ç›˜9
+	F2DINPUTKEYCODE_0=0x0B,            ///< @brief ä¸»é”®ç›˜0
+	F2DINPUTKEYCODE_MINUS=0x0C,        ///< @brief ä¸»é”®ç›˜-
 	F2DINPUTKEYCODE_EQUALS=0x0D,       ///< @brief =
-	F2DINPUTKEYCODE_BACK=0x0E,         ///< @brief ÍË¸ñ
+	F2DINPUTKEYCODE_BACK=0x0E,         ///< @brief é€€æ ¼
 	F2DINPUTKEYCODE_TAB=0x0F,          ///< @brief TAB
 	F2DINPUTKEYCODE_Q=0x10,            ///< @brief Q
 	F2DINPUTKEYCODE_W=0x11,            ///< @brief W
@@ -137,8 +137,8 @@ enum F2DINPUTKEYCODE
 	F2DINPUTKEYCODE_P=0x19,            ///< @brief P
 	F2DINPUTKEYCODE_LBRACKET=0x1A,     ///< @brief [
 	F2DINPUTKEYCODE_RBRACKET=0x1B,     ///< @brief ]
-	F2DINPUTKEYCODE_RETURN=0x1C,       ///< @brief »Ø³µ
-	F2DINPUTKEYCODE_LCONTROL=0x1D,     ///< @brief ×óCtrl
+	F2DINPUTKEYCODE_RETURN=0x1C,       ///< @brief å›è½¦
+	F2DINPUTKEYCODE_LCONTROL=0x1D,     ///< @brief å·¦Ctrl
 	F2DINPUTKEYCODE_A=0x1E,            ///< @brief A
 	F2DINPUTKEYCODE_S=0x1F,            ///< @brief S
 	F2DINPUTKEYCODE_D=0x20,            ///< @brief D
@@ -151,8 +151,8 @@ enum F2DINPUTKEYCODE
 	F2DINPUTKEYCODE_SEMICOLON=0x27,    ///< @brief ;
 	F2DINPUTKEYCODE_APOSTROPHE=0x28,   ///< @brief '
 	F2DINPUTKEYCODE_GRAVE=0x29,        ///< @brief `
-	F2DINPUTKEYCODE_LSHIFT=0x2A,       ///< @brief ×óshift
-	F2DINPUTKEYCODE_BACKSLASH=0x2B,    ///< @brief ·´Ğ±¸Ü
+	F2DINPUTKEYCODE_LSHIFT=0x2A,       ///< @brief å·¦shift
+	F2DINPUTKEYCODE_BACKSLASH=0x2B,    ///< @brief åæ–œæ 
 	F2DINPUTKEYCODE_Z=0x2C,            ///< @brief Z
 	F2DINPUTKEYCODE_X=0x2D,            ///< @brief X
 	F2DINPUTKEYCODE_C=0x2E,            ///< @brief C
@@ -160,14 +160,14 @@ enum F2DINPUTKEYCODE
 	F2DINPUTKEYCODE_B=0x30,            ///< @brief B
 	F2DINPUTKEYCODE_N=0x31,            ///< @brief N
 	F2DINPUTKEYCODE_M=0x32,            ///< @brief M
-	F2DINPUTKEYCODE_COMMA=0x33,        ///< @brief ¶ººÅ
-	F2DINPUTKEYCODE_PERIOD=0x34,       ///< @brief ¾äºÅ
+	F2DINPUTKEYCODE_COMMA=0x33,        ///< @brief é€—å·
+	F2DINPUTKEYCODE_PERIOD=0x34,       ///< @brief å¥å·
 	F2DINPUTKEYCODE_SLASH=0x35,        ///< @brief /
-	F2DINPUTKEYCODE_RSHIFT=0x36,       ///< @brief ÓÒshift
-	F2DINPUTKEYCODE_MULTIPLY=0x37,     ///< @brief ³ËºÅ
-	F2DINPUTKEYCODE_LMENU=0x38,        ///< @brief ×óalt
-	F2DINPUTKEYCODE_SPACE=0x39,        ///< @brief ¿Õ¸ñ
-	F2DINPUTKEYCODE_CAPITAL=0x3A,      ///< @brief ´óĞ´
+	F2DINPUTKEYCODE_RSHIFT=0x36,       ///< @brief å³shift
+	F2DINPUTKEYCODE_MULTIPLY=0x37,     ///< @brief ä¹˜å·
+	F2DINPUTKEYCODE_LMENU=0x38,        ///< @brief å·¦alt
+	F2DINPUTKEYCODE_SPACE=0x39,        ///< @brief ç©ºæ ¼
+	F2DINPUTKEYCODE_CAPITAL=0x3A,      ///< @brief å¤§å†™
 	F2DINPUTKEYCODE_F1=0x3B,           ///< @brief F1
 	F2DINPUTKEYCODE_F2=0x3C,           ///< @brief F2
 	F2DINPUTKEYCODE_F3=0x3D,           ///< @brief F3
@@ -178,21 +178,21 @@ enum F2DINPUTKEYCODE
 	F2DINPUTKEYCODE_F8=0x42,           ///< @brief F8
 	F2DINPUTKEYCODE_F9=0x43,           ///< @brief F9
 	F2DINPUTKEYCODE_F10=0x44,          ///< @brief F10
-	F2DINPUTKEYCODE_NUMLOCK=0x45,      ///< @brief Êı×ÖËø
-	F2DINPUTKEYCODE_SCROLL=0x46,       ///< @brief ¹ö¶¯Ëø
-	F2DINPUTKEYCODE_NUMPAD7=0x47,      ///< @brief Êı×Ö¼üÅÌ7
-	F2DINPUTKEYCODE_NUMPAD8=0x48,      ///< @brief Êı×Ö¼üÅÌ8
-	F2DINPUTKEYCODE_NUMPAD9=0x49,      ///< @brief Êı×Ö¼üÅÌ9
-	F2DINPUTKEYCODE_SUBTRACT=0x4A,     ///< @brief Êı×Ö¼üÅÌ-
-	F2DINPUTKEYCODE_NUMPAD4=0x4B,      ///< @brief Êı×Ö¼üÅÌ4
-	F2DINPUTKEYCODE_NUMPAD5=0x4C,      ///< @brief Êı×Ö¼üÅÌ5
-	F2DINPUTKEYCODE_NUMPAD6=0x4D,      ///< @brief Êı×Ö¼üÅÌ6
-	F2DINPUTKEYCODE_ADD=0x4E,          ///< @brief Êı×Ö¼üÅÌ+
-	F2DINPUTKEYCODE_NUMPAD1=0x4F,      ///< @brief Êı×Ö¼üÅÌ1
-	F2DINPUTKEYCODE_NUMPAD2=0x50,      ///< @brief Êı×Ö¼üÅÌ2
-	F2DINPUTKEYCODE_NUMPAD3=0x51,      ///< @brief Êı×Ö¼üÅÌ3
-	F2DINPUTKEYCODE_NUMPAD0=0x52,      ///< @brief Êı×Ö¼üÅÌ0
-	F2DINPUTKEYCODE_DECIMAL=0x53,      ///< @brief Êı×Ö¼üÅÌ.
+	F2DINPUTKEYCODE_NUMLOCK=0x45,      ///< @brief æ•°å­—é”
+	F2DINPUTKEYCODE_SCROLL=0x46,       ///< @brief æ»šåŠ¨é”
+	F2DINPUTKEYCODE_NUMPAD7=0x47,      ///< @brief æ•°å­—é”®ç›˜7
+	F2DINPUTKEYCODE_NUMPAD8=0x48,      ///< @brief æ•°å­—é”®ç›˜8
+	F2DINPUTKEYCODE_NUMPAD9=0x49,      ///< @brief æ•°å­—é”®ç›˜9
+	F2DINPUTKEYCODE_SUBTRACT=0x4A,     ///< @brief æ•°å­—é”®ç›˜-
+	F2DINPUTKEYCODE_NUMPAD4=0x4B,      ///< @brief æ•°å­—é”®ç›˜4
+	F2DINPUTKEYCODE_NUMPAD5=0x4C,      ///< @brief æ•°å­—é”®ç›˜5
+	F2DINPUTKEYCODE_NUMPAD6=0x4D,      ///< @brief æ•°å­—é”®ç›˜6
+	F2DINPUTKEYCODE_ADD=0x4E,          ///< @brief æ•°å­—é”®ç›˜+
+	F2DINPUTKEYCODE_NUMPAD1=0x4F,      ///< @brief æ•°å­—é”®ç›˜1
+	F2DINPUTKEYCODE_NUMPAD2=0x50,      ///< @brief æ•°å­—é”®ç›˜2
+	F2DINPUTKEYCODE_NUMPAD3=0x51,      ///< @brief æ•°å­—é”®ç›˜3
+	F2DINPUTKEYCODE_NUMPAD0=0x52,      ///< @brief æ•°å­—é”®ç›˜0
+	F2DINPUTKEYCODE_DECIMAL=0x53,      ///< @brief æ•°å­—é”®ç›˜.
 	F2DINPUTKEYCODE_OEM_102=0x56,      
 	F2DINPUTKEYCODE_F11=0x57,          ///< @brief F11
 	F2DINPUTKEYCODE_F12=0x58,          ///< @brief F12
@@ -257,146 +257,159 @@ enum F2DINPUTKEYCODE
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief ¼üÅÌÊÂ¼ş¼àÌıÆ÷
+/// @brief é”®ç›˜äº‹ä»¶ç›‘å¬å™¨
 ////////////////////////////////////////////////////////////////////////////////
 struct f2dInputKeyboardEventListener
 {
-	/// @brief     ¼üÅÌ°´¼ü°´ÏÂ
-	/// @param[in] KeyCode °´¼ü´úÂë
+	/// @brief     é”®ç›˜æŒ‰é”®æŒ‰ä¸‹
+	/// @param[in] KeyCode æŒ‰é”®ä»£ç 
 	virtual void OnKeyboardBtnDown(F2DINPUTKEYCODE KeyCode) {}
 
-	/// @brief     ¼üÅÌ°´¼ü·Å¿ª
-	/// @param[in] KeyCode °´¼ü´úÂë
+	/// @brief     é”®ç›˜æŒ‰é”®æ”¾å¼€
+	/// @param[in] KeyCode æŒ‰é”®ä»£ç 
 	virtual void OnKeyboardBtnUp(F2DINPUTKEYCODE KeyCode) {}
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief ¼üÅÌÉè±¸
+/// @brief é”®ç›˜è®¾å¤‡
 ////////////////////////////////////////////////////////////////////////////////
 struct f2dInputKeyboard : public f2dInputDevice
 {
-	// --- ¼àÌıÆ÷ ---
-	/// @brief ·µ»Ø¼àÌıÆ÷
+	// --- ç›‘å¬å™¨ ---
+
+	/// @brief è¿”å›ç›‘å¬å™¨
 	virtual f2dInputKeyboardEventListener* GetListener()=0;
-	/// @brief ÉèÖÃ¼àÌıÆ÷
+	/// @brief è®¾ç½®ç›‘å¬å™¨
 	virtual fResult SetListener(f2dInputKeyboardEventListener* pListener)=0;
 	
-	// --- ×´Ì¬²éÑ¯ ---
-	virtual fBool IsKeyDown(F2DINPUTKEYCODE KeyCode)=0; ///< @brief     ÅĞ¶Ï°´¼üÊÇ·ñ°´ÏÂ
-	                                                    ///< @param[in] KeyCode ¼ü´úÂë
+	// --- çŠ¶æ€æŸ¥è¯¢ ---
+
+	//åˆ¤æ–­æŒ‰é”®æ˜¯å¦æŒ‰ä¸‹
+	//param[in] KeyCode Fancy2Dé”®ä»£ç 
+	virtual fBool IsKeyDown(F2DINPUTKEYCODE KeyCode)=0;
+
+	//åˆ¤æ–­æŒ‰é”®æ˜¯å¦æŒ‰ä¸‹
+	//param[in] KeyCode Dinputé”®ä»£ç 
+	virtual fBool KeyPress(DWORD KeyCode) = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief ÊÖ±úÊÂ¼ş¼àÌıÆ÷
+/// @brief æ‰‹æŸ„äº‹ä»¶ç›‘å¬å™¨
 ////////////////////////////////////////////////////////////////////////////////
 struct f2dInputJoystickEventListener
 {
-	/// @brief     °´Å¥°´ÏÂ
-	/// @param[in] p     ÊÖ±úÖ¸Õë
-	/// @param[in] Index °´¼üË÷Òı
+	/// @brief     æŒ‰é’®æŒ‰ä¸‹
+	/// @param[in] p     æ‰‹æŸ„æŒ‡é’ˆ
+	/// @param[in] Index æŒ‰é”®ç´¢å¼•
 	virtual void OnJoystickBtnDown(f2dInputJoystick* p, fuInt Index) {}
 
-	/// @brief     °´Å¥·Å¿ª
-	/// @param[in] p     ÊÖ±úÖ¸Õë
-	/// @param[in] Index °´¼üË÷Òı
+	/// @brief     æŒ‰é’®æ”¾å¼€
+	/// @param[in] p     æ‰‹æŸ„æŒ‡é’ˆ
+	/// @param[in] Index æŒ‰é”®ç´¢å¼•
 	virtual void OnJoystickBtnUp(f2dInputJoystick* p, fuInt Index) {}
 
-	/// @brief     XÖáÎ»ÖÃ±ä»¯
-	/// @param[in] p     ÊÖ±úÖ¸Õë
-	/// @param[in] Value ĞÂµÄÎ»ÖÃ
+	/// @brief     Xè½´ä½ç½®å˜åŒ–
+	/// @param[in] p     æ‰‹æŸ„æŒ‡é’ˆ
+	/// @param[in] Value æ–°çš„ä½ç½®
 	virtual void OnJoystickXAxisPosChange(f2dInputJoystick* p, fFloat Value) {}
 
-	/// @brief     YÖáÎ»ÖÃ±ä»¯
-	/// @param[in] p     ÊÖ±úÖ¸Õë
-	/// @param[in] Value ĞÂµÄÎ»ÖÃ
+	/// @brief     Yè½´ä½ç½®å˜åŒ–
+	/// @param[in] p     æ‰‹æŸ„æŒ‡é’ˆ
+	/// @param[in] Value æ–°çš„ä½ç½®
 	virtual void OnJoystickYAxisPosChange(f2dInputJoystick* p, fFloat Value) {}
 
-	/// @brief     ZÖáÎ»ÖÃ±ä»¯
-	/// @param[in] p     ÊÖ±úÖ¸Õë
-	/// @param[in] Value ĞÂµÄÎ»ÖÃ
+	/// @brief     Zè½´ä½ç½®å˜åŒ–
+	/// @param[in] p     æ‰‹æŸ„æŒ‡é’ˆ
+	/// @param[in] Value æ–°çš„ä½ç½®
 	virtual void OnJoystickZAxisPosChange(f2dInputJoystick* p, fFloat Value) {}
 
-	/// @brief     XÖáĞı×ª±ä»¯
-	/// @param[in] p     ÊÖ±úÖ¸Õë
-	/// @param[in] Value ĞÂµÄÎ»ÖÃ
+	/// @brief     Xè½´æ—‹è½¬å˜åŒ–
+	/// @param[in] p     æ‰‹æŸ„æŒ‡é’ˆ
+	/// @param[in] Value æ–°çš„ä½ç½®
 	virtual void OnJoystickXAxisRotationChange(f2dInputJoystick* p, fFloat Value) {}
 
-	/// @brief     YÖáĞı×ª±ä»¯
-	/// @param[in] p     ÊÖ±úÖ¸Õë
-	/// @param[in] Value ĞÂµÄÎ»ÖÃ
+	/// @brief     Yè½´æ—‹è½¬å˜åŒ–
+	/// @param[in] p     æ‰‹æŸ„æŒ‡é’ˆ
+	/// @param[in] Value æ–°çš„ä½ç½®
 	virtual void OnJoystickYAxisRotationChange(f2dInputJoystick* p, fFloat Value) {}
 
-	/// @brief     ZÖáĞı×ª±ä»¯
-	/// @param[in] p     ÊÖ±úÖ¸Õë
-	/// @param[in] Value ĞÂµÄÎ»ÖÃ
+	/// @brief     Zè½´æ—‹è½¬å˜åŒ–
+	/// @param[in] p     æ‰‹æŸ„æŒ‡é’ˆ
+	/// @param[in] Value æ–°çš„ä½ç½®
 	virtual void OnJoystickZAxisRotationChange(f2dInputJoystick* p, fFloat Value) {}
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief ÊÖ±úÉè±¸
+/// @brief æ‰‹æŸ„è®¾å¤‡
 ////////////////////////////////////////////////////////////////////////////////
 struct f2dInputJoystick : public f2dInputDevice
 {
-	// --- ¼àÌıÆ÷ ---
-	/// @brief ·µ»Ø¼àÌıÆ÷
+	// --- ç›‘å¬å™¨ ---
+	/// @brief è¿”å›ç›‘å¬å™¨
 	virtual f2dInputJoystickEventListener* GetListener()=0;
-	/// @brief ÉèÖÃ¼àÌıÆ÷
+	/// @brief è®¾ç½®ç›‘å¬å™¨
 	virtual fResult SetListener(f2dInputJoystickEventListener* pListener)=0;
 
-	// --- ×´Ì¬²éÑ¯ ---
-	virtual fFloat GetXPosition()=0;  ///< @brief ÊÖ±úXÎ»ÒÆ£¬·µ»Ø[-1,1]
-	virtual fFloat GetYPosition()=0;  ///< @brief ÊÖ±úYÎ»ÒÆ£¬·µ»Ø[-1,1]
-	virtual fFloat GetZPosition()=0;  ///< @brief ÊÖ±úZÎ»ÒÆ£¬·µ»Ø[-1,1]
-	virtual fFloat GetXRotation()=0;  ///< @brief ÊÖ±úXĞı×ª£¬·µ»Ø[-1,1]
-	virtual fFloat GetYRotation()=0;  ///< @brief ÊÖ±úYĞı×ª£¬·µ»Ø[-1,1]
-	virtual fFloat GetZRotation()=0;  ///< @brief ÊÖ±úZĞı×ª£¬·µ»Ø[-1,1]
-	virtual fBool IsButtonDown(fuInt Index)=0;  ///< @brief ¼ì²é°´Å¥ÊÇ·ñ°´ÏÂ
-	virtual fInt GetSlider(fuInt Index)=0;      ///< @brief »ñµÃ»¬ÌõÖµ
-	virtual fuInt GetPOV(fuInt Index)=0;        ///< @brief »ñµÃPOVÖµ
+	// --- çŠ¶æ€æŸ¥è¯¢ ---
+	virtual fFloat GetXPosition()=0;  ///< @brief æ‰‹æŸ„Xä½ç§»ï¼Œè¿”å›[-1,1]
+	virtual fFloat GetYPosition()=0;  ///< @brief æ‰‹æŸ„Yä½ç§»ï¼Œè¿”å›[-1,1]
+	virtual fFloat GetZPosition()=0;  ///< @brief æ‰‹æŸ„Zä½ç§»ï¼Œè¿”å›[-1,1]
+	virtual fFloat GetXRotation()=0;  ///< @brief æ‰‹æŸ„Xæ—‹è½¬ï¼Œè¿”å›[-1,1]
+	virtual fFloat GetYRotation()=0;  ///< @brief æ‰‹æŸ„Yæ—‹è½¬ï¼Œè¿”å›[-1,1]
+	virtual fFloat GetZRotation()=0;  ///< @brief æ‰‹æŸ„Zæ—‹è½¬ï¼Œè¿”å›[-1,1]
+	virtual fBool IsButtonDown(fuInt Index)=0;  ///< @brief æ£€æŸ¥æŒ‰é’®æ˜¯å¦æŒ‰ä¸‹
+	virtual fInt GetSlider(fuInt Index)=0;      ///< @brief è·å¾—æ»‘æ¡å€¼
+	virtual fuInt GetPOV(fuInt Index)=0;        ///< @brief è·å¾—POVå€¼
 
-	virtual fFloat GetDeadZone()=0;                  ///< @brief ·µ»ØËÀÇø£¬[0,1]Ö®¼äÖµ
-	virtual fResult SetDeadZone(fFloat Percent)=0;   ///< @brief ÉèÖÃËÀÇø£¬[0,1]Ö®¼äÖµ
-	                                                 ///< @note  ÉèÖÃÊÖ±ú×îĞ¡ÏìÓ¦ÁéÃô¶È
-	virtual fFloat GetSaturation()=0;                ///< @brief ·µ»Ø±¥ºÍÖµ£¬[0,1]Ö®¼äÖµ
-	virtual fResult SetSaturation(fFloat Percent)=0; ///< @brief ÉèÖÃ±¥ºÍÖµ£¬[0,1]Ö®¼äÖµ
-	                                                 ///< @note  ÉèÖÃÊÖ±ú×î´óÏìÓ¦ÁéÃô¶È
+	virtual fFloat GetDeadZone()=0;                  ///< @brief è¿”å›æ­»åŒºï¼Œ[0,1]ä¹‹é—´å€¼
+	virtual fResult SetDeadZone(fFloat Percent)=0;   ///< @brief è®¾ç½®æ­»åŒºï¼Œ[0,1]ä¹‹é—´å€¼
+	                                                 ///< @note  è®¾ç½®æ‰‹æŸ„æœ€å°å“åº”çµæ•åº¦
+	virtual fFloat GetSaturation()=0;                ///< @brief è¿”å›é¥±å’Œå€¼ï¼Œ[0,1]ä¹‹é—´å€¼
+	virtual fResult SetSaturation(fFloat Percent)=0; ///< @brief è®¾ç½®é¥±å’Œå€¼ï¼Œ[0,1]ä¹‹é—´å€¼
+	                                                 ///< @note  è®¾ç½®æ‰‹æŸ„æœ€å¤§å“åº”çµæ•åº¦
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief fancy2DÊäÈëÏµÍ³
+/// @brief fancy2Dè¾“å…¥ç³»ç»Ÿ
 ////////////////////////////////////////////////////////////////////////////////
 struct f2dInputSys
 {
-	/// @brief     ·µ»ØÉè±¸×ÜÊı
-	/// @param[in] Type Éè±¸ÀàĞÍ
+	/// @brief     è¿”å›è®¾å¤‡æ€»æ•°
+	/// @param[in] Type è®¾å¤‡ç±»å‹
 	virtual fuInt GetDeviceCount(F2DINPUTDEVTYPE Type)=0;
 
-	/// @brief     ·µ»ØÉè±¸Ãû³Æ
-	/// @param[in] Type  Éè±¸ÀàĞÍ
-	/// @param[in] Index Éè±¸Ë÷Òı
+	/// @brief     è¿”å›è®¾å¤‡åç§°
+	/// @param[in] Type  è®¾å¤‡ç±»å‹
+	/// @param[in] Index è®¾å¤‡ç´¢å¼•
 	virtual fcStrW GetDeviceName(F2DINPUTDEVTYPE Type, fuInt Index)=0;
 
-	/// @brief     ·µ»ØÉè±¸²úÆ·Ãû³Æ
-	/// @param[in] Type  Éè±¸ÀàĞÍ
-	/// @param[in] Index Éè±¸Ë÷Òı
+	/// @brief     è¿”å›è®¾å¤‡äº§å“åç§°
+	/// @param[in] Type  è®¾å¤‡ç±»å‹
+	/// @param[in] Index è®¾å¤‡ç´¢å¼•
 	virtual fcStrW GetDeviceProductName(F2DINPUTDEVTYPE Type, fuInt Index)=0;
 	
-	/// @brief      ´´½¨Êó±ê
-	/// @param[in]  DevIndex     ´´½¨Ä¬ÈÏÊó±êÉè±¸Ê±ÉèÎª-1
-	/// @param[in]  bGlobalFocus È«¾ÖÏìÓ¦£¬µ±ÎªtrueÊ±³ÌĞòÔÚ·Ç¼¤»î×´Ì¬Ê±Òà¿É²¶×½ÏûÏ¢
-	/// @param[out] pOut         ´´½¨µÄÉè±¸Ö¸Õë
+	/// @brief      åˆ›å»ºé¼ æ ‡
+	/// @param[in]  DevIndex     åˆ›å»ºé»˜è®¤é¼ æ ‡è®¾å¤‡æ—¶è®¾ä¸º-1
+	/// @param[in]  bGlobalFocus å…¨å±€å“åº”ï¼Œå½“ä¸ºtrueæ—¶ç¨‹åºåœ¨éæ¿€æ´»çŠ¶æ€æ—¶äº¦å¯æ•æ‰æ¶ˆæ¯
+	/// @param[out] pOut         åˆ›å»ºçš„è®¾å¤‡æŒ‡é’ˆ
 	virtual fResult CreateMouse(fInt DevIndex, fBool bGlobalFocus, f2dInputMouse** pOut)=0;
 
-	/// @brief      ´´½¨¼üÅÌ
-	/// @param[in]  DevIndex     ´´½¨Ä¬ÈÏÊó±êÉè±¸Ê±ÉèÎª-1
-	/// @param[in]  bGlobalFocus È«¾ÖÏìÓ¦£¬µ±ÎªtrueÊ±³ÌĞòÔÚ·Ç¼¤»î×´Ì¬Ê±Òà¿É²¶×½ÏûÏ¢
-	/// @param[out] pOut         ´´½¨µÄÉè±¸Ö¸Õë
+	/// @brief      åˆ›å»ºé”®ç›˜
+	/// @param[in]  DevIndex     åˆ›å»ºé»˜è®¤é¼ æ ‡è®¾å¤‡æ—¶è®¾ä¸º-1
+	/// @param[in]  bGlobalFocus å…¨å±€å“åº”ï¼Œå½“ä¸ºtrueæ—¶ç¨‹åºåœ¨éæ¿€æ´»çŠ¶æ€æ—¶äº¦å¯æ•æ‰æ¶ˆæ¯
+	/// @param[out] pOut         åˆ›å»ºçš„è®¾å¤‡æŒ‡é’ˆ
 	virtual fResult CreateKeyboard(fInt DevIndex, fBool bGlobalFocus, f2dInputKeyboard** pOut)=0;
 
-	/// @brief      ´´½¨¼üÅÌ
-	/// @param[in]  DevIndex     ´Ó0¿ªÊ¼£¬¿ÉÒÔÓÉGetDeviceCountÃ¶¾Ù
-	/// @param[in]  bGlobalFocus È«¾ÖÏìÓ¦£¬µ±ÎªtrueÊ±³ÌĞòÔÚ·Ç¼¤»î×´Ì¬Ê±Òà¿É²¶×½ÏûÏ¢
-	/// @param[out] pOut         ´´½¨µÄÉè±¸Ö¸Õë
+	//åˆ›å»ºé»˜è®¤ç±»å‹çš„é”®ç›˜ï¼Œä¸ä½¿ç”¨Fancy2Dçš„é”®ç›˜æ˜ å°„
+	//param[in]  DevIndex     åˆ›å»ºé»˜è®¤é”®ç›˜è®¾å¤‡æ—¶è®¾ä¸º-1
+	//param[in]  bGlobalFocus å…¨å±€å“åº”ï¼Œå½“ä¸ºtrueæ—¶ç¨‹åºåœ¨éæ¿€æ´»çŠ¶æ€æ—¶äº¦å¯æ•æ‰æ¶ˆæ¯
+	//param[out] pOut         åˆ›å»ºçš„è®¾å¤‡æŒ‡é’ˆ
+	virtual fResult CreateDefaultKeyboard(fInt DevIndex, fBool bGlobalFocus, f2dInputKeyboard** pOut) = 0;
+
+	/// @brief      åˆ›å»ºé”®ç›˜
+	/// @param[in]  DevIndex     ä»0å¼€å§‹ï¼Œå¯ä»¥ç”±GetDeviceCountæšä¸¾
+	/// @param[in]  bGlobalFocus å…¨å±€å“åº”ï¼Œå½“ä¸ºtrueæ—¶ç¨‹åºåœ¨éæ¿€æ´»çŠ¶æ€æ—¶äº¦å¯æ•æ‰æ¶ˆæ¯
+	/// @param[out] pOut         åˆ›å»ºçš„è®¾å¤‡æŒ‡é’ˆ
 	virtual fResult CreateJoystick(fInt DevIndex, fBool bGlobalFocus, f2dInputJoystick** pOut)=0;
 };
 

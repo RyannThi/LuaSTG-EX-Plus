@@ -137,7 +137,9 @@ namespace LuaSTGPlus
 		// RenderTarget控制
 		std::vector<fcyRefPointer<f2dTexture2D>> m_stRenderTargetStack;
 
+		fcyRefPointer<f2dInputMouse> m_Mouse;
 		fcyRefPointer<f2dInputKeyboard> m_Keyboard;
+		fcyRefPointer<f2dInputKeyboard> m_Keyboard2;
 		fcyRefPointer<f2dInputJoystick> m_Joystick[2];
 		fCharW m_LastChar;
 		fInt m_LastKey;
@@ -359,8 +361,16 @@ namespace LuaSTGPlus
 		//也能读取其他类型的文件，但是会得到无意义的结果
 		LNOINLINE void LoadTextFile(const char* path, const char *packname)LNOEXCEPT;
 
-		/// @brief 检查按键是否按下
+		//检查按键是否按下
 		fBool GetKeyState(int VKCode)LNOEXCEPT;
+
+		//检查键盘按键是否按下，Dinput KeyCode
+		fBool GetKeyboardState(DWORD VKCode)LNOEXCEPT { return m_Keyboard2->KeyPress(VKCode); }
+
+		//检查键盘按键是否按下，使用的是GetAsyncKeyState
+		//返回0代表没有按下，返回2代表正被按住，返回1代表自从上次调用这个函数以来被按下过
+		//和GetKeyboardState不同，这个检测的不是按下过的，而是现在被按住的键
+		int GetAsyncKeyState(int VKCode)LNOEXCEPT;
 
 		/// @brief 获得最后一次字符输入（UTF-8）
 		LNOINLINE int GetLastChar(lua_State* L)LNOEXCEPT;
@@ -372,13 +382,26 @@ namespace LuaSTGPlus
 		fcyVec2 GetMousePosition()LNOEXCEPT { return m_MousePosition; }
 
 		/// @brief 获取鼠标滚轮增量
-		fDouble GetMouseWheelDelta()LNOEXCEPT { return m_MouseWheelDelta; }
+		fInt GetMouseWheelDelta()LNOEXCEPT { return m_Mouse->GetOffsetZ(); }
 
 		/// @brief 检查鼠标是否按下
 		fBool GetMouseState(int button)LNOEXCEPT
 		{
-			if (button >= 0 && button < 3)
-				return m_MouseState[button];
+			//if (button >= 0 && button < 3)
+				// return m_MouseState[button];
+			switch (button) {
+			case 1:
+				return m_Mouse->IsLeftBtnDown();
+			case 2:
+				return m_Mouse->IsMiddleBtnDown();
+			case 3:
+				return m_Mouse->IsRightBtnDown();
+			default:
+				break;
+			}
+			if (button >= 4 && button <= 8) {
+				return m_Mouse->IsAdditionBtnDown(button - 3 - 1);//先对齐C++索引（lua索引从1开始），再对齐额外键索引（不包含左中右键）
+			}
 			return false;
 		}
 	public:  // 渲染器接口

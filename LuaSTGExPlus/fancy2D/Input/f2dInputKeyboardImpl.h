@@ -1,6 +1,6 @@
-////////////////////////////////////////////////////////////////////////////////
+ï»¿////////////////////////////////////////////////////////////////////////////////
 /// @file  f2dInputKeyboardImpl.h
-/// @brief fancy2DÊäÈëÏµÍ³ ¼üÅÌÊµÏÖ
+/// @brief fancy2Dè¾“å…¥ç³»ç»Ÿ é”®ç›˜å®ç°
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "fcyRefObj.h"
@@ -13,7 +13,7 @@
 class f2dEngineImpl;
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief ¼üÅÌÉè±¸ÊµÏÖ
+/// @brief é”®ç›˜è®¾å¤‡å®ç°
 ////////////////////////////////////////////////////////////////////////////////
 class f2dInputKeyboardImpl :
 	public fcyRefObjImpl<f2dInputKeyboard>
@@ -52,7 +52,49 @@ public:
 	fResult SetListener(f2dInputKeyboardEventListener* pListener);
 	
 	fBool IsKeyDown(F2DINPUTKEYCODE KeyCode);
-protected: // ½ûÖ¹Ö±½Ónew/delete
+	fBool KeyPress(DWORD KeyCode) { return false; };
+protected: // ç¦æ­¢ç›´æ¥new/delete
 	f2dInputKeyboardImpl(f2dInputSysImpl* pSys, HWND Win, const GUID& pGUID, fBool bGlobalFocus);
 	~f2dInputKeyboardImpl();
+};
+
+class f2dInputKeyboardImpl2 :
+	public fcyRefObjImpl<f2dInputKeyboard>
+{
+	friend class f2dInputSysImpl;
+protected:
+	class DefaultListener :
+		public f2dInputKeyboardEventListener
+	{
+	protected:
+		f2dEngineImpl* m_pEngine;
+	public:
+		void OnKeyboardBtnDown(F2DINPUTKEYCODE KeyCode);
+		void OnKeyboardBtnUp(F2DINPUTKEYCODE KeyCode);
+	public:
+		DefaultListener(f2dInputSysImpl* pInputSys);
+	};
+private:
+	static const fuInt BufferSize;
+private:
+	f2dInputSysImpl* m_pSys;
+	IDirectInputDevice8* m_pDev;
+	DefaultListener m_DefaultListener;
+	f2dInputKeyboardEventListener* m_pListener;
+	fBool m_ButtonState[256];
+public:
+	f2dInputMouse* ToMouse();
+	f2dInputKeyboard* ToKeyboard();
+	f2dInputJoystick* ToJoystick();
+
+	fResult UpdateState();
+
+	f2dInputKeyboardEventListener* GetListener();
+	fResult SetListener(f2dInputKeyboardEventListener* pListener);
+
+	fBool IsKeyDown(F2DINPUTKEYCODE KeyCode) { return false; }
+	fBool KeyPress(DWORD KeyCode);
+protected: // ç¦æ­¢ç›´æ¥new/delete
+	f2dInputKeyboardImpl2(f2dInputSysImpl* pSys, HWND Win, const GUID& pGUID, fBool bGlobalFocus);
+	~f2dInputKeyboardImpl2();
 };

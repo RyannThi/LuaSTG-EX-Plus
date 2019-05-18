@@ -1,4 +1,6 @@
-#ifndef _M_ARM
+﻿#ifndef _M_ARM
+
+#pragma comment(lib, "dinput8.lib")//动态加载dll留下的大坑，还是得link一下
 
 #include "f2dInputKeyboardImpl.h"
 
@@ -302,7 +304,7 @@ f2dInputKeyboardImpl::f2dInputKeyboardImpl(f2dInputSysImpl* pSys, HWND Win, cons
 	if(FAILED(tHR))
 		throw fcyWin32COMException("f2dInputKeyboardImpl::f2dInputKeyboardImpl", "CreateDevice Failed.", tHR);
 	
-	// ����Э��ģʽ
+	// 设置协作模式
 	fuInt tFlag = DISCL_NONEXCLUSIVE;
 	if(bGlobalFocus)
 		tFlag |= DISCL_BACKGROUND;
@@ -315,7 +317,7 @@ f2dInputKeyboardImpl::f2dInputKeyboardImpl(f2dInputSysImpl* pSys, HWND Win, cons
 		throw fcyWin32COMException("f2dInputKeyboardImpl::f2dInputKeyboardImpl", "SetCooperativeLevel Failed.", tHR);
 	}
 
-    // �������ݸ�ʽ
+    // 设置数据格式
 	tHR = m_pDev->SetDataFormat(&DIDF_Keyboard);
 	if(FAILED(tHR))
 	{
@@ -323,7 +325,7 @@ f2dInputKeyboardImpl::f2dInputKeyboardImpl(f2dInputSysImpl* pSys, HWND Win, cons
 		throw fcyWin32COMException("f2dInputKeyboardImpl::f2dInputKeyboardImpl", "SetDataFormat Failed.", tHR);
 	}
 
-	// ���û�����
+	// 设置缓冲区
 	DIPROPDWORD tBufferProperty;
 
     tBufferProperty.diph.dwSize = sizeof(DIPROPDWORD);
@@ -339,10 +341,10 @@ f2dInputKeyboardImpl::f2dInputKeyboardImpl(f2dInputSysImpl* pSys, HWND Win, cons
 		throw fcyWin32COMException("f2dInputKeyboardImpl::f2dInputKeyboardImpl", "SetProperty Failed.", tHR);
 	}
 
-	// ����豸
+	// 获得设备
 	tHR = m_pDev->Acquire();
 
-	// ע��
+	// 注册
 	m_pSys->RegisterDevice(this);
 }
 
@@ -351,7 +353,7 @@ f2dInputKeyboardImpl::~f2dInputKeyboardImpl()
 	if(m_pDev)
 		m_pDev->Unacquire();
 
-	// ȡ��ע��
+	// 取消注册
 	m_pSys->UnregisterDevice(this);
 
 	FCYSAFEKILL(m_pDev);
@@ -434,6 +436,173 @@ fResult f2dInputKeyboardImpl::SetListener(f2dInputKeyboardEventListener* pListen
 fBool f2dInputKeyboardImpl::IsKeyDown(F2DINPUTKEYCODE KeyCode)
 {
 	if(KeyCode>255)
+		return false;
+	return m_ButtonState[KeyCode];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+f2dInputKeyboardImpl2::DefaultListener::DefaultListener(f2dInputSysImpl* pInputSys)
+{
+	m_pEngine = pInputSys->GetEngine();
+}
+
+void f2dInputKeyboardImpl2::DefaultListener::OnKeyboardBtnDown(F2DINPUTKEYCODE KeyCode)
+{
+	//m_pEngine->SendMsg(F2DMSG_KEYBOARD_ONKEYDOWN, KeyCode);
+}
+
+void f2dInputKeyboardImpl2::DefaultListener::OnKeyboardBtnUp(F2DINPUTKEYCODE KeyCode)
+{
+	//m_pEngine->SendMsg(F2DMSG_KEYBOARD_ONKEYUP, KeyCode);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+const fuInt f2dInputKeyboardImpl2::BufferSize = 64;
+
+f2dInputKeyboardImpl2::f2dInputKeyboardImpl2(f2dInputSysImpl* pSys, HWND Win, const GUID& pGUID, fBool bGlobalFocus)
+	: m_pSys(pSys), m_pDev(NULL), m_DefaultListener(pSys), m_pListener(&m_DefaultListener)
+{
+	IDirectInput8* pDev = pSys->GetHandle();
+
+	memset(m_ButtonState, 0, sizeof(m_ButtonState));
+
+	HRESULT tHR = pDev->CreateDevice(pGUID, &m_pDev, NULL);
+	if (FAILED(tHR))
+		throw fcyWin32COMException("f2dInputKeyboardImpl::f2dInputKeyboardImpl", "CreateDevice Failed.", tHR);
+
+	// 设置协作模式
+	fuInt tFlag = DISCL_NONEXCLUSIVE;
+	if (bGlobalFocus)
+		tFlag |= DISCL_BACKGROUND;
+	else
+		tFlag |= DISCL_FOREGROUND;
+	tHR = m_pDev->SetCooperativeLevel(Win, tFlag);
+	if (FAILED(tHR))
+	{
+		FCYSAFEKILL(m_pDev);
+		throw fcyWin32COMException("f2dInputKeyboardImpl::f2dInputKeyboardImpl", "SetCooperativeLevel Failed.", tHR);
+	}
+
+	// 设置数据格式
+	tHR = m_pDev->SetDataFormat(&c_dfDIKeyboard);//默认数据格式
+	if (FAILED(tHR))
+	{
+		FCYSAFEKILL(m_pDev);
+		throw fcyWin32COMException("f2dInputKeyboardImpl::f2dInputKeyboardImpl", "SetDataFormat Failed.", tHR);
+	}
+
+	// 设置缓冲区
+	DIPROPDWORD tBufferProperty;
+
+	tBufferProperty.diph.dwSize = sizeof(DIPROPDWORD);
+	tBufferProperty.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+	tBufferProperty.diph.dwObj = 0;
+	tBufferProperty.diph.dwHow = DIPH_DEVICE;
+	tBufferProperty.dwData = BufferSize;
+
+	tHR = m_pDev->SetProperty(DIPROP_BUFFERSIZE, &tBufferProperty.diph);
+	if (FAILED(tHR))
+	{
+		FCYSAFEKILL(m_pDev);
+		throw fcyWin32COMException("f2dInputKeyboardImpl::f2dInputKeyboardImpl", "SetProperty Failed.", tHR);
+	}
+
+	// 获得设备
+	tHR = m_pDev->Acquire();
+
+	// 注册
+	m_pSys->RegisterDevice(this);
+}
+
+f2dInputKeyboardImpl2::~f2dInputKeyboardImpl2()
+{
+	if (m_pDev)
+		m_pDev->Unacquire();
+
+	// 取消注册
+	m_pSys->UnregisterDevice(this);
+
+	FCYSAFEKILL(m_pDev);
+}
+
+f2dInputMouse* f2dInputKeyboardImpl2::ToMouse()
+{
+	return NULL;
+}
+
+f2dInputKeyboard* f2dInputKeyboardImpl2::ToKeyboard()
+{
+	return this;
+}
+
+f2dInputJoystick* f2dInputKeyboardImpl2::ToJoystick()
+{
+	return NULL;
+}
+
+fResult f2dInputKeyboardImpl2::UpdateState()
+{
+	DIDEVICEOBJECTDATA tRawData[BufferSize];
+	DWORD tSize = BufferSize;
+
+	HRESULT tHR = m_pDev->GetDeviceData(
+		sizeof(DIDEVICEOBJECTDATA),
+		tRawData,
+		&tSize,
+		0);
+
+	if (FAILED(tHR))
+	{
+		tHR = m_pDev->Acquire();
+
+		if (FAILED(tHR))
+			return FCYERR_INTERNALERR;
+		else
+		{
+			tSize = BufferSize;
+			tHR = m_pDev->GetDeviceData(
+				sizeof(DIDEVICEOBJECTDATA),
+				tRawData,
+				&tSize,
+				0);
+			if (FAILED(tHR))
+				return FCYERR_INTERNALERR;
+		}
+	}
+
+	for (fuInt i = 0; i < tSize; ++i)
+	{
+		fuInt tKeyCode = tRawData[i].dwOfs;
+		bool tKeyDown = (LOWORD(tRawData[i].dwData) & 0x80) != 0;
+		if (tKeyCode > 255)
+			continue;
+		m_ButtonState[tKeyCode] = tKeyDown;
+
+		if (m_pListener)
+			if (tKeyDown)
+				m_pListener->OnKeyboardBtnDown((F2DINPUTKEYCODE)tKeyCode);
+			else
+				m_pListener->OnKeyboardBtnUp((F2DINPUTKEYCODE)tKeyCode);
+	}
+
+	return FCYERR_OK;
+}
+
+f2dInputKeyboardEventListener* f2dInputKeyboardImpl2::GetListener()
+{
+	return m_pListener;
+}
+
+fResult f2dInputKeyboardImpl2::SetListener(f2dInputKeyboardEventListener* pListener)
+{
+	m_pListener = pListener;
+	return FCYERR_OK;
+}
+
+fBool f2dInputKeyboardImpl2::KeyPress(DWORD KeyCode) {
+	if (KeyCode > 255)
 		return false;
 	return m_ButtonState[KeyCode];
 }

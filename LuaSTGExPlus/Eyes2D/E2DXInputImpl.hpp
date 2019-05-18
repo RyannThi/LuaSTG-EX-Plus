@@ -86,7 +86,7 @@ namespace Eyes2D {
 	};
 	
 	//XInput实现
-	class XInputImpl {
+	class EYESDLLAPI XInputImpl {
 	private:
 		int m_XDeviceCount;                           //检测到的设备数量
 		XINPUT_STATE m_XDevices[XUSER_MAX_COUNT + 1]; //调整索引从1开始

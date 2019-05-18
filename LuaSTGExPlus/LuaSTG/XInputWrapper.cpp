@@ -1,5 +1,5 @@
 #include "LuaWrapper.h"
-#include "E2DXInputImpl.h"
+#include "E2DXInputImpl.hpp"
 
 using namespace std;
 using namespace LuaSTGPlus;

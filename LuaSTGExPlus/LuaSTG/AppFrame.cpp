@@ -1,7 +1,7 @@
 ﻿#include "AppFrame.h"
 #include "Utility.h"
 #include "LuaWrapper.h"
-#include "E2DXInputImpl.h"
+#include "E2DXInputImpl.hpp"
 
 #include "resource.h"
 
@@ -683,6 +683,19 @@ fBool AppFrame::GetKeyState(int VKCode)LNOEXCEPT
 		}
 	}
 	return false;
+}
+
+int AppFrame::GetAsyncKeyState(int VKCode)LNOEXCEPT {
+	SHORT KeyState = ::GetAsyncKeyState(VKCode);//应该使用WinUser的方法，这个是在全局命名空间里面的，不然会出现我调用我自己的bug
+	if (KeyState & (1 << 15)) {
+		return 2;
+	}
+	else if (KeyState & (1 << 0)) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
 }
 
 LNOINLINE int AppFrame::GetLastChar(lua_State* L)LNOEXCEPT
@@ -1560,11 +1573,17 @@ bool AppFrame::Init()LNOEXCEPT
 		return false;
 	}
 
+	//创建鼠标输入
+	m_pInputSys->CreateMouse(-1, false, &m_Mouse);
+	if (!m_Mouse)
+		LWARNING("无法创建鼠标设备，将使用窗口消息作为输入源 (f2dInputSys::CreateMouse failed.)");
 	// 创建键盘输入
 	m_pInputSys->CreateKeyboard(-1, false, &m_Keyboard);
 	if (!m_Keyboard)
 		LWARNING("无法创建键盘设备，将使用窗口消息作为输入源 (f2dInputSys::CreateKeyboard failed.)");
-	
+	m_pInputSys->CreateDefaultKeyboard(-1, false, &m_Keyboard2);
+	if (!m_Keyboard2)
+		LWARNING("无法创建键盘设备，将使用窗口消息作为输入源 (f2dInputSys::CreateDefaultKeyboard failed.)");
 	// 创建手柄输入
 	fuInt iJoyStickCount = ::min(2U, m_pInputSys->GetDeviceCount(F2DINPUTDEVTYPE_GAMECTRL));
 	for (fuInt i = 0; i < iJoyStickCount; ++i)
@@ -1621,8 +1640,9 @@ void AppFrame::Shutdown()LNOEXCEPT
 	m_ResourceMgr.ClearAllResource();
 	LINFO("已清空所有资源");
 
+	m_Mouse = nullptr;
 	m_Joystick[0] = m_Joystick[1] = nullptr;
-	m_Keyboard = nullptr;
+	m_Keyboard = m_Keyboard2 = nullptr;
 	m_PostEffectBuffer = nullptr;
 	m_Graph3D = nullptr;
 	m_GRenderer = nullptr;

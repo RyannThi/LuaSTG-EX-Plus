@@ -1,6 +1,7 @@
 ﻿#include "LuaWrapper.h"
 #include "AppFrame.h"
 #include "Network.h"
+#include "E2DDXGIImpl.hpp"
 
 #ifdef min
 #undef min
@@ -247,6 +248,33 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			lua_pushboolean(L, false);
 			return 1;
 #endif
+		}
+		static int EnumResolutions(lua_State* L) {
+			//返回一个lua表，该表中又包含多个表，分别储存着所支持的屏幕分辨率宽和屏幕分辨率的高，均为整数
+			//例如{ {1920,1080}, {1600,900}, ...  }
+			int* width;
+			int* height;
+			int count;
+			try {
+				Eyes2D::GetDXGI().SimpleGetResolutions(width, height, count);
+			}
+			catch (Eyes2D::E2DException & e) {
+				LERROR("Source : %s, Desc : %s", e.errSrc.data(), e.errDesc.data());
+				return luaL_error(L, "Failed to enum resolutions.");
+			}
+			
+			lua_newtable(L);// t
+			for (int index = 0; index < count; index++) {
+				lua_newtable(L);// t t
+				lua_pushinteger(L, (lua_Integer)width[index]);// t t width
+				lua_rawseti(L, -2, 1);// t t
+				lua_pushinteger(L, (lua_Integer)height[index]);// t t height
+				lua_rawseti(L, -2, 2);// t t
+				lua_rawseti(L, -2, index + 1);// t
+			}
+
+			delete[] width; delete[] height;
+			return 1;
 		}
 		#pragma endregion
 
@@ -1783,11 +1811,13 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		static int GetMouseWheelDelta(lua_State* L)LNOEXCEPT
 		{
-			lua_pushnumber(L, LAPP.GetMouseWheelDelta());
+			//返回有符号整数，每次获取的是自上次获取以来所有的滚轮操作，有的鼠标可能没有滚轮
+			lua_pushinteger(L, (lua_Integer)LAPP.GetMouseWheelDelta());
 			return 1;
 		}
 		static int GetMouseState(lua_State* L)LNOEXCEPT
 		{
+			//参数为整数，索引从1到8，返回bool值，索引1到3分别为鼠标左中右键，有的鼠标可能没有中键，剩下的按键看实际硬件情况
 			lua_pushboolean(L, LAPP.GetMouseState(luaL_checkinteger(L, 1)));
 			return 1;
 		}
@@ -1861,6 +1891,20 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 
 			LAPP.m_Input->Reset();
 			return 0;
+		}
+		//ETC Raw Input
+		static int GetKeyboardState(lua_State* L)LNOEXCEPT
+		{
+			//检查键盘按键是否按下，Dinput KeyCode
+			lua_pushboolean(L, LAPP.GetKeyboardState(luaL_checkinteger(L, -1)));
+			return 1;
+		}
+		static int GetAsyncKeyState(lua_State* L)LNOEXCEPT
+		{
+			//检查键盘按键是否按下，使用微软VKcode，通过GetAsyncKeyState函数获取
+			//和GetKeyboardState不同，这个检测的不是按下过的，而是现在被按住的键
+			lua_pushboolean(L, LAPP.GetAsyncKeyState(luaL_checkinteger(L, -1)) == 2);
+			return 1;
 		}
 		#pragma endregion
 
@@ -2285,6 +2329,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "LoadTextFile", &WrapperImplement::LoadTextFile },
 		{ "ShowSplashWindow", &WrapperImplement::ShowSplashWindow },
 		{ "ShowConsole", &WrapperImplement::ShowConsole },
+		{ "EnumResolutions", &WrapperImplement::EnumResolutions },
 		
 		//========游戏对象==========
 		//对象池管理
@@ -2399,13 +2444,16 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "SetBGMSpeed", &WrapperImplement::SetBGMSpeed },
 		{ "GetBGMSpeed", &WrapperImplement::GetBGMSpeed },
 		
-			// 输入控制函数
+		// 输入控制函数
 		{ "GetKeyState", &WrapperImplement::GetKeyState },
 		{ "GetLastKey", &WrapperImplement::GetLastKey },
 		{ "GetLastChar", &WrapperImplement::GetLastChar },
 		{ "GetMousePosition", &WrapperImplement::GetMousePosition },
 		{ "GetMouseWheelDelta", &WrapperImplement::GetMouseWheelDelta },
 		{ "GetMouseState", &WrapperImplement::GetMouseState },
+		//Raw Input
+		{ "GetKeyboardState", &WrapperImplement::GetKeyboardState },
+		{ "GetAsyncKeyState", &WrapperImplement::GetAsyncKeyState },
 		
 			// 内置数学函数
 		{ "sin", &WrapperImplement::Sin },
