@@ -48,6 +48,9 @@ LuaSTGExPlus/fancy2D/obj/Debug/fancy2D.log
 /mwy/*
 /slk/*
 
+#XMath过滤
+/LuaSTGExPlus/XMath/build/*
+
 #Eyes2D过滤
 /LuaSTGExPlus/Eyes2D/build/*
 /LuaSTGExPlus/Eyes2D/Debug/*
