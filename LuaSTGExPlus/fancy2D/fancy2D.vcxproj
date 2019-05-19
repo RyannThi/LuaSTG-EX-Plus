@@ -146,7 +146,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FANCY2D_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\DirectShowClass\;$(SolutionDir)\DXSDK\include\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;$(SolutionDir)\freetype\include\;$(SolutionDir)\zlib\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\DirectShowClass\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;$(SolutionDir)\freetype\include\;$(SolutionDir)\zlib\;$(SolutionDir)\DXSDK\Include\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
@@ -155,7 +155,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\DirectShowClass\build\;$(SolutionDir)\DXSDK\lib\x86;$(SolutionDir)\libvorbis\build\;$(SolutionDir)\libogg\build\;$(SolutionDir)\freetype\build\;$(SolutionDir)\zlib\build\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\DirectShowClass\build\;$(SolutionDir)\libvorbis\build\;$(SolutionDir)\libogg\build\;$(SolutionDir)\freetype\build\;$(SolutionDir)\zlib\build\;$(SolutionDir)\DXSDK\Lib\</AdditionalLibraryDirectories>
       <AdditionalDependencies>fancylib.lib;Strmiids.lib;strmbase.lib;dxguid.lib;winmm.lib;libvorbis.lib;libogg.lib;freetype.lib;Imm32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
