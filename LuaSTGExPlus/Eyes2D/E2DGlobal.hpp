@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 
 //DLL base macro
 #ifdef EYES2D_EXPORTS
-#define EYESDLLAPI _declspec(dllexport) //µ¼³ö£¬¿ª·¢Ê±Ê¹ÓÃ
+#define EYESDLLAPI _declspec(dllexport) //å¯¼å‡ºï¼Œå¼€å‘æ—¶ä½¿ç”¨
 #else
-#define EYESDLLAPI _declspec(dllimport) //µ¼Èë£¬µ÷ÓÃÊ±Ê¹ÓÃ
+#define EYESDLLAPI _declspec(dllimport) //å¯¼å…¥ï¼Œè°ƒç”¨æ—¶ä½¿ç”¨
 #endif // E2D_PROJECT
 
 //Windows base header
@@ -12,4 +12,4 @@
 #include <wrl.h>
 
 //usefull tool
-#include "E2DException.h"
+#include "E2DException.hpp"

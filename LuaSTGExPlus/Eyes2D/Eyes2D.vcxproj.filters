@@ -48,12 +48,12 @@
     <ClCompile Include="E2DDXGIImpl.cpp">
       <Filter>system\platform</Filter>
     </ClCompile>
+    <ClCompile Include="E2DXAudio2SoundPlayer.cpp">
+      <Filter>system\sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="E2DGlobal.hpp">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="E2DException.h">
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="E2DXAudio2VoicePool.hpp">
@@ -76,6 +76,18 @@
     </ClInclude>
     <ClInclude Include="E2DDXGIImpl.hpp">
       <Filter>system\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="E2DSound.hpp">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="E2DXAudio2SoundPlayer.hpp">
+      <Filter>system\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="E2DCodePage.hpp">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="E2DException.hpp">
+      <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

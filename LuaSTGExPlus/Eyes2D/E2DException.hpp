@@ -8,7 +8,7 @@ namespace Eyes2D {
 		long errResult;//用于COM
 		std::wstring errSrc;
 		std::wstring errDesc;
-		E2DException(long code, long result, std::wstring src, std::wstring desc) {
+		E2DException(long code, long result, const std::wstring& src, const std::wstring& desc) {
 			errCode = code;
 			errResult = result;
 			errSrc = std::move(src);

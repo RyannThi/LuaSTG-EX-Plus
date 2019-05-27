@@ -49,6 +49,9 @@
     <Filter Include="ObjectPool">
       <UniqueIdentifier>{fefe8e7c-cf2e-4563-8fc5-513804c54a28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{d28a4c4b-eddd-43ea-893a-ab05e41589fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="GameObjectPropertyHash.json">
@@ -72,9 +75,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceMgr.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SplashWindow.h">
@@ -170,6 +170,9 @@
     <ClInclude Include="GameObjectPool.h">
       <Filter>ObjectPool</Filter>
     </ClInclude>
+    <ClInclude Include="ResourceMgr.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppFrame.cpp">
@@ -182,9 +185,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceMgr.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SplashWindow.cpp">
@@ -297,6 +297,12 @@
     </ClCompile>
     <ClCompile Include="GameObjectColliderWrapper.cpp">
       <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceMgr.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourcePack.cpp">
+      <Filter>Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

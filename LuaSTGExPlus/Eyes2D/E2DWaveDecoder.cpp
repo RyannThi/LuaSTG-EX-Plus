@@ -4,6 +4,7 @@
 
 using namespace std;
 using namespace Eyes2D;
+using namespace Eyes2D::Sound;
 
 WaveDecoder::WaveDecoder(fcyStream* stream) {
 	//m_Type = "???";

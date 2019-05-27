@@ -2,6 +2,7 @@
 
 using namespace std;
 using namespace Eyes2D;
+using namespace Eyes2D::Sound;
 
 XAudio2VoicePool::XAudio2VoicePool(IXAudio2* p, IXAudio2MasteringVoice* m) {
 	m_XAudio = p;

@@ -3,6 +3,7 @@
 
 using namespace std;
 using namespace Eyes2D;
+using namespace Eyes2D::Sound;
 
 template<typename T>
 using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -68,5 +69,19 @@ float XAudio2Impl::GetMixerVolume(const string& name) {
 	}
 	else {
 		throw E2DException(0, 0, L"Eyes2D::XAudio2Impl::SetMixerVolume", L"Failed to find Mixer.");
+	}
+}
+
+IXAudio2SubmixVoice* XAudio2Impl::GetMixerVoiceByID(unsigned int id) {
+	switch (id)
+	{
+	case 1:
+		return m_VoicePool->GetMixVoice("SE");
+		break;
+	case 2:
+		return m_VoicePool->GetMixVoice("BGM");
+		break;
+	default:
+		return nullptr;
 	}
 }

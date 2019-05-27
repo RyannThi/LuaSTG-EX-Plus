@@ -5,6 +5,7 @@
 
 using namespace std;
 using namespace Eyes2D;
+using namespace Eyes2D::Sound;
 
 struct OggDecoder::OggFileCallbackFunc
 {

@@ -101,7 +101,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderOutputFile />
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -113,8 +113,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\;$(SolutionDir)\libogg\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fancylib.lib;libvorbis.lib;libogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\;$(SolutionDir)\libogg\build\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fancylib.lib;libvorbis.lib;libogg.lib;xmath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -128,16 +128,17 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeaderOutputFile />
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\;$(SolutionDir)\libogg\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fancylib.lib;libvorbis.lib;libogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\;$(SolutionDir)\libogg\build\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fancylib.lib;libvorbis.lib;libogg.lib;xmath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -182,17 +183,21 @@
     <ClCompile Include="E2DOggDecoder.cpp" />
     <ClCompile Include="E2DWaveDecoder.cpp" />
     <ClCompile Include="E2DXAudio2Impl.cpp" />
+    <ClCompile Include="E2DXAudio2SoundPlayer.cpp" />
     <ClCompile Include="E2DXAudio2VoicePool.cpp" />
     <ClCompile Include="E2DXInputImpl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="E2DCodePage.hpp" />
     <ClInclude Include="E2DDXGIImpl.hpp" />
-    <ClInclude Include="E2DException.h" />
+    <ClInclude Include="E2DException.hpp" />
     <ClInclude Include="E2DGlobal.hpp" />
     <ClInclude Include="E2DMath.hpp" />
     <ClInclude Include="E2DOggDecoder.hpp" />
+    <ClInclude Include="E2DSound.hpp" />
     <ClInclude Include="E2DWaveDecoder.hpp" />
     <ClInclude Include="E2DXAudio2Impl.hpp" />
+    <ClInclude Include="E2DXAudio2SoundPlayer.hpp" />
     <ClInclude Include="E2DXAudio2VoicePool.hpp" />
     <ClInclude Include="E2DXInputImpl.hpp" />
   </ItemGroup>

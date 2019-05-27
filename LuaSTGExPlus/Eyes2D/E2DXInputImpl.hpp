@@ -9,7 +9,6 @@
 
 #pragma comment(lib, "Xinput.lib")
 
-#include <Windows.h>
 #include "XInput.h"
 
 namespace Eyes2D {

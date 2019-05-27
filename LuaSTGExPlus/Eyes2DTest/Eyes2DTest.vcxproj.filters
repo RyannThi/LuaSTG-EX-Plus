@@ -27,5 +27,8 @@
     <ClCompile Include="XADLL.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="fstreamtest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
