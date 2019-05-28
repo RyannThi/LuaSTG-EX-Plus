@@ -390,17 +390,17 @@ namespace LuaSTGPlus
 			//if (button >= 0 && button < 3)
 				// return m_MouseState[button];
 			switch (button) {
-			case 1:
+			case 0:
 				return m_Mouse->IsLeftBtnDown();
-			case 2:
+			case 1:
 				return m_Mouse->IsMiddleBtnDown();
-			case 3:
+			case 2:
 				return m_Mouse->IsRightBtnDown();
 			default:
 				break;
 			}
-			if (button >= 4 && button <= 8) {
-				return m_Mouse->IsAdditionBtnDown(button - 3 - 1);//先对齐C++索引（lua索引从1开始），再对齐额外键索引（不包含左中右键）
+			if (button >= 3 && button <= 7) {
+				return m_Mouse->IsAdditionBtnDown(button - 3);//对齐额外键索引（不包含左中右键）
 			}
 			return false;
 		}

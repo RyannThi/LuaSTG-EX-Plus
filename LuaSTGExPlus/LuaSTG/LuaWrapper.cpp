@@ -183,7 +183,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		static int LoadPackSub(lua_State* L)LNOEXCEPT
 		{
 			const char* p = luaL_checkstring(L, 1);
-			const char* pwd = "pwd";
+			const char pwd[] = "password";
 			//const char* pwd = nullptr;
 			//if (lua_isstring(L, 2))
 				//pwd = luaL_checkstring(L, 2);
