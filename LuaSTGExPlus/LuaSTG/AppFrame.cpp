@@ -1708,10 +1708,10 @@ void AppFrame::Run()LNOEXCEPT
 	// 窗口前移、显示、隐藏鼠标指针
 	//附加当前线程到窗口线程将窗口设置成前台窗口
 	HWND hWnd = (HWND)m_pMainWindow->GetHandle();
-	HWND hForeWnd = GetForegroundWindow();
-	DWORD dwForeID = GetWindowThreadProcessId(hForeWnd, NULL);
-	DWORD dwCurID = GetCurrentThreadId();
-	AttachThreadInput(dwCurID, dwForeID, TRUE);
+	HWND hForeWnd = ::GetForegroundWindow();
+	DWORD dwForeID = ::GetWindowThreadProcessId(hForeWnd, NULL);
+	DWORD dwCurID = ::GetCurrentThreadId();
+	::AttachThreadInput(dwCurID, dwForeID, TRUE);
 
 	//ShowWindow(hWnd, SW_SHOWNORMAL);
 	//SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
@@ -1733,7 +1733,7 @@ void AppFrame::Run()LNOEXCEPT
 	m_pMainWindow->SetHideIME(true);
 	m_pMainWindow->HideMouse(!m_OptionSplash);
 
-	AttachThreadInput(dwCurID, dwForeID, FALSE);
+	::AttachThreadInput(dwCurID, dwForeID, FALSE);
 
 	// 启动游戏循环
 	// 将GameInit执行后移到这里
