@@ -1616,7 +1616,6 @@ bool AppFrame::Init()LNOEXCEPT
 	m_LastKey = 0;
 	::memset(m_KeyStateMap, 0, sizeof(m_KeyStateMap));
 	::memset(m_MouseState, 0, sizeof(m_MouseState));
-	m_MouseWheelDelta = 0.0f;
 
 	//////////////////////////////////////// 装载核心脚本并执行GameInit
 	LINFO("装载核心脚本'%s'", LCORE_SCRIPT);
@@ -1624,8 +1623,8 @@ bool AppFrame::Init()LNOEXCEPT
 		return false;
 	if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), "core.lua"))
 		return false;
-	if (!SafeCallGlobalFunction(LFUNC_GAMEINIT))
-		return false;
+	//if (!SafeCallGlobalFunction(LFUNC_GAMEINIT))
+		//return false;
 
 	m_iStatus = AppStatus::Initialized;
 	LINFO("初始化成功完成");
@@ -1707,6 +1706,7 @@ void AppFrame::Run()LNOEXCEPT
 	m_RenderTimerTotal = 0.f;
 #endif
 
+	// 窗口前移、显示、隐藏鼠标指针
 	if (m_bSplashWindowEnabled)  // 显示过载入窗口
 	{
 		// 显示窗口
@@ -1719,21 +1719,17 @@ void AppFrame::Run()LNOEXCEPT
 	}
 	m_bSplashWindowEnabled = false;
 
-
-	HWND hForeWnd = NULL;
-	HWND hWnd = (HWND)m_pMainWindow->GetHandle();
-	DWORD dwForeID;
-	DWORD dwCurID;
-
-	hForeWnd = GetForegroundWindow();
-	dwCurID = GetCurrentThreadId();
-	dwForeID = GetWindowThreadProcessId(hForeWnd, NULL);
+	//附加当前线程到窗口线程将窗口设置成前台窗口
+	/*HWND hWnd = (HWND)m_pMainWindow->GetHandle();
+	HWND hForeWnd = GetForegroundWindow();
+	DWORD dwForeID = GetWindowThreadProcessId(hForeWnd, NULL);
+	DWORD dwCurID = GetCurrentThreadId();
 	AttachThreadInput(dwCurID, dwForeID, TRUE);
-	ShowWindow(hWnd, SW_SHOWNORMAL);
-	SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
-	SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+	//ShowWindow(hWnd, SW_SHOWNORMAL);
+	//SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+	//SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 	SetForegroundWindow(hWnd);
-	AttachThreadInput(dwCurID, dwForeID, FALSE);
+	AttachThreadInput(dwCurID, dwForeID, FALSE);*/
 
 
 	// 窗口前移、显示、隐藏鼠标指针
@@ -1743,11 +1739,15 @@ void AppFrame::Run()LNOEXCEPT
 	
 	// SetForegroundWindow((HWND)m_pMainWindow->GetHandle());
 	// BringWindowToTop((HWND)m_pMainWindow->GetHandle());
+
 	m_pMainWindow->SetHideIME(true);
 	m_pMainWindow->HideMouse(!m_OptionSplash);
 
 	// 启动游戏循环
-	m_pEngine->Run(F2DENGTHREADMODE_MULTITHREAD, m_OptionFPSLimit);
+	// 将GameInit执行后移到这里
+	if (SafeCallGlobalFunction(LFUNC_GAMEINIT)) {
+		m_pEngine->Run(F2DENGTHREADMODE_MULTITHREAD, m_OptionFPSLimit);
+	}
 
 	LINFO("退出游戏循环");
 }
@@ -1816,6 +1816,8 @@ bool AppFrame::SafeCallScript(const char* source, size_t len, const char* desc)L
 
 bool AppFrame::SafeCallGlobalFunction(const char* name, int retc)LNOEXCEPT
 {
+#define USE_STACK_TRACEBACK
+#ifdef USE_STACK_TRACEBACK
 	lua_pushcfunction(L, StackTraceback);  // ... c
 	int tStacktraceIndex = lua_gettop(L);
 
@@ -1848,6 +1850,13 @@ bool AppFrame::SafeCallGlobalFunction(const char* name, int retc)LNOEXCEPT
 	}
 
 	lua_remove(L, tStacktraceIndex);
+#else
+	lua_getglobal(L, name);
+	lua_call(L, 0, retc);
+#endif
+#ifdef USE_STACK_TRACEBACK
+#undef USE_STACK_TRACEBACK
+#endif
 	return true;
 }
 #pragma endregion

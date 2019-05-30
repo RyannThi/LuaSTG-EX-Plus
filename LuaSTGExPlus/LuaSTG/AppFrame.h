@@ -145,7 +145,6 @@ namespace LuaSTGPlus
 		fInt m_LastKey;
 		fBool m_KeyStateMap[256];
 		fcyVec2 m_MousePosition;
-		fDouble m_MouseWheelDelta;
 		fBool m_MouseState[3];
 
 		lua_Integer m_superpause;
