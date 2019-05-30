@@ -345,12 +345,6 @@ AppFrame::AppFrame()
 	m_nextsuperpause = 0;
 	WSADATA wsa;
 	WSAStartup(MAKEWORD(1, 1), &wsa);
-
-	m_collidercfg.clear();
-	m_collidercfg.emplace_back(ColliderDisplayConfig(1, fcyColor(150, 163, 73, 164)));// GROUP_ENEMY_BULLET
-	m_collidercfg.emplace_back(ColliderDisplayConfig(2, fcyColor(150, 163, 73, 164)));// GROUP_ENEMY
-	m_collidercfg.emplace_back(ColliderDisplayConfig(5, fcyColor(150, 163, 73,  20)));// GROUP_INDES
-	m_collidercfg.emplace_back(ColliderDisplayConfig(4, fcyColor(100, 175, 15,  20)));// GROUP_PLAYER
 }
 
 AppFrame::~AppFrame()
@@ -360,8 +354,6 @@ AppFrame::~AppFrame()
 		// 若没有销毁框架，则执行销毁
 		Shutdown();
 	}
-
-	m_collidercfg.clear();
 }
 
 #pragma region 脚本接口
@@ -1617,6 +1609,13 @@ bool AppFrame::Init()LNOEXCEPT
 	::memset(m_KeyStateMap, 0, sizeof(m_KeyStateMap));
 	::memset(m_MouseState, 0, sizeof(m_MouseState));
 
+	//////////////////////////////////////// 碰撞组显示设置
+	m_collidercfg.clear();
+	m_collidercfg.emplace_back(ColliderDisplayConfig(1, fcyColor(150, 163, 73, 164)));// GROUP_ENEMY_BULLET
+	m_collidercfg.emplace_back(ColliderDisplayConfig(2, fcyColor(150, 163, 73, 164)));// GROUP_ENEMY
+	m_collidercfg.emplace_back(ColliderDisplayConfig(5, fcyColor(150, 163, 73, 20)));// GROUP_INDES
+	m_collidercfg.emplace_back(ColliderDisplayConfig(4, fcyColor(100, 175, 15, 20)));// GROUP_PLAYER
+
 	//////////////////////////////////////// 装载核心脚本并执行GameInit
 	LINFO("装载核心脚本'%s'", LCORE_SCRIPT);
 	if (!m_ResourceMgr.LoadFile(LCORE_SCRIPT, tMemStream))
@@ -1707,6 +1706,18 @@ void AppFrame::Run()LNOEXCEPT
 #endif
 
 	// 窗口前移、显示、隐藏鼠标指针
+	//附加当前线程到窗口线程将窗口设置成前台窗口
+	HWND hWnd = (HWND)m_pMainWindow->GetHandle();
+	HWND hForeWnd = GetForegroundWindow();
+	DWORD dwForeID = GetWindowThreadProcessId(hForeWnd, NULL);
+	DWORD dwCurID = GetCurrentThreadId();
+	AttachThreadInput(dwCurID, dwForeID, TRUE);
+
+	//ShowWindow(hWnd, SW_SHOWNORMAL);
+	//SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+	//SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+	//SetForegroundWindow(hWnd);
+
 	if (m_bSplashWindowEnabled)  // 显示过载入窗口
 	{
 		// 显示窗口
@@ -1719,29 +1730,10 @@ void AppFrame::Run()LNOEXCEPT
 	}
 	m_bSplashWindowEnabled = false;
 
-	//附加当前线程到窗口线程将窗口设置成前台窗口
-	/*HWND hWnd = (HWND)m_pMainWindow->GetHandle();
-	HWND hForeWnd = GetForegroundWindow();
-	DWORD dwForeID = GetWindowThreadProcessId(hForeWnd, NULL);
-	DWORD dwCurID = GetCurrentThreadId();
-	AttachThreadInput(dwCurID, dwForeID, TRUE);
-	//ShowWindow(hWnd, SW_SHOWNORMAL);
-	//SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
-	//SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
-	SetForegroundWindow(hWnd);
-	AttachThreadInput(dwCurID, dwForeID, FALSE);*/
-
-
-	// 窗口前移、显示、隐藏鼠标指针
-	//SetActiveWindow((HWND)m_pMainWindow->GetHandle());  // 然并卵
-	//BOOL rt=SetForegroundWindow((HWND)m_pMainWindow->GetHandle());
-	//m_pMainWindow->SetTopMost(true);
-	
-	// SetForegroundWindow((HWND)m_pMainWindow->GetHandle());
-	// BringWindowToTop((HWND)m_pMainWindow->GetHandle());
-
 	m_pMainWindow->SetHideIME(true);
 	m_pMainWindow->HideMouse(!m_OptionSplash);
+
+	AttachThreadInput(dwCurID, dwForeID, FALSE);
 
 	// 启动游戏循环
 	// 将GameInit执行后移到这里
