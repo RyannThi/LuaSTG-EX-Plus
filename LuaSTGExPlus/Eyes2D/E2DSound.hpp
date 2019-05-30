@@ -63,6 +63,14 @@ namespace Eyes2D {
 			virtual unsigned long long GetPlayerdTime() = 0;
 			//获取音频长度，单位为采样（可信，来自解码器）
 			virtual unsigned int GetTotalTime() = 0;
+			//设置播放位置，单位为秒，并刷新缓冲区队列
+			virtual bool SetTimeSec(float sec) = 0;
+			//获取播放位置，单位为秒（不可信，是计算的值）
+			virtual float GetTimeSec() = 0;
+			//获取播放时间，单位为秒（不可信，音频中途可能变速播放）
+			virtual float GetPlayerdTimeSec() = 0;
+			//获取音频长度，单位为秒（可信，来自解码器，但是有浮点数误差）
+			virtual float GetTotalTimeSec() = 0;
 
 			//设置音量，归一化线性音量
 			virtual void SetVolume(float volume) = 0;

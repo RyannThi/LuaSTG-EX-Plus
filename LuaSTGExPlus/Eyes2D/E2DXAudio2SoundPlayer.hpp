@@ -38,6 +38,10 @@ namespace Eyes2D {
 			unsigned int GetTime();
 			unsigned long long GetPlayerdTime();
 			unsigned int GetTotalTime();
+			bool SetTimeSec(float sec);
+			float GetTimeSec();
+			float GetPlayerdTimeSec();
+			float GetTotalTimeSec();
 
 			void SetVolume(float volume);
 			float GetVolume();

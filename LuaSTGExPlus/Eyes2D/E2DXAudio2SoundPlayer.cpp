@@ -298,6 +298,22 @@ unsigned int XAudio2SoundPlayerImpl::GetTotalTime() {
 	return m_Decoder->GetDataSize() / (unsigned int)m_Decoder->GetBlockAlign();
 }
 
+bool XAudio2SoundPlayerImpl::SetTimeSec(float sec) {
+	return SetTimeSec(sec * m_Decoder->GetSamplesPerSec());
+}
+
+float XAudio2SoundPlayerImpl::GetTimeSec() {
+	return GetTimeSec() / m_Decoder->GetSamplesPerSec();
+}
+
+float XAudio2SoundPlayerImpl::GetPlayerdTimeSec() {
+	return GetPlayerdTime() / m_Decoder->GetSamplesPerSec();
+}
+
+float XAudio2SoundPlayerImpl::GetTotalTimeSec() {
+	return GetTotalTime() / m_Decoder->GetSamplesPerSec();
+}
+
 void XAudio2SoundPlayerImpl::SetVolume(float volume) {
 	volume = (volume > 1.0f) ? 1.0f : volume;
 	volume = (volume < -1.0f) ? -1.0f : volume;
