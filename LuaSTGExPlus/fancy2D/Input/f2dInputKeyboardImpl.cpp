@@ -27,9 +27,12 @@ void f2dInputKeyboardImpl::DefaultListener::OnKeyboardBtnUp(F2DINPUTKEYCODE KeyC
 
 const fuInt f2dInputKeyboardImpl::BufferSize = 32;
 
-const DIDATAFORMAT f2dInputKeyboardImpl::DIDF_Keyboard = 
-{
-	24, 16, 2, 256, 256,
+const DIDATAFORMAT f2dInputKeyboardImpl::DIDF_Keyboard =  {
+	sizeof(DIDATAFORMAT),
+	sizeof(DIOBJECTDATAFORMAT), 
+	DIDF_RELAXIS,//相对轴模式
+	256,
+	256,//下面数组的尺寸
 	(LPDIOBJECTDATAFORMAT)&f2dInputKeyboardImpl::DIODF_Keyboard
 };
 
@@ -404,7 +407,7 @@ fResult f2dInputKeyboardImpl::UpdateState()
 		}
 	}
 
-	for(fuInt i = 0; i<tSize; ++i)
+	for (fuInt i = 0; i < tSize; ++i)
 	{
 		fuInt tKeyCode = tRawData[i].dwOfs;
 		bool tKeyDown = (LOWORD(tRawData[i].dwData) & 0x80) != 0;
