@@ -1,6 +1,6 @@
-////////////////////////////////////////////////////////////////////////////////
+ï»¿////////////////////////////////////////////////////////////////////////////////
 /// @file  fcyMath.h
-/// @brief ÊıÑ§¿â£¬ÃèÊöÊıÑ§Ïà¹Ø½á¹¹
+/// @brief æ•°å­¦åº“ï¼Œæè¿°æ•°å­¦ç›¸å…³ç»“æ„
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "fcyType.h"
@@ -10,114 +10,114 @@
 #define FCYMAX(a,b) (((a)>(b))?(a):(b))
 #define FCYMIN(a,b) (((a)<(b))?(a):(b))
 
-/// @addtogroup fancyÊıÑ§¿â
-/// @brief Ìá¹©ÊıÑ§ÔËËãÖ§³Ö
-/// @note ÈôÎŞÌØÊâËµÃ÷£¬½Ç¶Èµ¥Î»¾ùÎª»¡¶È
+/// @addtogroup fancyæ•°å­¦åº“
+/// @brief æä¾›æ•°å­¦è¿ç®—æ”¯æŒ
+/// @note è‹¥æ— ç‰¹æ®Šè¯´æ˜ï¼Œè§’åº¦å•ä½å‡ä¸ºå¼§åº¦
 /// @{
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief 2DÏòÁ¿
+/// @brief 2Då‘é‡
 ////////////////////////////////////////////////////////////////////////////////
 class fcyVec2
 {
 public:
-	fFloat x; ///< @brief x×ø±ê
-	fFloat y; ///< @brief y×ø±ê
-public: // ¹¹Ôìº¯Êı
+	fFloat x; ///< @brief xåæ ‡
+	fFloat y; ///< @brief yåæ ‡
+public: // æ„é€ å‡½æ•°
 	fcyVec2()
 		: x(0.f), y(0.f) {}
-	/// @brief     ¹¹Ôìº¯Êı
-	/// @param[in] X x×ø±ê
-	/// @param[in] Y y×ø±ê
+	/// @brief     æ„é€ å‡½æ•°
+	/// @param[in] X xåæ ‡
+	/// @param[in] Y yåæ ‡
 	fcyVec2(fFloat X, fFloat Y)
 		: x(X), y(Y) {}
-	/// @brief     ¹¹Ôìº¯Êı£¬´Ódata[0]~data[1]È¡³ö¸¡µãÖµ
-	/// @warning   ²»°²È«µÄº¯Êı
-	/// @param[in] data ¸¡µãÊı×éÖ¸Õë
+	/// @brief     æ„é€ å‡½æ•°ï¼Œä»data[0]~data[1]å–å‡ºæµ®ç‚¹å€¼
+	/// @warning   ä¸å®‰å…¨çš„å‡½æ•°
+	/// @param[in] data æµ®ç‚¹æ•°ç»„æŒ‡é’ˆ
 	fcyVec2(fFloat *data)
 		: x(data[0]), y(data[1]) {}
-public: // ÔËËã·ûÖØÔØ
-	/// @brief 2DÏòÁ¿ÏàµÈ
+public: // è¿ç®—ç¬¦é‡è½½
+	/// @brief 2Då‘é‡ç›¸ç­‰
 	fBool operator==(const fcyVec2& right)const
 	{
 		return (x == right.x && y == right.y);
 	}
-	/// @brief 2DÏòÁ¿²»µÈ
+	/// @brief 2Då‘é‡ä¸ç­‰
 	fBool operator!=(const fcyVec2& right)const
 	{
 		return (x != right.x || y != right.y);
 	}
-	/// @brief 2DÏòÁ¿Ïà¼Ó
+	/// @brief 2Då‘é‡ç›¸åŠ 
 	fcyVec2 operator+(const fcyVec2& right)const
 	{
 		return fcyVec2(x + right.x, y + right.y);
 	};
-	/// @brief 2DÏòÁ¿×Ô¼Ó
+	/// @brief 2Då‘é‡è‡ªåŠ 
 	fcyVec2& operator+=(const fcyVec2& right)
 	{
 		x += right.x;
 		y += right.y;
 		return *this;
 	};
-	/// @brief 2DÏòÁ¿Ïà¼õ
+	/// @brief 2Då‘é‡ç›¸å‡
 	fcyVec2 operator-(const fcyVec2& right)const
 	{
 		return fcyVec2(x - right.x, y - right.y);
 	};
-	/// @brief 2DÏòÁ¿×Ô¼õ
+	/// @brief 2Då‘é‡è‡ªå‡
 	fcyVec2& operator-=(const fcyVec2& right)
 	{
 		x -= right.x;
 		y -= right.y;
 		return *this;
 	};
-	/// @brief 2DÏòÁ¿Êı³Ë
+	/// @brief 2Då‘é‡æ•°ä¹˜
 	fcyVec2 operator*(fFloat right)const
 	{
 		return fcyVec2(x * right, y * right);
 	};
-	/// @brief 2DÏòÁ¿Êı³Ë£¨³ı·¨£©
+	/// @brief 2Då‘é‡æ•°ä¹˜ï¼ˆé™¤æ³•ï¼‰
 	fcyVec2 operator/(fFloat right)const
 	{
 		return fcyVec2(x / right, y / right);
 	};
-	/// @brief 2DÏòÁ¿×ÔÊı³Ë
+	/// @brief 2Då‘é‡è‡ªæ•°ä¹˜
 	fcyVec2& operator*=(fFloat right)
 	{
 		x = x * right;
 		y = y * right;
 		return *this;
 	};
-	/// @brief 2DÏòÁ¿×ÔÊı³Ë£¨³ı·¨£©
+	/// @brief 2Då‘é‡è‡ªæ•°ä¹˜ï¼ˆé™¤æ³•ï¼‰
 	fcyVec2& operator/=(fFloat right)
 	{
 		x = x / right;
 		y = y / right;
 		return *this;
 	};
-	/// @brief 2DÏòÁ¿µã»ı
+	/// @brief 2Då‘é‡ç‚¹ç§¯
 	fFloat operator*(const fcyVec2& right)const
 	{
 		return x * right.x + y * right.y;
 	}
-	/// @brief È¡·´
+	/// @brief å–å
 	fcyVec2 operator-()const
 	{
 		return fcyVec2(-x, -y);
 	};
-public: // º¯Êı
-	// ÉèÖÃ
-	/// @brief ÉèÖÃĞÂÖµ
+public: // å‡½æ•°
+	// è®¾ç½®
+	/// @brief è®¾ç½®æ–°å€¼
 	void Set(fFloat X,fFloat Y)
 	{
 		x = X; y = Y;
 	}
-	/// @brief Æ½Ãæ²æ»ı
+	/// @brief å¹³é¢å‰ç§¯
 	fFloat Cross(const fcyVec2& right)const
 	{
 		return  x * right.y - right.x * y;
 	};
-	/// @brief ¹æ·¶»¯ÏòÁ¿
+	/// @brief è§„èŒƒåŒ–å‘é‡
 	void Normalize()
 	{
 		fFloat mode = sqrt( x * x +  y * y );
@@ -127,7 +127,7 @@ public: // º¯Êı
 			y /= mode;
 		}
 	};
-	/// @brief ·µ»Ø¹æ·¶»¯ÏòÁ¿
+	/// @brief è¿”å›è§„èŒƒåŒ–å‘é‡
 	fcyVec2 GetNormalize()const
 	{
 		fFloat mode=sqrt( x *  x +  y *  y);
@@ -136,18 +136,18 @@ public: // º¯Êı
 		else
 			return fcyVec2();
 	};
-	/// @brief ÇóÄ£
+	/// @brief æ±‚æ¨¡
 	fFloat Length()const
 	{
 		return sqrt( x*x + y*y );
 	}
-	/// @brief ÇóÄ£µÄÆ½·½
+	/// @brief æ±‚æ¨¡çš„å¹³æ–¹
 	fFloat Length2()const
 	{
 		return ( x*x + y*y );
 	}
-	/// @brief     ÄæÊ±ÕëĞı×ª
-	/// @param[in] angle Ğı×ª½Ç¶È
+	/// @brief     é€†æ—¶é’ˆæ—‹è½¬
+	/// @param[in] angle æ—‹è½¬è§’åº¦
 	void Rotation(fFloat angle)
 	{
 		fFloat s = sin(angle),
@@ -157,23 +157,23 @@ public: // º¯Êı
 		x = tx;
 		y = ty;
 	}
-	/// @brief     ÄæÊ±ÕëĞı×ª
-	/// @note      ÓÃÓÚÅúÁ¿Ğı×ª£¬¼õÉÙÈı½Çº¯ÊıÔËËã
-	/// @param[in] s SinÖµ(=sin(angle))
-	/// @param[in] c CosÖµ(=cos(angle))
+	/// @brief     é€†æ—¶é’ˆæ—‹è½¬
+	/// @note      ç”¨äºæ‰¹é‡æ—‹è½¬ï¼Œå‡å°‘ä¸‰è§’å‡½æ•°è¿ç®—
+	/// @param[in] s Sinå€¼(=sin(angle))
+	/// @param[in] c Coså€¼(=cos(angle))
 	void RotationSC(fFloat s, fFloat c)
 	{
 		fFloat tx = x*c - y*s,
 			ty = x*s + y*c;
 		x = tx; y = ty;
 	}
-	/// @brief ¼ÆËãÓëxÖáµÄ¼Ğ½Ç
+	/// @brief è®¡ç®—ä¸xè½´çš„å¤¹è§’
 	fFloat CalcuAngle()
 	{
 		return atan2(y,x);
 	}
-	/// @brief     ÄæÊ±ÕëĞı×ª
-	/// @param[in] angle Ğı×ª½Ç¶È
+	/// @brief     é€†æ—¶é’ˆæ—‹è½¬
+	/// @param[in] angle æ—‹è½¬è§’åº¦
 	void Set2(fFloat len,fFloat angle)
 	{
 		x = len*cos(angle);
@@ -182,40 +182,40 @@ public: // º¯Êı
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief 3DÏòÁ¿
+/// @brief 3Då‘é‡
 ////////////////////////////////////////////////////////////////////////////////
 class fcyVec3
 {
 public:
-	fFloat x; ///< @brief x×ø±ê
-	fFloat y; ///< @brief y×ø±ê
-	fFloat z; ///< @brief z×ø±ê
-public: // ¹¹Ôìº¯Êı
+	fFloat x; ///< @brief xåæ ‡
+	fFloat y; ///< @brief yåæ ‡
+	fFloat z; ///< @brief zåæ ‡
+public: // æ„é€ å‡½æ•°
 	fcyVec3()
 		: x(0.f), y(0.f), z(0.f) {}
-	/// @brief     ¹¹Ôìº¯Êı
-	/// @param[in] X x×ø±ê
-	/// @param[in] Y y×ø±ê
-	/// @param[in] Z z×ø±ê
+	/// @brief     æ„é€ å‡½æ•°
+	/// @param[in] X xåæ ‡
+	/// @param[in] Y yåæ ‡
+	/// @param[in] Z zåæ ‡
 	fcyVec3(fFloat X, fFloat Y, fFloat Z)
 		: x(X), y(Y), z(Z) {}
-	/// @brief     ¹¹Ôìº¯Êı£¬´Ódata[0]~data[2]È¡³ö¸¡µãÖµ
-	/// @warning   ²»°²È«µÄº¯Êı
-	/// @param[in] data ¸¡µãÊı×éÖ¸Õë
+	/// @brief     æ„é€ å‡½æ•°ï¼Œä»data[0]~data[2]å–å‡ºæµ®ç‚¹å€¼
+	/// @warning   ä¸å®‰å…¨çš„å‡½æ•°
+	/// @param[in] data æµ®ç‚¹æ•°ç»„æŒ‡é’ˆ
 	fcyVec3(fFloat *data)
 		: x(data[0]), y(data[1]), z(data[2]) {}
-public: // ÔËËã·ûÖØÔØ
-	/// @brief 3DÏòÁ¿ÏàµÈ
+public: // è¿ç®—ç¬¦é‡è½½
+	/// @brief 3Då‘é‡ç›¸ç­‰
 	fBool operator==(const fcyVec3& right)const
 	{
 		return (x == right.x && y == right.y && z == right.z);
 	}
-	/// @brief 3DÏòÁ¿²»µÈ
+	/// @brief 3Då‘é‡ä¸ç­‰
 	fBool operator!=(const fcyVec3& right)const
 	{
 		return (x != right.x || y != right.y || z != right.z);
 	}
-	/// @brief 3DÏòÁ¿Ïà¼Ó
+	/// @brief 3Då‘é‡ç›¸åŠ 
 	fcyVec3 operator+(const fcyVec3& right)const
 	{
 		return fcyVec3(
@@ -224,7 +224,7 @@ public: // ÔËËã·ûÖØÔØ
 			z + right.z
 			);
 	};
-	/// @brief 3DÏòÁ¿×Ô¼Ó
+	/// @brief 3Då‘é‡è‡ªåŠ 
 	fcyVec3& operator+=(const fcyVec3& right)
 	{
 		x += right.x;
@@ -232,7 +232,7 @@ public: // ÔËËã·ûÖØÔØ
 		z += right.z;
 		return *this;
 	};
-	/// @brief 3DÏòÁ¿Ïà¼õ
+	/// @brief 3Då‘é‡ç›¸å‡
 	fcyVec3 operator-(const fcyVec3& right)const
 	{
 		return fcyVec3(
@@ -241,7 +241,7 @@ public: // ÔËËã·ûÖØÔØ
 			z - right.z
 			);
 	};
-	/// @brief 3DÏòÁ¿×Ô¼õ
+	/// @brief 3Då‘é‡è‡ªå‡
 	fcyVec3& operator-=(const fcyVec3& right)
 	{
 		x -= right.x;
@@ -249,7 +249,7 @@ public: // ÔËËã·ûÖØÔØ
 		z -= right.z;
 		return *this;
 	};
-	/// @brief 3DÏòÁ¿Êı³Ë
+	/// @brief 3Då‘é‡æ•°ä¹˜
 	fcyVec3 operator*(fFloat right)const
 	{
 		return fcyVec3(
@@ -258,7 +258,7 @@ public: // ÔËËã·ûÖØÔØ
 			z * right
 			);
 	};
-	/// @brief 3DÏòÁ¿Êı³Ë£¨³ı·¨£©
+	/// @brief 3Då‘é‡æ•°ä¹˜ï¼ˆé™¤æ³•ï¼‰
 	fcyVec3 operator/(fFloat right)const
 	{
 		return fcyVec3(
@@ -267,7 +267,7 @@ public: // ÔËËã·ûÖØÔØ
 			z / right
 			);
 	};
-	/// @brief 3DÏòÁ¿×ÔÊı³Ë
+	/// @brief 3Då‘é‡è‡ªæ•°ä¹˜
 	fcyVec3& operator*=(fFloat right)
 	{
 		x = x * right;
@@ -275,7 +275,7 @@ public: // ÔËËã·ûÖØÔØ
 		z = z * right;
 		return *this;
 	};
-	/// @brief 3DÏòÁ¿×ÔÊı³Ë£¨³ı·¨£©
+	/// @brief 3Då‘é‡è‡ªæ•°ä¹˜ï¼ˆé™¤æ³•ï¼‰
 	fcyVec3& operator/=(fFloat right)
 	{
 		x = x / right;
@@ -283,24 +283,24 @@ public: // ÔËËã·ûÖØÔØ
 		z = z / right;
 		return *this;
 	};
-	/// @brief 3DÏòÁ¿µã»ı
+	/// @brief 3Då‘é‡ç‚¹ç§¯
 	fFloat operator*(const fcyVec3& right)const
 	{
 		return x * right.x + y * right.y + z * right.z;
 	};
-	/// @brief È¡·´
+	/// @brief å–å
 	fcyVec3 operator-()const
 	{
 		return fcyVec3(-x, -y, -z);
 	};
-public: // º¯Êı
-	// ÉèÖÃ
-	/// @brief ÉèÖµĞÂÖµ
+public: // å‡½æ•°
+	// è®¾ç½®
+	/// @brief è®¾å€¼æ–°å€¼
 	void Set(fFloat X, fFloat Y, fFloat Z)
 	{
 		x = X; y = Y; z = Z;
 	}
-	/// @brief ÏòÁ¿²æ»ı
+	/// @brief å‘é‡å‰ç§¯
 	fcyVec3 Cross(const fcyVec3& right)const
 	{
 		return fcyVec3(
@@ -308,7 +308,7 @@ public: // º¯Êı
 			z*right.x -  x*right.z,
 			x*right.y -  y*right.x);
 	};
-	/// @brief ¹æ·¶»¯ÏòÁ¿
+	/// @brief è§„èŒƒåŒ–å‘é‡
 	void Normalize()
 	{
 		fFloat mode = sqrt( x*x +  y*y +  z*z );
@@ -319,7 +319,7 @@ public: // º¯Êı
 			z/=mode;
 		}
 	};
-	/// @brief ·µ»Ø¹æ·¶»¯ÏòÁ¿
+	/// @brief è¿”å›è§„èŒƒåŒ–å‘é‡
 	fcyVec3 GetNormalize()const
 	{
 		fFloat mode = sqrt( x*x + y*y + z*z );
@@ -328,12 +328,12 @@ public: // º¯Êı
 		else
 			return fcyVec3();
 	};
-	/// @brief È¡Ä£
+	/// @brief å–æ¨¡
 	fFloat Length()const
 	{
 		return sqrt( x*x + y*y + z*z );
 	};
-	/// @brief È¡Ä£µÄÆ½·½
+	/// @brief å–æ¨¡çš„å¹³æ–¹
 	fFloat Length2()const
 	{
 		return x*x + y*y + z*z;
@@ -341,45 +341,45 @@ public: // º¯Êı
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief 4DÏòÁ¿
+/// @brief 4Då‘é‡
 ////////////////////////////////////////////////////////////////////////////////
 class fcyVec4
 {
 public:
-	fFloat x; ///< @brief x×ø±ê
-	fFloat y; ///< @brief y×ø±ê
-	fFloat z; ///< @brief z×ø±ê
-	fFloat w; ///< @brief w×ø±ê
-public: // ¹¹Ôìº¯Êı
+	fFloat x; ///< @brief xåæ ‡
+	fFloat y; ///< @brief yåæ ‡
+	fFloat z; ///< @brief zåæ ‡
+	fFloat w; ///< @brief wåæ ‡
+public: // æ„é€ å‡½æ•°
 	fcyVec4()
 		: x(0.f), y(0.f), z(0.f), w(0.f) 
 	{
 		this->w = 10;
 	}
-	/// @brief     ¹¹Ôìº¯Êı
-	/// @param[in] X x×ø±ê
-	/// @param[in] Y y×ø±ê
-	/// @param[in] Z z×ø±ê
-	/// @param[in] W w×ø±ê
+	/// @brief     æ„é€ å‡½æ•°
+	/// @param[in] X xåæ ‡
+	/// @param[in] Y yåæ ‡
+	/// @param[in] Z zåæ ‡
+	/// @param[in] W wåæ ‡
 	fcyVec4(fFloat X, fFloat Y, fFloat Z, fFloat W)
 		: x(X), y(Y), z(Z), w(W) {}
-	/// @brief     ¹¹Ôìº¯Êı£¬´Ódata[0]~data[3]È¡³ö¸¡µãÖµ
-	/// @warning   ²»°²È«µÄº¯Êı
-	/// @param[in] data ¸¡µãÊı×éÖ¸Õë
+	/// @brief     æ„é€ å‡½æ•°ï¼Œä»data[0]~data[3]å–å‡ºæµ®ç‚¹å€¼
+	/// @warning   ä¸å®‰å…¨çš„å‡½æ•°
+	/// @param[in] data æµ®ç‚¹æ•°ç»„æŒ‡é’ˆ
 	fcyVec4(fFloat *data)
 		: x(data[0]), y(data[1]), z(data[2]), w(data[3]) {}
-public: // ÔËËã·ûÖØÔØ
-	/// @brief 4DÏòÁ¿ÏàµÈ
+public: // è¿ç®—ç¬¦é‡è½½
+	/// @brief 4Då‘é‡ç›¸ç­‰
 	fBool operator==(const fcyVec4& right)const
 	{
 		return (x == right.x && y == right.y && z == right.z && w == right.w);
 	}
-	/// @brief 4DÏòÁ¿²»µÈ
+	/// @brief 4Då‘é‡ä¸ç­‰
 	fBool operator!=(const fcyVec4& right)const
 	{
 		return (x != right.x || y != right.y || z != right.z || w != right.w);
 	}
-	/// @brief 4DÏòÁ¿Ïà¼Ó
+	/// @brief 4Då‘é‡ç›¸åŠ 
 	fcyVec4 operator+(const fcyVec4& right)const
 	{
 		return fcyVec4(
@@ -389,7 +389,7 @@ public: // ÔËËã·ûÖØÔØ
 			w + right.w
 			);
 	};
-	/// @brief 4DÏòÁ¿×Ô¼Ó
+	/// @brief 4Då‘é‡è‡ªåŠ 
 	fcyVec4& operator+=(const fcyVec4& right)
 	{
 		x += right.x;
@@ -398,7 +398,7 @@ public: // ÔËËã·ûÖØÔØ
 		w += right.w;
 		return *this;
 	};
-	/// @brief 4DÏòÁ¿Ïà¼õ
+	/// @brief 4Då‘é‡ç›¸å‡
 	fcyVec4 operator-(const fcyVec4& right)const
 	{
 		return fcyVec4(
@@ -408,7 +408,7 @@ public: // ÔËËã·ûÖØÔØ
 			w - right.w
 			);
 	};
-	/// @brief 4DÏòÁ¿×Ô¼õ
+	/// @brief 4Då‘é‡è‡ªå‡
 	fcyVec4& operator-=(const fcyVec4& right)
 	{
 		x -= right.x;
@@ -417,7 +417,7 @@ public: // ÔËËã·ûÖØÔØ
 		w -= right.w;
 		return *this;
 	};
-	/// @brief 4DÏòÁ¿Êı³Ë
+	/// @brief 4Då‘é‡æ•°ä¹˜
 	fcyVec4 operator*(fFloat right)const
 	{
 		return fcyVec4(
@@ -427,7 +427,7 @@ public: // ÔËËã·ûÖØÔØ
 			w * right
 			);
 	};
-	/// @brief 4DÏòÁ¿Êı³Ë£¨³ı·¨£©
+	/// @brief 4Då‘é‡æ•°ä¹˜ï¼ˆé™¤æ³•ï¼‰
 	fcyVec4 operator/(fFloat right)const
 	{
 		return fcyVec4(
@@ -437,7 +437,7 @@ public: // ÔËËã·ûÖØÔØ
 			w / right
 			);
 	};
-	/// @brief 4DÏòÁ¿×ÔÊı³Ë
+	/// @brief 4Då‘é‡è‡ªæ•°ä¹˜
 	fcyVec4& operator*=(fFloat right)
 	{
 		x = x * right;
@@ -446,7 +446,7 @@ public: // ÔËËã·ûÖØÔØ
 		w = w * right;
 		return *this;
 	};
-	/// @brief 4DÏòÁ¿×ÔÊı³Ë£¨³ı·¨£©
+	/// @brief 4Då‘é‡è‡ªæ•°ä¹˜ï¼ˆé™¤æ³•ï¼‰
 	fcyVec4& operator/=(fFloat right)
 	{
 		x = x / right;
@@ -455,23 +455,23 @@ public: // ÔËËã·ûÖØÔØ
 		w = w / right;
 		return *this;
 	};
-	/// @brief È¡·´
+	/// @brief å–å
 	fcyVec4 operator-()const
 	{
 		return fcyVec4(-x, -y, -z, -w);
 	};
-public: // º¯Êı
-	/// @brief ÉèÖµĞÂÖµ
+public: // å‡½æ•°
+	/// @brief è®¾å€¼æ–°å€¼
 	void Set(fFloat X, fFloat Y, fFloat Z)
 	{
 		x = X; y = Y; z = Z;
 	}
-	/// @brief ÉèÖµĞÂÖµ
+	/// @brief è®¾å€¼æ–°å€¼
 	void Set(fFloat X, fFloat Y, fFloat Z, fFloat W)
 	{
 		x = X; y = Y; z = Z; w = W;
 	}
-	/// @brief ¹æ·¶»¯ÏòÁ¿
+	/// @brief è§„èŒƒåŒ–å‘é‡
 	void Normalize()
 	{
 		fFloat mode = sqrt( x*x +  y*y +  z*z + w*w );
@@ -483,7 +483,7 @@ public: // º¯Êı
 			w/=mode;
 		}
 	};
-	/// @brief ·µ»Ø¹æ·¶»¯ÏòÁ¿
+	/// @brief è¿”å›è§„èŒƒåŒ–å‘é‡
 	fcyVec4 GetNormalize()const
 	{
 		fFloat mode = sqrt( x*x + y*y + z*z + w*w );
@@ -492,12 +492,12 @@ public: // º¯Êı
 		else
 			return fcyVec4();
 	};
-	/// @brief È¡Ä£
+	/// @brief å–æ¨¡
 	fFloat Length()const
 	{
 		return sqrt( x*x + y*y + z*z + w*w );
 	};
-	/// @brief È¡Ä£µÄÆ½·½
+	/// @brief å–æ¨¡çš„å¹³æ–¹
 	fFloat Length2()const
 	{
 		return x*x + y*y + z*z + w*w;
@@ -505,8 +505,8 @@ public: // º¯Êı
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief 4x4¾ØÕó
-/// @note  ĞĞÊ½¾ØÕó
+/// @brief 4x4çŸ©é˜µ
+/// @note  è¡Œå¼çŸ©é˜µ
 ////////////////////////////////////////////////////////////////////////////////
 class fcyMatrix4
 {
@@ -520,10 +520,10 @@ public:
 			fFloat _31, _32, _33, _34;
 			fFloat _41, _42, _43, _44;
 		} m;
-		fFloat arr[4][4];  /// @brief ¾ØÕóÊı¾İÓò
+		fFloat arr[4][4];  /// @brief çŸ©é˜µæ•°æ®åŸŸ
 	};
 public:
-	/// @brief ³õÊ¼»¯Îªµ¥Î»¾ØÕó
+	/// @brief åˆå§‹åŒ–ä¸ºå•ä½çŸ©é˜µ
 	fcyMatrix4()
 	{
 		m._11 = 1.f;  m._12 = 0.f;  m._13 = 0.f;  m._14 = 0.f;
@@ -531,7 +531,7 @@ public:
 		m._31 = 0.f;  m._32 = 0.f;  m._33 = 1.f;  m._34 = 0.f;
 		m._41 = 0.f;  m._42 = 0.f;  m._43 = 0.f;  m._44 = 1.f;
 	};
-	/// @brief Ê¹ÓÃ×Ô¶¨Òå³õÖµ³õÊ¼»¯¾ØÕó
+	/// @brief ä½¿ç”¨è‡ªå®šä¹‰åˆå€¼åˆå§‹åŒ–çŸ©é˜µ
 	fcyMatrix4(fFloat m11,fFloat m12,fFloat m13,fFloat m14,
 		fFloat m21,fFloat m22,fFloat m23,fFloat m24,
 		fFloat m31,fFloat m32,fFloat m33,fFloat m34,
@@ -543,7 +543,7 @@ public:
 		m._41 = m41;  m._42 = m42;  m._43 = m43;  m._44 = m44;
 	};
 public:
-	/// @brief ÉèÖÃĞÂÖµ
+	/// @brief è®¾ç½®æ–°å€¼
 	void Set(fFloat m11,fFloat m12,fFloat m13,fFloat m14,
 		fFloat m21,fFloat m22,fFloat m23,fFloat m24,
 		fFloat m31,fFloat m32,fFloat m33,fFloat m34,
@@ -555,7 +555,7 @@ public:
 		m._41 = m41;  m._42 = m42;  m._43 = m43;  m._44 = m44;
 	};
 public:
-	/// @brief ¾ØÕóÏà¼Ó
+	/// @brief çŸ©é˜µç›¸åŠ 
 	fcyMatrix4 operator+(const fcyMatrix4& right)const
 	{
 		return fcyMatrix4(
@@ -565,7 +565,7 @@ public:
 			m._41 + right.m._41, m._42 + right.m._42, m._43 + right.m._43, m._44 + right.m._44
 			);
 	};
-	/// @brief ¾ØÕó×Ô¼Ó
+	/// @brief çŸ©é˜µè‡ªåŠ 
 	fcyMatrix4& operator+=(const fcyMatrix4& right)
 	{
 		m._11 += right.m._11; m._12 += right.m._12; m._13 += right.m._13; m._14 += right.m._14;
@@ -575,7 +575,7 @@ public:
 
 		return *this;
 	};
-	/// @brief ¾ØÕóÏà¼õ
+	/// @brief çŸ©é˜µç›¸å‡
 	fcyMatrix4 operator-(const fcyMatrix4& right)const
 	{
 		return fcyMatrix4(
@@ -585,7 +585,7 @@ public:
 			m._41 - right.m._41, m._42 - right.m._42, m._43 - right.m._43, m._44 - right.m._44
 			);
 	};
-	/// @brief ¾ØÕó×Ô¼õ
+	/// @brief çŸ©é˜µè‡ªå‡
 	fcyMatrix4& operator-=(const fcyMatrix4& right)
 	{
 		m._11 -= right.m._11; m._12 -= right.m._12; m._13 -= right.m._13; m._14 -= right.m._14;
@@ -595,7 +595,7 @@ public:
 
 		return *this;
 	};
-	/// @brief ¾ØÕóÏà³Ë
+	/// @brief çŸ©é˜µç›¸ä¹˜
 	fcyMatrix4 operator*(const fcyMatrix4& right)const
 	{
 		return fcyMatrix4(
@@ -620,7 +620,7 @@ public:
 			m._41 * right.m._14 + m._42 * right.m._24 + m._43 * right.m._34 + m._44 * right.m._44
 			);
 	};
-	/// @brief ¾ØÕóÊı³Ë
+	/// @brief çŸ©é˜µæ•°ä¹˜
 	fcyMatrix4 operator*(const fFloat& right)const
 	{
 		return fcyMatrix4(m._11 * right, m._12 * right, m._13 * right, m._14 * right,
@@ -628,23 +628,23 @@ public:
 			m._31 * right, m._32 * right, m._33 * right, m._34 * right,
 			m._41 * right, m._42 * right, m._43 * right, m._44 * right);
 	};
-	/// @brief ¾ØÕó×Ô³Ë
+	/// @brief çŸ©é˜µè‡ªä¹˜
 	fcyMatrix4& operator*=(const fcyMatrix4& right)
 	{
 		*this = *this * right;
 		return *this;
 	};
 public:
-	/// @brief   ¿ìËÙÇóÄæ
-	/// @note    ¶ÔÌØ¶¨µÄ¾ØÕó½øĞĞ¿ìËÙÇóÄæ²Ù×÷
-	/// @warning ½öµ±¾ØÕó×óÉÏ½Ç3*3Ğı×ª²¿·ÖµÄ3¸öÖáÏò¶¼Îªµ¥Î»ÏòÁ¿²¢ÇÒÁ½Á½´¹Ö±Ê±¿ÉÓÃ´Ë·¨
+	/// @brief   å¿«é€Ÿæ±‚é€†
+	/// @note    å¯¹ç‰¹å®šçš„çŸ©é˜µè¿›è¡Œå¿«é€Ÿæ±‚é€†æ“ä½œ
+	/// @warning ä»…å½“çŸ©é˜µå·¦ä¸Šè§’3*3æ—‹è½¬éƒ¨åˆ†çš„3ä¸ªè½´å‘éƒ½ä¸ºå•ä½å‘é‡å¹¶ä¸”ä¸¤ä¸¤å‚ç›´æ—¶å¯ç”¨æ­¤æ³•
 	void FastInvert()
 	{
 		/* 
-		·½·¨£º
-			×óÉÏ½Ç3*3 = Ô­×óÉÏ½Ç3*3 ×ªÖÃ
-			×óÏÂ½Ç1*3 = Ô­×óÏÂ½Ç1*3 Õı¸ºÏà·´£¬³ËÓÚ×óÉÏ½Ç3*3£¨×ªÖÃºó£©
-			Ê£ÏÂ²»±ä
+		æ–¹æ³•ï¼š
+			å·¦ä¸Šè§’3*3 = åŸå·¦ä¸Šè§’3*3 è½¬ç½®
+			å·¦ä¸‹è§’1*3 = åŸå·¦ä¸‹è§’1*3 æ­£è´Ÿç›¸åï¼Œä¹˜äºå·¦ä¸Šè§’3*3ï¼ˆè½¬ç½®åï¼‰
+			å‰©ä¸‹ä¸å˜
 		*/
 		Set(
 			m._11, m._21, m._31, 0.f,
@@ -656,7 +656,7 @@ public:
 			1.f
 			);
 	};
-	/// @brief ×ªÖÃ
+	/// @brief è½¬ç½®
 	void Transpose()
 	{
 		Set(
@@ -667,7 +667,7 @@ public:
 			);
 	};
 public:
-	/// @brief ·µ»Øµ¥Î»¾ØÕó
+	/// @brief è¿”å›å•ä½çŸ©é˜µ
 	static fcyMatrix4 GetIdentity()
 	{
 		return fcyMatrix4(
@@ -677,7 +677,7 @@ public:
 			0.f, 0.f, 0.f, 1.f
 			);
 	};
-	/// @brief ·µ»Ø×óÓÒÊÖÏµ½»»»¾ØÕó
+	/// @brief è¿”å›å·¦å³æ‰‹ç³»äº¤æ¢çŸ©é˜µ
 	static fcyMatrix4 GetSwaper()
 	{
 		return fcyMatrix4(
@@ -687,8 +687,8 @@ public:
 			0.f, 0.f, 0.f, 1.f
 			);
 	};
-	/// @brief     ·µ»ØÆ½ÒÆ¾ØÕó
-	/// @param[in] vec Æ½ÒÆÁ¿
+	/// @brief     è¿”å›å¹³ç§»çŸ©é˜µ
+	/// @param[in] vec å¹³ç§»é‡
 	static fcyMatrix4 GetTranslateMatrix(const fcyVec3& vec)
 	{
 		return fcyMatrix4(
@@ -698,8 +698,8 @@ public:
 			vec.x, vec.y, vec.z, 1.f
 			);
 	};
-	/// @brief     ·µ»ØËõ·Å¾ØÕó
-	/// @param[in] value Í³Ò»Ëõ·ÅÁ¿
+	/// @brief     è¿”å›ç¼©æ”¾çŸ©é˜µ
+	/// @param[in] value ç»Ÿä¸€ç¼©æ”¾é‡
 	static fcyMatrix4 GetScaleMatrix(const fFloat value)
 	{
 		return fcyMatrix4(
@@ -709,8 +709,8 @@ public:
 			0.f, 0.f, 0.f, 1.f
 			);
 	};
-	/// @brief     ·µ»ØËõ·Å¾ØÕó
-	/// @param[in] vec Ëõ·ÅÁ¿
+	/// @brief     è¿”å›ç¼©æ”¾çŸ©é˜µ
+	/// @param[in] vec ç¼©æ”¾é‡
 	static fcyMatrix4 GetScaleMatrix(const fcyVec3& vec)
 	{
 		return fcyMatrix4(
@@ -720,8 +720,8 @@ public:
 			0.f, 0.f, 0.f, 1.f
 			);
 	}
-	/// @brief     ·µ»ØÈÆXÖáĞı×ª¾ØÕó
-	/// @param[in] angle Ğı×ª½Ç¶È
+	/// @brief     è¿”å›ç»•Xè½´æ—‹è½¬çŸ©é˜µ
+	/// @param[in] angle æ—‹è½¬è§’åº¦
 	static fcyMatrix4 GetRotateX(const fFloat angle)
 	{
 		fFloat angle_sin = sin(angle),
@@ -734,8 +734,8 @@ public:
 			0.f, 0.f, 0.f, 1.f
 			);
 	};
-	/// @brief     ·µ»ØÈÆYÖáĞı×ª¾ØÕó
-	/// @param[in] angle Ğı×ª½Ç¶È
+	/// @brief     è¿”å›ç»•Yè½´æ—‹è½¬çŸ©é˜µ
+	/// @param[in] angle æ—‹è½¬è§’åº¦
 	static fcyMatrix4 GetRotateY(const fFloat angle)
 	{
 		fFloat angle_sin = sin(angle),
@@ -748,8 +748,8 @@ public:
 			0.f, 0.f, 0.f, 1.f
 			);
 	};
-	/// @brief     ·µ»ØÈÆZÖáĞı×ª¾ØÕó
-	/// @param[in] angle Ğı×ª½Ç¶È
+	/// @brief     è¿”å›ç»•Zè½´æ—‹è½¬çŸ©é˜µ
+	/// @param[in] angle æ—‹è½¬è§’åº¦
 	static fcyMatrix4 GetRotateZ(const fFloat angle)
 	{
 		fFloat angle_sin = sin(angle),
@@ -762,10 +762,10 @@ public:
 			0.f, 0.f, 0.f, 1.f
 			);
 	};
-	/// @brief     ·µ»ØÈÆXYZÈıÖáĞı×ª¾ØÕó
-	/// @param[in] yaw   ºáÇãÊÇÈÆ y ÖáĞı×ªµÄ½Ç¶È
-	/// @param[in] pitch ×İÇãÊÇÈÆ x ÖáĞı×ªµÄ½Ç¶È
-	/// @param[in] roll  ºá°ÚÊÇÈÆ z ÖáĞı×ªµÄ½Ç¶È
+	/// @brief     è¿”å›ç»•XYZä¸‰è½´æ—‹è½¬çŸ©é˜µ
+	/// @param[in] yaw   æ¨ªå€¾æ˜¯ç»• y è½´æ—‹è½¬çš„è§’åº¦
+	/// @param[in] pitch çºµå€¾æ˜¯ç»• x è½´æ—‹è½¬çš„è§’åº¦
+	/// @param[in] roll  æ¨ªæ‘†æ˜¯ç»• z è½´æ—‹è½¬çš„è§’åº¦
 	static fcyMatrix4 GetRotationYawPitchRoll(
 		const fFloat yaw,
 		const fFloat pitch,
@@ -785,9 +785,9 @@ public:
 			0.f, 0.f, 0.f, 1.f
 			);
 	};
-	/// @brief     ÓÒÊÖÏµ ·µ»ØÈÆÈÎÒâÖáĞı×ª¾ØÕó
-	/// @param[in] axisRotation Ğı×ªÏòÁ¿
-	/// @param[in] angle        ½Ç¶È
+	/// @brief     å³æ‰‹ç³» è¿”å›ç»•ä»»æ„è½´æ—‹è½¬çŸ©é˜µ
+	/// @param[in] axisRotation æ—‹è½¬å‘é‡
+	/// @param[in] angle        è§’åº¦
 	static fcyMatrix4 GetRotationAxisRH(
 		const fcyVec3& axisRotation,  
 		const fFloat angle)
@@ -814,9 +814,9 @@ public:
 			0 ,	0 ,	0 ,	1
 			);
 	};
-	/// @brief     ×óÊÖÏµ ·µ»ØÈÆÈÎÒâÖáĞı×ª¾ØÕó
-	/// @param[in] axisRotation Ğı×ªÏòÁ¿
-	/// @param[in] angle        ½Ç¶È
+	/// @brief     å·¦æ‰‹ç³» è¿”å›ç»•ä»»æ„è½´æ—‹è½¬çŸ©é˜µ
+	/// @param[in] axisRotation æ—‹è½¬å‘é‡
+	/// @param[in] angle        è§’åº¦
 	static fcyMatrix4 GetRotationAxisLH(
 		const fcyVec3& axisRotation,
 		const fFloat angle)
@@ -843,10 +843,10 @@ public:
 			0 ,	0 ,	0 ,	1
 			);
 	};
-	/// @brief     ×óÊÖÏµ ·µ»Ø¹Û²ìÄ³µãµÄ¾ØÕó
-	/// @param[in] eye    ÑÛ¾¦Î»ÖÃ
-	/// @param[in] lookat ¹Û²ìÎ»ÖÃ
-	/// @param[in] up     ÉÏ·½ÏòÁ¿
+	/// @brief     å·¦æ‰‹ç³» è¿”å›è§‚å¯ŸæŸç‚¹çš„çŸ©é˜µ
+	/// @param[in] eye    çœ¼ç›ä½ç½®
+	/// @param[in] lookat è§‚å¯Ÿä½ç½®
+	/// @param[in] up     ä¸Šæ–¹å‘é‡
 	static fcyMatrix4 GetLookAtLH(const fcyVec3& eye, const fcyVec3& lookat, const fcyVec3& up)
 	{
 		fcyVec3 zaxis(lookat - eye);
@@ -862,10 +862,10 @@ public:
 			-(xaxis*eye), -(yaxis*eye), -(zaxis*eye),  1.f
 			);
 	};
-	/// @brief     ÓÒÊÖÏµ ·µ»Ø¹Û²ìÄ³µãµÄ¾ØÕó
-	/// @param[in] eye    ÑÛ¾¦Î»ÖÃ
-	/// @param[in] lookat ¹Û²ìÎ»ÖÃ
-	/// @param[in] up     ÉÏ·½ÏòÁ¿
+	/// @brief     å³æ‰‹ç³» è¿”å›è§‚å¯ŸæŸç‚¹çš„çŸ©é˜µ
+	/// @param[in] eye    çœ¼ç›ä½ç½®
+	/// @param[in] lookat è§‚å¯Ÿä½ç½®
+	/// @param[in] up     ä¸Šæ–¹å‘é‡
 	static fcyMatrix4 GetLookAtRH(const fcyVec3& eye, const fcyVec3& lookat, const fcyVec3& up)
 	{
 		fcyVec3 xaxis(up);
@@ -882,11 +882,11 @@ public:
 			-(xaxis*eye),-(yaxis*eye),-(zaxis*eye),1.f
 			);
 	};
-	/// @brief     ×óÊÖÏµ ·µ»ØÕıÍ¶Ó°¾ØÕó
-	/// @param[in] w         ºáÏò¿ÉÊÓ·¶Î§
-	/// @param[in] h         ×İÏò¿ÉÊÓ·¶Î§
-	/// @param[in] nearPlane ×î½ü¾àÀë
-	/// @param[in] farPlane  ×îÔ¶¾àÀë
+	/// @brief     å·¦æ‰‹ç³» è¿”å›æ­£æŠ•å½±çŸ©é˜µ
+	/// @param[in] w         æ¨ªå‘å¯è§†èŒƒå›´
+	/// @param[in] h         çºµå‘å¯è§†èŒƒå›´
+	/// @param[in] nearPlane æœ€è¿‘è·ç¦»
+	/// @param[in] farPlane  æœ€è¿œè·ç¦»
 	static fcyMatrix4 GetOrthoLH(
 		const fuInt w,
 		const fuInt h,
@@ -900,11 +900,11 @@ public:
 			0.f, 0.f, nearPlane/(nearPlane - farPlane), 1.f
 			);
 	};
-	/// @brief     ÓÒÊÖÏµ ·µ»ØÕıÍ¶Ó°¾ØÕó
-	/// @param[in] w         ºáÏò¿ÉÊÓ·¶Î§
-	/// @param[in] h         ×İÏò¿ÉÊÓ·¶Î§
-	/// @param[in] nearPlane ×î½ü¾àÀë
-	/// @param[in] farPlane  ×îÔ¶¾àÀë
+	/// @brief     å³æ‰‹ç³» è¿”å›æ­£æŠ•å½±çŸ©é˜µ
+	/// @param[in] w         æ¨ªå‘å¯è§†èŒƒå›´
+	/// @param[in] h         çºµå‘å¯è§†èŒƒå›´
+	/// @param[in] nearPlane æœ€è¿‘è·ç¦»
+	/// @param[in] farPlane  æœ€è¿œè·ç¦»
 	static fcyMatrix4 GetOrthoRH(
 		const fuInt w,
 		const fuInt h,
@@ -918,11 +918,11 @@ public:
 			0.f, 0.f, nearPlane/(nearPlane - farPlane), 1.f
 			);
 	};
-	/// @brief     ×óÊÖÏµ ·µ»ØÍ¸ÊÓÍ¶Ó°¾ØÕó
-	/// @param[in] ration    ÆÁÄ»×İºá±È£¨¿í£º¸ß£©
-	/// @param[in] fovY      ×İÏòÊÓÒ°·¶Î§£¨»¡¶È£©
-	/// @param[in] nearPlane ×î½ü¾àÀë
-	/// @param[in] farPlane  ×îÔ¶¾àÀë
+	/// @brief     å·¦æ‰‹ç³» è¿”å›é€è§†æŠ•å½±çŸ©é˜µ
+	/// @param[in] ration    å±å¹•çºµæ¨ªæ¯”ï¼ˆå®½ï¼šé«˜ï¼‰
+	/// @param[in] fovY      çºµå‘è§†é‡èŒƒå›´ï¼ˆå¼§åº¦ï¼‰
+	/// @param[in] nearPlane æœ€è¿‘è·ç¦»
+	/// @param[in] farPlane  æœ€è¿œè·ç¦»
 	static fcyMatrix4 GetPespctiveLH(
 		const fFloat ration,
 		const fFloat fovY,
@@ -938,11 +938,11 @@ public:
 			0.f, 0.f, -( nearPlane*farPlane )/( farPlane-nearPlane ), 0.f
 			);
 	};
-	/// @brief     ÓÒÊÖÏµ ·µ»ØÍ¸ÊÓÍ¶Ó°¾ØÕó
-	/// @param[in] ration    ÆÁÄ»×İºá±È£¨¿í£º¸ß£©
-	/// @param[in] fovY      ×İÏòÊÓÒ°·¶Î§£¨»¡¶È£©
-	/// @param[in] nearPlane ×î½ü¾àÀë
-	/// @param[in] farPlane  ×îÔ¶¾àÀë
+	/// @brief     å³æ‰‹ç³» è¿”å›é€è§†æŠ•å½±çŸ©é˜µ
+	/// @param[in] ration    å±å¹•çºµæ¨ªæ¯”ï¼ˆå®½ï¼šé«˜ï¼‰
+	/// @param[in] fovY      çºµå‘è§†é‡èŒƒå›´ï¼ˆå¼§åº¦ï¼‰
+	/// @param[in] nearPlane æœ€è¿‘è·ç¦»
+	/// @param[in] farPlane  æœ€è¿œè·ç¦»
 	static fcyMatrix4 GetPespctiveRH(
 		const fFloat ration,
 		const fFloat fovY,
@@ -958,13 +958,13 @@ public:
 			0.f, 0.f, ( nearPlane*farPlane )/( nearPlane-farPlane),	0.f
 			);
 	};
-	/// @brief     ×óÊÖÏµ ·µ»Ø×Ô¶¨ÒåÕı½»Í¶Ó°¾ØÕó
-	/// @param[in] l  ×î×ó²àXÖµ
-	/// @param[in] r  ×îÓÒ²àXÖµ
-	/// @param[in] b  ×îÏÂ·½YÖµ
-	/// @param[in] t  ×îÉÏ·½YÖµ
-	/// @param[in] zn ×î½ü¾àÀë
-	/// @param[in] zf ×îÔ¶¾àÀë
+	/// @brief     å·¦æ‰‹ç³» è¿”å›è‡ªå®šä¹‰æ­£äº¤æŠ•å½±çŸ©é˜µ
+	/// @param[in] l  æœ€å·¦ä¾§Xå€¼
+	/// @param[in] r  æœ€å³ä¾§Xå€¼
+	/// @param[in] b  æœ€ä¸‹æ–¹Yå€¼
+	/// @param[in] t  æœ€ä¸Šæ–¹Yå€¼
+	/// @param[in] zn æœ€è¿‘è·ç¦»
+	/// @param[in] zf æœ€è¿œè·ç¦»
 	static fcyMatrix4 GetOrthoOffCenterLH(
 		const fFloat l,
 		const fFloat r,
@@ -980,13 +980,13 @@ public:
             (l+r)/(l-r), (t+b)/(b-t), zn/(zn-zf) , 1.f
 			);
 	};
-	/// @brief     ÓÒÊÖÏµ ·µ»Ø×Ô¶¨ÒåÕı½»Í¶Ó°¾ØÕó
-	/// @param[in] l  ×î×ó²àXÖµ
-	/// @param[in] r  ×îÓÒ²àXÖµ
-	/// @param[in] b  ×îÏÂ·½YÖµ
-	/// @param[in] t  ×îÉÏ·½YÖµ
-	/// @param[in] zn ×î½ü¾àÀë
-	/// @param[in] zf ×îÔ¶¾àÀë
+	/// @brief     å³æ‰‹ç³» è¿”å›è‡ªå®šä¹‰æ­£äº¤æŠ•å½±çŸ©é˜µ
+	/// @param[in] l  æœ€å·¦ä¾§Xå€¼
+	/// @param[in] r  æœ€å³ä¾§Xå€¼
+	/// @param[in] b  æœ€ä¸‹æ–¹Yå€¼
+	/// @param[in] t  æœ€ä¸Šæ–¹Yå€¼
+	/// @param[in] zn æœ€è¿‘è·ç¦»
+	/// @param[in] zf æœ€è¿œè·ç¦»
 	static fcyMatrix4 GetOrthoOffCenterRH(
 		const fFloat l,
 		const fFloat r,
@@ -1005,13 +1005,13 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief ÑÕÉ«Öµ
+/// @brief é¢œè‰²å€¼
 ////////////////////////////////////////////////////////////////////////////////
 class fcyColor
 {
 public:
 	union{
-		fuInt argb;   ///< @brief ÑÕÉ«Öµ
+		fuInt argb;   ///< @brief é¢œè‰²å€¼
 		struct
 		{
 			fByte b;
@@ -1020,41 +1020,41 @@ public:
 			fByte a;
 		};
 	};
-public: // ¹¹Ôìº¯Êı
-	/// @brief Ä¬ÈÏ¹¹Ôìº¯Êı£¬²úÉúAlpha=255µÄºÚÉ«
+public: // æ„é€ å‡½æ•°
+	/// @brief é»˜è®¤æ„é€ å‡½æ•°ï¼Œäº§ç”ŸAlpha=255çš„é»‘è‰²
 	fcyColor()
 		: argb(0xFF000000) {}
-	/// @brief Ê¹ÓÃÑÕÉ«Öµ²úÉúÑÕÉ«
+	/// @brief ä½¿ç”¨é¢œè‰²å€¼äº§ç”Ÿé¢œè‰²
 	fcyColor(fuInt ARGB)
 		: argb(ARGB) {}
-	/// @brief Ê¹ÓÃRGBÖµ²úÉúÑÕÉ«£¬A=255
-	/// @param[in] R È¡ÖµÎª[0,255]
-	/// @param[in] G È¡ÖµÎª[0,255]
-	/// @param[in] B È¡ÖµÎª[0,255]
+	/// @brief ä½¿ç”¨RGBå€¼äº§ç”Ÿé¢œè‰²ï¼ŒA=255
+	/// @param[in] R å–å€¼ä¸º[0,255]
+	/// @param[in] G å–å€¼ä¸º[0,255]
+	/// @param[in] B å–å€¼ä¸º[0,255]
 	fcyColor(fInt R, fInt G, fInt B)
 		: a(255), r((fByte)R), g((fByte)G), b((fByte)B) {}
-	/// @brief Ê¹ÓÃARGBÖµ²úÉúÑÕÉ«
-	/// @param[in] A È¡ÖµÎª[0,255]
-	/// @param[in] R È¡ÖµÎª[0,255]
-	/// @param[in] G È¡ÖµÎª[0,255]
-	/// @param[in] B È¡ÖµÎª[0,255]
+	/// @brief ä½¿ç”¨ARGBå€¼äº§ç”Ÿé¢œè‰²
+	/// @param[in] A å–å€¼ä¸º[0,255]
+	/// @param[in] R å–å€¼ä¸º[0,255]
+	/// @param[in] G å–å€¼ä¸º[0,255]
+	/// @param[in] B å–å€¼ä¸º[0,255]
 	fcyColor(fInt A, fInt R, fInt G, fInt B)
 		: a((fByte)A), r((fByte)R), g((fByte)G), b((fByte)B) {}
-	/// @brief     Ê¹ÓÃRGB¸¡µãÖµ²úÉúÑÕÉ«
-	/// @param[in] R È¡ÖµÎª[0,1]
-	/// @param[in] G È¡ÖµÎª[0,1]
-	/// @param[in] B È¡ÖµÎª[0,1]
+	/// @brief     ä½¿ç”¨RGBæµ®ç‚¹å€¼äº§ç”Ÿé¢œè‰²
+	/// @param[in] R å–å€¼ä¸º[0,1]
+	/// @param[in] G å–å€¼ä¸º[0,1]
+	/// @param[in] B å–å€¼ä¸º[0,1]
 	fcyColor(fDouble R, fDouble G, fDouble B)
 		: a((fByte)255), r((fByte)(R * 255)), g((fByte)(G * 255)), b((fByte)(B * 255)) {}
-	/// @brief     Ê¹ÓÃRGB¸¡µãÖµ²úÉúÑÕÉ«
-	/// @param[in] A È¡ÖµÎª[0,1]
-	/// @param[in] R È¡ÖµÎª[0,1]
-	/// @param[in] G È¡ÖµÎª[0,1]
-	/// @param[in] B È¡ÖµÎª[0,1]
+	/// @brief     ä½¿ç”¨RGBæµ®ç‚¹å€¼äº§ç”Ÿé¢œè‰²
+	/// @param[in] A å–å€¼ä¸º[0,1]
+	/// @param[in] R å–å€¼ä¸º[0,1]
+	/// @param[in] G å–å€¼ä¸º[0,1]
+	/// @param[in] B å–å€¼ä¸º[0,1]
 	fcyColor(fDouble A, fDouble R, fDouble G, fDouble B)
 		: a((fByte)(A * 255)), r((fByte)(R * 255)), g((fByte)(G * 255)), b((fByte)(B * 255)) {}
-public: // º¯Êı
-	/// @brief ÉèÖÃĞÂÖµ
+public: // å‡½æ•°
+	/// @brief è®¾ç½®æ–°å€¼
 	void Set(fByte A, fByte R, fByte G, fByte B)
 	{
 		a = A;
@@ -1065,58 +1065,58 @@ public: // º¯Êı
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief ¾ØĞÎ
+/// @brief çŸ©å½¢
 ////////////////////////////////////////////////////////////////////////////////
 class fcyRect
 {
 public:
-	fcyVec2 a;  ///< @brief ¾ØĞÎ×óÉÏ½Ç
-	fcyVec2 b;  ///< @brief ¾ØĞÎÓÒÏÂ½Ç
+	fcyVec2 a;  ///< @brief çŸ©å½¢å·¦ä¸Šè§’
+	fcyVec2 b;  ///< @brief çŸ©å½¢å³ä¸‹è§’
 public:
 	fcyRect() {}
-	/// @brief     ´´½¨¾ØĞÎ
-	/// @param[in] A ¾ØĞÎ×óÉÏ½Ç
-	/// @param[in] B ¾ØĞÎÓÒÏÂ½Ç
+	/// @brief     åˆ›å»ºçŸ©å½¢
+	/// @param[in] A çŸ©å½¢å·¦ä¸Šè§’
+	/// @param[in] B çŸ©å½¢å³ä¸‹è§’
 	fcyRect(const fcyVec2& A, const fcyVec2& B)
 		: a(A), b(B) {}
-	/// @brief     ´´½¨¾ØĞÎ
-	/// @param[in] x1 ×ó±ß
-	/// @param[in] y1 ¶¥±ß
-	/// @param[in] x2 µ×±ß
-	/// @param[in] y2 ÓÒ±ß
+	/// @brief     åˆ›å»ºçŸ©å½¢
+	/// @param[in] x1 å·¦è¾¹
+	/// @param[in] y1 é¡¶è¾¹
+	/// @param[in] x2 åº•è¾¹
+	/// @param[in] y2 å³è¾¹
 	fcyRect(fFloat x1, fFloat y1, fFloat x2, fFloat y2)
 		: a(x1,y1), b(x2,y2) {}
 public:
-	/// @brief È¡¿í¶È
+	/// @brief å–å®½åº¦
 	fFloat GetWidth()const
 	{
 		return fabs(a.x - b.x);
 	}
-	/// @brief È¡¸ß¶È
+	/// @brief å–é«˜åº¦
 	fFloat GetHeight()const
 	{
 		return fabs(a.y - b.y);
 	}
-	/// @brief ÊÇ·ñ°üº¬µã
-	/// @note  º¬±ß½ç
+	/// @brief æ˜¯å¦åŒ…å«ç‚¹
+	/// @note  å«è¾¹ç•Œ
 	fBool Contain(const fcyVec2& x)const
 	{
 		return (x.x>=a.x && x.x<=b.x && x.y>=a.y && x.y<=b.y);
 	}
-	/// @brief ÊÇ·ñÓëÔ²Ïà½»
-	/// @note  º¬ÏàÇĞ
+	/// @brief æ˜¯å¦ä¸åœ†ç›¸äº¤
+	/// @note  å«ç›¸åˆ‡
 	fBool Contain(const fcyVec2& x, fFloat R)const
 	{
 		return (x.x + R >= a.x && x.x - R <=b.x && x.y + R >=a.y && x.y - R <=b.y);
 	}
-	/// @brief »ñµÃÖĞĞÄµã
+	/// @brief è·å¾—ä¸­å¿ƒç‚¹
 	fcyVec2 GetCenter()const
 	{
 		return ((a+b)*0.5);
 	}
-	/// @brief      ÇóÊÇ·ñÏà½»£¬ÈôÏà½»·µ»Ø¹«¹²²¿·Ö
-	/// @param[in]  Rect ´ıÅĞ¶ÏµÄ¾ØĞÎ
-	/// @param[out] pOut Êä³öµÄÏà½»²¿·Ö
+	/// @brief      æ±‚æ˜¯å¦ç›¸äº¤ï¼Œè‹¥ç›¸äº¤è¿”å›å…¬å…±éƒ¨åˆ†
+	/// @param[in]  Rect å¾…åˆ¤æ–­çš„çŸ©å½¢
+	/// @param[out] pOut è¾“å‡ºçš„ç›¸äº¤éƒ¨åˆ†
 	fBool Intersect(const fcyRect& Rect, fcyRect* pOut)const
 	{
 		fcyRect tRet(
@@ -1128,7 +1128,7 @@ public:
 
 		if(tRet.a.x <= tRet.b.x && tRet.a.y <= tRet.b.y)
 		{
-			// Ïà½»
+			// ç›¸äº¤
 			if(pOut)
 				*pOut = tRet;
 			return true;

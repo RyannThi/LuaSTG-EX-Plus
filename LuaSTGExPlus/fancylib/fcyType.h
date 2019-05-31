@@ -1,6 +1,6 @@
-////////////////////////////////////////////////////////////////////////////////
+ï»¿////////////////////////////////////////////////////////////////////////////////
 /// @file  fcyType.h
-/// @brief ÃèÊöfancylibÖĞ¸÷ÖÖ»ù´¡Êı¾İÀàĞÍ¡¢¶¨ÒåÍ¨ÓÃµÄºê
+/// @brief æè¿°fancylibä¸­å„ç§åŸºç¡€æ•°æ®ç±»å‹ã€å®šä¹‰é€šç”¨çš„å®
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
@@ -11,131 +11,131 @@
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-// »ù´¡Êı¾İÀàĞÍ
+// åŸºç¡€æ•°æ®ç±»å‹
 ////////////////////////////////////////////////////////////////////////////////
-/// @addtogroup fancy¿â»ù´¡Êı¾İÀàĞÍ
-/// @brief fancy¿âÖĞµÄ»ù´¡Êı¾İÀàĞÍ¶¨Òå
+/// @addtogroup fancyåº“åŸºç¡€æ•°æ®ç±»å‹
+/// @brief fancyåº“ä¸­çš„åŸºç¡€æ•°æ®ç±»å‹å®šä¹‰
 /// @{
-typedef bool                fBool;   ///< @brief Âß¼­ĞÍ
-typedef char                fChar;   ///< @brief ×Ö·ûĞÍ
-typedef wchar_t             fCharW;  ///< @brief ¿í×Ö·û
-typedef uint8_t             fByte;   ///< @brief ×Ö½ÚĞÍ
-typedef int16_t             fShort;  ///< @brief 16Î»¶ÌÕûÊı
-typedef uint16_t            fuShort; ///< @brief 16Î»ÎŞ·ûºÅ¶ÌÕûÊı
-typedef int32_t             fInt;    ///< @brief 32Î»ÕûÊı
-typedef uint32_t            fuInt;   ///< @brief 32Î»ÎŞ·ûºÅÕûÊı
-typedef int64_t             fLong;   ///< @brief 64Î»³¤ÕûÊı
-typedef uint64_t            fuLong;  ///< @brief 64Î»ÎŞ·ûºÅ³¤ÕûÊı
-typedef float               fFloat;  ///< @brief ¸¡µãĞÍ
-typedef double              fDouble; ///< @brief Ë«¾«¶È¸¡µãĞÍ
-typedef fChar*              fStr;    ///< @brief CÊ½×Ö·û´®
-typedef const fChar*        fcStr;   ///< @brief CÊ½×Ö·û´®³£Á¿
-typedef fCharW*             fStrW;   ///< @brief CÊ½¿í×Ö·û´®
-typedef const fCharW*       fcStrW;  ///< @brief CÊ½¿í×Ö·û´®³£Á¿
-typedef fByte*              fData;   ///< @brief ÄÚ´æÊı¾İÖ¸Õë
-typedef const fByte*        fcData;  ///< @brief ³£Á¿ÄÚ´æÊı¾İÖ¸Õë
-typedef fuLong              fLen;    ///< @brief ³¤¶ÈĞÍ
-typedef fInt                fResult; ///< @brief Ô¤¶¨Òå·µ»ØÖµ
+typedef bool                fBool;   ///< @brief é€»è¾‘å‹
+typedef char                fChar;   ///< @brief å­—ç¬¦å‹
+typedef wchar_t             fCharW;  ///< @brief å®½å­—ç¬¦
+typedef uint8_t             fByte;   ///< @brief å­—èŠ‚å‹
+typedef int16_t             fShort;  ///< @brief 16ä½çŸ­æ•´æ•°
+typedef uint16_t            fuShort; ///< @brief 16ä½æ— ç¬¦å·çŸ­æ•´æ•°
+typedef int32_t             fInt;    ///< @brief 32ä½æ•´æ•°
+typedef uint32_t            fuInt;   ///< @brief 32ä½æ— ç¬¦å·æ•´æ•°
+typedef int64_t             fLong;   ///< @brief 64ä½é•¿æ•´æ•°
+typedef uint64_t            fuLong;  ///< @brief 64ä½æ— ç¬¦å·é•¿æ•´æ•°
+typedef float               fFloat;  ///< @brief æµ®ç‚¹å‹
+typedef double              fDouble; ///< @brief åŒç²¾åº¦æµ®ç‚¹å‹
+typedef fChar*              fStr;    ///< @brief Cå¼å­—ç¬¦ä¸²
+typedef const fChar*        fcStr;   ///< @brief Cå¼å­—ç¬¦ä¸²å¸¸é‡
+typedef fCharW*             fStrW;   ///< @brief Cå¼å®½å­—ç¬¦ä¸²
+typedef const fCharW*       fcStrW;  ///< @brief Cå¼å®½å­—ç¬¦ä¸²å¸¸é‡
+typedef fByte*              fData;   ///< @brief å†…å­˜æ•°æ®æŒ‡é’ˆ
+typedef const fByte*        fcData;  ///< @brief å¸¸é‡å†…å­˜æ•°æ®æŒ‡é’ˆ
+typedef fuLong              fLen;    ///< @brief é•¿åº¦å‹
+typedef fInt                fResult; ///< @brief é¢„å®šä¹‰è¿”å›å€¼
                                      ///< @details
-                                     /// fResult ¶¨ÒåÈçÏÂ \n
-                                     ///   ·ûºÅÎ»  £º     \n
-                                     ///     0 - ³É¹¦     \n
-                                     ///     1 - Ê§°Ü     \n
-                                     ///   30-16 Î»£º     \n
-                                     ///     ±£Áô£¬ÖÃÎª0  \n
-                                     ///   15-0  Î»£º     \n
-                                     ///     ÃèÊö´íÎóÀàĞÍ
+                                     /// fResult å®šä¹‰å¦‚ä¸‹ \n
+                                     ///   ç¬¦å·ä½  ï¼š     \n
+                                     ///     0 - æˆåŠŸ     \n
+                                     ///     1 - å¤±è´¥     \n
+                                     ///   30-16 ä½ï¼š     \n
+                                     ///     ä¿ç•™ï¼Œç½®ä¸º0  \n
+                                     ///   15-0  ä½ï¼š     \n
+                                     ///     æè¿°é”™è¯¯ç±»å‹
 /// @}
 
 ////////////////////////////////////////////////////////////////////////////////
-// ºê¶¨Òå
+// å®å®šä¹‰
 ////////////////////////////////////////////////////////////////////////////////
-/// @addtogroup fancy¿âºê¶¨Òå
-/// @brief fancy¿âÖĞµÄ¸÷ÖÖºê¶¨Òå
+/// @addtogroup fancyåº“å®å®šä¹‰
+/// @brief fancyåº“ä¸­çš„å„ç§å®å®šä¹‰
 /// @{
 
 #ifndef NULL
-/// @brief ¿ÕÖ¸Õë
+/// @brief ç©ºæŒ‡é’ˆ
 #define NULL                0
 #endif
 
-/// @brief Ç¿ÖÆÄÚÁªºê
+/// @brief å¼ºåˆ¶å†…è”å®
 #define FCYINLINE           __forceinline
 
-/// @brief     »ØÊÕÖ¸Õë
-/// @param[in] x Òª»ØÊÕµÄÖ¸Õë
+/// @brief     å›æ”¶æŒ‡é’ˆ
+/// @param[in] x è¦å›æ”¶çš„æŒ‡é’ˆ
 #define FCYSAFEDEL(x)    { delete (x); (x) = NULL;   }
 
-/// @brief     »ØÊÕÖ¸ÕëÊı×é
-/// @param[in] x Òª»ØÊÕµÄÊı×éÖ¸Õë
+/// @brief     å›æ”¶æŒ‡é’ˆæ•°ç»„
+/// @param[in] x è¦å›æ”¶çš„æ•°ç»„æŒ‡é’ˆ
 #define FCYSAFEDELARR(x) { delete[] (x); (x) = NULL; }
 
-/// @brief     »ØÊÕÒıÓÃ¼ÆÊı½Ó¿Ú
-/// @param[in] x Òª»ØÊÕµÄ½Ó¿Ú
+/// @brief     å›æ”¶å¼•ç”¨è®¡æ•°æ¥å£
+/// @param[in] x è¦å›æ”¶çš„æ¥å£
 #define FCYSAFEKILL(x)   { if(x){ (x)->Release(); (x)=NULL; } }
 /// @}
 
 ////////////////////////////////////////////////////////////////////////////////
-// ´íÎó
+// é”™è¯¯
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief     ÅĞ¶ÏfResultÊÇ·ñ³É¹¦
-/// @param[in] fr ÒªÅĞ¶ÏµÄ·µ»ØÖµ
+/// @brief     åˆ¤æ–­fResultæ˜¯å¦æˆåŠŸ
+/// @param[in] fr è¦åˆ¤æ–­çš„è¿”å›å€¼
 #define FCYOK(fr)     (((fResult)(fr)) >= 0)
 
-/// @brief     ÅĞ¶ÏfResultÊÇ·ñÊ§°Ü
-/// @param[in] fr ÒªÅĞ¶ÏµÄ·µ»ØÖµ
+/// @brief     åˆ¤æ–­fResultæ˜¯å¦å¤±è´¥
+/// @param[in] fr è¦åˆ¤æ–­çš„è¿”å›å€¼
 #define FCYFAILED(fr) (((fResult)(fr)) <  0)
 
-/// @brief Éú³ÉÒ»¸öfResult´íÎó
-/// @param[in] code ´íÎóÊµÌå²¿·Ö
+/// @brief ç”Ÿæˆä¸€ä¸ªfResulté”™è¯¯
+/// @param[in] code é”™è¯¯å®ä½“éƒ¨åˆ†
 #define FCYMAKEERR(code)           ((fResult) (0x80000000 | ((fuInt)(code))))
 
-/// @brief          Éú³ÉÒ»¸öfResult·µ»ØÖµ
-/// @param[in] sev  ÑÏÖØ³Ì¶È£¬0=³É¹¦£¬1=Ê§°Ü
-/// @param[in] code ´íÎóÊµÌå²¿·Ö
+/// @brief          ç”Ÿæˆä¸€ä¸ªfResultè¿”å›å€¼
+/// @param[in] sev  ä¸¥é‡ç¨‹åº¦ï¼Œ0=æˆåŠŸï¼Œ1=å¤±è´¥
+/// @param[in] code é”™è¯¯å®ä½“éƒ¨åˆ†
 #define FCYMAKERET(sev,code)       ((fResult) (((fuInt)(sev)<<31) | ((fuInt)(code))))
 
-/// @brief          Éú³ÉÒ»¸öfResult·µ»ØÖµ
-/// @param[in] sev  ÑÏÖØ³Ì¶È£¬0=³É¹¦£¬1=Ê§°Ü
-/// @param[in] rsv  ±£ÁôÖµ£¬Ä¬ÈÏÈ¡0
-/// @param[in] desc ´íÎóÃèÊö
+/// @brief          ç”Ÿæˆä¸€ä¸ªfResultè¿”å›å€¼
+/// @param[in] sev  ä¸¥é‡ç¨‹åº¦ï¼Œ0=æˆåŠŸï¼Œ1=å¤±è´¥
+/// @param[in] rsv  ä¿ç•™å€¼ï¼Œé»˜è®¤å–0
+/// @param[in] desc é”™è¯¯æè¿°
 #define FCYMAKERETEX(sev,rsv,desc) ((fResult) (((fuInt)(sev)<<31) | ((fuInt)(rsv)<<16) | ((fuInt)(desc))))
 
-/// @brief     ·µ»Ø´íÎóÃèÊö
-/// @param[in] fr Òª´¦ÀíµÄ·µ»ØÖµ
+/// @brief     è¿”å›é”™è¯¯æè¿°
+/// @param[in] fr è¦å¤„ç†çš„è¿”å›å€¼
 #define FCYRESULT_CODE(fr)     ((fr) & 0xFFFF)
 
-/// @brief     ·µ»Ø´íÎó±£ÁôÖµ
-/// @param[in] fr Òª´¦ÀíµÄ·µ»ØÖµ
+/// @brief     è¿”å›é”™è¯¯ä¿ç•™å€¼
+/// @param[in] fr è¦å¤„ç†çš„è¿”å›å€¼
 #define FCYRESULT_RSV(fr)      (((fr) >> 16) & 0x7FFF)
 
-/// @brief     ·µ»Ø´íÎóÑÏÖØ³Ì¶È
-/// @param[in] fr Òª´¦ÀíµÄ·µ»ØÖµ
-/// @return    0=³É¹¦£¬ 1=Ê§°Ü
+/// @brief     è¿”å›é”™è¯¯ä¸¥é‡ç¨‹åº¦
+/// @param[in] fr è¦å¤„ç†çš„è¿”å›å€¼
+/// @return    0=æˆåŠŸï¼Œ 1=å¤±è´¥
 #define FCYRESULT_SEVERITY(fr) (((fr) >> 31) & 0x1)
 
 ////////////////////////////////////////////////////////////////////////////////
-// ³£¼û´íÎó
+// å¸¸è§é”™è¯¯
 ////////////////////////////////////////////////////////////////////////////////
-/// @addtogroup fancy³£¼û·µ»ØÖµ
-/// @brief fancy¿âÖĞµÄ³£¼û´íÎó
-/// @note  ½öµ±FCYRESULT_RSV·µ»ØÖµÎª0Ê±ÓÃÀ´±íÊ¾³£¼û´íÎó
+/// @addtogroup fancyå¸¸è§è¿”å›å€¼
+/// @brief fancyåº“ä¸­çš„å¸¸è§é”™è¯¯
+/// @note  ä»…å½“FCYRESULT_RSVè¿”å›å€¼ä¸º0æ—¶ç”¨æ¥è¡¨ç¤ºå¸¸è§é”™è¯¯
 /// @{
 
-#define FCYERR_OK               ((fResult)0)   ///< @brief Õı³£·µ»ØÖµ
-#define FCYERR_UNKNOWN          FCYMAKEERR(0)  ///< @brief Î´Öª·µ»ØÖµ
-#define FCYERR_INTERNALERR      FCYMAKEERR(1)  ///< @brief ÄÚ²¿´íÎó
-                                               ///< @details Í¨³£±íÊ¾APIµ÷ÓÃÊ§°Ü
-#define FCYERR_ILLEGAL          FCYMAKEERR(2)  ///< @brief ÎŞĞ§µ÷ÓÃ
-#define FCYERR_NOTIMPL          FCYMAKEERR(3)  ///< @brief Î´ÊµÏÖ
-#define FCYERR_NOTSUPPORT       FCYMAKEERR(4)  ///< @brief ²»Ö§³Ö
-#define FCYERR_INVAILDDATA      FCYMAKEERR(5)  ///< @brief ÎŞĞ§Êı¾İ
-#define FCYERR_INVAILDPARAM     FCYMAKEERR(6)  ///< @brief ÎŞĞ§²ÎÊı
-#define FCYERR_INVAILDVERSION   FCYMAKEERR(7)  ///< @brief ÎŞĞ§°æ±¾
-#define FCYERR_OBJNOTEXSIT      FCYMAKEERR(8)  ///< @brief ¶ÔÏó²»´æÔÚ
-#define FCYERR_OBJEXSITED       FCYMAKEERR(9)  ///< @brief ¶ÔÏóÒÑ´æÔÚ
-#define FCYERR_OUTOFRANGE       FCYMAKEERR(10) ///< @brief ³¬³ö·¶Î§
-                                               ///< @details ÎÄ¼ş¡¢Êı×é·ÃÎÊµ½´ï½áÎ²»òÔ½½ç
-#define FCYERR_OUTOFMEM         FCYMAKEERR(11) ///< @brief ÄÚ´æ²»×ã
+#define FCYERR_OK               ((fResult)0)   ///< @brief æ­£å¸¸è¿”å›å€¼
+#define FCYERR_UNKNOWN          FCYMAKEERR(0)  ///< @brief æœªçŸ¥è¿”å›å€¼
+#define FCYERR_INTERNALERR      FCYMAKEERR(1)  ///< @brief å†…éƒ¨é”™è¯¯
+                                               ///< @details é€šå¸¸è¡¨ç¤ºAPIè°ƒç”¨å¤±è´¥
+#define FCYERR_ILLEGAL          FCYMAKEERR(2)  ///< @brief æ— æ•ˆè°ƒç”¨
+#define FCYERR_NOTIMPL          FCYMAKEERR(3)  ///< @brief æœªå®ç°
+#define FCYERR_NOTSUPPORT       FCYMAKEERR(4)  ///< @brief ä¸æ”¯æŒ
+#define FCYERR_INVAILDDATA      FCYMAKEERR(5)  ///< @brief æ— æ•ˆæ•°æ®
+#define FCYERR_INVAILDPARAM     FCYMAKEERR(6)  ///< @brief æ— æ•ˆå‚æ•°
+#define FCYERR_INVAILDVERSION   FCYMAKEERR(7)  ///< @brief æ— æ•ˆç‰ˆæœ¬
+#define FCYERR_OBJNOTEXSIT      FCYMAKEERR(8)  ///< @brief å¯¹è±¡ä¸å­˜åœ¨
+#define FCYERR_OBJEXSITED       FCYMAKEERR(9)  ///< @brief å¯¹è±¡å·²å­˜åœ¨
+#define FCYERR_OUTOFRANGE       FCYMAKEERR(10) ///< @brief è¶…å‡ºèŒƒå›´
+                                               ///< @details æ–‡ä»¶ã€æ•°ç»„è®¿é—®åˆ°è¾¾ç»“å°¾æˆ–è¶Šç•Œ
+#define FCYERR_OUTOFMEM         FCYMAKEERR(11) ///< @brief å†…å­˜ä¸è¶³
 
 /// @}

@@ -1,78 +1,78 @@
-////////////////////////////////////////////////////////////////////////////////
+ï»¿////////////////////////////////////////////////////////////////////////////////
 /// @file  fcyException.h
-/// @brief fancy¿âÒì³£¶¨Òå
+/// @brief fancyåº“å¼‚å¸¸å®šä¹‰
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "fcyType.h"
 
 #include <string>
 
-/// @addtogroup fancy¿âÒì³£
-/// @brief ¶¨Òåfancy¿âÖÐµÄÒì³£
+/// @addtogroup fancyåº“å¼‚å¸¸
+/// @brief å®šä¹‰fancyåº“ä¸­çš„å¼‚å¸¸
 /// @{
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief fcyÒì³£»ùÀà
-/// @note  ËùÓÐÄÚ²¿Òì³£´Ó¸ÃÀàÅÉÉú
+/// @brief fcyå¼‚å¸¸åŸºç±»
+/// @note  æ‰€æœ‰å†…éƒ¨å¼‚å¸¸ä»Žè¯¥ç±»æ´¾ç”Ÿ
 ////////////////////////////////////////////////////////////////////////////////
 class fcyException
 {
 protected:
-	fuInt m_Time;            ///< @brief ¼ÇÂ¼Òì³£Ê±¼ä´Á
-	std::string m_ExcpSrc;   ///< @brief ¼ÇÂ¼Òì³£À´Ô´
-	std::string m_ExcpDesc;  ///< @brief ¼ÇÂ¼Òì³£ÐÅÏ¢
+	fuInt m_Time;            ///< @brief è®°å½•å¼‚å¸¸æ—¶é—´æˆ³
+	std::string m_ExcpSrc;   ///< @brief è®°å½•å¼‚å¸¸æ¥æº
+	std::string m_ExcpDesc;  ///< @brief è®°å½•å¼‚å¸¸ä¿¡æ¯
 public:
-	fuInt GetTime()const;    ///< @brief »ñµÃÒì³£Ê±¼ä
-	fcStr GetSrc()const;     ///< @brief »ñµÃÒì³£À´Ô´
-	fcStr GetDesc()const;    ///< @brief »ñµÃÒì³£ÐÅÏ¢
+	fuInt GetTime()const;    ///< @brief èŽ·å¾—å¼‚å¸¸æ—¶é—´
+	fcStr GetSrc()const;     ///< @brief èŽ·å¾—å¼‚å¸¸æ¥æº
+	fcStr GetDesc()const;    ///< @brief èŽ·å¾—å¼‚å¸¸ä¿¡æ¯
 public:
-	/// @brief     ¿Õ¹¹Ôìº¯Êý
+	/// @brief     ç©ºæž„é€ å‡½æ•°
 	fcyException();
-	/// @brief     ¹¹Ôìº¯Êý
-	/// @warning   ÃèÊö²»µÃ³¬¹ý512×Ö·û
-	/// @param[in] Src     Òì³£Ô´
-	/// @param[in] DescFmt Òì³£¸ñÊ½
+	/// @brief     æž„é€ å‡½æ•°
+	/// @warning   æè¿°ä¸å¾—è¶…è¿‡512å­—ç¬¦
+	/// @param[in] Src     å¼‚å¸¸æº
+	/// @param[in] DescFmt å¼‚å¸¸æ ¼å¼
 	fcyException(fcStr Src, fcStr DescFmt, ...);
 	fcyException(const fcyException& Org);
 	~fcyException();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief fcyWin32Òì³£
-/// @note  °ü×°Win32Òì³£
+/// @brief fcyWin32å¼‚å¸¸
+/// @note  åŒ…è£…Win32å¼‚å¸¸
 ////////////////////////////////////////////////////////////////////////////////
 class fcyWin32Exception :
 	public fcyException
 {
 private:
-	fuInt m_LastError;          ///< @brief ×îºóÒ»´Î´íÎó´úÂë
+	fuInt m_LastError;          ///< @brief æœ€åŽä¸€æ¬¡é”™è¯¯ä»£ç 
 public:
-	fuInt GetErrorCode()const;  ///< @brief »ñµÃ×îºóÒ»´Î´íÎó
+	fuInt GetErrorCode()const;  ///< @brief èŽ·å¾—æœ€åŽä¸€æ¬¡é”™è¯¯
 public:
-	/// @brief     ¹¹Ôìº¯Êý
-	/// @note      Òì³£»á×Ô¶¯ÔÚInfo×Ö¶Î×·¼ÓLastErrorÖµ
-	/// @param[in] Src  Òì³£Ô´
-	/// @param[in] Info Òì³£ÃèÊö
+	/// @brief     æž„é€ å‡½æ•°
+	/// @note      å¼‚å¸¸ä¼šè‡ªåŠ¨åœ¨Infoå­—æ®µè¿½åŠ LastErrorå€¼
+	/// @param[in] Src  å¼‚å¸¸æº
+	/// @param[in] Info å¼‚å¸¸æè¿°
 	fcyWin32Exception(fcStr Src, fcStr Info);
 	~fcyWin32Exception();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief fcyWin32COMÒì³£
-/// @note  °ü×°COMÒì³£
+/// @brief fcyWin32COMå¼‚å¸¸
+/// @note  åŒ…è£…COMå¼‚å¸¸
 ////////////////////////////////////////////////////////////////////////////////
 class fcyWin32COMException :
 	public fcyException
 {
 private:
-	fInt m_HR;              ///< @brief ±£´æHResult×Ö¶Î
+	fInt m_HR;              ///< @brief ä¿å­˜HResultå­—æ®µ
 public:
-	fInt GetResult()const;  ///< @brief ·µ»ØHResult×Ö¶Î
+	fInt GetResult()const;  ///< @brief è¿”å›žHResultå­—æ®µ
 public:
-	/// @brief     ¹¹Ôìº¯Êý
-	/// @note      Òì³£»á×Ô¶¯ÔÚInfo×Ö¶Î×·¼ÓHRESULTÖµ
-	/// @param[in] Src  Òì³£Ô´
-	/// @param[in] Info Òì³£ÃèÊö
+	/// @brief     æž„é€ å‡½æ•°
+	/// @note      å¼‚å¸¸ä¼šè‡ªåŠ¨åœ¨Infoå­—æ®µè¿½åŠ HRESULTå€¼
+	/// @param[in] Src  å¼‚å¸¸æº
+	/// @param[in] Info å¼‚å¸¸æè¿°
 	/// @param[in] HRet HResult
 	fcyWin32COMException(fcStr Src, fcStr Info, fInt HRet);
 	~fcyWin32COMException();

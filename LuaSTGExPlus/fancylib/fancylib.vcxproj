@@ -31,7 +31,10 @@
     <ClInclude Include="fcyFile\fcyModelIndexLabel.h" />
     <ClInclude Include="fcyFile\fcyModelLabel.h" />
     <ClInclude Include="fcyFile\fcyModelMaterialLabel.h" />
-    <ClInclude Include="fcyFile\fcyModelMeshExporter.h" />
+    <ClInclude Include="fcyFile\fcyModelMeshExporter.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="fcyFile\fcyModelMeshFile.h" />
     <ClInclude Include="fcyFile\fcyModelSubsetLabel.h" />
     <ClInclude Include="fcyFile\fcyModelVertexLabel.h" />
@@ -46,7 +49,10 @@
     <ClInclude Include="fcyRefObj.h" />
     <ClInclude Include="fcyType.h" />
     <ClInclude Include="fcyIO\fcyBinaryHelper.h" />
-    <ClInclude Include="fcyIO\fcyDeflate.h" />
+    <ClInclude Include="fcyIO\fcyDeflate.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="fcyIO\fcyStream.h" />
     <ClInclude Include="fcyFile\fcyResPackage.h" />
     <ClInclude Include="fcyMisc\fcyStopWatch.h" />
@@ -66,13 +72,19 @@
     <ClCompile Include="fcyFile\fcyModelIndexLabel.cpp" />
     <ClCompile Include="fcyFile\fcyModelLabel.cpp" />
     <ClCompile Include="fcyFile\fcyModelMaterialLabel.cpp" />
-    <ClCompile Include="fcyFile\fcyModelMeshExporter.cpp" />
+    <ClCompile Include="fcyFile\fcyModelMeshExporter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="fcyFile\fcyModelMeshFile.cpp" />
     <ClCompile Include="fcyFile\fcyModelSubsetLabel.cpp" />
     <ClCompile Include="fcyFile\fcyModelVertexLabel.cpp" />
     <ClCompile Include="fcyFile\fcyResPackage.cpp" />
     <ClCompile Include="fcyIO\fcyBinaryHelper.cpp" />
-    <ClCompile Include="fcyIO\fcyDeflate.cpp" />
+    <ClCompile Include="fcyIO\fcyDeflate.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="fcyIO\fcyStream.cpp" />
     <ClCompile Include="fcyMisc\fcyHash.cpp" />
     <ClCompile Include="fcyMisc\fcyRandom.cpp" />
@@ -158,9 +170,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>bin\</OutDir>
-    <IntDir>obj\$(Configuration)\</IntDir>
-    <TargetName>$(ProjectName)_d</TargetName>
+    <OutDir>$(ProjectDir)\build\</OutDir>
+    <IntDir>$(ProjectDir)\build\dir\</IntDir>
+    <TargetName>fancylib_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <TargetName>$(ProjectName)_d</TargetName>
@@ -194,10 +206,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>extern\zlib;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\zlib\;$(SolutionDir)\fancylib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <MinimalRebuild>true</MinimalRebuild>
       <BrowseInformation>true</BrowseInformation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -206,6 +220,10 @@
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
     </Bscmake>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)\zlib\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zlib.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
@@ -255,7 +273,7 @@
       <PreprocessorDefinitions>WIN32;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)\zlib\;$(SolutionDir)\fancy2D\;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\zlib\;$(SolutionDir)\fancylib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -265,6 +283,10 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)\zlib\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zlib.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <ClCompile>
