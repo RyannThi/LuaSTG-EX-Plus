@@ -729,7 +729,9 @@ namespace LuaSTGPlus
 		bool LoadTexture(const char* name, const std::wstring& path, bool mipmaps = true)LNOEXCEPT;
 
 		bool LoadModel(const char* name, const std::wstring& path)LNOEXCEPT;
+
 		bool LoadModel(const char* name, const char* path)LNOEXCEPT;
+
 		/// @brief 装载纹理（UTF-8）
 		LNOINLINE bool LoadTexture(const char* name, const char* path, bool mipmaps = true)LNOEXCEPT;
 		

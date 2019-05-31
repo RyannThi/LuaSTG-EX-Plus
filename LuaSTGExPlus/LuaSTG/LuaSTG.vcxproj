@@ -106,8 +106,12 @@
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="RandomizerWrapper.cpp" />
     <ClCompile Include="RemoteDebuggerClient.cpp" />
+    <ClCompile Include="ResourceFont.cpp" />
+    <ClCompile Include="ResourceFX.cpp" />
     <ClCompile Include="ResourceMgr.cpp" />
     <ClCompile Include="ResourcePack.cpp" />
+    <ClCompile Include="ResourceParticle.cpp" />
+    <ClCompile Include="ResourcePool.cpp" />
     <ClCompile Include="SplashWindow.cpp" />
     <ClCompile Include="StopWatchWrapper.cpp" />
     <ClCompile Include="UnicodeStringEncoding.cpp" />

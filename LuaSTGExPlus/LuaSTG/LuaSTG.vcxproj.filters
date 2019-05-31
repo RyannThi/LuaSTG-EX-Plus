@@ -304,6 +304,18 @@
     <ClCompile Include="ResourcePack.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
+    <ClCompile Include="ResourceParticle.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceFont.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceFX.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourcePool.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico">
