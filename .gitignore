@@ -13,15 +13,6 @@
 /LuaSTGExPlus/zlib/build/*
 /LuaSTGExPlus/zlib/build/dir/*
 
-/LuaSTGExPlus/libogg/build/*
-/LuaSTGExPlus/libogg/build/dir/*
-
-/LuaSTGExPlus/libvorbis/build/*
-/LuaSTGExPlus/libvorbis/build/dir/*
-
-/LuaSTGExPlus/freetype/build/*
-/LuaSTGExPlus/freetype/build/dir/*
-
 /LuaSTGExPlus/DirectShowClass/build/*
 /LuaSTGExPlus/DirectShowClass/build/dir/*
 
@@ -62,10 +53,14 @@ LuaSTGExPlus/fancy2D/obj/Debug/fancy2D.log
 /LuaSTGExPlus/DXSDK/*
 !/LuaSTGExPlus/DXSDK/readme.txt
 
-#libvorbis规则
+#libvorbis过滤
 /LuaSTGExPlus/libvorbis/*
 !/LuaSTGExPlus/libvorbis/readme.txt
 
-#libogg规则
+#libogg过滤
 /LuaSTGExPlus/libogg/*
 !/LuaSTGExPlus/libogg/readme.txt
+
+#freetype过滤
+/LuaSTGExPlus/freetype/*
+!/LuaSTGExPlus/freetype/readme.txt
