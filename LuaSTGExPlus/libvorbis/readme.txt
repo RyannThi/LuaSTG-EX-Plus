@@ -1,5 +1,5 @@
 出于版权和版本库大小的考虑，本项目不再提供libvorbis的头文件和静态库文件。
-需要自行Xiph官网下载libvorbis，另外还要下载libogg
+需要自行前往Xiph官网下载libvorbis，另外还要下载libogg
 链接（Xiph官方下载地址）：https://xiph.org/downloads/
 下载好后，将libvorbis压缩包内的文件解压到本项目的libvorbis文件夹
 将libogg压缩包内include文件夹内的ogg文件夹解压到libvorbis文件夹的include文件夹内
