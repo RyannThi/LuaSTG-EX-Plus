@@ -113,8 +113,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\;$(SolutionDir)\libogg\build\$(Configuration)\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fancylib.lib;libvorbis.lib;libogg_static.lib;xmath.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\$(Configuration)\;$(SolutionDir)\libogg\build\$(Configuration)\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fancylib.lib;libvorbisfile_static.lib;libvorbis_static.lib;libogg_static.lib;xmath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -137,8 +137,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\;$(SolutionDir)\libogg\build\$(Configuration)\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fancylib.lib;libvorbis.lib;libogg_static.lib;xmath.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\$(Configuration)\;$(SolutionDir)\libogg\build\$(Configuration)\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fancylib.lib;libvorbisfile_static.lib;libvorbis_static.lib;libogg_static.lib;xmath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
