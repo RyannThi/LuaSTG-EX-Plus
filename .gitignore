@@ -59,5 +59,9 @@ LuaSTGExPlus/fancy2D/obj/Debug/fancy2D.log
 /LuaSTGExPlus/Eyes2DTest/Release/*
 
 #DXSDK过滤
-/LuaSTGExPlus/DXSDK/Include/*
-/LuaSTGExPlus/DXSDK/Lib/*
+/LuaSTGExPlus/DXSDK/*
+!/LuaSTGExPlus/DXSDK/readme.txt
+
+#libogg规则
+/LuaSTGExPlus/libogg/*
+!/LuaSTGExPlus/libogg/readme.txt
