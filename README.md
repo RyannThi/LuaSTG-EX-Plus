@@ -20,7 +20,7 @@ LuaSTG EX Plus 是 LuaSTG Plus 的衍生版本，其大部分代码基于9chu的
 * zlib(1.2.11)(->common)  
 * libogg(1.3.3)(->common)  
 * libvorbis(1.3.6)(->common)  
-* freetype(2.9.1)(->common)  
+* freetype(2.10.0)(->common)  
 * DirectShowClass(unkown version)(->fancy2d)  
 * fancy2d(0.6)(->luastg)  
 * xmath(unkown version)(->common)  
@@ -30,6 +30,8 @@ LuaSTG EX Plus 是 LuaSTG Plus 的衍生版本，其大部分代码基于9chu的
 ### 需要自行下载编译的第三方库  
   
 * libogg(1.3.3)(->common)  
+* libvorbis(1.3.6)(->common)  
+* freetype(2.10.0)(->common)  
 * DirectX SDK (June 2010)(->common)  
   
 ## 工程构建  
