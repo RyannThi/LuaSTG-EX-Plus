@@ -24,8 +24,8 @@ libvorbis----
       |
       |---build----
       |        |
-      |        |---Debug（本文件夹内应该有libvorbis_static.lib文件）
+      |        |---Debug（本文件夹内应该有libvorbis_static.lib和libvorbisfile_static.lib文件）
       |        |
-      |        |---Release（本文件夹内应该有libvorbis_static.lib文件）
+      |        |---Release（本文件夹内应该有libvorbis_static.lib和libvorbisfile_static.lib文件）
       |        |
 到这里就算配置完成了，以后基本上不会再动这个文件夹内的内容，除了日后升级libvorbis版本外
