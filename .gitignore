@@ -2,25 +2,24 @@
 
 /.vs/*
 /.git/*
-/fancy2d/*
+
+/xhg/*
+/classic/*
+/mwy/*
+/slk/*
 
 /LuaSTGExPlus/.vs/*
-
 /LuaSTGExPlus/build/*
 
 /LuaSTGExPlus/luajit/backup/*
 
 /LuaSTGExPlus/zlib/build/*
-/LuaSTGExPlus/zlib/build/dir/*
 
 /LuaSTGExPlus/DirectShowClass/build/*
-/LuaSTGExPlus/DirectShowClass/build/dir/*
 
 /LuaSTGExPlus/fancylib/build/*
-/LuaSTGExPlus/fancylib/build/dir/*
 
 /LuaSTGExPlus/fancy2D/build/*
-/LuaSTGExPlus/fancy2D/build/dir/*
 
 /LuaSTGExPlus/TCPIP/build/*
 
@@ -29,15 +28,6 @@
 
 /LuaSTGExPlus/TexturedFontEditor/bin/*
 /LuaSTGExPlus/TexturedFontEditor/obj/*
-
-/cocos/*
-/steam/*
-LuaSTGExPlus/fancy2D/obj/Debug/fancy2D.log
-
-/xhg/*
-/classic/*
-/mwy/*
-/slk/*
 
 #XMath过滤
 /LuaSTGExPlus/XMath/build/*
