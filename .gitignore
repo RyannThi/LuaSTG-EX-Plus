@@ -63,8 +63,8 @@ LuaSTGExPlus/fancy2D/obj/Debug/fancy2D.log
 !/LuaSTGExPlus/DXSDK/readme.txt
 
 #libvorbis规则
-/LuaSTGExPlus/libvorbis规则/*
-!/LuaSTGExPlus/libvorbis规则/readme.txt
+/LuaSTGExPlus/libvorbis/*
+!/LuaSTGExPlus/libvorbis/readme.txt
 
 #libogg规则
 /LuaSTGExPlus/libogg/*
