@@ -51,6 +51,9 @@
     <ClCompile Include="E2DXAudio2SoundPlayer.cpp">
       <Filter>system\sound</Filter>
     </ClCompile>
+    <ClCompile Include="E2DCodePage.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="E2DGlobal.hpp">
@@ -87,6 +90,9 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="E2DException.hpp">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="E2DMainFunction.hpp">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
