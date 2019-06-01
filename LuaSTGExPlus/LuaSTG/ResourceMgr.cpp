@@ -179,7 +179,7 @@ void ResourceMgr::UnloadPack(const wchar_t* path)LNOEXCEPT
 	{
 		wstring tPath = path;
 		pathUniform(tPath.begin(), tPath.end());
-		for (auto &i = m_ResPackList.begin(); i != m_ResPackList.end(); ++i)
+		for (auto i = m_ResPackList.begin(); i != m_ResPackList.end(); ++i)
 		{
 			if (i->GetPathLowerCase() == tPath)
 			{

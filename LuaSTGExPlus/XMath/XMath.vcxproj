@@ -108,7 +108,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)\build\</OutDir>
     <IntDir>$(ProjectDir)\build\Dir\</IntDir>
-    <TargetName>xmath</TargetName>
+    <TargetName>xmath_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -155,7 +155,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile />
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>

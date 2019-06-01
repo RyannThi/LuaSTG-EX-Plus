@@ -195,9 +195,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>E:\LuaSTG-LuaData\player-active\game\</OutDir>
+    <OutDir>$(SolutionDir)\build\</OutDir>
     <IntDir>$(SolutionDir)\build\dir\</IntDir>
-    <TargetName>LuaSTGPlus</TargetName>
+    <TargetName>LuaSTGPlus.Debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|Win32'">
     <OutDir>$(SolutionDir)\build\</OutDir>
@@ -219,12 +219,14 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\fancy2d\;$(SolutionDir)\zlib\;$(SolutionDir)\luajit\src\;$(SolutionDir)\Eyes2D\;$(SolutionDir)\XMath\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\zlib\build\;$(SolutionDir)\XMath\build\;$(SolutionDir)\Eyes2D\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;Gdiplus.lib;zlib.lib;lua51.lib;fancy2d_d.lib;fancylib_d.lib;xmath.lib;Eyes2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;Gdiplus.lib;zlib.lib;lua51.lib;fancy2d_d.lib;fancylib_d.lib;xmath_d.lib;Eyes2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -243,8 +245,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <SupportJustMyCode>false</SupportJustMyCode>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <LanguageStandard>
-      </LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\zlib\build\;$(SolutionDir)\steam\lib\;$(SolutionDir)\XMath\build\;$(SolutionDir)\Eyes2D\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -283,6 +284,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)\fancy2d\;$(SolutionDir)\fancylib\;$(SolutionDir)\zlib\;$(SolutionDir)\luajit\src\;$(SolutionDir)\XMath\;$(SolutionDir)\Eyes2D\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

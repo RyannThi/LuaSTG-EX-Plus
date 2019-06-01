@@ -54,3 +54,9 @@
 #freetype过滤
 /LuaSTGExPlus/freetype/*
 !/LuaSTGExPlus/freetype/readme.txt
+
+#libz libzip
+/LuaSTGExPlus/libz/*
+!/LuaSTGExPlus/libz/readme.txt
+/LuaSTGExPlus/libzip/*
+!/LuaSTGExPlus/libzip/readme.txt
