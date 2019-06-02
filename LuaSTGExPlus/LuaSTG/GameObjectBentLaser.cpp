@@ -437,6 +437,7 @@ bool GameObjectBentLaser::CollisionCheck(float x, float y, float rot, float a, f
 					testObjA.colliders[0].a = df / 2;
 					testObjA.colliders[0].b = n.half_width;
 					testObjA.colliders[0].calcircum();
+					testObjA.colliders[0].caloffset(testObjA.x, testObjA.y, testObjA.rot);
 					if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB)) { return true; }
 				}
 			}
@@ -447,6 +448,7 @@ bool GameObjectBentLaser::CollisionCheck(float x, float y, float rot, float a, f
 		testObjA.colliders[0].a = testObjA.colliders[0].b = n.half_width;
 		testObjA.colliders[0].type = GameObjectColliderType::Ellipse;
 		testObjA.colliders[0].calcircum();
+		testObjA.colliders[0].caloffset(testObjA.x, testObjA.y, testObjA.rot);
 		if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB)) { return true; }
 	}
 	
@@ -685,6 +687,7 @@ bool GameObjectBentLaser::CollisionCheckW(float x, float y, float rot, float a, 
 					testObjA.colliders[0].a = df / 2;
 					testObjA.colliders[0].b = width;
 					testObjA.colliders[0].calcircum();
+					testObjA.colliders[0].caloffset(testObjA.x, testObjA.y, testObjA.rot);
 					if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB)) { return true; }
 				}
 			}
@@ -694,6 +697,7 @@ bool GameObjectBentLaser::CollisionCheckW(float x, float y, float rot, float a, 
 		testObjA.colliders[0].a = testObjA.colliders[0].b = n.half_width;
 		testObjA.colliders[0].type = GameObjectColliderType::Ellipse;
 		testObjA.colliders[0].calcircum();
+		testObjA.colliders[0].caloffset(testObjA.x, testObjA.y, testObjA.rot);
 		if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB)) { return true; }
 	}
 	
