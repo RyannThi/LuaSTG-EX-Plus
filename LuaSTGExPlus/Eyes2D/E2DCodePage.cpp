@@ -3,7 +3,7 @@
 
 namespace Eyes2D {
 	namespace String {
-		std::wstring MultiToWide(int codepage, const std::string& multi) {
+		std::wstring EYESDLLAPI MultiToWide(int codepage, const std::string& multi) {
 			std::wstring wide;
 			if (multi.empty()) {
 				return wide;
@@ -40,9 +40,9 @@ namespace Eyes2D {
 				throw E2DException(0, error, L"Eyes2D::String::MultiToWide", L"Cannot convert from multibyte to widechar (MultiByteToWideChar failed).");
 			}
 			return std::move(wide);
-		};
+		}
 
-		std::string WideToMulti(int codepage, const std::wstring& wide) {
+		std::string EYESDLLAPI WideToMulti(int codepage, const std::wstring& wide) {
 			std::string multi;
 			if (wide.empty()) {
 				return multi;

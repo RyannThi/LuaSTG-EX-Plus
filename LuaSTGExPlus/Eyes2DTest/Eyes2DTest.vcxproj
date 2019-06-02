@@ -84,12 +84,13 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\Eyes2D\;$(SolutionDir)\fancylib\;$(SolutionDir)\XMath\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>
       </SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\Eyes2D\build\;$(SolutionDir)\fancylib\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Eyes2D.lib;fancylib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Eyes2D_d.lib;fancylib_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <BuildLog>
       <Path>$(ProjectDir)$(Configuration)\$(MSBuildProjectName).log</Path>
@@ -146,7 +147,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="criticalsectiontest.cpp" />
+    <ClCompile Include="criticalsectiontest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="fstreamtest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

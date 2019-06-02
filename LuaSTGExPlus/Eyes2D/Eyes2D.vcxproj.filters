@@ -25,6 +25,12 @@
     <Filter Include="system\platform">
       <UniqueIdentifier>{a51f7db3-f8ab-4569-8128-1723ba92716f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="system\io">
+      <UniqueIdentifier>{8a3bdec9-8f99-4d0a-ae5a-fdb5c42cdc5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system\debug">
+      <UniqueIdentifier>{19bf6884-d21f-4d80-994e-078f5a6fecb5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -51,8 +57,14 @@
     <ClCompile Include="E2DXAudio2SoundPlayer.cpp">
       <Filter>system\sound</Filter>
     </ClCompile>
+    <ClCompile Include="E2DFileManager.cpp">
+      <Filter>system\io</Filter>
+    </ClCompile>
     <ClCompile Include="E2DCodePage.cpp">
-      <Filter>source</Filter>
+      <Filter>system\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="E2DLogSystem.cpp">
+      <Filter>system\debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -86,14 +98,20 @@
     <ClInclude Include="E2DXAudio2SoundPlayer.hpp">
       <Filter>system\sound</Filter>
     </ClInclude>
-    <ClInclude Include="E2DCodePage.hpp">
-      <Filter>header</Filter>
-    </ClInclude>
     <ClInclude Include="E2DException.hpp">
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="E2DMainFunction.hpp">
       <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="E2DFileManager.hpp">
+      <Filter>system\io</Filter>
+    </ClInclude>
+    <ClInclude Include="E2DCodePage.hpp">
+      <Filter>system\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="E2DLogSystem.hpp">
+      <Filter>system\debug</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

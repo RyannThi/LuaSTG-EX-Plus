@@ -258,6 +258,7 @@ bool XAudio2SoundPlayerImpl::SetTime(unsigned int sample) {
 		Stop();//先停止
 		Play();//然后播放
 	}
+	return true;
 }
 
 unsigned int XAudio2SoundPlayerImpl::GetTime() {

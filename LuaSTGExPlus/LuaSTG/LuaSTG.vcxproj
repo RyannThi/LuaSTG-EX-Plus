@@ -226,7 +226,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\zlib\build\;$(SolutionDir)\XMath\build\;$(SolutionDir)\Eyes2D\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;Gdiplus.lib;zlib.lib;lua51.lib;fancy2d_d.lib;fancylib_d.lib;xmath_d.lib;Eyes2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;Gdiplus.lib;zlib.lib;lua51.lib;fancy2d_d.lib;fancylib_d.lib;xmath_d.lib;Eyes2D_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>

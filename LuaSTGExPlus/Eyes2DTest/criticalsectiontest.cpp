@@ -1,5 +1,8 @@
 #include "E2DMainFunction.hpp"
+
 #define E2DMAINRETURN std::system("pause"); return 0;
+//#define SAY(W) Eyes2D::EYESINFO(W);
+#define SAY(W) std::cout<<(W)<<std::endl;
 
 #include <iostream>
 #include <fstream>
@@ -7,9 +10,54 @@
 #include <chrono>
 #include <Windows.h>
 
+#include "fcyIO/fcyStream.h"
+#include "E2DFileManager.hpp"
+#include "E2DCodePage.hpp"
+
+#include "E2DLogSystem.hpp"
+
 using namespace std;
 
-E2DMAIN {
+void test2() {
+	Eyes2D::IO::Archive zip("LuaSTG-x TPv6.0.zip");
+	fcyStream* stream = zip.LoadFile("LuaSTG-x TPv6.0/doc/LuaSTG-x_TP_v6.0_readme.txt");
+	if (stream == nullptr) {
+		SAY("¼ÓÔØÊ§°Ü");
+	}
+	else {
+		stream->SetPosition(FCYSEEKORIGIN_BEG, 0);
+		string txt; txt.resize(stream->GetLength(), 0);
+
+		fcyMemStream* mstream = (fcyMemStream*)stream;
+		txt.insert(0, (char*)mstream->GetInternalBuffer(), mstream->GetLength());
+		SAY(Eyes2D::String::UTF8ToANSI(txt));
+
+		stream->Release();
+	}
+
+	stream = zip.LoadEncryptedFile("LuaSTG-x TPv6.0/doc/LuaSTG-x_TP_v6.0_readme2.txt", "0000");
+	if (stream == nullptr) {
+		SAY("¼ÓÔØÊ§°Ü");
+	}
+	else {
+		stream->SetPosition(FCYSEEKORIGIN_BEG, 0);
+		string txt; txt.resize(stream->GetLength(), 0);
+
+		fcyMemStream* mstream = (fcyMemStream*)stream;
+		txt.insert(0, (char*)mstream->GetInternalBuffer(), mstream->GetLength());
+		SAY(Eyes2D::String::UTF8ToANSI(txt));
+
+		stream->Release();
+	}
+
+	zip.ListFile();
+	Eyes2D::EYESINFO("NMSL");
+}
+
+E2DMAIN{
+	test2();
+	E2DMAINRETURN;
+
 	string fname = "LuaSTG-x TPv6.0.zip";
 	system("pause");
 

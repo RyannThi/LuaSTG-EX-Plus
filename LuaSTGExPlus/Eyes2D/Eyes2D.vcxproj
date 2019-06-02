@@ -79,7 +79,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IntDir>$(ProjectDir)\build\Dir\</IntDir>
-    <TargetName>Eyes2D</TargetName>
+    <TargetName>Eyes2D_d</TargetName>
     <OutDir>$(ProjectDir)\build\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -101,7 +101,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\;$(SolutionDir)\libz\;$(SolutionDir)\libzip\lib\;$(SolutionDir)\libzip\win32\</AdditionalIncludeDirectories>
       <PrecompiledHeaderOutputFile />
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -113,8 +113,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\$(Configuration)\;$(SolutionDir)\libogg\build\$(Configuration)\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fancylib.lib;libvorbisfile_static.lib;libvorbis_static.lib;libogg_static.lib;xmath.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\$(Configuration)\;$(SolutionDir)\libogg\build\$(Configuration)\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;$(SolutionDir)\libz\build\$(Configuration)\;$(SolutionDir)\libzip\build\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fancylib.lib;libvorbisfile_static.lib;libvorbis_static.lib;libogg_static.lib;xmath.lib;zlib.lib;libzip.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -128,17 +128,18 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\;$(SolutionDir)\libz\;$(SolutionDir)\libzip\lib\;$(SolutionDir)\libzip\win32\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeaderOutputFile />
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>
+      </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\$(Configuration)\;$(SolutionDir)\libogg\build\$(Configuration)\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fancylib.lib;libvorbisfile_static.lib;libvorbis_static.lib;libogg_static.lib;xmath.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\$(Configuration)\;$(SolutionDir)\libogg\build\$(Configuration)\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;$(SolutionDir)\libz\build\$(Configuration)\;$(SolutionDir)\libzip\build\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fancylib_d.lib;libvorbisfile_static.lib;libvorbis_static.lib;libogg_static.lib;xmath_d.lib;zlib.lib;libzip.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -179,8 +180,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="E2DCodePage.cpp" />
+    <ClCompile Include="E2DCodePage.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="E2DDXGIImpl.cpp" />
+    <ClCompile Include="E2DFileManager.cpp" />
+    <ClCompile Include="E2DLogSystem.cpp" />
     <ClCompile Include="E2DOggDecoder.cpp" />
     <ClCompile Include="E2DWaveDecoder.cpp" />
     <ClCompile Include="E2DXAudio2Impl.cpp" />
@@ -192,7 +198,9 @@
     <ClInclude Include="E2DCodePage.hpp" />
     <ClInclude Include="E2DDXGIImpl.hpp" />
     <ClInclude Include="E2DException.hpp" />
+    <ClInclude Include="E2DFileManager.hpp" />
     <ClInclude Include="E2DGlobal.hpp" />
+    <ClInclude Include="E2DLogSystem.hpp" />
     <ClInclude Include="E2DMainFunction.hpp" />
     <ClInclude Include="E2DMath.hpp" />
     <ClInclude Include="E2DOggDecoder.hpp" />
