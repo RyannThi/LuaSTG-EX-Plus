@@ -113,5 +113,8 @@
     <ClInclude Include="E2DLogSystem.hpp">
       <Filter>system\debug</Filter>
     </ClInclude>
+    <ClInclude Include="E2DFilePath.hpp">
+      <Filter>system\platform</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

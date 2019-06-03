@@ -14,6 +14,7 @@
 #endif
 
 #include <string.h>
+#include "E2DFileManager.hpp"
 
 namespace LuaSTGPlus
 {
@@ -84,6 +85,7 @@ namespace LuaSTGPlus
 
 		// 资源管理器
 		ResourceMgr m_ResourceMgr;
+		Eyes2D::IO::FileManager m_FileManager;
 
 		// 对象池
 		std::unique_ptr<GameObjectPool> m_GameObjectPool;
@@ -114,29 +116,27 @@ namespace LuaSTGPlus
 		f2dSoundSys* m_pSoundSys = nullptr;
 		f2dInputSys* m_pInputSys = nullptr;
 		
+		//渲染状态
 		GraphicsType m_GraphType = GraphicsType::Graph2D;
 		bool m_bRenderStarted = false;
+		BlendMode m_Graph2DLastBlendMode;//2D
+		f2dBlendState m_Graph2DBlendState;//2D
+		F2DGRAPH2DBLENDTYPE m_Graph2DColorBlendState;//2D
+		BlendMode m_Graph3DLastBlendMode;//3D
+		f2dBlendState m_Graph3DBlendState;//3D
 
-		// 2D模式
-		BlendMode m_Graph2DLastBlendMode;
-		f2dBlendState m_Graph2DBlendState;
-		F2DGRAPH2DBLENDTYPE m_Graph2DColorBlendState;
-		fcyRefPointer<f2dGeometryRenderer> m_GRenderer;
-		fcyRefPointer<f2dFontRenderer> m_FontRenderer;
-		fcyRefPointer<f2dGraphics2D> m_Graph2D;
-
-		// 3D模式
-		BlendMode m_Graph3DLastBlendMode;
-		f2dBlendState m_Graph3DBlendState;
-		fcyRefPointer<f2dGraphics3D> m_Graph3D;
-
+		//渲染器
+		fcyRefPointer<f2dGeometryRenderer> m_GRenderer;//2D
+		fcyRefPointer<f2dFontRenderer> m_FontRenderer;//2D
+		fcyRefPointer<f2dGraphics2D> m_Graph2D;//2D
+		fcyRefPointer<f2dGraphics3D> m_Graph3D;//3D
+		
 		// PostEffect控制
 		bool m_bPostEffectCaptureStarted = false;
-		fcyRefPointer<f2dTexture2D> m_PostEffectBuffer;
+		fcyRefPointer<f2dTexture2D> m_PostEffectBuffer;//全局临时RenderTarget
+		std::vector<fcyRefPointer<f2dTexture2D>> m_stRenderTargetStack;// RenderTarget控制
 
-		// RenderTarget控制
-		std::vector<fcyRefPointer<f2dTexture2D>> m_stRenderTargetStack;
-
+		//输入设备
 		fcyRefPointer<f2dInputMouse> m_Mouse;
 		fcyRefPointer<f2dInputKeyboard> m_Keyboard;
 		fcyRefPointer<f2dInputKeyboard> m_Keyboard2;
@@ -146,12 +146,6 @@ namespace LuaSTGPlus
 		fBool m_KeyStateMap[256];
 		fcyVec2 m_MousePosition;
 		fBool m_MouseState[3];
-
-		lua_Integer m_superpause;
-		lua_Integer m_nextsuperpause;
-		
-		lua_Integer m_iWorld;
-		int m_Worlds[4];
 	private:
 		void updateGraph2DBlendMode(BlendMode m)
 		{
@@ -270,44 +264,6 @@ namespace LuaSTGPlus
 #endif
 	public: // 脚本调用接口，含义参见API文档
 		LNOINLINE void ShowSplashWindow(const char* imgPath = nullptr)LNOEXCEPT;  // UTF8编码
-
-		lua_Integer GetSuperPauseTime()LNOEXCEPT{
-			return m_superpause;
-		}
-		lua_Integer GetNextFrameSuperPauseTime()LNOEXCEPT{
-			return m_nextsuperpause;
-		}
-		void SetNextFrameSuperPauseTime(lua_Integer time)LNOEXCEPT{
-			m_nextsuperpause = time;
-		}
-
-		lua_Integer UpdateSuperPause(){
-			m_superpause = m_nextsuperpause;
-			if (m_nextsuperpause>0)m_nextsuperpause = m_nextsuperpause - 1;
-			return m_superpause;
-		}
-
-		void SetWorldFlag(lua_Integer world)LNOEXCEPT{
-			m_iWorld = world;
-		}
-		lua_Integer GetWorldFlag()LNOEXCEPT{
-			return m_iWorld;
-		}
-
-		void ActiveWorlds(int a,int b,int c,int d)LNOEXCEPT{
-			m_Worlds[0] = a;
-			m_Worlds[1] = b;
-			m_Worlds[2] = c;
-			m_Worlds[3] = d;
-		}
-		bool CheckWorlds(int a, int b)LNOEXCEPT{
-			if (GameObjectPool::CheckWorld(a, m_Worlds[0]) && GameObjectPool::CheckWorld(b, m_Worlds[0]))return true;
-			if (GameObjectPool::CheckWorld(a, m_Worlds[1]) && GameObjectPool::CheckWorld(b, m_Worlds[1]))return true;
-			if (GameObjectPool::CheckWorld(a, m_Worlds[2]) && GameObjectPool::CheckWorld(b, m_Worlds[2]))return true;
-			if (GameObjectPool::CheckWorld(a, m_Worlds[3]) && GameObjectPool::CheckWorld(b, m_Worlds[3]))return true;
-			return false;
-		}
-
 		void SetWindowed(bool v)LNOEXCEPT;
 		void SetFPS(fuInt v)LNOEXCEPT;
 		void SetVsync(bool v)LNOEXCEPT;
@@ -752,6 +708,7 @@ namespace LuaSTGPlus
 		}
 	public:
 		ResourceMgr& GetResourceMgr()LNOEXCEPT { return m_ResourceMgr; }
+		Eyes2D::IO::FileManager& GetFileManager() noexcept { return m_FileManager; }
 		GameObjectPool& GetGameObjectPool()LNOEXCEPT{ return *m_GameObjectPool.get(); }
 		f2dEngine* GetEngine()LNOEXCEPT { return m_pEngine; }
 		f2dRenderer* GetRenderer()LNOEXCEPT { return m_pRenderer; }
@@ -782,14 +739,10 @@ namespace LuaSTGPlus
 	protected:  // fancy2d逻辑循环回调
 		fBool OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, f2dMsgPump* pMsgPump);
 		fBool OnRender(fDouble ElapsedTime, f2dFPSController* pFPSController);
-		
 	public:
 		AppFrame()LNOEXCEPT;
 		~AppFrame()LNOEXCEPT;
-
-
 	public:
 		IExInputControl *m_Input;
-
 	};
 }

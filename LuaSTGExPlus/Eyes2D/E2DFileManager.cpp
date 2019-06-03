@@ -21,9 +21,10 @@ struct Archive::Impl {
 	}
 };
 
-Archive::Archive() {
+Archive::Archive(unsigned int uid) {
 	m_Impl = new Archive::Impl;
 	sort.priority = 0;
+	sort.uid = uid;
 }
 
 void Archive::class_init(const char* path, const char* password) {
@@ -71,27 +72,31 @@ void Archive::class_init(const char* path, const char* password) {
 	}
 }
 
-Archive::Archive(const char* path) {
+Archive::Archive(const char* path, unsigned int uid) {
 	m_Impl = new Archive::Impl;
 	sort.priority = 0;
+	sort.uid = uid;
 	class_init(path, nullptr);
 }
 
-Archive::Archive(const char* path, int priority) {
+Archive::Archive(const char* path, int priority, unsigned int uid) {
 	m_Impl = new Archive::Impl;
 	sort.priority = priority;
+	sort.uid = uid;
 	class_init(path, nullptr);
 }
 
-Archive::Archive(const char* path, const char* password) {
+Archive::Archive(const char* path, const char* password, unsigned int uid) {
 	m_Impl = new Archive::Impl;
 	sort.priority = 0;
+	sort.uid = uid;
 	class_init(path, password);
 }
 
-Archive::Archive(const char* path, int priority, const char* password) {
+Archive::Archive(const char* path, int priority, const char* password, unsigned int uid) {
 	m_Impl = new Archive::Impl;
 	sort.priority = priority;
+	sort.uid = uid;
 	class_init(path, password);
 }
 
@@ -135,6 +140,10 @@ long long Archive::file_precheck(const char* filepath) {
 	else {
 		return -1;
 	}
+}
+
+const char* Archive::GetArchivePath() {
+	return m_Impl->path.c_str();
 }
 
 bool Archive::FileExist(const char* filepath) {
@@ -237,13 +246,76 @@ void Archive::ListFile() {
 //======================================
 
 struct FileManager::Impl {
-	set<Archive, Archive::ArchiveSort> ArchiveSet;
+	set<Archive*, Archive::ArchiveSort> ArchiveSet;
 };
 
 FileManager::FileManager() {
 	m_Impl = new FileManager::Impl;
+	m_ArchiveUID = 0;
 }
 
 FileManager::~FileManager() {
+	UnloadAllArchive();
 	delete m_Impl;
+}
+
+bool FileManager::LoadArchive(const char* name, int priority, const char* password) {
+	Archive* zip;
+	try {
+		if (password != nullptr) {
+			zip = new Archive(name, priority, password, m_ArchiveUID);
+		}
+		else {
+			zip = new Archive(name, priority, m_ArchiveUID);
+		}
+	}
+	catch (E2DException& e) {
+		Eyes2D::EYESERROR(e);
+		return false;
+	}
+	m_Impl->ArchiveSet.insert(zip);
+	m_ArchiveUID++;
+	Eyes2D::EYESDEBUG(string(string("Archive : ") + string(name) + string(" was loaded.")).c_str());
+	return true;
+}
+
+Archive* FileManager::GetArchive(const char* name) {
+	string frompath = name;
+	string topath;
+	for (auto i : m_Impl->ArchiveSet) {
+		topath = i->GetArchivePath();
+		if (frompath == topath) {
+			return i;
+		}
+	}
+	Eyes2D::EYESERROR(string(string("Can't find archive : ") + string(name)).c_str());
+	return nullptr;
+}
+
+bool FileManager::ArchiveExist(const char* name) {
+	return GetArchive(name) != nullptr;
+}
+
+void FileManager::UnloadArchive(const char* name) {
+	string frompath = name;
+	string topath;
+	for (auto it = m_Impl->ArchiveSet.begin(); it != m_Impl->ArchiveSet.end();) {
+		topath = (*it)->GetArchivePath();
+		if (frompath == topath) {
+			Archive* p = *it;
+			it = m_Impl->ArchiveSet.erase(it);
+			delete p;//只会擦除元素，不会将指针指向的内存释放
+			return;
+		}
+		++it;
+	}
+	Eyes2D::EYESWARN(string(string("Can't find archive : ") + string(name)).c_str());
+}
+
+void FileManager::UnloadAllArchive() {
+	for (auto it = m_Impl->ArchiveSet.begin(); it != m_Impl->ArchiveSet.end();) {
+		Archive* p = *it;
+		it = m_Impl->ArchiveSet.erase(it);//这个操作会自动移动到下一个迭代器
+		delete p;//只会擦除元素，不会将指针指向的内存释放
+	}
 }

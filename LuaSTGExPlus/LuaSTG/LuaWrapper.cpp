@@ -618,23 +618,57 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		//EX+ 对象更新相关，影响frame回调函数以及对象更新
 		static int SetSuperPause(lua_State* L)LNOEXCEPT
 		{
-			LAPP.SetNextFrameSuperPauseTime(luaL_checkinteger(L, 1));
+			LPOOL.SetNextFrameSuperPauseTime(luaL_checkinteger(L, 1));
 			return 0;
 		}
 		static int AddSuperPause(lua_State* L)LNOEXCEPT
 		{
 			lua_Integer a = luaL_checkinteger(L, 1);
-			LAPP.SetNextFrameSuperPauseTime(LAPP.GetNextFrameSuperPauseTime() + a);
+			LPOOL.SetNextFrameSuperPauseTime(LPOOL.GetNextFrameSuperPauseTime() + a);
 			return 0;
 		}
 		static int GetSuperPause(lua_State* L)LNOEXCEPT
 		{
-			lua_pushinteger(L, LAPP.GetNextFrameSuperPauseTime());
+			lua_pushinteger(L, LPOOL.GetNextFrameSuperPauseTime());
 			return 1;
 		}
 		static int GetCurrentSuperPause(lua_State* L)LNOEXCEPT
 		{
-			lua_pushinteger(L, LAPP.GetSuperPauseTime());
+			lua_pushinteger(L, LPOOL.GetSuperPauseTime());
+			return 1;
+		}
+		//EX+ multi world  world mask
+		static int GetWorldFlag(lua_State* L)LNOEXCEPT
+		{
+			lua_pushinteger(L, LPOOL.GetWorldFlag());
+			return 1;
+		}
+		static int SetWorldFlag(lua_State* L)LNOEXCEPT
+		{
+			LPOOL.SetWorldFlag(luaL_checkinteger(L, 1));
+			return 1;
+		}
+		static int IsSameWorld(lua_State* L)LNOEXCEPT
+		{
+			int a = luaL_checkinteger(L, 1);
+			int b = luaL_checkinteger(L, 2);
+			lua_pushboolean(L, GameObjectPool::CheckWorld(a, b));
+			return 1;
+		}
+		static int ActiveWorlds(lua_State* L)LNOEXCEPT
+		{
+			int a1 = luaL_optinteger(L, 1, 0);
+			int a2 = luaL_optinteger(L, 2, 0);
+			int a3 = luaL_optinteger(L, 3, 0);
+			int a4 = luaL_optinteger(L, 4, 0);
+			LPOOL.ActiveWorlds(a1, a2, a3, a4);
+			return 0;
+		}
+		static int CheckWorlds(lua_State* L)LNOEXCEPT
+		{
+			int a1 = luaL_checkinteger(L, 1);
+			int a2 = luaL_checkinteger(L, 2);
+			lua_pushboolean(L, LPOOL.CheckWorlds(a1, a2));
 			return 1;
 		}
 		//ETC 对象资源设置
@@ -1498,7 +1532,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				return luaL_error(L, "PostEffectApply failed.");
 			return 0;
 		}
-		//EX+ model
+		//EX+
 		static int SetZBufferEnable(lua_State* L)LNOEXCEPT
 		{
 			LAPP.SetZBufferEnable(luaL_checkinteger(L, 1) != 0);
@@ -1528,38 +1562,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			}
 			return 0;
 		}
-		//EX+ multi world  world mask
-		static int GetWorldFlag(lua_State* L)LNOEXCEPT
+		static int DrawCollider(lua_State* L)LNOEXCEPT // t(list) [n] <length> <rate>
 		{
-			lua_pushinteger(L, LAPP.GetWorldFlag());
-			return 1;
-		}
-		static int SetWorldFlag(lua_State* L)LNOEXCEPT
-		{
-			LAPP.SetWorldFlag(luaL_checkinteger(L, 1));
-			return 1;
-		}
-		static int IsSameWorld(lua_State *L)LNOEXCEPT
-		{
-			int a = luaL_checkinteger(L, 1);
-			int b = luaL_checkinteger(L, 2);
-			lua_pushboolean(L, GameObjectPool::CheckWorld(a, b));
-			return 1;
-		}
-		static int ActiveWorlds(lua_State *L)LNOEXCEPT
-		{
-			int a1 = luaL_optinteger(L, 1, 0);
-			int a2 = luaL_optinteger(L, 2, 0);
-			int a3 = luaL_optinteger(L, 3, 0);
-			int a4 = luaL_optinteger(L, 4, 0);
-			LAPP.ActiveWorlds(a1, a2, a3, a4);
-			return 0;
-		}
-		static int CheckWorlds(lua_State *L)LNOEXCEPT
-		{
-			int a1 = luaL_checkinteger(L, 1);
-			int a2 = luaL_checkinteger(L, 2);
-			lua_pushboolean(L, LAPP.CheckWorlds(a1, a2));
+			LAPP.DrawCollider();
 			return 1;
 		}
 		//ETC
@@ -2276,28 +2281,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			XInputManagerWrapper::CreateAndPush(L);
 			return 1;
 		}
-
-		// 调试函数
-		static int ObjTable(lua_State* L)LNOEXCEPT
+		static int SampleBezier(lua_State* L)LNOEXCEPT // t(list) [n] <length> <rate>
 		{
-			return LPOOL.GetObjectTable(L);
-		}
-		static int DrawCollider(lua_State *L)LNOEXCEPT // t(list) [n] <length> <rate>
-		{
-			LAPP.DrawCollider();
-			return 1;
-		}
-
-		//???
-		static int SmoothSampleByLength(lua_State* L)LNOEXCEPT // t(list)
-		{
-
-			lua_pushnumber(L, atan2(luaL_checknumber(L, 1), luaL_checknumber(L, 2)) * LRAD2DEGREE);
-			return 1;
-		}
-		static int SampleBezier(lua_State *L)LNOEXCEPT // t(list) [n] <length> <rate>
-		{
-			int ExSampleBezierA1(lua_State* L, int count, int sampleBy, float length, float rate)LNOEXCEPT;
+			int ExSampleBezierA1(lua_State * L, int count, int sampleBy, float length, float rate)LNOEXCEPT;
 
 			int i = luaL_checkinteger(L, 2);
 			float l = static_cast<float>(luaL_checknumber(L, 3));
@@ -2305,6 +2291,12 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			lua_settop(L, 1);
 			ExSampleBezierA1(L, i, 0, l, r);
 			return 1;
+		}
+
+		// 调试函数
+		static int ObjTable(lua_State* L)LNOEXCEPT
+		{
+			return LPOOL.GetObjectTable(L);
 		}
 	};
 
@@ -2330,6 +2322,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "ShowSplashWindow", &WrapperImplement::ShowSplashWindow },
 		{ "ShowConsole", &WrapperImplement::ShowConsole },
 		{ "EnumResolutions", &WrapperImplement::EnumResolutions },
+		{ "FindFiles", &WrapperImplement::FindFiles },
 		
 		//========游戏对象==========
 		//对象池管理
@@ -2369,6 +2362,17 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "ParticleGetEmission", &WrapperImplement::ParticleGetEmission },
 		{ "ParticleSetEmission", &WrapperImplement::ParticleSetEmission },
 		{ "ObjectChangeResource", &WrapperImplement::ObjChangeRes },//用于资源包装类
+		//ESC
+		{ "SetSuperPause", &WrapperImplement::SetSuperPause },
+		{ "GetSuperPause", &WrapperImplement::GetSuperPause },
+		{ "AddSuperPause", &WrapperImplement::AddSuperPause },
+		{ "GetCurrentSuperPause", &WrapperImplement::GetCurrentSuperPause },
+		{ "GetWorldFlag", &WrapperImplement::GetWorldFlag },
+		{ "SetWorldFlag", &WrapperImplement::SetWorldFlag },
+		{ "IsSameWorld", &WrapperImplement::CheckWorlds },
+		{ "IsInWorld", &WrapperImplement::IsSameWorld },
+		{ "GetCurrentObject", &WrapperImplement::GetCurrentObject },
+		{ "ActiveWorlds", &WrapperImplement::ActiveWorlds },
 		
 		// 资源控制函数
 		{ "SetResourceStatus", &WrapperImplement::SetResourceStatus },
@@ -2396,6 +2400,8 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "SetAnimationState", &WrapperImplement::SetAnimationState },
 		{ "SetImageCenter", &WrapperImplement::SetImageCenter },
 		{ "SetAnimationCenter", &WrapperImplement::SetAnimationCenter },
+		//ESC
+		{ "LoadModel", &WrapperImplement::LoadModel },
 		//ETC
 		{ "SetImageStateEx", &WrapperImplement::SetImageStateEx },
 		
@@ -2419,6 +2425,11 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "PostEffect", &WrapperImplement::PostEffect },
 		{ "PostEffectCapture", &WrapperImplement::PostEffectCapture },
 		{ "PostEffectApply", &WrapperImplement::PostEffectApply },
+		//ESC
+		{ "SetZBufferEnable", &WrapperImplement::SetZBufferEnable },
+		{ "ClearZBuffer", &WrapperImplement::ClearZBuffer },
+		{ "RenderModel", &WrapperImplement::RenderModel },
+		{ "DrawCollider", &WrapperImplement::DrawCollider },
 		//ETC
 		{ "RenderEx", &WrapperImplement::RenderEx },
 		{ "RenderGroupCollider", &WrapperImplement::RenderGroupCollider },
@@ -2451,11 +2462,24 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "GetMousePosition", &WrapperImplement::GetMousePosition },
 		{ "GetMouseWheelDelta", &WrapperImplement::GetMouseWheelDelta },
 		{ "GetMouseState", &WrapperImplement::GetMouseState },
+		//multi player
+		{ "CreateInputDevice", &WrapperImplement::CreateInputDevice },
+		{ "ReleaseInputDevice", &WrapperImplement::ReleaseInputDevice },
+		{ "AddInputAlias", &WrapperImplement::AddInputAlias },
+		{ "ClearInputAlias", &WrapperImplement::ClearInputAlias },
+		{ "ResetInput", &WrapperImplement::ResetInput },
+		{ "BindInput", &WrapperImplement::BindInput },
+		{ "GetVKeyStateEx", &WrapperImplement::GetVKeyStateEx },
 		//Raw Input
 		{ "GetKeyboardState", &WrapperImplement::GetKeyboardState },
 		{ "GetAsyncKeyState", &WrapperImplement::GetAsyncKeyState },
 		
-			// 内置数学函数
+		//ESC Network
+		{ "ConnectTo", &WrapperImplement::ConnectTo },
+		{ "ReceiveData", &WrapperImplement::ReceiveData },
+		{ "SendData", &WrapperImplement::SendData },
+
+		// 内置数学函数
 		{ "sin", &WrapperImplement::Sin },
 		{ "cos", &WrapperImplement::Cos },
 		{ "asin", &WrapperImplement::ASin },
@@ -2464,52 +2488,22 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "atan", &WrapperImplement::ATan },
 		{ "atan2", &WrapperImplement::ATan2 },
 		
-			// 杂项
+		// 杂项
 		{ "Snapshot", &WrapperImplement::Snapshot },
 		{ "SaveTexture", &WrapperImplement::SaveTexture },
 		{ "Execute", &WrapperImplement::Execute },
 		
-			// 调试函数
+		// 调试函数
 		{ "ObjTable", &WrapperImplement::ObjTable },
 		
-			// 对象构造函数
+		// 对象构造函数
 		{ "Color", &WrapperImplement::NewColor },
 		{ "Rand", &WrapperImplement::NewRand },
 		{ "BentLaserData", &WrapperImplement::BentLaserData },
 		{ "StopWatch", &WrapperImplement::StopWatch },
 		{ "ResourceReference", &WrapperImplement::ResourceRef },
 		{ "XInputManager", &WrapperImplement::XInputManager },
-		
-		//ESC
-		{ "SetZBufferEnable", &WrapperImplement::SetZBufferEnable },
-		{ "ClearZBuffer", &WrapperImplement::ClearZBuffer },
-		{ "LoadModel", &WrapperImplement::LoadModel },
-		{ "RenderModel", &WrapperImplement::RenderModel },
-		{ "SampleBezier", &WrapperImplement::SampleBezier },	
-		{ "SetSuperPause", &WrapperImplement::SetSuperPause },
-		{ "GetSuperPause", &WrapperImplement::GetSuperPause },
-		{ "AddSuperPause", &WrapperImplement::AddSuperPause },
-		{ "GetCurrentSuperPause", &WrapperImplement::GetCurrentSuperPause },
-		{ "GetWorldFlag", &WrapperImplement::GetWorldFlag },
-		{ "SetWorldFlag", &WrapperImplement::SetWorldFlag },
-		{ "IsSameWorld", &WrapperImplement::CheckWorlds },
-		{ "IsInWorld", &WrapperImplement::IsSameWorld },
-		{ "GetCurrentObject", &WrapperImplement::GetCurrentObject },
-		{ "ActiveWorlds", &WrapperImplement::ActiveWorlds },
-		{ "DrawCollider", &WrapperImplement::DrawCollider },
-		{ "FindFiles", &WrapperImplement::FindFiles },
-		//Network
-		{ "ConnectTo", &WrapperImplement::ConnectTo },
-		{ "ReceiveData", &WrapperImplement::ReceiveData },
-		{ "SendData", &WrapperImplement::SendData },
-		//AdvancedInput
-		{ "CreateInputDevice", &WrapperImplement::CreateInputDevice },
-		{ "ReleaseInputDevice", &WrapperImplement::ReleaseInputDevice },
-		{ "AddInputAlias", &WrapperImplement::AddInputAlias },
-		{ "ClearInputAlias", &WrapperImplement::ClearInputAlias },
-		{ "ResetInput", &WrapperImplement::ResetInput },
-		{ "BindInput", &WrapperImplement::BindInput },
-		{ "GetVKeyStateEx", &WrapperImplement::GetVKeyStateEx },
+		{ "SampleBezier", &WrapperImplement::SampleBezier },
 		
 		{ NULL, NULL }
 	};

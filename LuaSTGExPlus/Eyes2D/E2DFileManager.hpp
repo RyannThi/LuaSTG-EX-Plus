@@ -9,9 +9,18 @@ namespace Eyes2D {
 		public:
 			struct ArchiveSort {
 				int priority;//优先级，越大越靠前
-				bool operator()(const Archive& l, const Archive& r) const {
-					//优先级大的排在前面
-					return l.sort.priority >= r.sort.priority;
+				unsigned int uid;//uid，加载一个压缩包就自增一次；
+				bool operator()(const Archive* lp, const Archive* rp) const {
+					const Archive& l = *lp;
+					const Archive& r = *rp;
+					if (l.sort.priority != r.sort.priority) {
+						//优先级大的排在前面
+						return l.sort.priority > r.sort.priority;
+					}
+					else {
+						//优先级相同uid大的排在前面
+						return l.sort.uid > r.sort.uid;
+					}
 				}
 			};
 		private:
@@ -26,18 +35,20 @@ namespace Eyes2D {
 			//内部方法，检查文件是否存在并返回索引或者错误码
 			long long file_precheck(const char* filepath);
 		public:
-			//连路径都莫得
-			Archive();
-			//只有路径
-			Archive(const char* path);
-			//路径+优先级
-			Archive(const char* path, int priority);
-			//路径+密码
-			Archive(const char* path, const char* password);
-			//路径+优先级+密码
-			Archive(const char* path, int priority, const char* password);
+			//uid
+			Archive(unsigned int uid = 0);
+			//路径+uid
+			Archive(const char* path, unsigned int uid = 0);
+			//路径+优先级+uid
+			Archive(const char* path, int priority, unsigned int uid = 0);
+			//路径+密码+uid
+			Archive(const char* path, const char* password, unsigned int uid = 0);
+			//路径+优先级+密码+uid
+			Archive(const char* path, int priority, const char* password, unsigned int uid = 0);
 			~Archive();
 		public:
+			//获取压缩包加载时的路径
+			const char* GetArchivePath();
 			//指定文件是否存在
 			bool FileExist(const char* filepath);
 			//加载文件到内存流，如果被加密了则使用默认密码，加载失败则返回nullptr
@@ -51,14 +62,23 @@ namespace Eyes2D {
 		//文件读取、文件系统
 		class EYESDLLAPI FileManager {
 		private:
+			unsigned int m_ArchiveUID;
 			struct Impl;
 			Impl* m_Impl;
 		public:
 			FileManager();
 			~FileManager();
 		public:
-			bool LoadArchive(const char* name);//加载压缩包，如果文件不存在、加载失败或者格式不支持则返回false
-			void UnloadArchive(const char* name);//卸载压缩包
+			//加载压缩包，如果文件不存在、加载失败或者格式不支持则返回false
+			bool LoadArchive(const char* name, int priority = 0, const char* password = nullptr);
+			//获取已经加载的压缩包的指针，如果不存在则返回nullptr
+			Archive* GetArchive(const char* name);
+			//判断压缩包是否已加载
+			bool ArchiveExist(const char* name);
+			//卸载压缩包
+			void UnloadArchive(const char* name);
+			//卸载所有压缩包
+			void UnloadAllArchive();
 		};
 	}
 }

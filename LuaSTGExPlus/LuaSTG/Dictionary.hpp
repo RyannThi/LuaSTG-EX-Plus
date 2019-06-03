@@ -106,7 +106,7 @@ namespace LuaSTGPlus
 			Key = org.Key;
 #endif
 		}
-		DictionaryKey(DictionaryKey&& org) : HashKey(org.HashKey), Hash1(org.Hash1), Hash2(org.Hash2)
+		DictionaryKey(DictionaryKey&& org) noexcept : HashKey(org.HashKey), Hash1(org.Hash1), Hash2(org.Hash2)
 		{
 #ifdef LDEBUG
 			Key = std::move(org.Key);

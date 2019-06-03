@@ -199,6 +199,7 @@
     <ClInclude Include="E2DDXGIImpl.hpp" />
     <ClInclude Include="E2DException.hpp" />
     <ClInclude Include="E2DFileManager.hpp" />
+    <ClInclude Include="E2DFilePath.hpp" />
     <ClInclude Include="E2DGlobal.hpp" />
     <ClInclude Include="E2DLogSystem.hpp" />
     <ClInclude Include="E2DMainFunction.hpp" />

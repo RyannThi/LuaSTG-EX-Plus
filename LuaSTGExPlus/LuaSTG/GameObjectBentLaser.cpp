@@ -391,7 +391,7 @@ bool GameObjectBentLaser::Render(const char* tex_name, BlendMode blend, fcyColor
 	}
 	return true;
 }
-// TODO:collider //ok
+
 bool GameObjectBentLaser::CollisionCheck(float x, float y, float rot, float a, float b, bool rect)LNOEXCEPT
 {
 	// 忽略只有一个节点的情况
@@ -503,7 +503,7 @@ bool GameObjectBentLaser::CollisionCheck(float x, float y, float rot, float a, f
 	return false;
 #endif // USING_ADVANCE_COLLIDER
 }
-// TODO:collider //ok
+
 void GameObjectBentLaser::RenderCollider(fcyColor fillColor)LNOEXCEPT {
 	// 忽略只有一个节点的情况
 	int sn = m_Queue.Size();
@@ -640,7 +640,7 @@ void GameObjectBentLaser::RenderCollider(fcyColor fillColor)LNOEXCEPT {
 	graph->SetColorBlendType(txState);
 #endif // USING_ADVANCE_COLLIDER
 }
-// TODO:collider //ok
+
 bool GameObjectBentLaser::CollisionCheckW(float x, float y, float rot, float a, float b, bool rect, float width)LNOEXCEPT
 {
 	// 忽略只有一个节点的情况

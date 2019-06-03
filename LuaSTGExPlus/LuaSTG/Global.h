@@ -88,7 +88,7 @@
 #define LDEGREE2RAD (1.0/LRAD2DEGREE) // 角度到弧度
 #define LPI_HALF (3.141592653589793 / 2)  // PI*0.5
 
-#define LNOEXCEPT throw()
+#define LNOEXCEPT noexcept // throw()
 #define LNOINLINE __declspec(noinline)
 #define LNOUSE(x) static_cast<void>(x)
 #ifdef _DEBUG
@@ -105,6 +105,7 @@
 #define LLOGGER (LuaSTGPlus::LogSystem::GetInstance())
 #define LPOOL (LAPP.GetGameObjectPool())
 #define LRES (LAPP.GetResourceMgr())
+#define LFMGR (LAPP.GetFileManager())
 
 #define LWIDE_(x) L ## x
 #define LWIDE(x) LWIDE_(x)

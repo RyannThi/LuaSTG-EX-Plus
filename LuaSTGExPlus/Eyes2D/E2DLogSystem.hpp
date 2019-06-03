@@ -54,7 +54,7 @@ namespace Eyes2D {
 			}
 		}
 		
-		//简单的log系统，多例模式，但是共享一个log文件
+		//简单的log系统，多例模式
 		class EYESDLLAPI LogSystem {
 		private:
 			struct Impl;
@@ -72,9 +72,28 @@ namespace Eyes2D {
 			//输出E2DException异常格式化字符串
 			void Log(LogLevel lv, E2DException& e);
 		};
+
+		//简单的log系统，输出到log文件
+		class EYESDLLAPI LogFileSystem {
+		private:
+			struct Impl;
+			Impl* m_Impl;
+		public:
+			LogFileSystem(const wchar_t* logfile);
+			~LogFileSystem();
+		public:
+			//输出UTF8编码的字符串
+			void Log(LogLevel lv, const char* msg);
+			//输出ANSI编码的字符串，false时不转换为UTF8，true时转换
+			void Log(LogLevel lv, const char* msg, bool utf8);
+			//输出UTF16编码的字符串
+			void Log(LogLevel lv, const wchar_t* msg);
+			//输出E2DException异常格式化字符串
+			void Log(LogLevel lv, E2DException& e);
+		};
 	}
 
-	//获取Log系统，多例模式，但是共享一个log文件
+	//Log系统，多例模式
 	inline Debug::LogSystem& GetLogger() {
 		static Debug::LogSystem gs_LogSystemInstance;
 		return gs_LogSystemInstance;

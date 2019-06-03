@@ -99,7 +99,6 @@
     <ClCompile Include="GameObjectColliderWrapper.cpp" />
     <ClCompile Include="GameObjectPool.cpp" />
     <ClCompile Include="GameResourceWrapper.cpp" />
-    <ClCompile Include="KeyboardX.cpp" />
     <ClCompile Include="LogSystem.cpp" />
     <ClCompile Include="LuaWrapper.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -195,18 +194,18 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)\build\</OutDir>
+    <OutDir>E:\LuaSTG-LuaData\player-active\game\</OutDir>
     <IntDir>$(SolutionDir)\build\dir\</IntDir>
     <TargetName>LuaSTGPlus.Debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|Win32'">
-    <OutDir>$(SolutionDir)\build\</OutDir>
+    <OutDir>E:\LuaSTG-LuaData\player-active\game\</OutDir>
     <IntDir>$(SolutionDir)\build\dir\</IntDir>
     <TargetName>LuaSTGPlus.dev</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)\build\</OutDir>
+    <OutDir>E:\LuaSTG-LuaData\player-active\game\</OutDir>
     <IntDir>$(SolutionDir)\build\dir\</IntDir>
     <TargetName>LuaSTGPlus</TargetName>
     <LinkIncremental>false</LinkIncremental>

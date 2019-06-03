@@ -12,10 +12,10 @@ namespace LuaSTGPlus
 	// 游戏对象状态
 	enum GAMEOBJECTSTATUS
 	{
-		STATUS_FREE = 0,  // 空闲状态、用于标识链表伪头部
-		STATUS_DEFAULT,  // 正常状态
-		STATUS_KILL,  // 被kill事件触发
-		STATUS_DEL  // 被del事件触发
+		STATUS_FREE    = 0,//空闲状态、用于标识链表伪头部
+		STATUS_DEFAULT = 1,//正常状态
+		STATUS_KILL    = 2,//被kill事件触发
+		STATUS_DEL     = 3,//被del事件触发
 	};
 	
 	//游戏碰撞体类型
@@ -577,7 +577,6 @@ namespace LuaSTGPlus
 
 		/// @brief 执行边界检查
 		void BoundCheck()LNOEXCEPT;
-		//void BoundCheckWorld(lua_Number worldflag)LNOEXCEPT;
 
 		/// @brief 碰撞检查
 		/// @param[in] groupA 对象组A
@@ -639,6 +638,7 @@ namespace LuaSTGPlus
 		/// @return 返回-1表示无元素
 		int NextObject(int groupId, int id)LNOEXCEPT;
 
+		//返回一个碰撞组迭代器
 		int NextObject(lua_State* L)LNOEXCEPT;
 
 		/// @brief 获取列表中的第一个元素ID
@@ -666,13 +666,71 @@ namespace LuaSTGPlus
 		int ParticleSetEmission(lua_State* L)LNOEXCEPT;
 
 		/// @brief 对象资源相关操作
+	private:
+		///用于多world
 		
+		lua_Integer m_iWorld;//当前的world mask
+		int m_Worlds[4];//预置的world mask
+	public:
+		///用于多world
+
+		//设置当前的world mask
+		inline void SetWorldFlag(lua_Integer world)LNOEXCEPT {
+			m_iWorld = world;
+		}
+		//获取当前的world mask
+		inline lua_Integer GetWorldFlag()LNOEXCEPT {
+			return m_iWorld;
+		}
+		//设置预置的world mask
+		inline void ActiveWorlds(int a, int b, int c, int d)LNOEXCEPT {
+			m_Worlds[0] = a;
+			m_Worlds[1] = b;
+			m_Worlds[2] = c;
+			m_Worlds[3] = d;
+		}
+		//检查两个world mask位与或的结果 //静态函数，不应该只用于类内
+		static inline bool CheckWorld(lua_Integer gameworld, lua_Integer objworld) {
+			return (gameworld == objworld) || (gameworld & objworld);
+		}
+		//对两个world mask，分别与预置的world mask位与或，用于检查是否在同一个world内
+		bool CheckWorlds(int a, int b)LNOEXCEPT {
+			if (CheckWorld(a, m_Worlds[0]) && CheckWorld(b, m_Worlds[0]))return true;
+			if (CheckWorld(a, m_Worlds[1]) && CheckWorld(b, m_Worlds[1]))return true;
+			if (CheckWorld(a, m_Worlds[2]) && CheckWorld(b, m_Worlds[2]))return true;
+			if (CheckWorld(a, m_Worlds[3]) && CheckWorld(b, m_Worlds[3]))return true;
+			return false;
+		}
+	private:
+		///用于超级暂停
+
+		lua_Integer m_superpause;
+		lua_Integer m_nextsuperpause;
+	public:
+		///用于超级暂停
+
+		//获取可信的超级暂停时间
+		inline lua_Integer GetSuperPauseTime()LNOEXCEPT {
+			return m_superpause;
+		}
+		//获取超级暂停剩余时间
+		inline lua_Integer GetNextFrameSuperPauseTime()LNOEXCEPT {
+			return m_nextsuperpause;
+		}
+		//设置超级暂停剩余时间
+		inline void SetNextFrameSuperPauseTime(lua_Integer time)LNOEXCEPT {
+			m_nextsuperpause = time;
+		}
+		//更新超级暂停的剩余时间并返回当前的可信值
+		inline lua_Integer UpdateSuperPause() {
+			m_superpause = m_nextsuperpause;
+			if (m_nextsuperpause > 0)
+				m_nextsuperpause = m_nextsuperpause - 1;
+			return m_superpause;
+		}
 	public:  // 内部使用
 		void DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer* grender, int groupId, fcyColor fillColor);
 		void DrawGroupCollider2(int groupId, fcyColor fillColor);
-		static bool CheckWorld(lua_Integer gameworld, lua_Integer objworld){
-			return (gameworld == objworld) || (gameworld&objworld);
-		}
 		int PushCurrentObject(lua_State* L)LNOEXCEPT;
 	private:
 		GameObjectPool& operator=(const GameObjectPool&);

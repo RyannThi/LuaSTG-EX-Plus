@@ -338,16 +338,14 @@ LNOINLINE AppFrame& AppFrame::GetInstance()
 	return s_Instance;
 }
 
-AppFrame::AppFrame()
+AppFrame::AppFrame() LNOEXCEPT
 {
 	m_Input = CreateInputEx();
-	m_superpause = 0;
-	m_nextsuperpause = 0;
 	WSADATA wsa;
 	WSAStartup(MAKEWORD(1, 1), &wsa);
 }
 
-AppFrame::~AppFrame()
+AppFrame::~AppFrame() LNOEXCEPT
 {
 	if (m_iStatus != AppStatus::NotInitialized && m_iStatus != AppStatus::Destroyed)
 	{
@@ -1682,6 +1680,7 @@ void AppFrame::Shutdown()LNOEXCEPT
 	}
 
 	m_ResourceMgr.UnloadAllPack();
+	m_FileManager.UnloadAllArchive();
 	LINFO("已卸载所有资源包");
 
 	m_iStatus = AppStatus::Destroyed;

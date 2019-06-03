@@ -252,6 +252,8 @@ GameObjectPool::GameObjectPool(lua_State* pL)
 	lua_settable(L, LUA_REGISTRYINDEX);
 
 	m_pCurrentObject = NULL;
+	m_superpause = 0;
+	m_nextsuperpause = 0;
 }
 
 GameObjectPool::~GameObjectPool()
@@ -295,7 +297,7 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 {
 	//处理超级暂停
 	GETOBJTABLE;  // ot
-	int superpause = LAPP.UpdateSuperPause();
+	int superpause = UpdateSuperPause();
 
 	GameObject* p = m_pObjectListHeader.pObjectNext;
 	lua_Number cache1, cache2;//速度限制计算时用到的中间变量
@@ -389,7 +391,7 @@ void GameObjectPool::DoRender()LNOEXCEPT
 
 	GameObject* p = m_pRenderListHeader.pRenderNext;
 	LASSERT(p != nullptr);
-	lua_Integer world = LAPP.GetWorldFlag();
+	lua_Integer world = GetWorldFlag();
 	while (p && p != &m_pRenderListTail)
 	{
 		if (!p->hide  && CheckWorld(p->world, world))  // 只渲染可见对象
@@ -412,7 +414,7 @@ void GameObjectPool::DoRender()LNOEXCEPT
 void GameObjectPool::BoundCheck()LNOEXCEPT
 {
 	GETOBJTABLE;  // ot
-	lua_Integer world = LAPP.GetWorldFlag();
+	lua_Integer world = GetWorldFlag();
 	GameObject* p = m_pObjectListHeader.pObjectNext;
 	while (p && p != &m_pObjectListTail)
 	{
@@ -437,35 +439,6 @@ void GameObjectPool::BoundCheck()LNOEXCEPT
 	m_pCurrentObject = NULL;
 	lua_pop(L, 1);
 }
-/*
-void GameObjectPool::BoundCheckWorld(lua_Number w)LNOEXCEPT
-{
-	GETOBJTABLE;  // ot
-
-	GameObject* p = m_pObjectListHeader.pObjectNext;
-	while (p && p != &m_pObjectListTail)
-	{
-		if (p->world && w){
-			if ((p->x < m_BoundLeft || p->x > m_BoundRight || p->y < m_BoundBottom || p->y > m_BoundTop) && p->bound)
-			{
-				m_pCurrentObject = p;
-				// 越界设置为DEL状态
-				p->status = STATUS_DEL;
-
-				// 根据id获取对象的lua绑定table、拿到class再拿到delfunc
-				lua_rawgeti(L, -1, p->id + 1);  // ot t(object)
-				lua_rawgeti(L, -1, 1);  // ot t(object) t(class)
-				lua_rawgeti(L, -1, LGOBJ_CC_DEL);  // ot t(object) t(class) f(del)
-				lua_pushvalue(L, -3);  // ot t(object) t(class) f(del) t(object)
-				lua_call(L, 1, 0);  // ot t(object) t(class)
-				lua_pop(L, 2);  // ot
-			}
-		}
-		p = p->pObjectNext;
-	}
-	m_pCurrentObject = NULL;
-	lua_pop(L, 1);
-}*/
 
 void GameObjectPool::CollisionCheck(size_t groupA, size_t groupB)LNOEXCEPT
 {
@@ -483,7 +456,7 @@ void GameObjectPool::CollisionCheck(size_t groupA, size_t groupB)LNOEXCEPT
 		GameObject* pB = pBHeader;
 		while (pB && pB != pBTail)
 		{
-			if (LAPP.CheckWorlds(pA->world, pB->world)){
+			if (CheckWorlds(pA->world, pB->world)){
 				if (LuaSTGPlus::CollisionCheck(pA, pB))
 				{
 					// 根据id获取对象的lua绑定table、拿到class再拿到collifunc
@@ -506,7 +479,7 @@ void GameObjectPool::CollisionCheck(size_t groupA, size_t groupB)LNOEXCEPT
 
 void GameObjectPool::UpdateXY()LNOEXCEPT
 {
-	int superpause = LAPP.GetSuperPauseTime();
+	int superpause = GetSuperPauseTime();
 	GameObject* p = m_pObjectListHeader.pObjectNext;
 	while (p && p != &m_pObjectListTail)
 	{
@@ -525,7 +498,7 @@ void GameObjectPool::UpdateXY()LNOEXCEPT
 
 void GameObjectPool::AfterFrame()LNOEXCEPT
 {
-	int superpause = LAPP.GetSuperPauseTime();
+	int superpause = GetSuperPauseTime();
 	GameObject* p = m_pObjectListHeader.pObjectNext;
 	while (p && p != &m_pObjectListTail)
 	{
@@ -775,7 +748,7 @@ bool GameObjectPool::ColliCheck(size_t idA, size_t idB, bool ignoreWorldMask, bo
 		out = LuaSTGPlus::CollisionCheck(pA, pB);
 	}
 	else{
-		if (LAPP.CheckWorlds(pA->world, pB->world)) {
+		if (CheckWorlds(pA->world, pB->world)) {
 			out = LuaSTGPlus::CollisionCheck(pA, pB);
 		}
 		else {
@@ -984,7 +957,7 @@ int GameObjectPool::FirstObject(int groupId)LNOEXCEPT
 			return static_cast<int>(p->id);
 	}
 }
-// TODO:collider //ok
+
 int GameObjectPool::GetAttr(lua_State* L)LNOEXCEPT
 {
 	lua_rawgeti(L, 1, 2);  // t(object) s(key) ??? i(id)
@@ -1196,7 +1169,7 @@ int GameObjectPool::GetAttr(lua_State* L)LNOEXCEPT
 
 	return 1;
 }
-// TODO:collider //ok
+
 int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 {
 	lua_rawgeti(L, 1, 2);  // t(object) s(key) any(v) i(id)
@@ -1507,7 +1480,7 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 
 	return 0;
 }
-// TODO:collider //ok
+
 int GameObjectPool::InitAttr(lua_State* L)LNOEXCEPT  // t(object)
 {
 	lua_rawgeti(L, 1, 2);  // t(object) i(id)
@@ -1830,7 +1803,7 @@ void GameObjectPool::DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer
 {
 	GameObject* p = m_pCollisionListHeader[groupId].pCollisionNext;
 	GameObject* pTail = &m_pCollisionListTail[groupId];
-	lua_Integer world = LAPP.GetWorldFlag();
+	lua_Integer world = GetWorldFlag();
 	while (p && p != pTail)
 	{
 		if (p->colli && CheckWorld(p->world, world))
@@ -2015,7 +1988,7 @@ void GameObjectPool::DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer
 		p = p->pCollisionNext;
 	}
 }
-// TODO:collider //ok
+
 void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 {
 	LAPP.GetRenderDev()->ClearZBuffer();
@@ -2034,7 +2007,7 @@ void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 
 	GameObject* p = m_pCollisionListHeader[groupId].pCollisionNext;
 	GameObject* pTail = &m_pCollisionListTail[groupId];
-	lua_Integer world = LAPP.GetWorldFlag();
+	lua_Integer world = GetWorldFlag();
 	while (p && p != pTail)
 	{
 		if (p->colli && CheckWorld(p->world, world))

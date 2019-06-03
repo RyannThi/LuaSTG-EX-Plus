@@ -355,11 +355,11 @@ bool listFiles(lua_State *L,const char * dirw,const char *ext,int *cnt)
 	}
 	intptr_t handle;
 	_finddata_t findData;
-
-	GetCurrentDirectoryA(400, fulldir);
-	strcat(fulldir, "\\");
-	strcat(fulldir, dir);
-	strcat(fulldir, "*.*");
+	
+	GetCurrentDirectoryA(400, fulldir); // workdir 
+	strcat(fulldir, "\\");              // workdir\ 
+	strcat(fulldir, dir);               // workdir\searchdir 
+	strcat(fulldir, "*.*");             // workdir\searchdir\*.* 
 	handle = _findfirst(fulldir, &findData);    // 查找目录中的第一个文件
 	if (handle == -1)
 	{
