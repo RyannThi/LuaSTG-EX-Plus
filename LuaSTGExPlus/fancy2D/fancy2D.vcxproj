@@ -70,7 +70,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)\build\</OutDir>
-    <IntDir>$(ProjectDir)\build\dir\</IntDir>
+    <IntDir>$(ProjectDir)\build\dir\$(Configuration)\</IntDir>
     <TargetName>fancy2d_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
@@ -82,7 +82,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)\build\</OutDir>
-    <IntDir>$(ProjectDir)\build\dir\</IntDir>
+    <IntDir>$(ProjectDir)\build\dir\$(Configuration)\</IntDir>
     <TargetName>fancy2d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">

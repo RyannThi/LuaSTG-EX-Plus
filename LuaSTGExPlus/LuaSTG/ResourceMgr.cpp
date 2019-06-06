@@ -6,6 +6,8 @@
 #include <iowin32.h>
 #include <io.h>
 
+#include "ESC.h"
+
 #ifdef max
 #undef max
 #endif
@@ -15,8 +17,6 @@
 
 using namespace std;
 using namespace LuaSTGPlus;
-
-#include "ESC.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// ResAnimation
@@ -344,7 +344,7 @@ LNOINLINE bool ResourceMgr::ExtractRes(const char* path, const char* target)LNOE
 bool listFiles(lua_State *L,const char * dirw,const char *ext,int *cnt)
 {
 	
-	
+	//*
 	char dir[400];
 	char fulldir[400];
 	strcpy_s<400>(dir, dirw);
@@ -415,6 +415,7 @@ bool listFiles(lua_State *L,const char * dirw,const char *ext,int *cnt)
 	} while (_findnext(handle, &findData) == 0);    // 查找目录中的下一个文件
 
 	_findclose(handle);    // 关闭搜索句柄
+	//*/
 	return true;
 }
 

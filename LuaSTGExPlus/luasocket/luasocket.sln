@@ -1,37 +1,34 @@
-Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "socket", "socket.vcproj", "{66E3CE14-884D-4AEA-9F20-15A0BEAF8C5A}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28922.388
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "socket", "socket.vcxproj", "{66E3CE14-884D-4AEA-9F20-15A0BEAF8C5A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mime", "mime.vcproj", "{128E8BD0-174A-48F0-8771-92B1E8D18713}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mime", "mime.vcxproj", "{128E8BD0-174A-48F0-8771-92B1E8D18713}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libluasocket", "libluasocket.vcproj", "{599EAD40-60EE-4043-9C14-AE090A8A092D}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
 EndProject
 Global
-	GlobalSection(SolutionConfiguration) = preSolution
-		Debug = Debug
-		Release = Release
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
 	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{66E3CE14-884D-4AEA-9F20-15A0BEAF8C5A}.Debug.ActiveCfg = Debug|Win32
-		{66E3CE14-884D-4AEA-9F20-15A0BEAF8C5A}.Debug.Build.0 = Debug|Win32
-		{66E3CE14-884D-4AEA-9F20-15A0BEAF8C5A}.Release.ActiveCfg = Release|Win32
-		{66E3CE14-884D-4AEA-9F20-15A0BEAF8C5A}.Release.Build.0 = Release|Win32
-		{128E8BD0-174A-48F0-8771-92B1E8D18713}.Debug.ActiveCfg = Debug|Win32
-		{128E8BD0-174A-48F0-8771-92B1E8D18713}.Debug.Build.0 = Debug|Win32
-		{128E8BD0-174A-48F0-8771-92B1E8D18713}.Release.ActiveCfg = Release|Win32
-		{128E8BD0-174A-48F0-8771-92B1E8D18713}.Release.Build.0 = Release|Win32
-		{599EAD40-60EE-4043-9C14-AE090A8A092D}.Debug.ActiveCfg = Debug|Win32
-		{599EAD40-60EE-4043-9C14-AE090A8A092D}.Debug.Build.0 = Debug|Win32
-		{599EAD40-60EE-4043-9C14-AE090A8A092D}.Release.ActiveCfg = Release|Win32
-		{599EAD40-60EE-4043-9C14-AE090A8A092D}.Release.Build.0 = Release|Win32
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66E3CE14-884D-4AEA-9F20-15A0BEAF8C5A}.Debug|x86.ActiveCfg = Debug|Win32
+		{66E3CE14-884D-4AEA-9F20-15A0BEAF8C5A}.Debug|x86.Build.0 = Debug|Win32
+		{66E3CE14-884D-4AEA-9F20-15A0BEAF8C5A}.Release|x86.ActiveCfg = Release|Win32
+		{66E3CE14-884D-4AEA-9F20-15A0BEAF8C5A}.Release|x86.Build.0 = Release|Win32
+		{128E8BD0-174A-48F0-8771-92B1E8D18713}.Debug|x86.ActiveCfg = Debug|Win32
+		{128E8BD0-174A-48F0-8771-92B1E8D18713}.Debug|x86.Build.0 = Debug|Win32
+		{128E8BD0-174A-48F0-8771-92B1E8D18713}.Release|x86.ActiveCfg = Release|Win32
+		{128E8BD0-174A-48F0-8771-92B1E8D18713}.Release|x86.Build.0 = Release|Win32
+		{599EAD40-60EE-4043-9C14-AE090A8A092D}.Debug|x86.ActiveCfg = Debug|Win32
+		{599EAD40-60EE-4043-9C14-AE090A8A092D}.Release|x86.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
+		SolutionGuid = {AED79682-4234-43A0-BBB4-80F9E7D4D182}
 	EndGlobalSection
 EndGlobal

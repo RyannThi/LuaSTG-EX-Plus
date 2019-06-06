@@ -73,12 +73,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)\build\</OutDir>
-    <IntDir>$(ProjectDir)\build\Dir\</IntDir>
+    <IntDir>$(ProjectDir)\build\Dir\$(Configuration)\</IntDir>
     <TargetName>Eyes2D</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IntDir>$(ProjectDir)\build\Dir\</IntDir>
+    <IntDir>$(ProjectDir)\build\Dir\$(Configuration)\</IntDir>
     <TargetName>Eyes2D_d</TargetName>
     <OutDir>$(ProjectDir)\build\</OutDir>
   </PropertyGroup>

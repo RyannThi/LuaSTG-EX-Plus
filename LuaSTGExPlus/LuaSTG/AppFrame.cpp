@@ -1,9 +1,14 @@
-﻿#include "AppFrame.h"
+﻿#include "resource.h"
+
+//#include "lfs.h"
+//#include "lua_cjson.h"
+//#include "luasocket.h"
+//#include "mime.h"
+
+#include "AppFrame.h"
 #include "Utility.h"
 #include "LuaWrapper.h"
 #include "E2DXInputImpl.hpp"
-
-#include "resource.h"
 
 #include "D3D9.H"  // for SetFog
 #include "Network.h"
@@ -19,6 +24,7 @@
 extern "C" int luaopen_lfs(lua_State *L);
 extern "C" int luaopen_cjson(lua_State* L);
 extern "C" int luaopen_socket_core(lua_State *L);
+extern "C" int luaopen_mime_core(lua_State* L);
 
 using namespace std;
 using namespace LuaSTGPlus;
@@ -1391,11 +1397,12 @@ bool AppFrame::Init()LNOEXCEPT
 
 	lua_gc(L, LUA_GCSTOP, 0);  // 初始化时关闭GC
 
-	luaL_openlibs(L);  // 内建库
-	luaopen_lfs(L);  // 文件系统库
-	luaopen_cjson(L);  // CJSON库
-	luaopen_socket_core(L);  // luasock
-	RegistBuiltInClassWrapper(L);  // 注册内建类
+	luaL_openlibs(L);  // 内建库 (lua build in lib)
+	luaopen_lfs(L);  // 文件系统库 (file system)
+	luaopen_cjson(L);  // CJSON库 (json)
+	luaopen_socket_core(L);  // luasock (socket)
+	luaopen_mime_core(L); // mime (base64)
+	RegistBuiltInClassWrapper(L);  // 注册内建类 (luastg lib)
 
 	lua_gc(L, LUA_GCRESTART, -1);  // 重启GC
 

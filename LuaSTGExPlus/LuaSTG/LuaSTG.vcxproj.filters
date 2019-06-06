@@ -16,18 +16,6 @@
     <Filter Include="实用工具">
       <UniqueIdentifier>{04ee07d9-8f04-4212-9c28-25cfcdf43045}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LuaExtensions">
-      <UniqueIdentifier>{e4a98e22-0fcb-48b1-a775-b99ec5bd8b5d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LuaExtensions\cjson4lua">
-      <UniqueIdentifier>{c0190c10-327a-4e67-89d8-a06397e73907}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LuaExtensions\lfs">
-      <UniqueIdentifier>{325f7dd4-4760-4ba5-b5ef-ff40212bb8bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LuaExtensions\luasock">
-      <UniqueIdentifier>{e8fac02e-f58a-4f97-a95c-a27080f679c4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LuaWrapper">
       <UniqueIdentifier>{866134f9-f4a5-4098-a240-9a40f56c4127}</UniqueIdentifier>
     </Filter>
@@ -79,60 +67,6 @@
     </ClInclude>
     <ClInclude Include="SplashWindow.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lfs\lfs.h">
-      <Filter>LuaExtensions\lfs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\cjson4lua\dtoa_config.h">
-      <Filter>LuaExtensions\cjson4lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\cjson4lua\fpconv.h">
-      <Filter>LuaExtensions\cjson4lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\cjson4lua\strbuf.h">
-      <Filter>LuaExtensions\cjson4lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\luasocket\src\auxiliar.h">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\luasocket\src\buffer.h">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\luasocket\src\except.h">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\luasocket\src\inet.h">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\luasocket\src\io.h">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\luasocket\src\luasocket.h">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\luasocket\src\mime.h">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\luasocket\src\options.h">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\luasocket\src\select.h">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\luasocket\src\socket.h">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\luasocket\src\tcp.h">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\luasocket\src\timeout.h">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\luasocket\src\udp.h">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\luasocket\src\wsocket.h">
-      <Filter>LuaExtensions\luasock</Filter>
     </ClInclude>
     <ClInclude Include="LuaWrapper.h">
       <Filter>LuaWrapper</Filter>
@@ -186,63 +120,6 @@
     </ClCompile>
     <ClCompile Include="SplashWindow.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lfs\lfs.c">
-      <Filter>LuaExtensions\lfs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\cjson4lua\dtoa.c">
-      <Filter>LuaExtensions\cjson4lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\cjson4lua\fpconv.c">
-      <Filter>LuaExtensions\cjson4lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\cjson4lua\g_fmt.c">
-      <Filter>LuaExtensions\cjson4lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\cjson4lua\lua_cjson.c">
-      <Filter>LuaExtensions\cjson4lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\cjson4lua\strbuf.c">
-      <Filter>LuaExtensions\cjson4lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\luasocket\src\auxiliar.c">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClCompile>
-    <ClCompile Include="..\luasocket\src\buffer.c">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClCompile>
-    <ClCompile Include="..\luasocket\src\except.c">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClCompile>
-    <ClCompile Include="..\luasocket\src\inet.c">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClCompile>
-    <ClCompile Include="..\luasocket\src\io.c">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClCompile>
-    <ClCompile Include="..\luasocket\src\luasocket.c">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClCompile>
-    <ClCompile Include="..\luasocket\src\mime.c">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClCompile>
-    <ClCompile Include="..\luasocket\src\options.c">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClCompile>
-    <ClCompile Include="..\luasocket\src\select.c">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClCompile>
-    <ClCompile Include="..\luasocket\src\tcp.c">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClCompile>
-    <ClCompile Include="..\luasocket\src\timeout.c">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClCompile>
-    <ClCompile Include="..\luasocket\src\udp.c">
-      <Filter>LuaExtensions\luasock</Filter>
-    </ClCompile>
-    <ClCompile Include="..\luasocket\src\wsocket.c">
-      <Filter>LuaExtensions\luasock</Filter>
     </ClCompile>
     <ClCompile Include="LuaWrapper.cpp">
       <Filter>LuaWrapper</Filter>
@@ -312,6 +189,12 @@
     </ClCompile>
     <ClCompile Include="ResourcePool.cpp">
       <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="FileManagerWrapper.cpp">
+      <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="ArchiveWrapper.cpp">
+      <Filter>LuaWrapper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

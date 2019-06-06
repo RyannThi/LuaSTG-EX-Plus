@@ -230,6 +230,17 @@ fcyStream* Archive::LoadEncryptedFile(const char* filepath, const char* password
 	}
 }
 
+long long Archive::GetFileCount() {
+	return zip_get_num_entries(m_Impl->ZipFile, ZIP_FL_UNCHANGED);
+}
+
+const char* Archive::GetFileName(long long index) {
+	if ((index < 0) || (index >= GetFileCount())) {
+		return nullptr;
+	}
+	return zip_get_name(m_Impl->ZipFile, index, ZIP_FL_ENC_RAW | ZIP_FL_ENC_GUESS);
+}
+
 void Archive::ListFile() {
 	zip_int64_t count = zip_get_num_entries(m_Impl->ZipFile, ZIP_FL_UNCHANGED);
 	for (zip_int64_t index = 0; index < count; index++) {
@@ -292,8 +303,26 @@ Archive* FileManager::GetArchive(const char* name) {
 	return nullptr;
 }
 
+Archive* FileManager::GetArchive(unsigned int pos) {
+	if ((pos < 0) || (pos > m_Impl->ArchiveSet.size())) {
+		return nullptr;
+	}
+	unsigned int cur = 0;
+	for (auto i : m_Impl->ArchiveSet) {
+		if (cur == pos) {
+			return i;
+		}
+		cur++;
+	}
+	return nullptr;
+}
+
 bool FileManager::ArchiveExist(const char* name) {
 	return GetArchive(name) != nullptr;
+}
+
+unsigned int FileManager::GetArchiveCount() {
+	return m_Impl->ArchiveSet.size();
 }
 
 void FileManager::UnloadArchive(const char* name) {

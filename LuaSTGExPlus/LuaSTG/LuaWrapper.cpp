@@ -2,6 +2,7 @@
 #include "AppFrame.h"
 #include "Network.h"
 #include "E2DDXGIImpl.hpp"
+#include "ESC.h"
 
 #ifdef min
 #undef min
@@ -2283,7 +2284,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		static int SampleBezier(lua_State* L)LNOEXCEPT // t(list) [n] <length> <rate>
 		{
-			int ExSampleBezierA1(lua_State * L, int count, int sampleBy, float length, float rate)LNOEXCEPT;
+			//int ExSampleBezierA1(lua_State * L, int count, int sampleBy, float length, float rate)LNOEXCEPT;
 
 			int i = luaL_checkinteger(L, 2);
 			float l = static_cast<float>(luaL_checknumber(L, 3));

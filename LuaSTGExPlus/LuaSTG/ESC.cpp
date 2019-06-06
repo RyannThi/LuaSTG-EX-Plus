@@ -581,7 +581,6 @@ IExInputControl * CreateInputEx()
 //======================================
 //ex+模型读取
 
-#include "AppFrame.h"
 #include <ios>
 #include <fstream>
 #include <sstream>
@@ -1052,7 +1051,7 @@ struct ExBezierNode
 
 ExBezierNode g_NodeCache[256];
 
-int ExSampleBezierA1(lua_State* L, int count, int sampleBy, float length,float rate)LNOEXCEPT // ... t(list)
+int ExSampleBezierA1(lua_State* L, int count, int sampleBy, float length,float rate) // ... t(list)
 {
 
 	if (count < 2){

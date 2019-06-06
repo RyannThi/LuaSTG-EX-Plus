@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <filesystem>
 #include "E2DMainFunction.hpp"
 #define E2DMAINRETURN std::system("pause"); return 0;
 #define SAY(W) std::cout<<(W)<<std::endl;
@@ -19,6 +20,9 @@ E2DMAIN{
 
 	EYESINFO(s1);
 	EYESINFO(s2.c_str());
+
+	for (auto& p : filesystem::directory_iterator("Dir"))
+		EYESINFO(p.path().c_str());
 
 	E2DMAINRETURN;
 }

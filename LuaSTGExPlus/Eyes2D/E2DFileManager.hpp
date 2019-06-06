@@ -55,6 +55,10 @@ namespace Eyes2D {
 			fcyStream* LoadFile(const char* filepath);
 			//加载加密文件到内存流，加载失败则使用默认密码，还加载失败则返回nullptr
 			fcyStream* LoadEncryptedFile(const char* filepath, const char* password);
+			//获取文件数量
+			long long GetFileCount();
+			//获取当前索引的文件名
+			const char* GetFileName(long long index);
 			//列出所有文件，输出到log
 			void ListFile();
 		};
@@ -73,8 +77,12 @@ namespace Eyes2D {
 			bool LoadArchive(const char* name, int priority = 0, const char* password = nullptr);
 			//获取已经加载的压缩包的指针，如果不存在则返回nullptr
 			Archive* GetArchive(const char* name);
+			//获取已经加载的压缩包的指针，如果不存在则返回nullptr
+			Archive* GetArchive(unsigned int pos);
 			//判断压缩包是否已加载
 			bool ArchiveExist(const char* name);
+			//获取资源包数量
+			unsigned int GetArchiveCount();
 			//卸载压缩包
 			void UnloadArchive(const char* name);
 			//卸载所有压缩包

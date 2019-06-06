@@ -346,7 +346,7 @@ bool ResourcePool::LoadImage(const char* name, const char* texname,
 }
 
 bool ResourcePool::LoadAnimation(const char* name, const char* texname,
-	double x, double y, double w, double h, int n, int m, int intv, double a, double b, bool rect)
+	double x, double y, double w, double h, int n, int m, int intv, double a, double b, bool rect)LNOEXCEPT
 {
 	LDEBUG_RESOURCETIMER;
 

@@ -98,19 +98,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(ProjectDir)\build\</OutDir>
-    <IntDir>$(ProjectDir)\build\dir\</IntDir>
+    <IntDir>$(ProjectDir)\build\dir\$(Configuration)\</IntDir>
     <TargetName>zlib</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|Win32'">
     <OutDir>$(ProjectDir)\build\</OutDir>
-    <IntDir>$(ProjectDir)\build\dir\</IntDir>
+    <IntDir>$(ProjectDir)\build\dir\$(Configuration)\</IntDir>
     <TargetName>zlib</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(ProjectDir)\build\</OutDir>
-    <IntDir>$(ProjectDir)\build\dir\</IntDir>
+    <IntDir>$(ProjectDir)\build\dir\$(Configuration)\</IntDir>
     <TargetName>zlib</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>

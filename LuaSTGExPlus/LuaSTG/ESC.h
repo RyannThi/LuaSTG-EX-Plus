@@ -131,8 +131,6 @@ struct CODEPAGECOUNTER{
 	int getLikelyCode(int def);
 };
 
-
-
 struct CODEDSTR
 {
 	int codepage;
@@ -147,3 +145,10 @@ struct CODEDSTR
 	void getwstring(std::wstring &ws);
 	bool LoadBuffer(const void *tbuffer, int tcodepage);
 };
+
+//======================================
+//ex+math
+
+#include "lua.hpp"
+
+int ExSampleBezierA1(lua_State* L, int count, int sampleBy, float length, float rate);

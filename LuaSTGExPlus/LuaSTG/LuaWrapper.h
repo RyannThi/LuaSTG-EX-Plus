@@ -4,6 +4,7 @@
 #include "Global.h"
 #include "ResourceMgr.h"
 #include "GameObjectPool.h"
+#include "E2DFileManager.hpp"
 
 #define LUASTG_LUA_TYPENAME_COLOR "lstgColor"
 #define LUASTG_LUA_TYPENAME_RANDGEN "lstgRand"
@@ -12,6 +13,7 @@
 #define LUASTG_LUA_TYPENAME_XINPUTWRAPPER "lstgXInputWrapper"
 #define LUASTG_LUA_TYPENAME_COLLIDERWRAPPER "lstgColliderWrapper"
 #define LUASTG_LUA_TYPENAME_RESOURCE "lstgResource"
+#define LUASTG_LUA_TYPENAME_ARCHIVE "lstgArchive"
 
 namespace LuaSTGPlus
 {
@@ -117,7 +119,23 @@ namespace LuaSTGPlus
 		//向lua注册包装类
 		static void Register(lua_State* L)LNOEXCEPT;
 		//创建一个游戏碰撞体包装类并推入堆栈
-		static void CreateAndPush(lua_State* L, GameObject* obj);
+		static void CreateAndPush(lua_State* L, GameObject* obj)LNOEXCEPT;
+	};
+
+	//压缩包
+	class ArchiveWrapper {
+	private:
+		struct Wrapper;
+	public:
+		static void Register(lua_State* L)LNOEXCEPT;
+		static Eyes2D::IO::Archive* CreateAndPush(lua_State* L)LNOEXCEPT;//正常创建
+		static void CreateAndPush(lua_State* L, Eyes2D::IO::Archive* archive)LNOEXCEPT;//通过文件管理器获得
+	};
+
+	//文件资源管理
+	class FileManagerWrapper {
+	public:
+		static void Register(lua_State* L)LNOEXCEPT;
 	};
 
 	//注册内建类
@@ -127,6 +145,7 @@ namespace LuaSTGPlus
 		BentLaserDataWrapper::Register(L);  // 曲线激光
 		Fancy2dStopWatchWrapper::Register(L);  // 高精度停表
 		BuiltInFunctionWrapper::Register(L);  // 内建函数库
+		FileManagerWrapper::Register(L); //内建函数库，文件资源管理
 		GameResourceWrapper::Register(L);  // 游戏资源对象
 		XInputManagerWrapper::Register(L);  //XInput
 #ifdef USING_ADVANCE_COLLIDER
