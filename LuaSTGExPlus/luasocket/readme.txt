@@ -1,1 +1,0 @@
-请到：https://github.com/diegonehab/luasocket 下载lua socket项目源代码并解压到本文件夹内
