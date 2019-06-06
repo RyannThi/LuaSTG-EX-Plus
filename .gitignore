@@ -60,3 +60,11 @@
 !/LuaSTGExPlus/libz/readme.txt
 /LuaSTGExPlus/libzip/*
 !/LuaSTGExPlus/libzip/readme.txt
+
+#luaextend过滤
+/LuaSTGExPlus/luafilesystem/*
+!/LuaSTGExPlus/luafilesystem/readme.txt
+/LuaSTGExPlus/luacjson/*
+!/LuaSTGExPlus/luacjson/readme.txt
+/LuaSTGExPlus/luasocket/*
+!/LuaSTGExPlus/luasocket/readme.txt
