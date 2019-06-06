@@ -68,3 +68,5 @@
 !/LuaSTGExPlus/luacjson/readme.txt
 /LuaSTGExPlus/luasocket/*
 !/LuaSTGExPlus/luasocket/readme.txt
+/LuaSTGExPlus/LuaExtend/build/*
+
