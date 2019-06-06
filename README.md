@@ -18,6 +18,7 @@ LuaSTG EX Plus 是 LuaSTG Plus 的衍生版本，其大部分代码基于9chu的
 * luajit(2.0.5)(->luastg)  
 * luasocket(2.0.1)(->luastg)  
 * zlib(1.2.11)(->common)  
+* libzip(unkown version)(->common)  
 * libogg(1.3.3)(->common)  
 * libvorbis(1.3.6)(->common)  
 * freetype(2.10.0)(->common)  
