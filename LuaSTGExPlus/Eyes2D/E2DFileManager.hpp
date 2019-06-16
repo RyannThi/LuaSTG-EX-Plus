@@ -49,6 +49,13 @@ namespace Eyes2D {
 		public:
 			//获取压缩包加载时的路径
 			const char* GetArchivePath();
+			//获取压缩包优先级
+			int GetPriority();
+			//设置压缩包优先级，！仅仅只是设置哦！
+			void SetPriority(int priority);
+			//获取压缩包UID
+			unsigned int GetUID();
+		public:
 			//指定文件是否存在
 			bool FileExist(const char* filepath);
 			//加载文件到内存流，如果被加密了则使用默认密码，加载失败则返回nullptr
@@ -75,10 +82,15 @@ namespace Eyes2D {
 		public:
 			//加载压缩包，如果文件不存在、加载失败或者格式不支持则返回false
 			bool LoadArchive(const char* name, int priority = 0, const char* password = nullptr);
+			//设置已有的压缩包的优先级
+			void SetArchivePriority(const char* name, int priority);
+			//设置已有的压缩包的优先级
+			void SetArchivePriorityByUID(unsigned int uid, int priority);
 			//获取已经加载的压缩包的指针，如果不存在则返回nullptr
 			Archive* GetArchive(const char* name);
-			//获取已经加载的压缩包的指针，如果不存在则返回nullptr
 			Archive* GetArchive(unsigned int pos);
+			//获取已经加载的压缩包的指针，如果不存在则返回nullptr
+			Archive* GetArchiveByUID(unsigned int uid);
 			//判断压缩包是否已加载
 			bool ArchiveExist(const char* name);
 			//获取资源包数量

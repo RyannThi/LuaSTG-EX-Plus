@@ -60,9 +60,6 @@
     <ClCompile Include="E2DFileManager.cpp">
       <Filter>system\io</Filter>
     </ClCompile>
-    <ClCompile Include="E2DCodePage.cpp">
-      <Filter>system\platform</Filter>
-    </ClCompile>
     <ClCompile Include="E2DLogSystem.cpp">
       <Filter>system\debug</Filter>
     </ClCompile>

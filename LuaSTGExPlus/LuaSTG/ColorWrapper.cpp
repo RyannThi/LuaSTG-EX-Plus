@@ -117,9 +117,9 @@ void ColorWrapper::Register(lua_State* L)LNOEXCEPT
 		{ NULL, NULL }
 	};
 
-	luaL_openlib(L, LUASTG_LUA_TYPENAME_COLOR, tMethods, 0);  // t
+	luaL_openlib(L, LUASTG_LUA_TYPENAME_COLOR, tMethods, 0);  // t //注册到全局表
 	luaL_newmetatable(L, LUASTG_LUA_TYPENAME_COLOR);  // t mt
-	luaL_openlib(L, 0, tMetaTable, 0);  // t mt
+	luaL_openlib(L, 0, tMetaTable, 0);  // t mt //注册到metetable
 	lua_pushliteral(L, "__index");  // t mt s
 	lua_pushvalue(L, -3);  // t mt s t
 	lua_rawset(L, -3);  // t mt (mt["__index"] = t)

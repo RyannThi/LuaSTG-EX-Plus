@@ -1394,18 +1394,19 @@ bool AppFrame::Init()LNOEXCEPT
 	}
 	if (0 != luaJIT_setmode(L, 0, LUAJIT_MODE_ENGINE | LUAJIT_MODE_ON))
 		LWARNING("无法启动JIT模式");
-
 	lua_gc(L, LUA_GCSTOP, 0);  // 初始化时关闭GC
 
 	luaL_openlibs(L);  // 内建库 (lua build in lib)
+
 	luaopen_lfs(L);  // 文件系统库 (file system)
 	luaopen_cjson(L);  // CJSON库 (json)
 	luaopen_socket_core(L);  // luasock (socket)
 	luaopen_mime_core(L); // mime (base64)
+	lua_pop(L, 6);// 不知道为什么弄了6个table在栈顶……
+
 	RegistBuiltInClassWrapper(L);  // 注册内建类 (luastg lib)
 
 	lua_gc(L, LUA_GCRESTART, -1);  // 重启GC
-
 	// 为对象池分配空间
 	LINFO("初始化对象池 上限=%u", LGOBJ_MAXCNT);
 	try

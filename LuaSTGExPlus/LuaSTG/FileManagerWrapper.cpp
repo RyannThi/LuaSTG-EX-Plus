@@ -1,9 +1,11 @@
-﻿#include <filesystem>
+﻿#include <string>
+#include <filesystem>
 #include "Global.h"
 #include "AppFrame.h"
 #include "LuaWrapper.h"
 #include "E2DCodePage.hpp"
 #include "E2DFilePath.hpp"
+#include "E2DFileManager.hpp"
 
 using namespace std;
 using namespace LuaSTGPlus;
@@ -34,7 +36,19 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 				ret = LFMGR.LoadArchive(luaL_checkstring(L, 1), luaL_checkinteger(L, 2), luaL_checkstring(L, 3));
 				break;
 			}
-			lua_pushboolean(L, ret);
+			if (ret) {
+				Eyes2D::IO::Archive* zip = LFMGR.GetArchive(luaL_checkstring(L, 1));
+				if (zip != nullptr) {
+					ArchiveWrapper::CreateAndPush(L, zip->GetUID());
+				}
+				else {
+					lua_pushnil(L);
+				}
+			}
+			else {
+				lua_pushnil(L);
+			}
+			//::lua_pushboolean(L, ret);
 			return 1;
 		}
 		static int UnloadArchive(lua_State* L) {
@@ -51,6 +65,16 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 					luaL_checkstring(L, 1)));
 			return 1;
 		}
+		static int GetArchive(lua_State* L) {
+			Eyes2D::IO::Archive* zip = LFMGR.GetArchive(luaL_checkstring(L, 1));
+			if (zip != nullptr) {
+				ArchiveWrapper::CreateAndPush(L, zip->GetUID());
+			}
+			else {
+				lua_pushnil(L);
+			}
+			return 1;
+		}
 		static int EnumArchive(lua_State* L) {
 			lua_newtable(L); // ??? t 
 			for (unsigned int index = 1; index <= LFMGR.GetArchiveCount(); index++) {
@@ -61,6 +85,10 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 					lua_pushinteger(L, 1); // ??? t index tt 1 
 					lua_pushstring(L, ref->GetArchivePath()); // ??? t index tt 1 s
 					lua_settable(L, -3); // ??? t index tt 
+					lua_pushinteger(L, 2); // ??? t index tt 2 
+					lua_pushinteger(L, ref->GetPriority()); // ??? t index tt 2 priority 
+					lua_settable(L, -3); // ??? t index tt 
+
 					lua_settable(L, -3); // ??? t 
 				}
 				else {
@@ -69,15 +97,20 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 					lua_pushinteger(L, 1); // ??? t index tt 1 
 					lua_pushstring(L, ""); // ??? t index tt 1 s
 					lua_settable(L, -3); // ??? t index tt 
+					lua_pushinteger(L, 2); // ??? t index tt 2 
+					lua_pushinteger(L, 0); // ??? t index tt 2 0 
+					lua_settable(L, -3); // ??? t index tt 
+
 					lua_settable(L, -3); // ??? t 
 				}
 			}
 			return 1;
 		}
 		static int EnumFiles(lua_State* L) {
-			const char* searchpath = luaL_checkstring(L, -1); // ??? path 
-			if (searchpath == NULL) {
-				return luaL_error(L, "");
+			string searchpath = luaL_checkstring(L, -1); // ??? path 
+			Eyes2D::Platform::PathFormatLinux(searchpath);
+			if ((searchpath.size() > 0) && (searchpath.back() != '/')) {
+				searchpath.push_back('/');//在搜索路径后面手动添加一个分隔符
 			}
 			lua_newtable(L); // ??? path t 
 			filesystem::path path = searchpath;
@@ -88,7 +121,9 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 					lua_newtable(L); // ??? path t index tt 
 					lua_pushinteger(L, 1); // ??? path t index tt 1 
 					string u8path = Eyes2D::String::UTF16ToUTF8(p.path().wstring());
-					Eyes2D::Platform::PathFormatLinux(u8path);
+					if (filesystem::is_directory(p.path())) {
+						u8path.push_back('/');//在目录路径后面手动添加一个分隔符
+					}
 					lua_pushstring(L, u8path.c_str()); // ??? path t index tt 1 fpath 
 					lua_settable(L, -3); // ??? path t index tt 
 					lua_pushinteger(L, 2); // ??? path t index tt 2 
@@ -108,6 +143,7 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 		{ "UnloadArchive", &Wrapper::UnloadArchive },
 		{ "UnloadAllArchive", &Wrapper::UnloadAllArchive },
 		{ "ArchiveExist", &Wrapper::ArchiveExist },
+		{ "GetArchive", &Wrapper::GetArchive },
 		{ "EnumArchive", &Wrapper::EnumArchive },
 		{ "EnumFiles", &Wrapper::EnumFiles },
 		{ NULL, NULL }
@@ -115,7 +151,7 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 
 	lua_getglobal(L, "lstg"); // ??? t 
 	lua_newtable(L); // ??? t t
-	luaL_register(L, NULL, tMethods); // ??? t t 
+	::luaL_register(L, NULL, tMethods); // ??? t t 
 	lua_setfield(L, -2, "FileManager"); // ??? t 
 	lua_pop(L, 1); // ??? 
 }

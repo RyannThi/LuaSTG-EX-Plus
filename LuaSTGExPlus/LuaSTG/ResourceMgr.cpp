@@ -1,7 +1,11 @@
-﻿#include "ResourceMgr.h"
+﻿#include <string>
+
+#include "ResourceMgr.h"
 #include "AppFrame.h"
 
 #include "Utility.h"
+#include "E2DFileManager.hpp"
+#include "E2DCodePage.hpp"
 
 #include <iowin32.h>
 #include <io.h>
@@ -226,6 +230,34 @@ LNOINLINE void ResourceMgr::UnloadPack(const char* path)LNOEXCEPT
 LNOINLINE bool ResourceMgr::LoadFile(const wchar_t* path, fcyRefPointer<fcyMemStream>& outBuf, const wchar_t *packname)LNOEXCEPT
 {
 	// 尝试从各个资源包加载
+	Eyes2D::IO::FileManager& ref = LFMGR;
+	Eyes2D::IO::Archive* zip = nullptr;
+	std::wstring utf16path = path;
+	std::string utf8path = Eyes2D::String::UTF16ToUTF8(utf16path);
+	fcyStream* stream;
+	for (unsigned int i = 0; i < ref.GetArchiveCount(); i++) {
+		zip = ref.GetArchive(i);
+		if (zip != nullptr) {
+			if (zip->FileExist(utf8path.c_str())) {
+				stream = zip->LoadFile(utf8path.c_str());
+				if (stream != nullptr) {
+					outBuf.DirectSet((fcyMemStream*)stream);
+					return true;
+				}
+				else {
+					continue;
+				}
+			}
+			else {
+				continue;
+			}
+		}
+		else {
+			continue;
+		}
+	}
+	
+	// 尝试从各个资源包加载（遗留方法）
 	for (auto& i : m_ResPackList)
 	{
 		if (packname){

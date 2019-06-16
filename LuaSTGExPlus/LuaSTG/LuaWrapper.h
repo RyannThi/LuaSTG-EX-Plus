@@ -4,7 +4,6 @@
 #include "Global.h"
 #include "ResourceMgr.h"
 #include "GameObjectPool.h"
-#include "E2DFileManager.hpp"
 
 #define LUASTG_LUA_TYPENAME_COLOR "lstgColor"
 #define LUASTG_LUA_TYPENAME_RANDGEN "lstgRand"
@@ -17,6 +16,31 @@
 
 namespace LuaSTGPlus
 {
+	//注册方法和元方法到名字为name的库和元表中，并保护元表不被修改
+	inline void RegisterMethodD(lua_State* L, const char* name, luaL_Reg* method, luaL_Reg* metamethod) {
+		luaL_register(L, name, method);     // t        //将方法注册到全局表(library)，作为静态方法
+		luaL_newmetatable(L, name);         // t mt     //在注册表中创建元表
+		luaL_register(L, NULL, metamethod); // t mt     //将元方法推入元表内
+		lua_pushstring(L, "__index");       // t mt s   //__index元方法
+		lua_pushvalue(L, -3);               // t mt s t //对应的table
+		lua_rawset(L, -3);                  // t mt     //设置__index元方法
+		lua_pushstring(L, "__metatable");   // t mt s   //__metatable元方法
+		lua_pushvalue(L, -3);               // t mt s t //对应的table
+		lua_rawset(L, -3);                  // t mt     //设置__metatable元方法，保护元表不被修改
+		lua_pop(L, 2);                      //          //清理
+	}
+	
+	//注册方法和元方法到名字为name的库和元表中，并保护元表不被修改，不自动注册__index元方法
+	inline void RegisterMethodS(lua_State* L, const char* name, luaL_Reg* method, luaL_Reg* metamethod) {
+		luaL_register(L, name, method);     // t        //将方法注册到全局表(library)，作为静态方法
+		luaL_newmetatable(L, name);         // t mt     //在注册表中创建元表
+		luaL_register(L, NULL, metamethod); // t mt     //将元方法推入元表内
+		lua_pushstring(L, "__metatable");   // t mt s   //__metatable元方法
+		lua_pushvalue(L, -3);               // t mt s t //对应的table
+		lua_rawset(L, -3);                  // t mt     //设置__metatable元方法，保护元表不被修改
+		lua_pop(L, 2);                      //          //清理
+	}
+
 	//颜色包装
 	class ColorWrapper
 	{
@@ -128,8 +152,7 @@ namespace LuaSTGPlus
 		struct Wrapper;
 	public:
 		static void Register(lua_State* L)LNOEXCEPT;
-		static Eyes2D::IO::Archive* CreateAndPush(lua_State* L)LNOEXCEPT;//正常创建
-		static void CreateAndPush(lua_State* L, Eyes2D::IO::Archive* archive)LNOEXCEPT;//通过文件管理器获得
+		static void CreateAndPush(lua_State* L, unsigned int uid)LNOEXCEPT;
 	};
 
 	//文件资源管理
@@ -146,6 +169,7 @@ namespace LuaSTGPlus
 		Fancy2dStopWatchWrapper::Register(L);  // 高精度停表
 		BuiltInFunctionWrapper::Register(L);  // 内建函数库
 		FileManagerWrapper::Register(L); //内建函数库，文件资源管理
+		ArchiveWrapper::Register(L); //压缩包
 		GameResourceWrapper::Register(L);  // 游戏资源对象
 		XInputManagerWrapper::Register(L);  //XInput
 #ifdef USING_ADVANCE_COLLIDER

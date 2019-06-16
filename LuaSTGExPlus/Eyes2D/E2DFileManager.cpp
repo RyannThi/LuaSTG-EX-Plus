@@ -146,6 +146,18 @@ const char* Archive::GetArchivePath() {
 	return m_Impl->path.c_str();
 }
 
+int Archive::GetPriority() {
+	return sort.priority;
+}
+
+void Archive::SetPriority(int priority) {
+	sort.priority = priority;
+}
+
+unsigned int Archive::GetUID() {
+	return sort.uid;
+}
+
 bool Archive::FileExist(const char* filepath) {
 	return file_precheck(filepath) >= 0;
 }
@@ -290,6 +302,49 @@ bool FileManager::LoadArchive(const char* name, int priority, const char* passwo
 	return true;
 }
 
+void FileManager::SetArchivePriority(const char* name, int priority) {
+	Archive* zip = nullptr;
+	bool find = false;
+	string frompath = name;
+	string topath;
+	for (auto it = m_Impl->ArchiveSet.begin(); it != m_Impl->ArchiveSet.end();) {
+		topath = (*it)->GetArchivePath();
+		if (frompath == topath) {
+			zip = *it;//储存
+			find = true;//标记
+			it = m_Impl->ArchiveSet.erase(it);//擦除
+			break;
+		}
+		else {
+			it++;//下一个
+		}
+	}
+	if (find) {
+		zip->SetPriority(priority);//更改优先级
+		m_Impl->ArchiveSet.insert(zip);//重新插入
+	}
+}
+
+void FileManager::SetArchivePriorityByUID(unsigned int uid, int priority) {
+	Archive* zip = nullptr;
+	bool find = false;
+	for (auto it = m_Impl->ArchiveSet.begin(); it != m_Impl->ArchiveSet.end();) {
+		if (uid == (*it)->GetUID()) {
+			zip = *it;//储存
+			find = true;//标记
+			it = m_Impl->ArchiveSet.erase(it);//擦除
+			break;
+		}
+		else {
+			it++;//下一个
+		}
+	}
+	if (find) {
+		zip->SetPriority(priority);//更改优先级
+		m_Impl->ArchiveSet.insert(zip);//重新插入
+	}
+}
+
 Archive* FileManager::GetArchive(const char* name) {
 	string frompath = name;
 	string topath;
@@ -313,6 +368,15 @@ Archive* FileManager::GetArchive(unsigned int pos) {
 			return i;
 		}
 		cur++;
+	}
+	return nullptr;
+}
+
+Archive* FileManager::GetArchiveByUID(unsigned int uid) {
+	for (auto i : m_Impl->ArchiveSet) {
+		if (i->GetUID() == uid) {
+			return i;
+		}
 	}
 	return nullptr;
 }
