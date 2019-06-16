@@ -1,6 +1,6 @@
 # LuaSTG EX Plus  
   
-下一代luastg版本：LuaSTG X [https://github.com/Xrysnow/LuaSTG-x]  
+下一代luastg版本：LuaSTG-X [https://github.com/Xrysnow/LuaSTG-x]  
   
 ## 说明  
   
