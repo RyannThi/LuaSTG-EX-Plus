@@ -70,3 +70,6 @@
 !/LuaSTGExPlus/luasocket/readme.txt
 /LuaSTGExPlus/LuaExtend/build/*
 
+#CSharp
+/LuaSTGExPlus/CSharpTest/bin/*
+/LuaSTGExPlus/CSharpTest/obj/*
