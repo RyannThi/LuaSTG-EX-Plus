@@ -99,6 +99,9 @@ namespace Eyes2D {
 			void UnloadArchive(const char* name);
 			//卸载所有压缩包
 			void UnloadAllArchive();
+			//加载文件,包括从压缩包内查找
+			fcyStream* LoadFile(const char* filepath);
+			fcyStream* LoadFile(const char* filepath, const char* archive);
 		};
 	}
 }

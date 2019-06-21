@@ -159,18 +159,18 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)\build\</OutDir>
+    <OutDir>E:\LuaSTG\LuaSTG-CommonData\game\</OutDir>
     <IntDir>$(SolutionDir)\build\dir\$(Configuration)\</IntDir>
     <TargetName>LuaSTGPlus.Debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|Win32'">
-    <OutDir>$(SolutionDir)\build\</OutDir>
+    <OutDir>E:\LuaSTG\LuaSTG-CommonData\game\</OutDir>
     <IntDir>$(SolutionDir)\build\dir\$(Configuration)\</IntDir>
     <TargetName>LuaSTGPlus.dev</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)\build\</OutDir>
+    <OutDir>E:\LuaSTG\LuaSTG-CommonData\game\</OutDir>
     <IntDir>$(SolutionDir)\build\dir\$(Configuration)\</IntDir>
     <TargetName>LuaSTGPlus</TargetName>
     <LinkIncremental>false</LinkIncremental>

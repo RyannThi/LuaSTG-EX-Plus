@@ -988,12 +988,12 @@ namespace LuaSTGPlus
 		/// @brief 装载文件
 		/// @param[in] path 路径
 		/// @param[out] outBuf 输出缓冲
-		LNOINLINE bool LoadFile(const wchar_t* path, fcyRefPointer<fcyMemStream>& outBuf, const wchar_t* pack=NULL)LNOEXCEPT;
+		LNOINLINE bool LoadFile(const wchar_t* path, fcyRefPointer<fcyMemStream>& outBuf, const wchar_t* pack = nullptr) LNOEXCEPT;
 
 		/// @brief 装载文件（UTF8）
 		/// @param[in] path 路径
 		/// @param[out] outBuf 输出缓冲
-		LNOINLINE bool LoadFile(const char* path, fcyRefPointer<fcyMemStream>& outBuf, const char* pack=NULL)LNOEXCEPT;
+		LNOINLINE bool LoadFile(const char* path, fcyRefPointer<fcyMemStream>& outBuf, const char* pack = nullptr) LNOEXCEPT;
 
 		/// @brief 解压资源文件
 		/// @param[in] path 路径

@@ -48,7 +48,6 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 			else {
 				lua_pushnil(L);
 			}
-			//::lua_pushboolean(L, ret);
 			return 1;
 		}
 		static int UnloadArchive(lua_State* L) {
@@ -88,19 +87,6 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 					lua_pushinteger(L, 2); // ??? t index tt 2 
 					lua_pushinteger(L, ref->GetPriority()); // ??? t index tt 2 priority 
 					lua_settable(L, -3); // ??? t index tt 
-
-					lua_settable(L, -3); // ??? t 
-				}
-				else {
-					lua_pushinteger(L, (lua_Integer)index); // ??? t index 
-					lua_newtable(L); // ??? t index tt 
-					lua_pushinteger(L, 1); // ??? t index tt 1 
-					lua_pushstring(L, ""); // ??? t index tt 1 s
-					lua_settable(L, -3); // ??? t index tt 
-					lua_pushinteger(L, 2); // ??? t index tt 2 
-					lua_pushinteger(L, 0); // ??? t index tt 2 0 
-					lua_settable(L, -3); // ??? t index tt 
-
 					lua_settable(L, -3); // ??? t 
 				}
 			}
@@ -109,7 +95,10 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 		static int EnumFiles(lua_State* L) {
 			string searchpath = luaL_checkstring(L, -1); // ??? path 
 			Eyes2D::Platform::PathFormatLinux(searchpath);
-			if ((searchpath.size() > 0) && (searchpath.back() != '/')) {
+			if ((searchpath == ".") || (searchpath == "/") || (searchpath == "./")) {
+				searchpath = "";// "/" or "." 不需要
+			}
+			else if ((searchpath.size() > 1) && (searchpath.back() != '/')) {
 				searchpath.push_back('/');//在搜索路径后面手动添加一个分隔符
 			}
 			lua_newtable(L); // ??? path t 
@@ -130,8 +119,8 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 					lua_pushboolean(L, filesystem::is_directory(p.path())); // ??? path t index tt 2 bool //为目录时该项为真
 					lua_settable(L, -3); // ??? path t index tt 
 					lua_settable(L, -3); // ??? path t 
+					index++;
 				}
-				index++;
 			}
 			return 1;
 		}

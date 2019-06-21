@@ -124,8 +124,6 @@ namespace LuaSTGPlus
 	public:
 		//向lua注册包装类
 		static void Register(lua_State* L)LNOEXCEPT;
-		//创建一个XInput包装类并推入堆栈
-		static void CreateAndPush(lua_State* L);
 	};
 
 	//游戏碰撞体操作
@@ -168,10 +166,10 @@ namespace LuaSTGPlus
 		BentLaserDataWrapper::Register(L);  // 曲线激光
 		Fancy2dStopWatchWrapper::Register(L);  // 高精度停表
 		BuiltInFunctionWrapper::Register(L);  // 内建函数库
-		FileManagerWrapper::Register(L); //内建函数库，文件资源管理
+		FileManagerWrapper::Register(L); //内建函数库，文件资源管理，请确保位于内建函数库后加载
 		ArchiveWrapper::Register(L); //压缩包
 		GameResourceWrapper::Register(L);  // 游戏资源对象
-		XInputManagerWrapper::Register(L);  //XInput
+		XInputManagerWrapper::Register(L);  //内建函数库，XInput，请确保位于内建函数库后加载
 #ifdef USING_ADVANCE_COLLIDER
 		GameObjectColliderWrapper::Register(L);//Collider
 #endif // USING_ADVANCE_COLLIDER

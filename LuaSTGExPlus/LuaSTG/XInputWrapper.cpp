@@ -94,6 +94,7 @@ void XInputManagerWrapper::Register(lua_State* L)LNOEXCEPT
 		{ NULL, NULL }
 	};
 
+	/*
 	luaL_openlib(L, LUASTG_LUA_TYPENAME_XINPUTWRAPPER, tMethods, 0);  // t
 	luaL_newmetatable(L, LUASTG_LUA_TYPENAME_XINPUTWRAPPER);  // t mt
 	luaL_openlib(L, 0, tMetaTable, 0);  // t mt
@@ -104,11 +105,11 @@ void XInputManagerWrapper::Register(lua_State* L)LNOEXCEPT
 	lua_pushvalue(L, -3);  // t mt s t
 	lua_rawset(L, -3);  // t mt (mt["__metatable"] = t)  保护metatable不被修改
 	lua_pop(L, 2);
-}
+	*/
 
-void XInputManagerWrapper::CreateAndPush(lua_State * L)
-{
-	lua_newtable(L);//t
-	luaL_getmetatable(L, LUASTG_LUA_TYPENAME_XINPUTWRAPPER);//t mt
-	lua_setmetatable(L, -2);//t
+	lua_getglobal(L, "lstg"); // ??? t 
+	lua_newtable(L); // ??? t t
+	::luaL_register(L, NULL, tMethods); // ??? t t 
+	lua_setfield(L, -2, "XInputManager"); // ??? t 
+	lua_pop(L, 1); // ??? 
 }

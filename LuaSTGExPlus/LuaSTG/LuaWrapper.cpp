@@ -1,4 +1,5 @@
-﻿#include "LuaWrapper.h"
+﻿#include "Global.h"
+#include "LuaWrapper.h"
 #include "AppFrame.h"
 #include "Network.h"
 #include "E2DDXGIImpl.hpp"
@@ -177,8 +178,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			const char* pwd = nullptr;
 			if (lua_isstring(L, 2))
 				pwd = luaL_checkstring(L, 2);
-			if (!LRES.LoadPack(p, pwd))
-				return luaL_error(L, "failed to load resource pack '%s'.", p);
+			LFMGR.LoadArchive(p, 0, pwd);
 			return 0;
 		}
 		static int LoadPackSub(lua_State* L)LNOEXCEPT
@@ -188,14 +188,13 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			//const char* pwd = nullptr;
 			//if (lua_isstring(L, 2))
 				//pwd = luaL_checkstring(L, 2);
-			if (!LRES.LoadPack(p, pwd))
-				return luaL_error(L, "failed to load resource pack '%s'.", p);
+			LFMGR.LoadArchive(p, 0, pwd);
 			return 0;
 		}
 		static int UnloadPack(lua_State* L)LNOEXCEPT
 		{
 			const char* p = luaL_checkstring(L, 1);
-			LRES.UnloadPack(p);
+			LFMGR.UnloadArchive(p);
 			return 0;
 		}
 		static int ExtractRes(lua_State* L)LNOEXCEPT
@@ -210,7 +209,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{
 			int args = lua_gettop(L);//获取此时栈上的值的数量
 			LAPP.LoadScript(luaL_checkstring(L, 1),luaL_optstring(L,2,NULL));
-			//LINFO("返回%d个值",lua_gettop(L)-1);
 			return (lua_gettop(L)- args);
 		}
 		static int LoadTextFile(lua_State* L)LNOEXCEPT
@@ -220,14 +218,8 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		static int FindFiles(lua_State* L)LNOEXCEPT
 		{
-			//说好的可变参数呢……
-			if (lua_gettop(L) <= 2) {
-				const char blankpackname[] = "";
-				LRES.FindFiles(L, luaL_checkstring(L, 1), luaL_optstring(L, 2, NULL), blankpackname);
-			}
-			else if(lua_gettop(L) == 3) {
-				LRES.FindFiles(L, luaL_checkstring(L, 1), luaL_optstring(L, 2, NULL), luaL_optstring(L, 3, NULL));
-			}
+			// searchpath extendname packname
+			LRES.FindFiles(L, luaL_checkstring(L, 1), luaL_optstring(L, 2, ""), luaL_optstring(L, 3, ""));
 			return 1;
 		}
 		static int ShowSplashWindow(lua_State* L)LNOEXCEPT
@@ -2279,7 +2271,8 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			return 1;
 		}
 		static int XInputManager(lua_State* L) {
-			XInputManagerWrapper::CreateAndPush(L);
+			lua_getglobal(L, "lstg"); // ??? t 
+			lua_getfield(L, -1, "XInputManager"); // ??? t t 
 			return 1;
 		}
 		static int SampleBezier(lua_State* L)LNOEXCEPT // t(list) [n] <length> <rate>

@@ -12,7 +12,7 @@ using namespace std;
 namespace fs = filesystem;
 
 E2DMAIN{
-for (auto& it : fs::directory_iterator("./Dir/")) {
+for (auto& it : fs::directory_iterator("./")) {
 	SAY(it.path().string().c_str());
 }
 

@@ -1,5 +1,7 @@
 ﻿#include <set>
+#include <vector>
 #include <string>
+#include <fstream>
 #include "E2DFileManager.hpp"
 #include "E2DCodePage.hpp"
 #include "E2DLogSystem.hpp"
@@ -410,5 +412,63 @@ void FileManager::UnloadAllArchive() {
 		Archive* p = *it;
 		it = m_Impl->ArchiveSet.erase(it);//这个操作会自动移动到下一个迭代器
 		delete p;//只会擦除元素，不会将指针指向的内存释放
+	}
+}
+
+fcyStream* FileManager::LoadFile(const char* filepath) {
+	//从压缩包内查找
+	for (auto& zip : m_Impl->ArchiveSet) {
+		if (zip->FileExist(filepath)) {
+			fcyStream* stream = zip->LoadFile(filepath);
+			if (stream != nullptr) {
+				return stream;
+			}
+		}
+	}
+
+	//从文件系统查找
+	fstream f;
+	string ansipath = Eyes2D::String::UTF8ToANSI(string(filepath));
+	f.open(ansipath, ios::in | ios::binary);
+	if (!f.is_open()) {
+		return nullptr;
+	}
+	else {
+		//警告：潜在的溢出错误，寻址返回的为long long，但是size_t为unsigned int
+		f.seekg(0, ios::beg);
+		size_t pos1 = (size_t)f.tellg();
+		f.seekg(0, ios::end);
+		size_t pos2 = (size_t)f.tellg();
+		size_t buffersize = pos2 - pos1;
+		
+		fcyMemStream* stream = new fcyMemStream(nullptr, 0, true, true);
+		stream->SetLength((fLen)buffersize);
+		stream->SetPosition(FCYSEEKORIGIN_BEG, 0);
+
+		f.seekg(0, ios::beg);
+		f.read((char*)(stream->GetInternalBuffer()), buffersize);
+
+		pos2 = (size_t)f.tellg();
+		size_t buffersize2 = pos2 - pos1;
+
+		f.close();
+
+		if (buffersize != buffersize2) {
+			stream->Release();//先释放
+			return nullptr;
+		}
+		else {
+			return (fcyStream*)stream;
+		}
+	}
+}
+
+fcyStream* FileManager::LoadFile(const char* filepath, const char* archive) {
+	Archive* zip = GetArchive(archive);
+	if (zip != nullptr) {
+		return zip->LoadFile(filepath);
+	}
+	else {
+		return nullptr;
 	}
 }

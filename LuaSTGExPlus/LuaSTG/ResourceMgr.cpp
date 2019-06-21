@@ -1,4 +1,6 @@
 ﻿#include <string>
+#include <string_view>
+#include <filesystem>
 
 #include "ResourceMgr.h"
 #include "AppFrame.h"
@@ -6,6 +8,7 @@
 #include "Utility.h"
 #include "E2DFileManager.hpp"
 #include "E2DCodePage.hpp"
+#include "E2DFilePath.hpp"
 
 #include <iowin32.h>
 #include <io.h>
@@ -229,93 +232,42 @@ LNOINLINE void ResourceMgr::UnloadPack(const char* path)LNOEXCEPT
 
 LNOINLINE bool ResourceMgr::LoadFile(const wchar_t* path, fcyRefPointer<fcyMemStream>& outBuf, const wchar_t *packname)LNOEXCEPT
 {
-	// 尝试从各个资源包加载
-	Eyes2D::IO::FileManager& ref = LFMGR;
-	Eyes2D::IO::Archive* zip = nullptr;
+	//路径
 	std::wstring utf16path = path;
-	std::string utf8path = Eyes2D::String::UTF16ToUTF8(utf16path);
-	fcyStream* stream;
-	for (unsigned int i = 0; i < ref.GetArchiveCount(); i++) {
-		zip = ref.GetArchive(i);
-		if (zip != nullptr) {
-			if (zip->FileExist(utf8path.c_str())) {
-				stream = zip->LoadFile(utf8path.c_str());
-				if (stream != nullptr) {
-					outBuf.DirectSet((fcyMemStream*)stream);
-					return true;
-				}
-				else {
-					continue;
-				}
-			}
-			else {
-				continue;
-			}
-		}
-		else {
-			continue;
-		}
+	std::string utf8path = Eyes2D::String::UTF16ToUTF8(utf16path);//文件路径
+	std::wstring utf16pack = L"";
+	if (packname != nullptr) {
+		utf16pack = packname;
 	}
+	std::string utf8pack = Eyes2D::String::UTF16ToUTF8(utf16pack);//压缩包名
 	
-	// 尝试从各个资源包加载（遗留方法）
-	for (auto& i : m_ResPackList)
-	{
-		if (packname){
-			if (i.GetPathLowerCase() != packname){
-				continue;
-			}
-		}
-		if (i.LoadFile(path, outBuf))
-			return true;
-	}
-
-	// 尝试从本地加载
-#ifdef LSHOWRESLOADINFO
-	LINFO("ResourceMgr: 尝试从本地加载文件'%s'", path);
-#endif
-	fcyRefPointer<fcyFileStream> pFile;
-	try
-	{
-		pFile.DirectSet(new fcyFileStream(path, false));
-		outBuf.DirectSet(new fcyMemStream(NULL, pFile->GetLength(), true, false));
-	}
-	catch (const bad_alloc&)
-	{
-		LERROR("ResourceMgr: 无法分配足够内存从本地加载文件'%s'", path);
-		return false;
-	}
-	catch (const fcyException& e)
-	{
-		LERROR("ResourceMgr: 装载本地文件'%s'失败，文件不存在？ (异常信息'%m' 源'%m')", path, e.GetDesc(), e.GetSrc());
-		return false;
-	}
-
-	if (pFile->GetLength() > 0)
-	{
-		if (FCYFAILED(pFile->ReadBytes((fData)outBuf->GetInternalBuffer(), outBuf->GetLength(), nullptr)))
-		{
-			LERROR("ResourceMgr: 读取本地文件'%s'失败 (fcyFileStream::ReadBytes失败)", path);
-			return false;
-		}
-	}
-
-	return true;
+	return LoadFile(utf8path.c_str(), outBuf, utf8pack.c_str());
 }
 
 LNOINLINE bool ResourceMgr::LoadFile(const char* path, fcyRefPointer<fcyMemStream>& outBuf, const char *packname)LNOEXCEPT
 {
-	try
-	{
-		wstring tPath = fcyStringHelper::MultiByteToWideChar(path, CP_UTF8);
-		wstring tPack = packname?fcyStringHelper::MultiByteToWideChar(packname, CP_UTF8):L"";
-		pathUniform(tPack.begin(), tPack.end());
-		return LoadFile(tPath.c_str(), outBuf, packname?tPack.c_str():NULL);
+	std::string utf8path = path;//文件路径
+	std::string utf8pack = "";//压缩包名
+	if (packname != nullptr) {
+		utf8pack = packname;
 	}
-	catch (const bad_alloc&)
-	{
-		LERROR("ResourceMgr: 转换字符编码时无法分配内存");
+	Eyes2D::Platform::PathFormatLinux(utf8path);
+	
+	Eyes2D::IO::FileManager& FMGR = LFMGR;
+	fcyStream* stream = nullptr;
+	if (utf8pack.size() > 0) {
+		stream = FMGR.LoadFile(utf8path.c_str(), utf8pack.c_str());
 	}
-	return false;
+	else {
+		stream = FMGR.LoadFile(utf8path.c_str());
+	}
+	if (stream != nullptr) {
+		outBuf.DirectSet((fcyMemStream*)stream);
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 bool ResourceMgr::ExtractRes(const wchar_t* path, const wchar_t* target)LNOEXCEPT
@@ -373,125 +325,122 @@ LNOINLINE bool ResourceMgr::ExtractRes(const char* path, const char* target)LNOE
 	return false;
 }
 
-bool listFiles(lua_State *L,const char * dirw,const char *ext,int *cnt)
-{
-	
-	//*
-	char dir[400];
-	char fulldir[400];
-	strcpy_s<400>(dir, dirw);
-	int pn = strlen(dirw);
-	if (dir[pn - 1] != '\\' && dir[pn - 1] != '/'){
-		dir[pn] = '\\';
-		pn++;
-	}
-	intptr_t handle;
-	_finddata_t findData;
-	
-	GetCurrentDirectoryA(400, fulldir); // workdir 
-	strcat(fulldir, "\\");              // workdir\ 
-	strcat(fulldir, dir);               // workdir\searchdir 
-	strcat(fulldir, "*.*");             // workdir\searchdir\*.* 
-	handle = _findfirst(fulldir, &findData);    // 查找目录中的第一个文件
-	if (handle == -1)
-	{
-		return false;
+bool listFilesS(lua_State* L, const char* dir, const char* ext, int& index) {
+	//传入的肯定是utf8格式的搜索目录和拓展名
+	// ??? t 
+	string searchpath = dir;//搜索路径
+	filesystem::path searchdir = filesystem::path(Eyes2D::String::UTF8ToUTF16(searchpath));//路径，需要转换为UTF16
+
+	string_view extendpath = ext;//拓展名
+	size_t extendsize = extendpath.size();//拓展名长度
+	size_t pathsize = 0;//文件路径长度
+
+	for (auto& f : filesystem::directory_iterator(searchdir)) {
+		if (filesystem::is_directory(f.path()) || filesystem::is_regular_file(f.path())) {
+			string path = f.path().string();//文件路径
+			pathsize = path.size();
+
+			//检查拓展名匹配
+			string_view compare = string_view(&(path[pathsize - extendsize]), extendsize);//要比较的尾部
+			if ((extendsize > 0) && ((path[pathsize - extendsize - 1] != '.') || (extendpath != compare))) {
+				continue;//拓展名不匹配
+			}
+
+			lua_pushinteger(L, index);// ??? t index 
+			lua_createtable(L, 1, 0);// ??? t index t //一个数组元素，没有非数组元素
+			lua_pushinteger(L, 1);// ??? t index t 1 
+			string u8path = Eyes2D::String::UTF16ToUTF8(f.path().wstring());
+			lua_pushstring(L, u8path.c_str());// ??? t index t 1 path 
+			lua_settable(L, -3);// ??? t index t 
+			lua_settable(L, -3);// ??? t 
+			index++;
+		}
 	}
 
-	do
-	{
-		if (findData.attrib & _A_SUBDIR
-			&& strcmp(findData.name, ".") == 0
-			&& strcmp(findData.name, "..") == 0
-			)    // 是否是子目录并且不为"."或".."
-			;
-		else
-		{
-			//cout << findData.name << "\t" << findData.size << endl;
-			int n = strlen(findData.name);
-			bool flag = true;
-			if (ext){
-				int extn = strlen(ext);
-				if (n > extn)
-				{
-					for (int i = 0; i < extn; i++){
-						if (findData.name[i + n - extn] != ext[i]){
-							flag = false;
-						}
+	return true;
+}
+
+bool listFilesA(lua_State* L, const char* dir, const char* ext, const char* packname, int& index) {
+	// ??? t 
+	
+	Eyes2D::IO::FileManager& FMGR = LFMGR;
+	Eyes2D::IO::Archive* zip = nullptr;
+
+	string searchpath = dir;
+	Eyes2D::Platform::PathFormatLinux(searchpath);//格式化为Linux风格
+	if ((searchpath == ".") || (searchpath == "./") || (searchpath == "/")) {
+		searchpath = "";//去掉".","./","/"这类路径
+	}
+	else if ((searchpath.size() > 1) && (searchpath.back() != '/')) {
+		searchpath.push_back('/');//补充缺失的斜杠
+	}
+	string_view frompath = searchpath;//搜索路径
+	if (frompath.find("..", 0, 2) != string_view::npos) {
+		return false;//不能使用".."这种路径！
+	}
+
+	string frompack = packname;//要搜索的压缩包路径
+	string_view expath = ext;//拓展名
+	size_t exsize = expath.size();
+	size_t pathsize = 0;
+
+	for (unsigned int select = 0; select < FMGR.GetArchiveCount(); select++) {
+		zip = FMGR.GetArchive(select);
+		if (zip != nullptr) {
+			string zipname = zip->GetArchivePath();
+			if ((frompack.size() > 0) && (frompack != zipname)) {
+				continue;//没有命中压缩包
+			}
+			for (long long pos = 0; pos < zip->GetFileCount(); pos++) {
+				string filename = zip->GetFileName(pos);//文件名
+				pathsize = filename.size();
+
+				//开始检查路径是否命中
+				if (frompath.size() >= pathsize) {
+					continue;//文件名都不够长，跳过
+				}
+				string_view leftpath = string_view(&(filename[0]), frompath.size());
+				string_view rightpath = string_view(&(filename[frompath.size()]), pathsize - frompath.size());
+				if ((rightpath.find('/', 0) != string_view::npos) || (leftpath != frompath)) {
+					continue;//不是目标目录的文件，或者前半路径不匹配
+				}
+				if ((exsize > 0) && (rightpath.size() > (exsize + 1))) {//拓展名长度要大于0且剩余文件名要长过点号+拓展名
+					string_view compare = string_view(&(filename[pathsize - exsize]), exsize);
+					if ((filename[pathsize - exsize - 1] != '.') || (expath != compare)) {
+						continue;//拓展名没有命中
 					}
 				}
-				else{
-					flag = false;
-				}
-			}
-			if (flag){
-				strcpy(dir + pn, findData.name);
 
-				string a = dir;
-				wstring temp = fcyStringHelper::MultiByteToWideChar(a, CP_ACP);
-				a = fcyStringHelper::WideCharToMultiByte(temp, CP_UTF8);
-
-				char utf8fer[460];
-				CODEDSTR str;
-				str.LoadBuffer(dir,0);
-				str = CP_UTF8;
-				str.getstring(utf8fer, 459);
-
-				lua_newtable(L);// t t1
-				lua_pushstring(L, a.c_str());  // t t1 s
-				lua_rawseti(L, -2, 1);  // t t1
-				lua_rawseti(L, -2, *cnt);  // t
-				(*cnt)++;
+				lua_pushinteger(L, index);// ??? t index 
+				lua_createtable(L, 2, 0);// ??? t index t //2个数组元素，没有非数组元素
+				lua_pushinteger(L, 1);// ??? t index t 1 
+				lua_pushstring(L, filename.c_str());// ??? t index t 1 path 
+				lua_settable(L, -3);// ??? t index t 
+				lua_pushinteger(L, 2);// ??? t index t 2 
+				lua_pushstring(L, zipname.c_str());// ??? t index t 2 pack 
+				lua_settable(L, -3);// ??? t index t 
+				lua_settable(L, -3);// ??? t 
+				index++;
 			}
 		}
-	} while (_findnext(handle, &findData) == 0);    // 查找目录中的下一个文件
+	}
 
-	_findclose(handle);    // 关闭搜索句柄
-	//*/
 	return true;
 }
 
 LNOINLINE bool ResourceMgr::FindFiles(lua_State *L,const char* path,const char *ext, const char *packname)LNOEXCEPT
 {
 	// 尝试从各个资源包加载
-	lua_newtable(L);
-	int cnt = 1;
-	/*
-	//为什么用path，不应该是用packname吗艹
-	wstring tPath;
-	try
-	{
-		tPath = fcyStringHelper::MultiByteToWideChar(path, CP_UTF8);
-		pathUniform(tPath.begin(), tPath.end());
-	}
-	catch (const bad_alloc&)
-	{
-		LERROR("ResourceMgr: 转换字符编码时无法分配内存");
-	}
-	*/
-	wstring tPackPath;
-	try
-	{
-		tPackPath = fcyStringHelper::MultiByteToWideChar(packname, CP_UTF8);
-		pathUniform(tPackPath.begin(), tPackPath.end());
-	}
-	catch (const bad_alloc&)
-	{
-		LERROR("ResourceMgr: 转换字符编码时无法分配内存");
+	lua_newtable(L); // ??? t 
+	int index = 1;
+
+	//搜索压缩包内文件
+	::listFilesA(L, path, ext, packname, index);
+
+	//不限定packname时对文件系统进行查找
+	if (string_view(packname).size() <= 0) {
+		::listFilesS(L, path, ext, index);
 	}
 
-	for (auto& i : m_ResPackList)
-	{
-		if (packname){
-			//LINFO("尝试将资源包路径'%s'与查找资源包路径'%s'对比", i.GetPathLowerCase().c_str(), tPackPath.c_str());
-			if (i.GetPathLowerCase() != tPackPath){
-				continue;
-			}
-		}
-		//LINFO("资源包'%s'匹配成功", i.GetPathLowerCase().c_str());
-		i.FindFiles(L, &cnt, path, ext);
-	}
-	if (!packname || packname[0]==0)
-		listFiles(L, path, ext, &cnt);
 	return true;
 }
