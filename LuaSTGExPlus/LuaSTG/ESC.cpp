@@ -2,7 +2,7 @@
 #include "ESC.h"
 #include <WinSock2.h>
 #include "ResourceMgr.h"
-#pragma comment(lib,"ws2_32.lib")
+#pragma comment(lib, "ws2_32.lib")
 
 #include "LuaWrapper.h"
 #include "AppFrame.h"
@@ -342,7 +342,7 @@ struct EX_CLIENT_DECLARE{
 };
 
 //最主要的逻辑类，负责与服务器通信，传输数据以及总线的更新
-class ExInputControl :public IExInputControl{
+class ExInputControl : public IExInputControl{
 public:
 	EX_CLIENT_DECLARE m_current_state;//！弃用的代码
 	ExInputInterface *m_clients[MAX_INPUT_CLIENTS];
@@ -416,8 +416,7 @@ public:
 					if (m_clients[slot]){
 						m_clients[slot]->ProceedRemoteInput(stamp0, key);
 					}
-				}
-				else if (buf[0] == 'U'){//其他的放在一边，这些都是用户的消息，保存到缓冲区中，以便读取
+				} else if (buf[0] == 'U'){//其他的放在一边，这些都是用户的消息，保存到缓冲区中，以便读取
 					m_buffer->Push(buf + 1);
 				}
 			}
@@ -425,16 +424,12 @@ public:
 
 
 		//检查所有的输入输出设备是否就绪
-		int un_ready_count = 0;
 		for (i = 0; i < MAX_INPUT_CLIENTS; i++){
 			if (input = m_clients[i]){
 				if (!input->IsReady()){
-					un_ready_count++;
+					return false;
 				}
 			}
-		}
-		if (un_ready_count){
-			return false;
 		}
 
 		//如果检查成功，则开始传递输入输出
