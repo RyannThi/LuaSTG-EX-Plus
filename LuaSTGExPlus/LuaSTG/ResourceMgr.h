@@ -12,37 +12,6 @@ namespace LuaSTGPlus
 {
 	class ResourceMgr;
 
-	template <typename T>
-	inline void pathUniform(T begin, T end)
-	{
-		//统一转换路径格式到小写和windows特色\分割
-		while (begin != end)
-		{
-			int c = *begin;
-			if (c == '/')
-				* begin = '\\';
-			else if (c >= 'A' && c <= 'Z')
-				* begin = c - 'A' + 'a';
-			else if (c == 0)
-				break;
-			++begin;
-		}
-	}
-
-	inline bool pathHit(const char* base, const char* file)
-	{
-		if (!*base)return true;
-		if (!*file)return false;
-		while (*base == *file)
-		{
-			base++;
-			file++;
-			if (!*base)return true;
-			if (!*file)return false;
-		}
-		return false;
-	}
-
 	/// @brief 资源类型
 	enum class ResourceType
 	{

@@ -2,7 +2,6 @@
 #include "AppFrame.h"
 #include "Utility.h"
 
-#include <iowin32.h>
 #include <io.h>
 #include "ESC.h"
 

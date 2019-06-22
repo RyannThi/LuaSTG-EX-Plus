@@ -37,10 +37,6 @@
 #include <fcyOS/fcyMemPool.h>
 #include <f2d.h>
 
-// Zlib
-#include <zlib.h>
-#include <unzip.h>
-
 // luajit
 #include <lua.hpp>
 

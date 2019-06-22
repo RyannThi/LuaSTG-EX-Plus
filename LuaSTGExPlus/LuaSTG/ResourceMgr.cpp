@@ -5,22 +5,9 @@
 #include "ResourceMgr.h"
 #include "AppFrame.h"
 
-#include "Utility.h"
 #include "E2DFileManager.hpp"
 #include "E2DCodePage.hpp"
 #include "E2DFilePath.hpp"
-
-#include <iowin32.h>
-#include <io.h>
-
-#include "ESC.h"
-
-#ifdef max
-#undef max
-#endif
-#ifdef min
-#undef min
-#endif
 
 using namespace std;
 using namespace LuaSTGPlus;
