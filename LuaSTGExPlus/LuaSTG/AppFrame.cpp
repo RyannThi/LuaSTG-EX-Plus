@@ -1687,7 +1687,6 @@ void AppFrame::Shutdown()LNOEXCEPT
 		LINFO("已卸载Lua虚拟机");
 	}
 
-	m_ResourceMgr.UnloadAllPack();
 	m_FileManager.UnloadAllArchive();
 	LINFO("已卸载所有资源包");
 

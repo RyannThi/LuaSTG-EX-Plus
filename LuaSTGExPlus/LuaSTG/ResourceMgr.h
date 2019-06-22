@@ -12,13 +12,6 @@ namespace LuaSTGPlus
 {
 	class ResourceMgr;
 
-	//废弃函数，现在使用另一个函数
-	inline float VolumeFix(float v)
-	{
-		//return -exp(-v * 6.f) + 1;  // 修正音量过小的问题
-		return v; //似乎不行
-	}
-
 	template <typename T>
 	inline void pathUniform(T begin, T end)
 	{
@@ -877,43 +870,10 @@ namespace LuaSTGPlus
 			: m_pMgr(mgr), m_iType(t) {}
 	};
 
-	/// @brief 资源包
-	class ResourcePack
-	{
-	private:
-		std::wstring m_Path;
-		std::wstring m_PathLowerCase;
-		std::string m_Password;
-
-		unzFile m_zipFile;
-	public:
-		/// @brief 获得资源包的实际路径
-		const std::wstring& GetPath()const LNOEXCEPT { return m_Path; }
-		/// @brief 获得资源包的实际路径小写名称
-		const std::wstring& GetPathLowerCase()const LNOEXCEPT { return m_PathLowerCase; }
-		/// @brief 尝试在资源包中定位并加载文件到内存
-		/// @param[in] path 相对路径
-		/// @param[out] outBuf 导出的文件数据
-		/// @return 失败返回false，成功返回true
-		bool LoadFile(const wchar_t* path, fcyRefPointer<fcyMemStream>& outBuf)LNOEXCEPT;
-
-		bool FindFiles(lua_State *L, int *cnt, const char * path,const char *ext)LNOEXCEPT;
-	protected:
-		ResourcePack& operator=(const ResourcePack&);
-		ResourcePack(const ResourcePack&);
-	public:
-		/// @brief 尝试在指定路径加载资源包
-		/// @exception 失败抛出异常
-		ResourcePack(const wchar_t* path, const char* passwd);
-		~ResourcePack();
-	};
-
 	/// @brief 资源管理器
 	class ResourceMgr
 	{
 	private:
-		std::list<ResourcePack> m_ResPackList;
-
 		float m_GlobalImageScaleFactor = 1.0f;
 		float m_GlobalSoundEffectVolume = 1.0f;
 		float m_GlobalMusicVolume = 1.0f;
@@ -961,29 +921,8 @@ namespace LuaSTGPlus
 			}
 		}
 
-		/// @brief 加载资源包
-		/// @param[in] path 路径
-		/// @param[in] passwd 密码
-		bool LoadPack(const wchar_t* path, const char* passwd)LNOEXCEPT;
-
-		/// @brief 卸载资源包
-		/// @param[in] path 路径
-		void UnloadPack(const wchar_t* path)LNOEXCEPT;
-
-		/// @brief 卸载所有资源包
-		void UnloadAllPack()LNOEXCEPT { m_ResPackList.clear(); }
-
 		/// @brief 卸载所有资源并重置状态
 		void ClearAllResource()LNOEXCEPT;
-
-		/// @brief 加载资源包（UTF8）
-		/// @param[in] path 路径
-		/// @param[in] passwd 密码
-		LNOINLINE bool LoadPack(const char* path, const char* passwd)LNOEXCEPT;
-
-		/// @brief 卸载资源包（UTF8）
-		/// @param[in] path 路径
-		LNOINLINE void UnloadPack(const char* path)LNOEXCEPT;
 
 		/// @brief 装载文件
 		/// @param[in] path 路径
@@ -1000,7 +939,9 @@ namespace LuaSTGPlus
 		/// @param[in] target 目的地
 		bool ExtractRes(const wchar_t* path, const wchar_t* target)LNOEXCEPT;
 
+		//查找文件
 		LNOINLINE bool FindFiles(lua_State *L, const char* path, const char *ext, const char *packname)LNOEXCEPT;
+		
 		/// @brief 解压资源文件（UTF8）
 		/// @param[in] path 路径
 		/// @param[in] target 目的地

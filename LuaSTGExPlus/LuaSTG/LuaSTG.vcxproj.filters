@@ -175,9 +175,6 @@
     <ClCompile Include="ResourceMgr.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
-    <ClCompile Include="ResourcePack.cpp">
-      <Filter>Resource</Filter>
-    </ClCompile>
     <ClCompile Include="ResourceParticle.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
