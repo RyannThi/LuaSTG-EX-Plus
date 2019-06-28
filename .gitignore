@@ -13,7 +13,7 @@
 
 #luajit过滤
 /LuaSTGExPlus/luajit/*
-#!/LuaSTGExPlus/luajit/readme.txt
+!/LuaSTGExPlus/luajit/readme.txt
 
 /LuaSTGExPlus/zlib/build/*
 
