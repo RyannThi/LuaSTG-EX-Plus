@@ -11,7 +11,9 @@
 /LuaSTGExPlus/.vs/*
 /LuaSTGExPlus/build/*
 
-/LuaSTGExPlus/luajit/backup/*
+#luajit过滤
+/LuaSTGExPlus/luajit/*
+#!/LuaSTGExPlus/luajit/readme.txt
 
 /LuaSTGExPlus/zlib/build/*
 
@@ -73,3 +75,7 @@
 #CSharp
 /LuaSTGExPlus/CSharpTest/bin/*
 /LuaSTGExPlus/CSharpTest/obj/*
+
+#DirectX Tool Kit
+/LuaSTGExPlus/DirectXTK/*
+#!/LuaSTGExPlus/DirectXTK/readme.txt

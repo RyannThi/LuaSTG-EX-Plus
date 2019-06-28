@@ -119,11 +119,13 @@ namespace LuaSTGPlus
 		//渲染状态
 		GraphicsType m_GraphType = GraphicsType::Graph2D;
 		bool m_bRenderStarted = false;
+		bool m_bLockBlendMode = false;
 		BlendMode m_Graph2DLastBlendMode;//2D
 		f2dBlendState m_Graph2DBlendState;//2D
 		F2DGRAPH2DBLENDTYPE m_Graph2DColorBlendState;//2D
 		BlendMode m_Graph3DLastBlendMode;//3D
 		f2dBlendState m_Graph3DBlendState;//3D
+		f2dBlendState m_UserBlendState;//user
 
 		//渲染器
 		fcyRefPointer<f2dGeometryRenderer> m_GRenderer;//2D
