@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <filesystem>
 #include "E2DFileManager.hpp"
 #include "E2DCodePage.hpp"
 #include "E2DLogSystem.hpp"
@@ -412,6 +413,22 @@ void FileManager::UnloadAllArchive() {
 		Archive* p = *it;
 		it = m_Impl->ArchiveSet.erase(it);//这个操作会自动移动到下一个迭代器
 		delete p;//只会擦除元素，不会将指针指向的内存释放
+	}
+}
+
+bool FileManager::FileExist(const char* filepath) {
+	for (auto& z : m_Impl->ArchiveSet) {
+		if (z->FileExist(filepath)) {
+			return true;
+		}
+	}
+	filesystem::path p(Eyes2D::String::UTF8ToANSI(filepath));
+	filesystem::directory_entry en(p);
+	if (en.is_regular_file() && filesystem::exists(p)) {
+		return true;
+	}
+	else {
+		return false;
 	}
 }
 

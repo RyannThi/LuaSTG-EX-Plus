@@ -13,7 +13,15 @@ namespace fs = filesystem;
 
 E2DMAIN{
 for (auto& it : fs::directory_iterator("./")) {
-	SAY(it.path().string().c_str());
+	//SAY(it.path().string().c_str());
 }
-
+fs::path p("nmsl.jpg");
+fs::directory_entry en(p);
+if (en.is_regular_file() && fs::exists(p)) {
+	SAY("YES");
+}
+fstream f("nmsl.jpg", ios::binary | ios::in);
+if (f.is_open()) {
+	SAY("YES");
+}
 E2DMAINRETURN }

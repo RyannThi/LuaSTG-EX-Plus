@@ -99,6 +99,8 @@ namespace Eyes2D {
 			void UnloadArchive(const char* name);
 			//卸载所有压缩包
 			void UnloadAllArchive();
+			//指定文件是否存在，包括压缩包
+			bool FileExist(const char* filepath);
 			//加载文件,包括从压缩包内查找
 			fcyStream* LoadFile(const char* filepath);
 			fcyStream* LoadFile(const char* filepath, const char* archive);
