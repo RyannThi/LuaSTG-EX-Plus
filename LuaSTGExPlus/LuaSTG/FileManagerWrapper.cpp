@@ -124,6 +124,11 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 			}
 			return 1;
 		}
+		static int FileExist(lua_State* L) {
+			// ??? filepath
+			lua_pushboolean(L, LFMGR.FileExist(luaL_checkstring(L, -1)));
+			return 1;
+		}
 	};
 
 	luaL_Reg tMethods[] =
@@ -135,6 +140,7 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 		{ "GetArchive", &Wrapper::GetArchive },
 		{ "EnumArchive", &Wrapper::EnumArchive },
 		{ "EnumFiles", &Wrapper::EnumFiles },
+		{ "FileExist", &Wrapper::FileExist },
 		{ NULL, NULL }
 	};
 
