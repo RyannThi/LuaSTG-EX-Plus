@@ -37,8 +37,7 @@ namespace LuaSTGPlus
 	};
 
 	/// @brief 应用程序框架
-	class AppFrame :
-		public f2dEngineEventListener
+	class AppFrame : public f2dEngineEventListener
 	{
 	public:
 		static LNOINLINE AppFrame& GetInstance();

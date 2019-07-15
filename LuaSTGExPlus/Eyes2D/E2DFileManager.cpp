@@ -14,14 +14,9 @@ using namespace Eyes2D::IO;
 //======================================
 
 struct Archive::Impl {
-	zip_t* ZipFile;
-	string path;//路径，可能不是绝对路径
-	string password;//备用
-	Archive::Impl() {
-		ZipFile = nullptr;
-		path = "";
-		password = "";
-	}
+	zip_t* ZipFile = nullptr;
+	string path = "";//路径，可能不是绝对路径
+	string password = "";//备用
 };
 
 Archive::Archive(unsigned int uid) {
