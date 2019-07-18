@@ -6,7 +6,7 @@ namespace LuaSTGPlus
 	//使用最小完美哈希算法进行字符串和枚举值配对
 	//该代码由string2enum.py+GameObjectPropertyHash.json生成，源代码by 9CHU，适配python3 by Xiliusha
 	//重要提示：只看这里的代码来研究其工作原理是没有用的
-
+	/*
 	enum class GameObjectProperty
 	{
 		X = 0,
@@ -14,7 +14,7 @@ namespace LuaSTGPlus
 		DX = 2,
 		DY = 3,
 		ROT = 4,
-		OMIGA = 5,
+		OMEGA = 5,
 		TIMER = 6,
 		VX = 7,
 		VY = 8,
@@ -133,7 +133,7 @@ namespace LuaSTGPlus
 			return static_cast<GameObjectProperty>(hash);
 		return GameObjectProperty::_KEY_NOT_FOUND;
 	}
-
+	//*/
 }
 
 namespace LuaSTGPlusESC

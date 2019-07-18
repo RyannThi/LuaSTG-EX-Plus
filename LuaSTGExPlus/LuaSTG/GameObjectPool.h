@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <array>
+#include <set>
 #include "Global.h"
 #include "ObjectPool.hpp"
 #include "CirularQueue.hpp"
@@ -528,6 +530,7 @@ namespace LuaSTGPlus
 	private:
 		lua_State* L = nullptr;
 		FixedObjectPool<GameObject, LGOBJ_MAXCNT> m_ObjectPool;
+		GameObject* m_pCurrentObject;
 
 		// 链表伪头部
 		uint64_t m_iUid = 0;
@@ -535,7 +538,26 @@ namespace LuaSTGPlus
 		GameObject m_pRenderListHeader, m_pRenderListTail;
 		GameObject m_pCollisionListHeader[LGOBJ_GROUPCNT], m_pCollisionListTail[LGOBJ_GROUPCNT];
 
-		GameObject* m_pCurrentObject;
+		// Comparer
+		struct _less_object {
+			bool operator()(const GameObject* x, const GameObject* y) const {
+				return x->uid < y->uid;
+			}
+		};
+		struct _less_render {
+			bool operator()(const GameObject* x, const GameObject* y) const {
+				if (x->layer != y->layer) {
+					return x->layer < y->layer;
+				}
+				else {
+					return x->uid < y->uid;
+				}
+			}
+		};
+		// GameObject List
+		std::set<GameObject*, _less_object> m_UpdateList;
+		std::set<GameObject*, _less_render> m_RenderList;
+		std::array<std::set<GameObject*, _less_object>, LGOBJ_GROUPCNT> m_ColliList;
 
 		// 场景边界
 		lua_Number m_BoundLeft = -100.f;
@@ -543,6 +565,22 @@ namespace LuaSTGPlus
 		lua_Number m_BoundTop = 100.f;
 		lua_Number m_BoundBottom = -100.f;
 	private:
+		// 申请一个对象，重置对象并将对象插入到各个链表，不处理lua部分，返回申请的对象
+		GameObject* _AllocObject();
+
+		// 释放一个对象，将对象从各个链表中移除，并回收，不处理lua部分和对象资源，返回下一个可用的对象
+		GameObject* _ReleaseObject(GameObject* object);
+
+		// 更改指定对象的图层，该操作会刷新对象在渲染链表中的位置
+		void _SetObjectLayer(GameObject* object, lua_Number layer);
+
+		// 更改指定对象的碰撞组，该操作会移动对象在碰撞组中的位置
+		void _SetObjectColliGroup(GameObject* object, lua_Integer group);
+
+		// 检查指定对象的坐标是否在场景边界内
+		bool _ObjectBoundCheck(GameObject* object) noexcept;
+
+		// 释放一个对象，完全释放
 		GameObject* freeObject(GameObject* p)LNOEXCEPT;
 	public:
 		/// @brief 检查是否为主线程

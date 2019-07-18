@@ -42,6 +42,7 @@
     <ClInclude Include="GameObjectPool.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="LogSystem.h" />
+    <ClInclude Include="LuaStringToEnum.hpp" />
     <ClInclude Include="LuaWrapper.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="ObjectPool.hpp" />
@@ -66,6 +67,7 @@
     <ClCompile Include="GameObjectPool.cpp" />
     <ClCompile Include="GameResourceWrapper.cpp" />
     <ClCompile Include="LogSystem.cpp" />
+    <ClCompile Include="LuaStringToEnum.cpp" />
     <ClCompile Include="LuaWrapper.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Network.cpp" />

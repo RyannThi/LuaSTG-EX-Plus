@@ -10,6 +10,7 @@
 #include "Utility.h"
 #include "LuaWrapper.h"
 #include "E2DXInputImpl.hpp"
+#include "LuaStringToEnum.hpp"
 
 #include "D3D9.H"  // for SetFog
 #include "Network.h"
@@ -1412,6 +1413,7 @@ bool AppFrame::Init()LNOEXCEPT
 	lua_newtable(L);
 	lua_setglobal(L, "option");
 	RegistBuiltInClassWrapper(L);  // 注册内建类 (luastg lib)
+	Xrysnow::InitStringToEnumHash(L); // 准备属性hash
 
 	lua_gc(L, LUA_GCRESTART, -1);  // 重启GC
 	// 为对象池分配空间
@@ -1631,11 +1633,12 @@ bool AppFrame::Init()LNOEXCEPT
 
 	//////////////////////////////////////// 装载核心脚本并执行GameInit
 	LINFO("装载核心脚本'%s'", LMAIN_SCRIPT.c_str());
-	if (!m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream))
+	if (!m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream)) {
 		LWARNING("找不到文件'%s'", LMAIN_SCRIPT.c_str());
-	MAIN_SCRIPT = "src/main.lua"; LMAIN_SCRIPT = L"src/main.lua";
-	if (!m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream))
-		return false;
+		MAIN_SCRIPT = "src/main.lua"; LMAIN_SCRIPT = L"src/main.lua";
+		if (!m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream))
+			return false;
+	}
 	if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), MAIN_SCRIPT.c_str()))
 		return false;
 	//if (!SafeCallGlobalFunction(LFUNC_GAMEINIT))

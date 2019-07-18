@@ -4,6 +4,7 @@
 #include "Global.h"
 #include "ResourceMgr.h"
 #include "GameObjectPool.h"
+#include "LuaStringToEnum.hpp"
 
 #define LUASTG_LUA_TYPENAME_COLOR "lstgColor"
 #define LUASTG_LUA_TYPENAME_RANDGEN "lstgRand"
@@ -178,6 +179,16 @@ namespace LuaSTGPlus
 	//翻译字符串到混合模式
 	static inline BlendMode TranslateBlendMode(lua_State* L, int argnum)
 	{
+		const char* key = luaL_checkstring(L, argnum);
+		if (strcmp(key, "") == 0 || strcmp(key, "mul+alpha") == 0)
+			return BlendMode::MulAlpha;
+		BlendMode mode = Xrysnow::BlendModeHash(L, argnum);
+		if (mode == BlendMode::_KEY_NOT_FOUND) {
+			luaL_error(L, "invalid blend mode '%s'.", key);
+			return BlendMode::MulAlpha;
+		}
+		return mode;
+		
 		/*
 		const char* s = luaL_checkstring(L, argnum);
 		if (strcmp(s, "") == 0 || strcmp(s, "mul+alpha") == 0)
@@ -203,7 +214,7 @@ namespace LuaSTGPlus
 		return BlendMode::MulAlpha;
 		*/
 
-		const char* key = luaL_checkstring(L, argnum);
+		/*const char* key = luaL_checkstring(L, argnum);
 
 		if (strcmp(key, "") == 0 || strcmp(key, "mul+alpha") == 0)
 			return BlendMode::MulAlpha;
@@ -270,5 +281,6 @@ namespace LuaSTGPlus
 			return static_cast<BlendMode>(hash);
 		luaL_error(L, "invalid blend mode '%s'.", key);
 		return BlendMode::MulAlpha;
+		*/
 	}
 }
