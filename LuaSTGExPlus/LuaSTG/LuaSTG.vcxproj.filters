@@ -51,6 +51,9 @@
     <None Include="GameObjectPropertyHash.inl">
       <Filter>ObjectPool</Filter>
     </None>
+    <None Include="BlendModeHash.json">
+      <Filter>实用工具</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppFrame.h">

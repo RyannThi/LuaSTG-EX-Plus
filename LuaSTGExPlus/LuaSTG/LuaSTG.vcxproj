@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="BlendModeHash.json" />
     <None Include="GameObjectPropertyHash.inl" />
     <None Include="GameObjectPropertyHash.json" />
     <None Include="string2enum.py" />

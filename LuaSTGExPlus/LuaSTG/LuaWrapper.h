@@ -178,13 +178,12 @@ namespace LuaSTGPlus
 	//翻译字符串到混合模式
 	static inline BlendMode TranslateBlendMode(lua_State* L, int argnum)
 	{
+		/*
 		const char* s = luaL_checkstring(L, argnum);
-		if (strcmp(s, "mul+add") == 0)
+		if (strcmp(s, "") == 0 || strcmp(s, "mul+alpha") == 0)
+			return BlendMode::MulAlpha;
+		else if (strcmp(s, "mul+add") == 0)
 			return BlendMode::MulAdd;
-		else if (strcmp(s, "") == 0)
-			return BlendMode::MulAlpha;
-		else if (strcmp(s, "mul+alpha") == 0)
-			return BlendMode::MulAlpha;
 		else if (strcmp(s, "add+add") == 0)
 			return BlendMode::AddAdd;
 		else if (strcmp(s, "add+alpha") == 0)
@@ -201,6 +200,75 @@ namespace LuaSTGPlus
 			return BlendMode::AlphaBal;
 		else
 			luaL_error(L, "invalid blend mode '%s'.", s);
+		return BlendMode::MulAlpha;
+		*/
+
+		const char* key = luaL_checkstring(L, argnum);
+
+		if (strcmp(key, "") == 0 || strcmp(key, "mul+alpha") == 0)
+			return BlendMode::MulAlpha;
+
+		static const char* s_orgKeyList[] =
+		{
+			"__reserve__",
+			"mul+alpha",
+			"mul+add",
+			"mul+rev",
+			"mul+sub",
+			"add+alpha",
+			"add+add",
+			"add+rev",
+			"add+sub",
+			"alpha+bal",
+			"mul+min",
+			"mul+max",
+			"mul+mul",
+			"mul+screen",
+			"add+min",
+			"add+max",
+			"add+mul",
+			"add+screen",
+		};
+
+		static const unsigned int s_bestIndices[] =
+		{
+			1, 6,
+		};
+
+		static const unsigned int s_hashTable1[] =
+		{
+			11, 243,
+		};
+
+		static const unsigned int s_hashTable2[] =
+		{
+			148, 194,
+		};
+
+		static const unsigned int s_hashTableG[] =
+		{
+			0, 0, 0, 0, 0, 7, 0, 0, 3, 2,
+			15, 0, 8, 15, 3, 0, 0, 15, 10, 14,
+			4, 3, 9, 0, 9, 4, 7, 8, 10,
+		};
+
+		unsigned int f1 = 0, f2 = 0, len = strlen(key);
+		for (unsigned int i = 0; i < 2; ++i)
+		{
+			unsigned int idx = s_bestIndices[i];
+			if (idx < len)
+			{
+				f1 = (f1 + s_hashTable1[i] * (unsigned int)key[idx]) % 29;
+				f2 = (f2 + s_hashTable2[i] * (unsigned int)key[idx]) % 29;
+			}
+			else
+				break;
+		}
+
+		unsigned int hash = (s_hashTableG[f1] + s_hashTableG[f2]) % 18;
+		if (strcmp(s_orgKeyList[hash], key) == 0)
+			return static_cast<BlendMode>(hash);
+		luaL_error(L, "invalid blend mode '%s'.", key);
 		return BlendMode::MulAlpha;
 	}
 }

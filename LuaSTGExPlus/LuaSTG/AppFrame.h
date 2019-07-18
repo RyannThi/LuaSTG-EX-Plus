@@ -160,6 +160,11 @@ namespace LuaSTGPlus
 					m_Graph2DBlendState.BlendOp = F2DBLENDOPERATOR_ADD;
 					m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_ADD;
 					break;
+				case BlendMode::AddAlpha:
+					m_Graph2DBlendState.DestBlend = F2DBLENDFACTOR_INVSRCALPHA;
+					m_Graph2DBlendState.BlendOp = F2DBLENDOPERATOR_ADD;
+					m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_ADD;
+					break;
 				case BlendMode::AddSub:
 					m_Graph2DBlendState.DestBlend = F2DBLENDFACTOR_ONE;
 					m_Graph2DBlendState.BlendOp = F2DBLENDOPERATOR_SUBTRACT;
@@ -190,22 +195,67 @@ namespace LuaSTGPlus
 					m_Graph2DBlendState.BlendOp = F2DBLENDOPERATOR_REVSUBTRACT;
 					m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_MODULATE;
 					break;
-				case  BlendMode::AlphaBal:
-					m_Graph2DBlendState.SrcBlend = F2DBLENDFACTOR_INVDESTCOLOR;
-					//m_Graph2DBlendState.DestBlend = F2DBLENDFACTOR_INVSRCALPHA;
+
+				case BlendMode::MulMin:
+					m_Graph2DBlendState.SrcBlend = F2DBLENDFACTOR_ONE;
+					m_Graph2DBlendState.DestBlend = F2DBLENDFACTOR_ONE;
+					m_Graph2DBlendState.BlendOp = F2DBLENDOPERATOR_MIN;
+					m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_MODULATE;
+					break;
+				case BlendMode::MulMax:
+					m_Graph2DBlendState.SrcBlend = F2DBLENDFACTOR_ONE;
+					m_Graph2DBlendState.DestBlend = F2DBLENDFACTOR_ONE;
+					m_Graph2DBlendState.BlendOp = F2DBLENDOPERATOR_MAX;
+					m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_MODULATE;
+					break;
+				case BlendMode::MulMutiply:
+					m_Graph2DBlendState.SrcBlend = F2DBLENDFACTOR_ZERO;
+					m_Graph2DBlendState.DestBlend = F2DBLENDFACTOR_SRCCOLOR;
+					m_Graph2DBlendState.BlendOp = F2DBLENDOPERATOR_ADD;
+					m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_MODULATE;
+					break;
+				case BlendMode::MulScreen:
+					m_Graph2DBlendState.SrcBlend = F2DBLENDFACTOR_ONE;
 					m_Graph2DBlendState.DestBlend = F2DBLENDFACTOR_INVSRCCOLOR;
-					//m_Graph2DBlendState.SrcBlend = F2DBLENDFACTOR_ONE;
-					//m_Graph2DBlendState.DestBlend = F2DBLENDFACTOR_ONE;
+					m_Graph2DBlendState.BlendOp = F2DBLENDOPERATOR_ADD;
+					m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_MODULATE;
+					break;
+				case BlendMode::AddMin:
+					m_Graph2DBlendState.SrcBlend = F2DBLENDFACTOR_ONE;
+					m_Graph2DBlendState.DestBlend = F2DBLENDFACTOR_ONE;
+					m_Graph2DBlendState.BlendOp = F2DBLENDOPERATOR_MIN;
+					m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_ADD;
+					break;
+				case BlendMode::AddMax:
+					m_Graph2DBlendState.SrcBlend = F2DBLENDFACTOR_ONE;
+					m_Graph2DBlendState.DestBlend = F2DBLENDFACTOR_ONE;
+					m_Graph2DBlendState.BlendOp = F2DBLENDOPERATOR_MAX;
+					m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_ADD;
+					break;
+				case BlendMode::AddMutiply:
+					m_Graph2DBlendState.SrcBlend = F2DBLENDFACTOR_ZERO;
+					m_Graph2DBlendState.DestBlend = F2DBLENDFACTOR_SRCCOLOR;
+					m_Graph2DBlendState.BlendOp = F2DBLENDOPERATOR_ADD;
+					m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_ADD;
+					break;
+				case BlendMode::AddScreen:
+					m_Graph2DBlendState.SrcBlend = F2DBLENDFACTOR_ONE;
+					m_Graph2DBlendState.DestBlend = F2DBLENDFACTOR_INVSRCCOLOR;
+					m_Graph2DBlendState.BlendOp = F2DBLENDOPERATOR_ADD;
+					m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_ADD;
+					break;
+
+				case BlendMode::AlphaBal:
+					m_Graph2DBlendState.SrcBlend = F2DBLENDFACTOR_INVDESTCOLOR;
+					m_Graph2DBlendState.DestBlend = F2DBLENDFACTOR_INVSRCCOLOR;
 					m_Graph2DBlendState.BlendOp = F2DBLENDOPERATOR_ADD;
 					m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_ALPHATEXTURE;
-				//	m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_SELECTCOLOR;
-				//	m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_MODULATE;
 					break;
-				case BlendMode::AddAlpha:
+
 				default:
 					m_Graph2DBlendState.DestBlend = F2DBLENDFACTOR_INVSRCALPHA;
 					m_Graph2DBlendState.BlendOp = F2DBLENDOPERATOR_ADD;
-					m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_ADD;
+					m_Graph2DColorBlendState = F2DGRAPH2DBLENDTYPE_MODULATE;
 					break;
 				}
 				m_Graph2DLastBlendMode = m;
@@ -217,6 +267,7 @@ namespace LuaSTGPlus
 		{
 			if (m != m_Graph3DLastBlendMode)
 			{
+				m_Graph2DBlendState.SrcBlend = F2DBLENDFACTOR_SRCALPHA;
 				switch (m)
 				{
 				case BlendMode::AddAdd:
@@ -236,6 +287,41 @@ namespace LuaSTGPlus
 					break;
 				case BlendMode::AddAlpha:
 				case BlendMode::MulAlpha:
+					m_Graph3DBlendState.DestBlend = F2DBLENDFACTOR_INVSRCALPHA;
+					m_Graph3DBlendState.BlendOp = F2DBLENDOPERATOR_ADD;
+					break;
+
+				case BlendMode::AddMin:
+				case BlendMode::MulMin:
+					m_Graph3DBlendState.SrcBlend = F2DBLENDFACTOR_ONE;
+					m_Graph3DBlendState.DestBlend = F2DBLENDFACTOR_ONE;
+					m_Graph3DBlendState.BlendOp = F2DBLENDOPERATOR_MIN;
+					break;
+				case BlendMode::AddMax:
+				case BlendMode::MulMax:
+					m_Graph3DBlendState.SrcBlend = F2DBLENDFACTOR_ONE;
+					m_Graph3DBlendState.DestBlend = F2DBLENDFACTOR_ONE;
+					m_Graph3DBlendState.BlendOp = F2DBLENDOPERATOR_MAX;
+					break;
+				case BlendMode::AddMutiply:
+				case BlendMode::MulMutiply:
+					m_Graph3DBlendState.SrcBlend = F2DBLENDFACTOR_ZERO;
+					m_Graph3DBlendState.DestBlend = F2DBLENDFACTOR_SRCCOLOR;
+					m_Graph3DBlendState.BlendOp = F2DBLENDOPERATOR_ADD;
+					break;
+				case BlendMode::AddScreen:
+				case BlendMode::MulScreen:
+					m_Graph3DBlendState.SrcBlend = F2DBLENDFACTOR_ONE;
+					m_Graph3DBlendState.DestBlend = F2DBLENDFACTOR_INVSRCCOLOR;
+					m_Graph3DBlendState.BlendOp = F2DBLENDOPERATOR_ADD;
+					break;
+
+				case BlendMode::AlphaBal:
+					m_Graph3DBlendState.SrcBlend = F2DBLENDFACTOR_INVDESTCOLOR;
+					m_Graph3DBlendState.DestBlend = F2DBLENDFACTOR_INVSRCCOLOR;
+					m_Graph3DBlendState.BlendOp = F2DBLENDOPERATOR_ADD;
+					break;
+
 				default:
 					m_Graph3DBlendState.DestBlend = F2DBLENDFACTOR_INVSRCALPHA;
 					m_Graph3DBlendState.BlendOp = F2DBLENDOPERATOR_ADD;

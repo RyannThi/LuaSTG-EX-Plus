@@ -1,4 +1,5 @@
-﻿#include "resource.h"
+﻿#include "string"
+#include "resource.h"
 
 //#include "lfs.h"
 //#include "lua_cjson.h"
@@ -1383,6 +1384,10 @@ bool AppFrame::Init()LNOEXCEPT
 	Scope tSplashWindowExit([this]() {
 		m_SplashWindow.HideSplashWindow();
 	});
+	// 这些字符串是给最后加载入口点文件时候用的（可以看作main.lua）
+	// 会被命令行参数影响
+	std::string MAIN_SCRIPT = fcyStringHelper::WideCharToMultiByte(LCORE_SCRIPT, CP_UTF8);
+	std::wstring LMAIN_SCRIPT = LCORE_SCRIPT;
 	
 	//////////////////////////////////////// Lua初始化部分
 	LINFO("开始初始化Lua虚拟机 版本: %m", LVERSION_LUA);
@@ -1404,6 +1409,8 @@ bool AppFrame::Init()LNOEXCEPT
 	luaopen_mime_core(L); // mime (base64)
 	lua_pop(L, 6);// 不知道为什么弄了6个table在栈顶……
 
+	lua_newtable(L);
+	lua_setglobal(L, "option");
 	RegistBuiltInClassWrapper(L);  // 注册内建类 (luastg lib)
 
 	lua_gc(L, LUA_GCRESTART, -1);  // 重启GC
@@ -1623,10 +1630,13 @@ bool AppFrame::Init()LNOEXCEPT
 	m_collidercfg.emplace_back(ColliderDisplayConfig(4, fcyColor(100, 175, 15, 20)));// GROUP_PLAYER
 
 	//////////////////////////////////////// 装载核心脚本并执行GameInit
-	LINFO("装载核心脚本'%s'", LCORE_SCRIPT);
-	if (!m_ResourceMgr.LoadFile(LCORE_SCRIPT, tMemStream))
+	LINFO("装载核心脚本'%s'", LMAIN_SCRIPT.c_str());
+	if (!m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream))
+		LWARNING("找不到文件'%s'", LMAIN_SCRIPT.c_str());
+	MAIN_SCRIPT = "src/main.lua"; LMAIN_SCRIPT = L"src/main.lua";
+	if (!m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream))
 		return false;
-	if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), "core.lua"))
+	if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), MAIN_SCRIPT.c_str()))
 		return false;
 	//if (!SafeCallGlobalFunction(LFUNC_GAMEINIT))
 		//return false;
