@@ -1638,8 +1638,14 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 			}
 		} while (false);
 		//*/
-		_SetObjectColliGroup(p, luaL_checkinteger(L, 3));
+	{
+		int group = luaL_checkinteger(L, 3);
+		if (0 <= group && group < LGOBJ_GROUPCNT)
+		{
+			_SetObjectColliGroup(p, luaL_checkinteger(L, 3));
+		}
 		break;
+	}
 	case GameObjectProperty::HIDE:
 		p->hide = lua_toboolean(L, 3) == 0 ? false : true;
 		break;
@@ -1927,12 +1933,16 @@ int GameObjectPool::InitAttr(lua_State* L)LNOEXCEPT  // t(object)
 				break;
 #endif
 			case GameObjectProperty::LAYER:
+				/*
 				p->layer = luaL_checknumber(L, 3);
 				LIST_INSERT_SORT(p, Render, RenderListSortFunc); // 刷新p的渲染层级
 				LASSERT(m_pRenderListHeader.pRenderNext != nullptr);
 				LASSERT(m_pRenderListTail.pRenderPrev != nullptr);
+				//*/
+				_SetObjectLayer(p, luaL_checknumber(L, 3));
 				break;
 			case GameObjectProperty::GROUP:
+				/*
 				do
 				{
 					int group = luaL_checkinteger(L, 3);
@@ -1950,7 +1960,15 @@ int GameObjectPool::InitAttr(lua_State* L)LNOEXCEPT  // t(object)
 						}
 					}
 				} while (false);
+				//*/
+			{
+				int group = luaL_checkinteger(L, 3);
+				if (0 <= group && group < LGOBJ_GROUPCNT)
+				{
+					_SetObjectColliGroup(p, group);
+				}
 				break;
+			}
 			case GameObjectProperty::HIDE:
 				p->hide = lua_toboolean(L, 3) == 0 ? false : true;
 				break;

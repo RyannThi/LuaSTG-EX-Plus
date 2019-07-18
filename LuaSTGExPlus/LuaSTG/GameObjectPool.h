@@ -151,9 +151,9 @@ namespace LuaSTGPlus
 #endif // USING_ADVANCE_COLLIDER
 
 		// 链表域
-		GameObject *pObjectPrev, *pObjectNext;
-		GameObject *pRenderPrev, *pRenderNext;
-		GameObject *pCollisionPrev, *pCollisionNext;
+		//GameObject *pObjectPrev, *pObjectNext;
+		//GameObject *pRenderPrev, *pRenderNext;
+		//GameObject *pCollisionPrev, *pCollisionNext;
 		
 		void Reset()
 		{
@@ -183,9 +183,9 @@ namespace LuaSTGPlus
 			res = nullptr;
 			ps = nullptr;
 
-			pObjectPrev = pObjectNext = nullptr;
-			pRenderPrev = pRenderNext = nullptr;
-			pCollisionPrev = pCollisionNext = nullptr;
+			//pObjectPrev = pObjectNext = nullptr;
+			//pRenderPrev = pRenderNext = nullptr;
+			//pCollisionPrev = pCollisionNext = nullptr;
 
 			resolve_move = false;
 			pause = 0;
@@ -534,9 +534,9 @@ namespace LuaSTGPlus
 
 		// 链表伪头部
 		uint64_t m_iUid = 0;
-		GameObject m_pObjectListHeader, m_pObjectListTail;
-		GameObject m_pRenderListHeader, m_pRenderListTail;
-		GameObject m_pCollisionListHeader[LGOBJ_GROUPCNT], m_pCollisionListTail[LGOBJ_GROUPCNT];
+		//GameObject m_pObjectListHeader, m_pObjectListTail;
+		//GameObject m_pRenderListHeader, m_pRenderListTail;
+		//GameObject m_pCollisionListHeader[LGOBJ_GROUPCNT], m_pCollisionListTail[LGOBJ_GROUPCNT];
 
 		// Comparer
 		struct _less_object {
