@@ -211,7 +211,8 @@ GameObjectPool::GameObjectPool(lua_State* pL)
 	// Lua_State
 	L = pL;
 	
-	// 初始化伪头部数据
+	// 初始化对象链表
+	/*
 	memset(&m_pObjectListHeader, 0, sizeof(GameObject));
 	memset(&m_pRenderListHeader, 0, sizeof(GameObject));
 	memset(m_pCollisionListHeader, 0, sizeof(m_pCollisionListHeader));
@@ -233,7 +234,7 @@ GameObjectPool::GameObjectPool(lua_State* pL)
 		m_pCollisionListHeader[i].pCollisionNext = &m_pCollisionListTail[i];
 		m_pCollisionListTail[i].pCollisionPrev = &m_pCollisionListHeader[i];
 	}
-
+	//*/
 	m_UpdateList.clear();
 	m_RenderList.clear();
 	for (auto& i : m_ColliList) {
@@ -876,7 +877,7 @@ int GameObjectPool::Add(lua_State* L)LNOEXCEPT
 //	if (!lua_toboolean(L, -1))
 //		return luaL_error(L, "invalid argument #1, luastg object class required for 'New'.");
 //	lua_pop(L, 1);  // t(class) ...
-
+	/*
 	// 分配一个对象
 	size_t id = 0;
 	if (!m_ObjectPool.Alloc(id))
@@ -896,15 +897,21 @@ int GameObjectPool::Add(lua_State* L)LNOEXCEPT
 	LIST_INSERT_BEFORE(&m_pCollisionListTail[p->group], p, Collision);  // 为保证兼容性，对Collision也做排序
 	LIST_INSERT_SORT(p, Render, RenderListSortFunc);
 	LIST_INSERT_SORT(p, Collision, ObjectListSortFunc);
+	//*/
+
+	GameObject* p = _AllocObject();
+	if (p == nullptr) {
+		return luaL_error(L, "can't alloc object, object pool may be full.");
+	}
 
 	GETOBJTABLE;  // t(object) ... ot
 	lua_pushvalue(L, 1);  // t(object) ... ot t(object)
-	lua_pushinteger(L, (lua_Integer)id);  // t(object) ... ot t(object) id
+	lua_pushinteger(L, (lua_Integer)(p->id));  // t(object) ... ot t(object) id
 	lua_rawseti(L, -2, 2);  // t(object) ... ot t(object)  设置id
 	lua_getfield(L, -2, METATABLE_OBJ);  // t(object) ... ot t(object) mt
 	lua_setmetatable(L, -2);  // t(object) ... ot t(object)  设置元表
 	lua_pushvalue(L, -1);  // t(object) ... ot t(object) t(object)
-	lua_rawseti(L, -3, id + 1);  // t(object) ... ot t(object)  设置到全局表
+	lua_rawseti(L, -3, p->id + 1);  // t(object) ... ot t(object)  设置到全局表
 
 	InitAttr(L); //将初始属性传递至C++对象
 
