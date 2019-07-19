@@ -283,4 +283,18 @@ namespace LuaSTGPlus
 		return BlendMode::MulAlpha;
 		*/
 	}
+
+	//翻译混合模式回到lua string
+	static inline int TranslateBlendModeToString(lua_State* L, BlendMode blendmode) {
+		static const char* sc_sblendmodes[] = {
+			"",
+			"mul+alpha","mul+add","mul+rev","mul+sub",
+			"add+alpha","add+add","add+rev","add+sub",
+			"alpha+bal",
+			"mul+min","mul+max","mul+mul","mul+screen",
+			"add+min","add+max","add+mul","add+screen",
+		};
+		lua_pushstring(L, sc_sblendmodes[(int)blendmode]);
+		return 1;
+	}
 }

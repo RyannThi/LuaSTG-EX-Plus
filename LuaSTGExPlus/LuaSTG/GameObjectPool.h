@@ -6,6 +6,7 @@
 #include "CirularQueue.hpp"
 #include "ResourceMgr.h"
 #include "XCollision.h"
+#include "GameObjectClass.hpp"
 
 #define MAX_COLLIDERS_COUNT 16
 
@@ -110,6 +111,9 @@ namespace LuaSTGPlus
 		GAMEOBJECTSTATUS status;  // (不可见)对象状态
 		size_t id;  // (不可见)对象在对象池中的id
 		int64_t uid;  // (不可见)对象唯一id
+#ifdef USING_ADVANCE_GAMEOBJECT_CLASS
+		GameObjectClass luaclass;// lua class，不可见
+#endif // USING_ADVANCE_GAMEOBJECT_CLASS
 
 		lua_Number x, y;  // 中心坐标
 		lua_Number lastx, lasty;  // (不可见)上一帧中心坐标
@@ -149,6 +153,22 @@ namespace LuaSTGPlus
 		lua_Number a, b; //单位的横向、纵向碰撞大小的一半
 		lua_Number col_r; //受colli,a,b,rect参数影响的碰撞盒外圆半径
 #endif // USING_ADVANCE_COLLIDER
+
+#ifdef USING_ADVANCE_GAMEOBJECT_CLASS
+		BlendMode blendmode;
+		struct {
+			union {
+				uint32_t argb;
+				struct
+				{
+					uint8_t b;
+					uint8_t g;
+					uint8_t r;
+					uint8_t a;
+				};
+			};
+		} vertexcolor;
+#endif // USING_ADVANCE_GAMEOBJECT_CLASS
 
 		// 链表域
 		//GameObject *pObjectPrev, *pObjectNext;
@@ -204,6 +224,60 @@ namespace LuaSTGPlus
 			a = b = 0.;
 			col_r = 0.;
 #endif // USING_ADVANCE_COLLIDER
+
+#ifdef USING_ADVANCE_GAMEOBJECT_CLASS
+			blendmode = BlendMode::MulAlpha;
+			vertexcolor.argb = 0xFFFFFFFF;
+#endif // USING_ADVANCE_GAMEOBJECT_CLASS
+		}
+
+		void DirtReset()
+		{
+			status = STATUS_DEFAULT;
+
+			x = y = 0.;
+			lastx = lasty = 0.;
+			dx = dy = 0.;
+			rot = omiga = 0.;
+			vx = vy = 0.;
+			ax = ay = 0.;
+			layer = 0.;
+			hscale = vscale = 1.;
+#ifdef USER_SYSTEM_OPERATION
+			maxv = maxvx = maxvy = DBL_HALF_MAX; // 平时应该不会有人弄那么大的速度吧，希望计算时不会溢出（
+			ag = 0.;
+#endif
+
+			colli = bound = true;
+			hide = navi = false;
+
+			group = LGOBJ_DEFAULTGROUP;
+			timer = ani_timer = 0;
+
+			ReleaseResource();
+			
+			resolve_move = false;
+			pause = 0;
+			ignore_superpause = false;
+
+			world = 1;
+
+#ifdef USING_ADVANCE_COLLIDER
+			colliders[0].reset();
+			colliders[0].type = GameObjectColliderType::Ellipse;
+			for (int i = 1; i < MAX_COLLIDERS_COUNT; i++) {
+				colliders[i].type = GameObjectColliderType::None;
+			}
+#else
+			rect = false;
+			a = b = 0.;
+			col_r = 0.;
+#endif // USING_ADVANCE_COLLIDER
+
+#ifdef USING_ADVANCE_GAMEOBJECT_CLASS
+			blendmode = BlendMode::MulAlpha;
+			vertexcolor.argb = 0xFFFFFFFF;
+#endif // USING_ADVANCE_GAMEOBJECT_CLASS
 		}
 
 #ifndef USING_ADVANCE_COLLIDER
@@ -361,7 +435,7 @@ namespace LuaSTGPlus
 			return false;
 		}
 	};
-	// TODO:collider //ok
+	
 	//计算两个对象之间的碰撞
 	inline bool CollisionCheck(GameObject* p1, GameObject* p2)LNOEXCEPT {
 		//忽略不碰撞对象
@@ -530,7 +604,7 @@ namespace LuaSTGPlus
 	private:
 		lua_State* L = nullptr;
 		FixedObjectPool<GameObject, LGOBJ_MAXCNT> m_ObjectPool;
-		GameObject* m_pCurrentObject;
+		GameObject* m_pCurrentObject = nullptr;
 
 		// 链表伪头部
 		uint64_t m_iUid = 0;
@@ -565,6 +639,9 @@ namespace LuaSTGPlus
 		lua_Number m_BoundTop = 100.f;
 		lua_Number m_BoundBottom = -100.f;
 	private:
+		//准备lua表用于存放对象
+		void _PrepareLuaObjectTable();
+		
 		// 申请一个对象，重置对象并将对象插入到各个链表，不处理lua部分，返回申请的对象
 		GameObject* _AllocObject();
 
@@ -578,11 +655,23 @@ namespace LuaSTGPlus
 		void _SetObjectColliGroup(GameObject* object, lua_Integer group);
 
 		// 检查指定对象的坐标是否在场景边界内
-		bool _ObjectBoundCheck(GameObject* object) noexcept;
+		inline bool _ObjectBoundCheck(GameObject* object) {
+			return !(
+				object->bound &&
+				(
+					object->x < m_BoundLeft ||
+					object->x > m_BoundRight ||
+					object->y < m_BoundBottom ||
+					object->y > m_BoundTop
+					)
+				);
+		}
 
 		// 释放一个对象，完全释放
 		GameObject* freeObject(GameObject* p)LNOEXCEPT;
 	public:
+		int PushCurrentObject(lua_State* L)LNOEXCEPT;
+		
 		/// @brief 检查是否为主线程
 		bool CheckIsMainThread(lua_State* pL)LNOEXCEPT { return pL == L; }
 
@@ -642,6 +731,9 @@ namespace LuaSTGPlus
 		/// @brief 检查对象是否有效
 		int IsValid(lua_State* L)LNOEXCEPT;
 		
+		//重置对象的各项属性，并释放资源，保留uid和id
+		bool DirtResetObject(size_t id)LNOEXCEPT;
+
 		/// @brief 求夹角
 		bool Angle(size_t idA, size_t idB, double& out)LNOEXCEPT;
 
@@ -670,7 +762,12 @@ namespace LuaSTGPlus
 		void ResetPool()LNOEXCEPT;
 
 		/// @brief 执行默认渲染
-		bool DoDefaultRender(size_t id)LNOEXCEPT;
+		bool DoDefaultRender(GameObject* p)LNOEXCEPT;
+
+		/// @brief 执行默认渲染
+		bool DoDefaultRender(size_t id)LNOEXCEPT {
+			return DoDefaultRender(m_ObjectPool.Data(id));
+		}
 
 		/// @brief 获取下一个元素的ID
 		/// @return 返回-1表示无元素
@@ -707,8 +804,9 @@ namespace LuaSTGPlus
 	private:
 		///用于多world
 		
-		lua_Integer m_iWorld;//当前的world mask
-		int m_Worlds[4];//预置的world mask
+		lua_Integer m_iWorld = 15;//当前的world mask
+		std::array<lua_Integer, 4> m_Worlds = { 15, 0, 0, 0 };//预置的world mask
+		//lua_Integer m_Worlds[4] = { 15, 0, 0, 0 };//预置的world mask
 	public:
 		///用于多world
 
@@ -721,7 +819,7 @@ namespace LuaSTGPlus
 			return m_iWorld;
 		}
 		//设置预置的world mask
-		inline void ActiveWorlds(int a, int b, int c, int d)LNOEXCEPT {
+		inline void ActiveWorlds(lua_Integer a, lua_Integer b, lua_Integer c, lua_Integer d)LNOEXCEPT {
 			m_Worlds[0] = a;
 			m_Worlds[1] = b;
 			m_Worlds[2] = c;
@@ -742,8 +840,8 @@ namespace LuaSTGPlus
 	private:
 		///用于超级暂停
 
-		lua_Integer m_superpause;
-		lua_Integer m_nextsuperpause;
+		lua_Integer m_superpause = 0;
+		lua_Integer m_nextsuperpause = 0;
 	public:
 		///用于超级暂停
 
@@ -769,7 +867,6 @@ namespace LuaSTGPlus
 	public:  // 内部使用
 		void DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer* grender, int groupId, fcyColor fillColor);
 		void DrawGroupCollider2(int groupId, fcyColor fillColor);
-		int PushCurrentObject(lua_State* L)LNOEXCEPT;
 	private:
 		GameObjectPool& operator=(const GameObjectPool&);
 		GameObjectPool(const GameObjectPool&);

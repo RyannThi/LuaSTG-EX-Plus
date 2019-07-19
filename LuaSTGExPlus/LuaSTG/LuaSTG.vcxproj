@@ -39,6 +39,7 @@
     <ClInclude Include="CollisionDetect.h" />
     <ClInclude Include="Dictionary.hpp" />
     <ClInclude Include="ESC.h" />
+    <ClInclude Include="GameObjectClass.hpp" />
     <ClInclude Include="GameObjectPool.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="LogSystem.h" />
@@ -161,18 +162,18 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)\build\</OutDir>
+    <OutDir>E:\LUASTG0\LuaSTG_ex+0.81c\game\</OutDir>
     <IntDir>$(SolutionDir)\build\dir\$(Configuration)\</IntDir>
     <TargetName>LuaSTGPlus.Debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|Win32'">
-    <OutDir>$(SolutionDir)\build\</OutDir>
+    <OutDir>E:\LUASTG0\LuaSTG_ex+0.81c\game\</OutDir>
     <IntDir>$(SolutionDir)\build\dir\$(Configuration)\</IntDir>
     <TargetName>LuaSTGPlus.dev</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)\build\</OutDir>
+    <OutDir>E:\LUASTG0\LuaSTG_ex+0.81c\game\</OutDir>
     <IntDir>$(SolutionDir)\build\dir\$(Configuration)\</IntDir>
     <TargetName>LuaSTGPlus</TargetName>
     <LinkIncremental>false</LinkIncremental>

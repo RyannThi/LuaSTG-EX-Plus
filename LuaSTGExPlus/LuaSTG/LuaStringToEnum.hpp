@@ -8,17 +8,17 @@ namespace Xrysnow {
 	enum class GameObjectProperty
 	{
 		// object
-		STATUS,
-		CLASS,
+		STATUS = 0,
+		CLASS  = 1,
 		// user
-		TIMER,
+		TIMER  = 2,
 		// position
-		X,
-		Y,
-		Z, //
-		DX,
-		DY,
-		DZ, //
+		X  = 3,
+		Y  = 4,
+		Z  = 5, //
+		DX = 6,
+		DY = 7,
+		DZ = 8, //
 		// movement
 		AX,
 		AY,
@@ -44,6 +44,7 @@ namespace Xrysnow {
 		VSCALE,
 		ZSCALE, //
 		_BLEND,
+		_COLOR,
 		_A,
 		_R,
 		_G,

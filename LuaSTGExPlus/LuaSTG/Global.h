@@ -78,6 +78,7 @@
 //#define GLOBAL_SCALE_COLLI_SHAPE //全局图像缩放是否影响碰撞盒大小（傻吊逻辑谁设计的……mdzz，为什么图像缩放要影响碰撞盒大小）
 #define USING_ADVANCE_COLLIDER //使用高级碰撞体方法
 #define USING_MULTI_GAME_WORLD //开启多world功能
+#define USING_ADVANCE_GAMEOBJECT_CLASS //开启高级游戏对象功能
 
 // 数学常量
 #define DBL_HALF_MAX (DBL_MAX / 2.0) //双精度浮点的半大值

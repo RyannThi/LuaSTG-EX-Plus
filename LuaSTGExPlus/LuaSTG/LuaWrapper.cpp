@@ -329,6 +329,15 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			LPOOL.AfterFrame();
 			return 0;
 		}
+		static int ResetObject(lua_State* L)LNOEXCEPT
+		{
+			if (!lua_istable(L, 1))
+				return luaL_error(L, "Invalid lstg.GameObject for 'ResetObject'.");
+			lua_rawgeti(L, 1, 2);  // t(object) ??? id
+			if (!LPOOL.DirtResetObject((size_t)luaL_checkinteger(L, -1)))
+				return luaL_error(L, "invalid lstg.GameObject for 'ResetObject'.");
+			return 0;
+		}
 		static int New(lua_State* L)LNOEXCEPT
 		{
 			return LPOOL.New(L);
@@ -2334,6 +2343,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "ObjList", &WrapperImplement::ObjList },
 		// 对象控制函数
 		{ "BoxCheck", &WrapperImplement::BoxCheck },
+		{ "ResetObject", &WrapperImplement::ResetObject },
 		{ "New", &WrapperImplement::New },
 		{ "Add", &WrapperImplement::Add },
 		{ "Del", &WrapperImplement::Del },

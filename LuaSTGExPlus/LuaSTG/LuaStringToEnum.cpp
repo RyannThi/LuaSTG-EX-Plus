@@ -37,6 +37,7 @@ static std::unordered_map<std::string, GameObjectProperty> prop_map = {
 	{ "hscale",	GameObjectProperty::HSCALE	},
 	{ "vscale",	GameObjectProperty::VSCALE	},
 	{ "_blend",	GameObjectProperty::_BLEND	},
+	{ "_color",	GameObjectProperty::_COLOR	},
 	{ "_a",		GameObjectProperty::_A		},
 	{ "_r",		GameObjectProperty::_R		},
 	{ "_g",		GameObjectProperty::_G		},

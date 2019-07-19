@@ -113,6 +113,9 @@
     <ClInclude Include="LuaStringToEnum.hpp">
       <Filter>LuaWrapper</Filter>
     </ClInclude>
+    <ClInclude Include="GameObjectClass.hpp">
+      <Filter>GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppFrame.cpp">
