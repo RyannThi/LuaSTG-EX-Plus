@@ -574,10 +574,16 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		static int ObjList(lua_State* L)LNOEXCEPT
 		{
-			int g = luaL_checkinteger(L, 1);  // i(groupId)
-			lua_pushcfunction(L, WrapperImplement::NextObject);
-			lua_pushinteger(L, g);
-			lua_pushinteger(L, LPOOL.FirstObject(g));
+			/*
+			int g = luaL_checkinteger(L, 1);					// i(groupId)
+			lua_pushcfunction(L, WrapperImplement::NextObject);	// i(groupId) next(f)
+			lua_pushinteger(L, g);								// i(groupId) next(f) i(groupId)
+			lua_pushinteger(L, LPOOL.FirstObject(g));			// i(groupId) next(f) i(groupId) id(firstobj) 最后的两个参数作为迭代器参数传入
+			//*/
+			int g = luaL_checkinteger(L, 1);					// i(groupId)
+			lua_pushcfunction(L, WrapperImplement::NextObject);	// i(groupId) next(f)
+			lua_insert(L, 1);									// next(f) i(groupId)
+			lua_pushinteger(L, LPOOL.FirstObject(g));			// next(f) i(groupId) id(firstobj) 最后的两个参数作为迭代器参数传入
 			return 3;
 		}
 		static int ObjMetaIndex(lua_State* L)LNOEXCEPT

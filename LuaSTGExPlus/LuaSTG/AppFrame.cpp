@@ -1469,10 +1469,14 @@ bool AppFrame::Init()LNOEXCEPT
 	//////////////////////////////////////// 装载初始化脚本
 	LINFO("装载初始化脚本'%s'", LLAUNCH_SCRIPT);
 	fcyRefPointer<fcyMemStream> tMemStream;
-	if (!m_ResourceMgr.LoadFile(LLAUNCH_SCRIPT, tMemStream))
-		return false;
-	if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), "launch"))
-		return false;
+	if (m_ResourceMgr.LoadFile(LLAUNCH_SCRIPT, tMemStream)) {
+		if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), "launch"))
+			return false;
+	}
+	//if (!m_ResourceMgr.LoadFile(LLAUNCH_SCRIPT, tMemStream))
+		//return false;
+	//if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), "launch"))
+		//return false;
 	
 	//////////////////////////////////////// 加载控制台
 #if (defined LDEVVERSION) || (defined LDEBUG)

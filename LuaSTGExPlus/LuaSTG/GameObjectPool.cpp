@@ -695,12 +695,12 @@ void GameObjectPool::BoundCheck()LNOEXCEPT
 				p->status = STATUS_DEL;
 
 				// 根据id获取对象的lua绑定table、拿到class再拿到delfunc
-				lua_rawgeti(L, -1, p->id + 1);  // ot t(object)
-				lua_rawgeti(L, -1, 1);  // ot t(object) t(class)
-				lua_rawgeti(L, -1, LGOBJ_CC_DEL);  // ot t(object) t(class) f(del)
-				lua_pushvalue(L, -3);  // ot t(object) t(class) f(del) t(object)
-				lua_call(L, 1, 0);  // ot t(object) t(class)
-				lua_pop(L, 2);  // ot
+				lua_rawgeti(L, -1, p->id + 1);		// ot t(object)
+				lua_rawgeti(L, -1, 1);				// ot t(object) t(class)
+				lua_rawgeti(L, -1, LGOBJ_CC_DEL);	// ot t(object) t(class) f(del)
+				lua_pushvalue(L, -3);				// ot t(object) t(class) f(del) t(object)
+				lua_call(L, 1, 0);					// ot t(object) t(class)
+				lua_pop(L, 2);						// ot
 			}
 #ifdef USING_MULTI_GAME_WORLD
 		}
@@ -850,12 +850,9 @@ void GameObjectPool::AfterFrame()LNOEXCEPT
 int GameObjectPool::New(lua_State* L)LNOEXCEPT
 {
 	// 检查参数
-	if (!lua_istable(L, 1))
+	if (!GameObjectClass::CheckClassValid(L, 1)) {
 		return luaL_error(L, "invalid argument #1, luastg object class required for 'New'.");
-	lua_getfield(L, 1, "is_class");  // t(class) ... b
-	if (!lua_toboolean(L, -1))
-		return luaL_error(L, "invalid argument #1, luastg object class required for 'New'.");
-	lua_pop(L, 1);  // t(class) ...
+	}
 
 	/*
 	// 分配一个对象
@@ -895,6 +892,7 @@ int GameObjectPool::New(lua_State* L)LNOEXCEPT
 	p->luaclass.CheckClassClass(L, 1);
 #endif // USING_ADVANCE_GAMEOBJECT_CLASS
 	GETOBJTABLE;								// t(class) ... ot
+
 	lua_createtable(L, 2, 0);					// t(class) ... ot t(object)
 	lua_pushvalue(L, 1);						// t(class) ... ot t(object) class
 	lua_rawseti(L, -2, 1);						// t(class) ... ot t(object)  设置class
@@ -911,6 +909,7 @@ int GameObjectPool::New(lua_State* L)LNOEXCEPT
 	lua_pushvalue(L, 1);						// t(object) t(class) f(init) ... t(object)
 	lua_insert(L, 4);							// t(object) t(class) f(init) t(object) ...
 	lua_call(L, lua_gettop(L) - 3, 0);			// t(object) t(class)  执行构造函数
+
 	lua_pop(L, 1);								// t(object)
 
 	p->lastx = p->x;
@@ -1401,15 +1400,16 @@ int GameObjectPool::NextObject(int groupId, int id)LNOEXCEPT
 
 int GameObjectPool::NextObject(lua_State* L)LNOEXCEPT
 {
-	int g = luaL_checkinteger(L, 1);  // i(groupId)
-	int id = luaL_checkinteger(L, 2);  // id
+	// i(groupId) id(lastobj)
+	int g = luaL_checkinteger(L, 1);
+	int id = luaL_checkinteger(L, 2);
 	if (id < 0)
 		return 0;
 
-	lua_pushinteger(L, NextObject(g, id));  // ??? i(next)
-	GETOBJTABLE;  // ??? i(next) ot
-	lua_rawgeti(L, -1, id + 1);  // ??? i(next) ot t(object)
-	lua_remove(L, -2);  // ??? i(next) t(object)
+	lua_pushinteger(L, NextObject(g, id));	// ??? id(next)
+	GETOBJTABLE;							// ??? id(next) ot
+	lua_rawgeti(L, -1, id + 1);				// ??? id(next) ot t(object)
+	lua_remove(L, -2);						// ??? id(next) t(object)
 	return 2;
 }
 
@@ -1825,7 +1825,7 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 		int group = luaL_checkinteger(L, 3);
 		if (0 <= group && group < LGOBJ_GROUPCNT)
 		{
-			_SetObjectColliGroup(p, luaL_checkinteger(L, 3));
+			_SetObjectColliGroup(p, group);
 		}
 		break;
 	}
@@ -1871,11 +1871,16 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 		p->vscale = luaL_checknumber(L, 3);
 		break;
 	case GameObjectProperty::CLASS:
+	{
 #ifdef USING_ADVANCE_GAMEOBJECT_CLASS
+		if (!GameObjectClass::CheckClassValid(L, 3))
+			return luaL_error(L, "invalid argument, require luastg object class.");
+		p->luaclass.Reset(); // 先重置一次对象的class消息，因为不是所有的class信息都是完整的
 		p->luaclass.CheckClassClass(L, 3); // 刷新对象的class
 #endif // USING_ADVANCE_GAMEOBJECT_CLASS
 		lua_rawseti(L, 1, 1);
 		break;
+	}
 #ifdef USING_ADVANCE_COLLIDER
 	case GameObjectProperty::A:
 #ifdef GLOBAL_SCALE_COLLI_SHAPE

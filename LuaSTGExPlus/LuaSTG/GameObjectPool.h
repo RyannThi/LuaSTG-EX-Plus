@@ -180,6 +180,9 @@ namespace LuaSTGPlus
 			status = STATUS_FREE;
 			id = (size_t)-1;
 			uid = 0;
+#ifdef USING_ADVANCE_GAMEOBJECT_CLASS
+			luaclass.Reset();
+#endif // USING_ADVANCE_GAMEOBJECT_CLASS
 
 			x = y = 0.;
 			lastx = lasty = 0.;
@@ -234,6 +237,9 @@ namespace LuaSTGPlus
 		void DirtReset()
 		{
 			status = STATUS_DEFAULT;
+#ifdef USING_ADVANCE_GAMEOBJECT_CLASS
+			luaclass.Reset();
+#endif // USING_ADVANCE_GAMEOBJECT_CLASS
 
 			x = y = 0.;
 			lastx = lasty = 0.;
@@ -656,15 +662,14 @@ namespace LuaSTGPlus
 
 		// 检查指定对象的坐标是否在场景边界内
 		inline bool _ObjectBoundCheck(GameObject* object) {
-			return !(
-				object->bound &&
-				(
-					object->x < m_BoundLeft ||
-					object->x > m_BoundRight ||
-					object->y < m_BoundBottom ||
-					object->y > m_BoundTop
-					)
-				);
+			if (!object->bound)
+				return true;
+			if (object->x < m_BoundLeft ||
+				object->x > m_BoundRight ||
+				object->y < m_BoundBottom ||
+				object->y > m_BoundTop)
+				return false;
+			return true;
 		}
 
 		// 释放一个对象，完全释放
