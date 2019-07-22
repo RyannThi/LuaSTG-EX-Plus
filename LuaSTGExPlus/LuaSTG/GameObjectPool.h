@@ -170,11 +170,6 @@ namespace LuaSTGPlus
 		} vertexcolor;
 #endif // USING_ADVANCE_GAMEOBJECT_CLASS
 
-		// 链表域
-		//GameObject *pObjectPrev, *pObjectNext;
-		//GameObject *pRenderPrev, *pRenderNext;
-		//GameObject *pCollisionPrev, *pCollisionNext;
-		
 		void Reset()
 		{
 			status = STATUS_FREE;
@@ -205,10 +200,6 @@ namespace LuaSTGPlus
 
 			res = nullptr;
 			ps = nullptr;
-
-			//pObjectPrev = pObjectNext = nullptr;
-			//pRenderPrev = pRenderNext = nullptr;
-			//pCollisionPrev = pCollisionNext = nullptr;
 
 			resolve_move = false;
 			pause = 0;
@@ -609,14 +600,9 @@ namespace LuaSTGPlus
 	{
 	private:
 		lua_State* L = nullptr;
+		uint64_t m_iUid = 0;
 		FixedObjectPool<GameObject, LGOBJ_MAXCNT> m_ObjectPool;
 		GameObject* m_pCurrentObject = nullptr;
-
-		// 链表伪头部
-		uint64_t m_iUid = 0;
-		//GameObject m_pObjectListHeader, m_pObjectListTail;
-		//GameObject m_pRenderListHeader, m_pRenderListTail;
-		//GameObject m_pCollisionListHeader[LGOBJ_GROUPCNT], m_pCollisionListTail[LGOBJ_GROUPCNT];
 
 		// Comparer
 		struct _less_object {

@@ -20,62 +20,8 @@
 		lua_gettable(L, LUA_REGISTRYINDEX); \
 	} while (false)
 
-#define LIST_INSERT_BEFORE(target, p, field) \
-	do { \
-		p->p##field##Prev = (target)->p##field##Prev; \
-		p->p##field##Next = (target); \
-		p->p##field##Prev->p##field##Next = p; \
-		p->p##field##Next->p##field##Prev = p; \
-	} while(false)
-
-#define LIST_INSERT_AFTER(target, p, field) \
-	do { \
-		p->p##field##Prev = (target); \
-		p->p##field##Next = (target)->p##field##Next; \
-		p->p##field##Prev->p##field##Next = p; \
-		p->p##field##Next->p##field##Prev = p; \
-	} while(false)
-
-#define LIST_REMOVE(p, field) \
-	do { \
-		p->p##field##Prev->p##field##Next = p->p##field##Next; \
-		p->p##field##Next->p##field##Prev = p->p##field##Prev; \
-	} while(false)
-
-#define LIST_INSERT_SORT(p, field, func) \
-	do { \
-		if (p->p##field##Next->p##field##Next && func(p->p##field##Next, p)) \
-		{ \
-			GameObject* pInsertBefore = p->p##field##Next->p##field##Next; \
-			while (pInsertBefore->p##field##Next && func(pInsertBefore, p)) \
-				pInsertBefore = pInsertBefore->p##field##Next; \
-			LIST_REMOVE(p, field); \
-			LIST_INSERT_BEFORE(pInsertBefore, p, field); \
-		} \
-		else if (p->p##field##Prev->p##field##Prev && func(p, p->p##field##Prev)) \
-		{ \
-			GameObject* pInsertAfter = p->p##field##Prev->p##field##Prev; \
-			while (pInsertAfter->p##field##Prev && func(p, pInsertAfter)) \
-				pInsertAfter = pInsertAfter->p##field##Prev; \
-			LIST_REMOVE(p, field); \
-			LIST_INSERT_AFTER(pInsertAfter, p, field); \
-		} \
-	} while (false)
-
 using namespace std;
 using namespace LuaSTGPlus;
-
-static inline bool ObjectListSortFunc(GameObject* p1, GameObject* p2)LNOEXCEPT
-{
-	// 总是以uid为参照
-	return p1->uid < p2->uid;
-}
-
-static inline bool RenderListSortFunc(GameObject* p1, GameObject* p2)LNOEXCEPT
-{
-	// layer小的靠前。若layer相同则参照uid。
-	return (p1->layer < p2->layer) || ((p1->layer == p2->layer) && (p1->uid < p2->uid));
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 /// GameObject
@@ -212,37 +158,16 @@ GameObjectPool::GameObjectPool(lua_State* pL)
 	L = pL;
 	
 	// 初始化对象链表
-	/*
-	memset(&m_pObjectListHeader, 0, sizeof(GameObject));
-	memset(&m_pRenderListHeader, 0, sizeof(GameObject));
-	memset(m_pCollisionListHeader, 0, sizeof(m_pCollisionListHeader));
-	memset(&m_pObjectListTail, 0, sizeof(GameObject));
-	memset(&m_pRenderListTail, 0, sizeof(GameObject));
-	memset(m_pCollisionListTail, 0, sizeof(m_pCollisionListTail));
-	m_pObjectListHeader.pObjectNext = &m_pObjectListTail;
-	m_pObjectListHeader.uid = numeric_limits<uint64_t>::min();
-	m_pObjectListTail.pObjectPrev = &m_pObjectListHeader;
-	m_pObjectListTail.uid = numeric_limits<uint64_t>::max();
-	m_pRenderListHeader.pRenderNext = &m_pRenderListTail;
-	m_pRenderListHeader.uid = numeric_limits<uint64_t>::min();
-	m_pRenderListHeader.layer = numeric_limits<lua_Number>::min();
-	m_pRenderListTail.pRenderPrev = &m_pRenderListHeader;
-	m_pRenderListTail.uid = numeric_limits<uint64_t>::max();
-	m_pRenderListTail.layer = numeric_limits<lua_Number>::max();
-	for (size_t i = 0; i < LGOBJ_GROUPCNT; ++i)
-	{
-		m_pCollisionListHeader[i].pCollisionNext = &m_pCollisionListTail[i];
-		m_pCollisionListTail[i].pCollisionPrev = &m_pCollisionListHeader[i];
-	}
-	//*/
 	m_UpdateList.clear();
 	m_RenderList.clear();
 	for (auto& i : m_ColliList) {
 		i.clear();
 	}
+	// ex+
 	m_pCurrentObject = nullptr;
 	m_superpause = 0;
 	m_nextsuperpause = 0;
+	// lua
 	_PrepareLuaObjectTable();
 }
 
@@ -253,11 +178,6 @@ GameObjectPool::~GameObjectPool()
 
 void GameObjectPool::_PrepareLuaObjectTable() {
 	/*
-	// 创建一个全局表用于存放所有对象
-	lua_pushlightuserdata(L, (void*)& LAPP);  // p(使用APP实例指针作键用以防止用户访问)
-	lua_createtable(L, LGOBJ_MAXCNT, 0);  // p t(创建足够大的table用于存放所有的游戏对象在lua中的对应对象)
-
-	
 	// 取出lstg.GetAttr和lstg.SetAttr创建元表
 	lua_newtable(L);  // ... t
 	lua_getglobal(L, "lstg");  // ... t t
@@ -352,39 +272,10 @@ void GameObjectPool::_SetObjectColliGroup(GameObject* object, lua_Integer group)
 
 GameObject* GameObjectPool::freeObject(GameObject* p)LNOEXCEPT
 {
-	/*
-	GameObject* pRet = p->pObjectNext;
-
-	if (m_pCurrentObject == p){
-		m_pCurrentObject = NULL;
-	}
-
-	// 从对象链表移除
-	LIST_REMOVE(p, Object);
-
-	// 从渲染链表移除
-	LIST_REMOVE(p, Render);
-
-	// 从碰撞链表移除
-	LIST_REMOVE(p, Collision);
-
 	// 删除lua对象表中元素
-	GETOBJTABLE;  // ot
-	lua_pushnil(L);  // ot nil
-	lua_rawseti(L, -2, p->id + 1);  // ot
-	lua_pop(L, 1);
-
-	// 释放引用的资源
-	p->ReleaseResource();
-
-	// 回收到对象池
-	m_ObjectPool.Free(p->id);
-	//*/
-
-	// 删除lua对象表中元素
-	GETOBJTABLE;  // ot
-	lua_pushnil(L);  // ot nil
-	lua_rawseti(L, -2, p->id + 1);  // ot
+	GETOBJTABLE;					// ot
+	lua_pushnil(L);					// ot nil
+	lua_rawseti(L, -2, p->id + 1);	// ot
 	lua_pop(L, 1);
 
 	// 释放引用的资源
@@ -412,91 +303,6 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 	//处理超级暂停
 	GETOBJTABLE;  // ot
 	int superpause = UpdateSuperPause();
-
-	/*
-	GameObject* p = m_pObjectListHeader.pObjectNext;
-	lua_Number cache1, cache2;//速度限制计算时用到的中间变量
-	while (p && p != &m_pObjectListTail)
-	{
-		// 根据id获取对象的lua绑定table、拿到class再拿到framefunc
-		if (superpause<=0 || p->ignore_superpause){
-			m_pCurrentObject = p;
-			lua_rawgeti(L, -1, p->id + 1);  // ot t(object)
-			lua_rawgeti(L, -1, 1);  // ot t(object) t(class)
-			lua_rawgeti(L, -1, LGOBJ_CC_FRAME);  // ot t(object) t(class) f(frame)
-			lua_pushvalue(L, -3);  // ot t(object) t(class) f(frame) t(object)
-			lua_call(L, 1, 0);  // ot t(object) t(class) 执行帧函数
-			lua_pop(L, 2);  // ot
-			
-			if (p->pause<=0){
-				if (p->resolve_move){
-					p->vx = p->x - p->lastx;
-					p->vy = p->y - p->lasty;
-				}
-				else{
-					// 更新对象状态
-					p->vx += p->ax;
-					p->vy += p->ay;
-#ifdef USER_SYSTEM_OPERATION
-					p->vy -= p->ag;//单独的重力更新
-					//速度限制，来自lua层
-					cache1 = sqrt(p->vx * p->vx + p->vy * p->vy);
-					if (p->maxv == 0.) {
-						p->vx = p->vy = 0.;
-					}
-					else if (p->maxv < cache1) { //防止maxv为最大值时相乘出现溢出的情况
-						cache2 = p->maxv / cache1;
-						p->vx = cache2 * p->vx;
-						p->vy = cache2 * p->vy;
-					}
-					//针对x、y方向单独限制
-					if (abs(p->vx) > p->maxvx) {
-						p->vx = p->maxvx * ((p->vx > 0) ? 1 : -1);
-					}
-					if (abs(p->vy) > p->maxvy) {
-						p->vy = p->maxvy * ((p->vy > 0) ? 1 : -1);
-					}
-#endif
-					//坐标更新
-					p->x += p->vx;
-					p->y += p->vy;
-				}
-				p->rot += p->omiga;
-				
-#ifdef USING_ADVANCE_COLLIDER
-				//碰撞体位置更新
-				int cc = 0;
-				while (p->colliders[cc].type != GameObjectColliderType::None && cc < MAX_COLLIDERS_COUNT) {
-					p->colliders[cc].caloffset((float)p->x, (float)p->y, (float)p->rot);
-					cc++;
-				}
-#endif
-
-				// 更新粒子系统（若有）
-				if (p->res && p->res->GetType() == ResourceType::Particle)
-				{
-					float gscale = LRES.GetGlobalImageScaleFactor();
-					p->ps->SetRotation((float)p->rot);
-					if (p->ps->IsActived())  // 兼容性处理
-					{
-						p->ps->SetInactive();
-						p->ps->SetCenter(fcyVec2((float)p->x, (float)p->y));
-						p->ps->SetActive();
-					}
-					else
-						p->ps->SetCenter(fcyVec2((float)p->x, (float)p->y));
-					p->ps->Update(1.0f / 60.f);
-				}
-			
-			}
-			else{
-				p->pause--;
-			}
-		}
-		p = p->pObjectNext;
-	}
-	m_pCurrentObject = NULL;
-	//*/
 
 	lua_Number cache1, cache2;//速度限制计算时用到的中间变量
 	for (auto it = m_UpdateList.begin(); it != m_UpdateList.end();) {
@@ -593,28 +399,6 @@ void GameObjectPool::DoRender()LNOEXCEPT
 {
 	GETOBJTABLE;  // ot
 
-	/*
-	GameObject* p = m_pRenderListHeader.pRenderNext;
-	LASSERT(p != nullptr);
-	lua_Integer world = GetWorldFlag();
-	while (p && p != &m_pRenderListTail)
-	{
-		if (!p->hide  && CheckWorld(p->world, world))  // 只渲染可见对象
-		{
-			m_pCurrentObject = p;
-			// 根据id获取对象的lua绑定table、拿到class再拿到renderfunc
-			lua_rawgeti(L, -1, p->id + 1);  // ot t(object)
-			lua_rawgeti(L, -1, 1);  // ot t(object) t(class)
-			lua_rawgeti(L, -1, LGOBJ_CC_RENDER);  // ot t(object) t(class) f(render)
-			lua_pushvalue(L, -3);  // ot t(object) t(class) f(render) t(object)
-			lua_call(L, 1, 0);  // ot t(object) t(class) 执行渲染函数
-			lua_pop(L, 2);  // ot
-		}
-		p = p->pRenderNext;
-	}
-	m_pCurrentObject = NULL;
-	//*/
-
 #ifdef USING_MULTI_GAME_WORLD
 	lua_Integer world = GetWorldFlag();
 #endif // USING_MULTI_GAME_WORLD
@@ -630,12 +414,12 @@ void GameObjectPool::DoRender()LNOEXCEPT
 			if (!p->luaclass.IsDefaultRender) {
 #endif // USING_ADVANCE_GAMEOBJECT_CLASS
 				// 根据id获取对象的lua绑定table、拿到class再拿到renderfunc
-				lua_rawgeti(L, -1, p->id + 1);  // ot t(object)
-				lua_rawgeti(L, -1, 1);  // ot t(object) t(class)
-				lua_rawgeti(L, -1, LGOBJ_CC_RENDER);  // ot t(object) t(class) f(render)
-				lua_pushvalue(L, -3);  // ot t(object) t(class) f(render) t(object)
-				lua_call(L, 1, 0);  // ot t(object) t(class) 执行渲染函数
-				lua_pop(L, 2);  // ot
+				lua_rawgeti(L, -1, p->id + 1);			// ot t(object)
+				lua_rawgeti(L, -1, 1);					// ot t(object) t(class)
+				lua_rawgeti(L, -1, LGOBJ_CC_RENDER);	// ot t(object) t(class) f(render)
+				lua_pushvalue(L, -3);					// ot t(object) t(class) f(render) t(object)
+				lua_call(L, 1, 0);						// ot t(object) t(class) 执行渲染函数
+				lua_pop(L, 2);							// ot
 #ifdef USING_ADVANCE_GAMEOBJECT_CLASS
 			}
 			else {
@@ -652,32 +436,6 @@ void GameObjectPool::DoRender()LNOEXCEPT
 void GameObjectPool::BoundCheck()LNOEXCEPT
 {
 	GETOBJTABLE;  // ot
-
-	/*
-	lua_Integer world = GetWorldFlag();
-	GameObject* p = m_pObjectListHeader.pObjectNext;
-	while (p && p != &m_pObjectListTail)
-	{
-		if (CheckWorld(p->world, world)){
-			if ((p->x < m_BoundLeft || p->x > m_BoundRight || p->y < m_BoundBottom || p->y > m_BoundTop) && p->bound)
-			{
-				m_pCurrentObject = p;
-				// 越界设置为DEL状态
-				p->status = STATUS_DEL;
-
-				// 根据id获取对象的lua绑定table、拿到class再拿到delfunc
-				lua_rawgeti(L, -1, p->id + 1);  // ot t(object)
-				lua_rawgeti(L, -1, 1);  // ot t(object) t(class)
-				lua_rawgeti(L, -1, LGOBJ_CC_DEL);  // ot t(object) t(class) f(del)
-				lua_pushvalue(L, -3);  // ot t(object) t(class) f(del) t(object)
-				lua_call(L, 1, 0);  // ot t(object) t(class)
-				lua_pop(L, 2);  // ot
-			}
-		}
-		p = p->pObjectNext;
-	}
-	m_pCurrentObject = NULL;
-	//*/
 
 #ifdef USING_MULTI_GAME_WORLD
 	lua_Integer world = GetWorldFlag();
@@ -718,34 +476,6 @@ void GameObjectPool::CollisionCheck(size_t groupA, size_t groupB)LNOEXCEPT
 
 	GETOBJTABLE;  // ot
 
-	/*
-	GameObject* pA = m_pCollisionListHeader[groupA].pCollisionNext;
-	GameObject* pATail = &m_pCollisionListTail[groupA];
-	GameObject* pBHeader = m_pCollisionListHeader[groupB].pCollisionNext;
-	GameObject* pBTail = &m_pCollisionListTail[groupB];
-	while (pA && pA != pATail)
-	{
-		GameObject* pB = pBHeader;
-		while (pB && pB != pBTail)
-		{
-			if (CheckWorlds(pA->world, pB->world)){
-				if (LuaSTGPlus::CollisionCheck(pA, pB))
-				{
-					// 根据id获取对象的lua绑定table、拿到class再拿到collifunc
-					lua_rawgeti(L, -1, pA->id + 1);  // ot t(object)
-					lua_rawgeti(L, -1, 1);  // ot t(object) t(class)
-					lua_rawgeti(L, -1, LGOBJ_CC_COLLI);  // ot t(object) t(class) f(colli)
-					lua_pushvalue(L, -3);  // ot t(object) t(class) f(colli) t(object)
-					lua_rawgeti(L, -5, pB->id + 1);  // ot t(object) t(class) f(colli) t(object) t(object)
-					lua_call(L, 2, 0);  // ot t(object) t(class)
-					lua_pop(L, 2);  // ot
-				}
-			}
-			pB = pB->pCollisionNext;
-		}
-		pA = pA->pCollisionNext;
-	}
-	//*/
 	for (auto itA = m_ColliList[groupA].begin(); itA != m_ColliList[groupA].end();) {
 		auto pA = *itA;
 		itA++;
@@ -759,13 +489,13 @@ void GameObjectPool::CollisionCheck(size_t groupA, size_t groupB)LNOEXCEPT
 				{
 					m_pCurrentObject = pA;
 					// 根据id获取对象的lua绑定table、拿到class再拿到collifunc
-					lua_rawgeti(L, -1, pA->id + 1);  // ot t(object)
-					lua_rawgeti(L, -1, 1);  // ot t(object) t(class)
-					lua_rawgeti(L, -1, LGOBJ_CC_COLLI);  // ot t(object) t(class) f(colli)
-					lua_pushvalue(L, -3);  // ot t(object) t(class) f(colli) t(object)
-					lua_rawgeti(L, -5, pB->id + 1);  // ot t(object) t(class) f(colli) t(object) t(object)
-					lua_call(L, 2, 0);  // ot t(object) t(class)
-					lua_pop(L, 2);  // ot
+					lua_rawgeti(L, -1, pA->id + 1);		// ot t(object)
+					lua_rawgeti(L, -1, 1);				// ot t(object) t(class)
+					lua_rawgeti(L, -1, LGOBJ_CC_COLLI);	// ot t(object) t(class) f(colli)
+					lua_pushvalue(L, -3);				// ot t(object) t(class) f(colli) t(object)
+					lua_rawgeti(L, -5, pB->id + 1);		// ot t(object) t(class) f(colli) t(object) t(object)
+					lua_call(L, 2, 0);					// ot t(object) t(class)
+					lua_pop(L, 2);						// ot
 				}
 #ifdef USING_MULTI_GAME_WORLD
 			}
@@ -780,23 +510,6 @@ void GameObjectPool::CollisionCheck(size_t groupA, size_t groupB)LNOEXCEPT
 void GameObjectPool::UpdateXY()LNOEXCEPT
 {
 	int superpause = GetSuperPauseTime();
-
-	/*
-	GameObject* p = m_pObjectListHeader.pObjectNext;
-	while (p && p != &m_pObjectListTail)
-	{
-		if (superpause <= 0 || p->ignore_superpause){
-			p->dx = p->x - p->lastx;
-			p->dy = p->y - p->lasty;
-			p->lastx = p->x;
-			p->lasty = p->y;
-			if (p->navi && (p->dx != 0 || p->dy != 0))
-				p->rot = atan2(p->dy, p->dx);
-
-		}
-		p = p->pObjectNext;
-	}
-	//*/
 
 	for (auto& p : m_UpdateList) {
 		if (superpause <= 0 || p->ignore_superpause) {
@@ -815,25 +528,6 @@ void GameObjectPool::AfterFrame()LNOEXCEPT
 {
 	int superpause = GetSuperPauseTime();
 
-	/*
-	GameObject* p = m_pObjectListHeader.pObjectNext;
-	while (p && p != &m_pObjectListTail)
-	{
-		if (superpause <= 0 || p->ignore_superpause){
-			p->timer++;
-			p->ani_timer++;
-			if (p->status != STATUS_DEFAULT)
-				p = freeObject(p);
-			else
-				p = p->pObjectNext;
-		}
-		else{
-			p = p->pObjectNext;
-		}
-		
-	}
-	//*/
-	
 	for (auto it = m_UpdateList.begin(); it != m_UpdateList.end();) {
 		auto p = *it;
 		it++;
@@ -854,32 +548,6 @@ int GameObjectPool::New(lua_State* L)LNOEXCEPT
 		return luaL_error(L, "invalid argument #1, luastg object class required for 'New'.");
 	}
 
-	/*
-	// 分配一个对象
-	size_t id = 0;
-	if (!m_ObjectPool.Alloc(id))
-		return luaL_error(L, "can't alloc object, object pool may be full.");
-	
-	// 设置对象
-	GameObject* p = m_ObjectPool.Data(id);
-	LASSERT(p);
-	p->Reset();
-	p->status = STATUS_DEFAULT;
-	p->id = id;
-	p->uid = m_iUid++;
-
-	if (m_pCurrentObject){
-		p->world = m_pCurrentObject->world;
-	}
-
-	// 插入链表域
-	LIST_INSERT_BEFORE(&m_pObjectListTail, p, Object);  // Object链表只与uid有关，因此总在末尾插入
-	LIST_INSERT_BEFORE(&m_pRenderListTail, p, Render);  // Render链表在插入后还需要进行排序
-	LIST_INSERT_BEFORE(&m_pCollisionListTail[p->group], p, Collision);  // 为保证兼容性，对Collision也做排序
-	LIST_INSERT_SORT(p, Render, RenderListSortFunc);
-	LIST_INSERT_SORT(p, Collision, ObjectListSortFunc);
-	//*/
-	
 	// 分配一个对象
 	GameObject* p = _AllocObject();
 	if (p == nullptr) {
@@ -892,7 +560,6 @@ int GameObjectPool::New(lua_State* L)LNOEXCEPT
 	p->luaclass.CheckClassClass(L, 1);
 #endif // USING_ADVANCE_GAMEOBJECT_CLASS
 	GETOBJTABLE;								// t(class) ... ot
-
 	lua_createtable(L, 2, 0);					// t(class) ... ot t(object)
 	lua_pushvalue(L, 1);						// t(class) ... ot t(object) class
 	lua_rawseti(L, -2, 1);						// t(class) ... ot t(object)  设置class
@@ -909,7 +576,6 @@ int GameObjectPool::New(lua_State* L)LNOEXCEPT
 	lua_pushvalue(L, 1);						// t(object) t(class) f(init) ... t(object)
 	lua_insert(L, 4);							// t(object) t(class) f(init) t(object) ...
 	lua_call(L, lua_gettop(L) - 3, 0);			// t(object) t(class)  执行构造函数
-
 	lua_pop(L, 1);								// t(object)
 
 	p->lastx = p->x;
@@ -922,31 +588,6 @@ int GameObjectPool::Add(lua_State* L)LNOEXCEPT
 	// 检查参数
 	if (!lua_istable(L, 1))
 	return luaL_error(L, "invalid argument #1, luastg object required for 'Add'.");
-//	lua_getfield(L, 1, "is_class");  // t(class) ... b
-//	if (!lua_toboolean(L, -1))
-//		return luaL_error(L, "invalid argument #1, luastg object class required for 'New'.");
-//	lua_pop(L, 1);  // t(class) ...
-	/*
-	// 分配一个对象
-	size_t id = 0;
-	if (!m_ObjectPool.Alloc(id))
-		return luaL_error(L, "can't alloc object, object pool may be full.");
-
-	// 设置对象
-	GameObject* p = m_ObjectPool.Data(id);
-	LASSERT(p);
-	p->Reset();
-	p->status = STATUS_DEFAULT;
-	p->id = id;
-	p->uid = m_iUid++;
-
-	// 插入链表域
-	LIST_INSERT_BEFORE(&m_pObjectListTail, p, Object);  // Object链表只与uid有关，因此总在末尾插入
-	LIST_INSERT_BEFORE(&m_pRenderListTail, p, Render);  // Render链表在插入后还需要进行排序
-	LIST_INSERT_BEFORE(&m_pCollisionListTail[p->group], p, Collision);  // 为保证兼容性，对Collision也做排序
-	LIST_INSERT_SORT(p, Render, RenderListSortFunc);
-	LIST_INSERT_SORT(p, Collision, ObjectListSortFunc);
-	//*/
 
 	GameObject* p = _AllocObject();
 	if (p == nullptr) {
@@ -998,10 +639,10 @@ int GameObjectPool::Del(lua_State* L)LNOEXCEPT
 		p->status = STATUS_DEL;
 
 		// 调用类中的回调方法
-		lua_rawgeti(L, 1, 1);  // t(object) ... class
-		lua_rawgeti(L, -1, LGOBJ_CC_DEL);  // t(object) ... class f(del)
-		lua_insert(L, 1);  // f(del) t(object) ... class
-		lua_pop(L, 1);  // f(del) t(object) ...
+		lua_rawgeti(L, 1, 1);				// t(object) ... class
+		lua_rawgeti(L, -1, LGOBJ_CC_DEL);	// t(object) ... class f(del)
+		lua_insert(L, 1);					// f(del) t(object) ... class
+		lua_pop(L, 1);						// f(del) t(object) ...
 		lua_call(L, lua_gettop(L) - 1, 0);
 	}
 	return 0;
@@ -1022,10 +663,10 @@ int GameObjectPool::Kill(lua_State* L)LNOEXCEPT
 		p->status = STATUS_KILL;
 
 		// 调用类中的回调方法
-		lua_rawgeti(L, 1, 1);  // t(object) ... class
-		lua_rawgeti(L, -1, LGOBJ_CC_KILL);  // t(object) ... class f(kill)
-		lua_insert(L, 1);  // f(kill) t(object) ... class
-		lua_pop(L, 1);  // f(kill) t(object) ...
+		lua_rawgeti(L, 1, 1);				// t(object) ... class
+		lua_rawgeti(L, -1, LGOBJ_CC_KILL);	// t(object) ... class f(kill)
+		lua_insert(L, 1);					// f(kill) t(object) ... class
+		lua_pop(L, 1);						// f(kill) t(object) ...
 		lua_call(L, lua_gettop(L) - 1, 0);
 	}
 	return 0;
@@ -1206,12 +847,6 @@ bool GameObjectPool::BoxCheck(size_t id, double left, double right, double top, 
 
 void GameObjectPool::ResetPool()LNOEXCEPT
 {
-	/*
-	GameObject* p = m_pObjectListHeader.pObjectNext;
-	while (p != &m_pObjectListTail)
-		p = freeObject(p);
-	//*/
-
 	for (auto it = m_UpdateList.begin(); it != m_UpdateList.end();) {
 		auto p = *it;
 		it++;
@@ -1348,28 +983,6 @@ int GameObjectPool::NextObject(int groupId, int id)LNOEXCEPT
 	if (!p)
 		return -1;
 
-	/*
-	// 如果不是一个有效的分组，则在整个对象表中遍历
-	if (groupId < 0 || groupId >= LGOBJ_GROUPCNT)
-	{
-		p = p->pObjectNext;
-		if (p == &m_pObjectListTail)
-			return -1;
-		else
-			return static_cast<int>(p->id);
-	}
-	else
-	{
-		if (p->group != groupId)
-			return -1;
-		p = p->pCollisionNext;
-		if (p == &m_pCollisionListTail[groupId])
-			return -1;
-		else
-			return static_cast<int>(p->id);
-	}
-	//*/
-
 	// 如果不是一个有效的分组，则在整个对象表中遍历
 	if (groupId < 0 || groupId >= LGOBJ_GROUPCNT)
 	{
@@ -1415,28 +1028,6 @@ int GameObjectPool::NextObject(lua_State* L)LNOEXCEPT
 
 int GameObjectPool::FirstObject(int groupId)LNOEXCEPT
 {
-	/*
-	GameObject* p;
-
-	// 如果不是一个有效的分组，则在整个对象表中遍历
-	if (groupId < 0 || groupId >= LGOBJ_GROUPCNT)
-	{
-		p = m_pObjectListHeader.pObjectNext;
-		if (p == &m_pObjectListTail)
-			return -1;
-		else
-			return static_cast<int>(p->id);
-	}
-	else
-	{
-		p = m_pCollisionListHeader[groupId].pCollisionNext;
-		if (p == &m_pCollisionListTail[groupId])
-			return -1;
-		else
-			return static_cast<int>(p->id);
-	}
-	//*/
-
 	// 如果不是一个有效的分组，则在整个对象表中遍历
 	if (groupId < 0 || groupId >= LGOBJ_GROUPCNT)
 	{
@@ -1793,34 +1384,9 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 		break;
 #endif
 	case GameObjectProperty::LAYER:
-		/*
-		p->layer = luaL_checknumber(L, 3);
-		LIST_INSERT_SORT(p, Render, RenderListSortFunc); // 刷新p的渲染层级
-		LASSERT(m_pRenderListHeader.pRenderNext != nullptr);
-		LASSERT(m_pRenderListTail.pRenderPrev != nullptr);
-		//*/
 		_SetObjectLayer(p, luaL_checknumber(L, 3));
 		break;
 	case GameObjectProperty::GROUP:
-		/*
-		do
-		{
-			int group = luaL_checkinteger(L, 3);
-			if (group != p->group)
-			{
-				if (0 <= p->group && p->group < LGOBJ_GROUPCNT)
-					LIST_REMOVE(p, Collision);
-				p->group = group;
-				if (0 <= group && group < LGOBJ_GROUPCNT)
-				{
-					LIST_INSERT_BEFORE(&m_pCollisionListTail[group], p, Collision);
-					LIST_INSERT_SORT(p, Collision, ObjectListSortFunc);  // 刷新p的碰撞次序
-					LASSERT(m_pCollisionListHeader[group].pCollisionNext != nullptr);
-					LASSERT(m_pCollisionListTail[group].pCollisionPrev != nullptr);
-				}
-			}
-		} while (false);
-		//*/
 	{
 		int group = luaL_checkinteger(L, 3);
 		if (0 <= group && group < LGOBJ_GROUPCNT)
@@ -2177,34 +1743,9 @@ int GameObjectPool::InitAttr(lua_State* L)LNOEXCEPT  // t(object)
 				break;
 #endif
 			case GameObjectProperty::LAYER:
-				/*
-				p->layer = luaL_checknumber(L, 3);
-				LIST_INSERT_SORT(p, Render, RenderListSortFunc); // 刷新p的渲染层级
-				LASSERT(m_pRenderListHeader.pRenderNext != nullptr);
-				LASSERT(m_pRenderListTail.pRenderPrev != nullptr);
-				//*/
 				_SetObjectLayer(p, luaL_checknumber(L, 3));
 				break;
 			case GameObjectProperty::GROUP:
-				/*
-				do
-				{
-					int group = luaL_checkinteger(L, 3);
-					if (group != p->group)
-					{
-						if (0 <= p->group && p->group < LGOBJ_GROUPCNT)
-							LIST_REMOVE(p, Collision);
-						p->group = group;
-						if (0 <= group && group < LGOBJ_GROUPCNT)
-						{
-							LIST_INSERT_BEFORE(&m_pCollisionListTail[group], p, Collision);
-							LIST_INSERT_SORT(p, Collision, ObjectListSortFunc);  // 刷新p的碰撞次序
-							LASSERT(m_pCollisionListHeader[group].pCollisionNext != nullptr);
-							LASSERT(m_pCollisionListTail[group].pCollisionPrev != nullptr);
-						}
-					}
-				} while (false);
-				//*/
 			{
 				int group = luaL_checkinteger(L, 3);
 				if (0 <= group && group < LGOBJ_GROUPCNT)
@@ -2439,195 +1980,6 @@ int GameObjectPool::ParticleSetEmission(lua_State* L)LNOEXCEPT
 
 void GameObjectPool::DrawGroupCollider(f2dGraphics2D* graph, f2dGeometryRenderer* grender, int groupId, fcyColor fillColor)
 {
-	/*
-	GameObject* p = m_pCollisionListHeader[groupId].pCollisionNext;
-	GameObject* pTail = &m_pCollisionListTail[groupId];
-	lua_Integer world = GetWorldFlag();
-	while (p && p != pTail)
-	{
-		if (p->colli && CheckWorld(p->world, world))
-		{
-#ifdef USING_ADVANCE_COLLIDER
-			for (int select = 0; select < MAX_COLLIDERS_COUNT; select++) {
-				GameObjectCollider cc = p->colliders[select];
-				if (cc.type == GameObjectColliderType::None) { break; }
-
-				cc.caloffset(p->x, p->y, p->rot);
-				switch (cc.type)
-				{
-				case GameObjectColliderType::Circle:
-					grender->FillCircle(graph, fcyVec2(cc.absx, cc.absy), cc.a, fillColor, fillColor,
-						cc.a < 10.0 ? 6 : (cc.a < 20.0 ? 16 : 32));
-					break;
-				case GameObjectColliderType::OBB:
-				{
-					fcyVec2 tHalfSize(cc.a, cc.b);
-					// 计算出矩形的4个顶点
-					f2dGraphics2DVertex tFinalPos[4] =
-					{
-						{ -tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 0.0f },
-						{ tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
-						{ tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },
-						{ -tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
-					};
-					float tSin, tCos;
-					SinCos(cc.absrot, tSin, tCos);
-					// 变换
-					for (int i = 0; i < 4; i++)
-					{
-						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
-							ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-						tFinalPos[i].x = tx + cc.absx;
-						tFinalPos[i].y = ty + cc.absy;
-					}
-					graph->DrawQuad(nullptr, tFinalPos);
-					break;
-				}
-				case GameObjectColliderType::Ellipse:
-				{
-					const int vertcount = 37;//分割36份，还要中心一个点
-					const int indexcount = 111;//37*3加一个组成封闭图形
-					//准备顶点索引
-					fuShort index[indexcount];
-					{
-						for (int i = 0; i < (vertcount - 1); i++) {
-							index[i * 3] = 0;//中心点
-							index[i * 3 + 1] = i;//1
-							index[i * 3 + 2] = i + 1;//2
-							//index[i * 3 + 3] = i + 1;//2 //fancy2d貌似不是以三角形为单位……
-						}
-						index[108] = 0;//中心点
-						index[109] = 36;//1
-						index[110] = 1;//2
-					}
-					//准备顶点
-					f2dGraphics2DVertex vert[vertcount];
-					{
-						vert[0].x = 0.0f;
-						vert[0].y = 0.0f;
-						vert[0].z = 0.5f;//2D下固定z0.5
-						vert[0].color = fillColor.argb;
-						vert[0].u = 0.0f; vert[0].v = 0.0f;//没有使用到贴图，uv是多少无所谓
-						float angle;
-						for (int i = 1; i < vertcount; i++) {
-							//椭圆参方
-							angle = 10.0f * (i - 1) * LDEGREE2RAD;
-							vert[i].x = cc.a * std::cosf(angle);
-							vert[i].y = cc.b * std::sinf(angle);
-							vert[i].z = 0.5f;//2D下固定z0.5
-							vert[i].color = fillColor.argb;
-							vert[i].u = 0.0f; vert[i].v = 0.0f;//没有使用到贴图，uv是多少无所谓
-						}
-					}
-					// 变换
-					{
-						float tSin, tCos;
-						SinCos(cc.absrot, tSin, tCos);
-						for (int i = 0; i < vertcount; i++)
-						{
-							fFloat tx = vert[i].x * tCos - vert[i].y * tSin,
-								ty = vert[i].x * tSin + vert[i].y * tCos;
-							vert[i].x = tx + cc.absx;
-							vert[i].y = ty + cc.absy;
-						}
-					}
-					//绘制
-					graph->DrawRaw(nullptr, vertcount, indexcount, vert, index, false);
-					break;
-				}
-				case GameObjectColliderType::Diamond:
-				{
-					fcyVec2 tHalfSize(cc.a, cc.b);
-					// 计算出菱形的4个顶点
-					f2dGraphics2DVertex tFinalPos[4] =
-					{
-						{  tHalfSize.x,         0.0f, 0.5f, fillColor.argb, 0.0f, 0.0f },
-						{         0.0f, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
-						{ -tHalfSize.x,         0.0f, 0.5f, fillColor.argb, 1.0f, 1.0f },
-						{         0.0f,  tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
-					};
-					float tSin, tCos;
-					SinCos(cc.absrot, tSin, tCos);
-					// 变换
-					for (int i = 0; i < 4; i++)
-					{
-						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
-							ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-						tFinalPos[i].x = tx + cc.absx;
-						tFinalPos[i].y = ty + cc.absy;
-					}
-					graph->DrawQuad(nullptr, tFinalPos);
-					break;
-				}
-				case GameObjectColliderType::Triangle:
-				{
-					fcyVec2 tHalfSize(cc.a, cc.b);
-					// 计算出菱形的4个顶点
-					f2dGraphics2DVertex tFinalPos[4] =
-					{
-						{  tHalfSize.x,         0.0f, 0.5f, fillColor.argb, 0.0f, 0.0f },
-						{ -tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
-						{ -tHalfSize.x,  tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },
-						{ -tHalfSize.x,  tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },//和第三个点相同
-					};
-					float tSin, tCos;
-					SinCos(cc.absrot, tSin, tCos);
-					// 变换
-					for (int i = 0; i < 4; i++)
-					{
-						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
-							ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-						tFinalPos[i].x = tx + cc.absx;
-						tFinalPos[i].y = ty + cc.absy;
-					}
-					graph->DrawQuad(nullptr, tFinalPos);
-					break;
-				}
-				case GameObjectColliderType::Point:
-					//点使用直径1的圆来替代
-					grender->FillCircle(graph, fcyVec2(cc.absx, cc.absy), 0.5f, fillColor, fillColor, 3);
-					break;
-				}
-			}
-#else
-			if (p->rect || p->a != p->b)
-			{
-				fcyVec2 tHalfSize((float)p->a, (float)p->b);
-
-				// 计算出矩形的4个顶点
-				f2dGraphics2DVertex tFinalPos[4] =
-				{
-					{ -tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 0.0f },
-					{ tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
-					{ tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },
-					{ -tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
-				};
-
-				float tSin, tCos;
-				SinCos((float)p->rot, tSin, tCos);
-
-				// 变换
-				for (int i = 0; i < 4; i++)
-				{
-					fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
-						ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-					tFinalPos[i].x = tx + (float)p->x; tFinalPos[i].y = ty + (float)p->y;
-				}
-
-				graph->DrawQuad(nullptr, tFinalPos);
-			}
-			else
-			{
-				grender->FillCircle(graph, fcyVec2((float)p->x, (float)p->y), (float)p->a, fillColor, fillColor,
-					p->a < 10 ? 3 : (p->a < 20 ? 6 : 8));
-			}
-#endif // USING_ADVANCE_COLLIDER
-		}
-
-		p = p->pCollisionNext;
-	}
-	//*/
-	
 #ifdef USING_MULTI_GAME_WORLD
 	lua_Integer world = GetWorldFlag();
 #endif // USING_MULTI_GAME_WORLD
@@ -2833,163 +2185,6 @@ void GameObjectPool::DrawGroupCollider2(int groupId, fcyColor fillColor)
 	F2DGRAPH2DBLENDTYPE txState = graph->GetColorBlendType();
 	graph->SetColorBlendType(F2DGRAPH2DBLENDTYPE_ADD);//修复反色混合模式的时候会出现颜色异常的问题
 
-	/*
-	GameObject* p = m_pCollisionListHeader[groupId].pCollisionNext;
-	GameObject* pTail = &m_pCollisionListTail[groupId];
-	lua_Integer world = GetWorldFlag();
-	while (p && p != pTail)
-	{
-		if (p->colli && CheckWorld(p->world, world))
-		{
-#ifdef USING_ADVANCE_COLLIDER
-			for (int select = 0; select < MAX_COLLIDERS_COUNT; select++) {
-				GameObjectCollider cc = p->colliders[select];
-				if (cc.type == GameObjectColliderType::None) { break; }
-
-				cc.caloffset(p->x, p->y, p->rot);
-				switch (cc.type)
-				{
-				case GameObjectColliderType::Circle:
-					grender->FillCircle(graph, fcyVec2(cc.absx, cc.absy), cc.a, fillColor, fillColor,
-						cc.a < 10.0 ? 6 : (cc.a < 20.0 ? 16 : 32));
-					break;
-				case GameObjectColliderType::OBB:
-				{
-					fcyVec2 tHalfSize(cc.a, cc.b);
-					// 计算出矩形的4个顶点
-					f2dGraphics2DVertex tFinalPos[4] =
-					{
-						{ -tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 0.0f },
-						{ tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
-						{ tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },
-						{ -tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
-					};
-					float tSin, tCos;
-					SinCos(cc.absrot, tSin, tCos);
-					// 变换
-					for (int i = 0; i < 4; i++)
-					{
-						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
-							ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-						tFinalPos[i].x = tx + cc.absx;
-						tFinalPos[i].y = ty + cc.absy;
-					}
-					graph->DrawQuad(nullptr, tFinalPos);
-					break;
-				}
-				case GameObjectColliderType::Ellipse:
-				{
-					const int vertcount = 37;//分割36份，还要中心一个点
-					const int indexcount = 111;//37*3加一个组成封闭图形
-					//准备顶点索引
-					fuShort index[indexcount];
-					{
-						for (int i = 0; i < (vertcount - 1); i++) {
-							index[i * 3] = 0;//中心点
-							index[i * 3 + 1] = i;//1
-							index[i * 3 + 2] = i + 1;//2
-							//index[i * 3 + 3] = i + 1;//2 //fancy2d貌似不是以三角形为单位……
-						}
-						index[108] = 0;//中心点
-						index[109] = 36;//1
-						index[110] = 1;//2
-					}
-					//准备顶点
-					f2dGraphics2DVertex vert[vertcount];
-					{
-						vert[0].x = 0.0f;
-						vert[0].y = 0.0f;
-						vert[0].z = 0.5f;//2D下固定z0.5
-						vert[0].color = fillColor.argb;
-						vert[0].u = 0.0f; vert[0].v = 0.0f;//没有使用到贴图，uv是多少无所谓
-						float angle;
-						for (int i = 1; i < vertcount; i++) {
-							//椭圆参方
-							angle = 10.0f * (i - 1) * LDEGREE2RAD;
-							vert[i].x = cc.a * std::cosf(angle);
-							vert[i].y = cc.b * std::sinf(angle);
-							vert[i].z = 0.5f;//2D下固定z0.5
-							vert[i].color = fillColor.argb;
-							vert[i].u = 0.0f; vert[i].v = 0.0f;//没有使用到贴图，uv是多少无所谓
-						}
-					}
-					// 变换
-					{
-						float tSin, tCos;
-						SinCos(cc.absrot, tSin, tCos);
-						for (int i = 0; i < vertcount; i++)
-						{
-							fFloat tx = vert[i].x * tCos - vert[i].y * tSin,
-								ty = vert[i].x * tSin + vert[i].y * tCos;
-							vert[i].x = tx + cc.absx;
-							vert[i].y = ty + cc.absy;
-						}
-					}
-					//绘制
-					graph->DrawRaw(nullptr, vertcount, indexcount, vert, index, false);
-					break;
-				}
-				case GameObjectColliderType::Diamond:
-				{
-					fcyVec2 tHalfSize(cc.a, cc.b);
-					// 计算出菱形的4个顶点
-					f2dGraphics2DVertex tFinalPos[4] =
-					{
-						{  tHalfSize.x,         0.0f, 0.5f, fillColor.argb, 0.0f, 0.0f },
-						{         0.0f, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
-						{ -tHalfSize.x,         0.0f, 0.5f, fillColor.argb, 1.0f, 1.0f },
-						{         0.0f,  tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
-					};
-					float tSin, tCos;
-					SinCos(cc.absrot, tSin, tCos);
-					// 变换
-					for (int i = 0; i < 4; i++)
-					{
-						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
-							ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-						tFinalPos[i].x = tx + cc.absx;
-						tFinalPos[i].y = ty + cc.absy;
-					}
-					graph->DrawQuad(nullptr, tFinalPos);
-					break;
-				}
-				case GameObjectColliderType::Triangle:
-				{
-					fcyVec2 tHalfSize(cc.a, cc.b);
-					// 计算出菱形的4个顶点
-					f2dGraphics2DVertex tFinalPos[4] =
-					{
-						{  tHalfSize.x,         0.0f, 0.5f, fillColor.argb, 0.0f, 0.0f },
-						{ -tHalfSize.x, -tHalfSize.y, 0.5f, fillColor.argb, 0.0f, 1.0f },
-						{ -tHalfSize.x,  tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },
-						{ -tHalfSize.x,  tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },//和第三个点相同
-					};
-					float tSin, tCos;
-					SinCos(cc.absrot, tSin, tCos);
-					// 变换
-					for (int i = 0; i < 4; i++)
-					{
-						fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
-							ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-						tFinalPos[i].x = tx + cc.absx;
-						tFinalPos[i].y = ty + cc.absy;
-					}
-					graph->DrawQuad(nullptr, tFinalPos);
-					break;
-				}
-				case GameObjectColliderType::Point:
-					//点使用直径1的圆来替代
-					grender->FillCircle(graph, fcyVec2(cc.absx, cc.absy), 0.5f, fillColor, fillColor, 3);
-					break;
-				}
-			}
-#endif // USING_ADVANCE_COLLIDER
-		}
-
-		p = p->pCollisionNext;
-	}
-	//*/
-	
 #ifdef USING_MULTI_GAME_WORLD
 	lua_Integer world = GetWorldFlag();
 #endif // USING_MULTI_GAME_WORLD
