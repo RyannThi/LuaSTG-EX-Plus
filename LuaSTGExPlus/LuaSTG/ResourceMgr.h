@@ -1,8 +1,14 @@
 ﻿#pragma once
 #include "Global.h"
-#include "ObjectPool.hpp"
 #include "Dictionary.hpp"
-#include "E2DMath.hpp"
+#include "ResourceTexture.hpp"
+#include "ResourceSprite.hpp"
+#include "ResourceAnimation.hpp"
+#include "ResourceParticle.hpp"
+#include "ResourceFont.hpp"
+#include "ResourceFX.hpp"
+#include "ResourceAudio.hpp"
+#include "ResourceModel.hpp"
 
 #ifdef LoadImage
 #undef LoadImage
@@ -12,22 +18,7 @@ namespace LuaSTGPlus
 {
 	class ResourceMgr;
 
-	/// @brief 资源类型
-	enum class ResourceType
-	{
-		Texture = 1,
-		Sprite,
-		Animation,
-		Music,
-		SoundEffect,
-		Particle,
-		SpriteFont,
-		TrueTypeFont,
-		FX,
-		Model
-	};
-
-	/// @brief 资源池类型
+	// 资源池类型
 	enum class ResourcePoolType
 	{
 		None = 0,
@@ -35,582 +26,7 @@ namespace LuaSTGPlus
 		Stage
 	};
 
-	/// @brief 混合模式
-	enum class BlendMode
-	{
-		__RESERVE__ = 0,
-
-		MulAlpha   =  1,//顶点色和纹理色相乘 混合模式：正常（透明度混合）
-		MulAdd     =  2,//顶点色和纹理色相乘 混合模式：线性减淡（加法）
-		MulRev     =  3,//顶点色和纹理色相乘 混合模式：减去（减法）
-		MulSub     =  4,//顶点色和纹理色相乘 混合模式：（图片被底图减）
-		AddAlpha   =  5,//顶点色和纹理色相加 混合模式：正常（透明度混合）
-		AddAdd     =  6,//顶点色和纹理色相加 混合模式：线性减淡（加法）
-		AddRev     =  7,//顶点色和纹理色相加 混合模式：减去（减法）
-		AddSub     =  8,//顶点色和纹理色相加 混合模式：（图片被底图减）
-
-		AlphaBal   =  9,//顶点色和纹理色相乘 混合模式：（反色）
-
-		MulMin     = 10,//顶点色和纹理色相乘 混合模式：变暗（取小）
-		MulMax     = 11,//顶点色和纹理色相乘 混合模式：变亮（取大）
-		MulMutiply = 12,//顶点色和纹理色相乘 混合模式：正片叠底（相乘）
-		MulScreen  = 13,//顶点色和纹理色相乘 混合模式：滤色（相加减去相乘）
-		AddMin     = 14,//顶点色和纹理色相加 混合模式：变暗（取小）
-		AddMax     = 15,//顶点色和纹理色相加 混合模式：变亮（取大）
-		AddMutiply = 16,//顶点色和纹理色相加 混合模式：正片叠底（相乘）
-		AddScreen  = 17,//顶点色和纹理色相加 混合模式：滤色（相加减去相乘）
-		
-		_KEY_NOT_FOUND = -1,
-	};
-	
-	/// @brief 资源接口
-	class Resource :
-		public fcyRefObjImpl<fcyRefObj>
-	{
-	private:
-		ResourceType m_Type;
-		std::string m_ResName;
-	public:
-		ResourceType GetType()const LNOEXCEPT { return m_Type; }
-		const std::string& GetResName()const LNOEXCEPT { return m_ResName; }
-	private:
-		Resource& operator=(const Resource&);
-		Resource(const Resource&);
-	public:
-		Resource(ResourceType t, const char* name)
-			: m_Type(t), m_ResName(name) {}
-	};
-
-	/// @brief 纹理资源
-	class ResTexture :
-		public Resource
-	{
-	private:
-		fcyRefPointer<f2dTexture2D> m_Texture;
-	public:
-		f2dTexture2D* GetTexture() { return m_Texture; }
-		bool IsRenderTarget() { return m_Texture->IsRenderTarget(); }
-	public:
-		ResTexture(const char* name, fcyRefPointer<f2dTexture2D> tex)
-			: Resource(ResourceType::Texture, name), m_Texture(tex) {}
-	};
-
-	/// @brief 纹理资源
-	class ResModel :
-		public Resource
-	{
-	private:
-		void * m_Model;
-	public:
-		void * GetModel() { return m_Model; }
-	public:
-		ResModel(const char* name, void * model)
-			: Resource(ResourceType::Model, name), m_Model(model) {}
-	};
-
-	/// @brief 图像资源
-	class ResSprite :
-		public Resource
-	{
-	private:
-		fcyRefPointer<f2dSprite> m_Sprite;
-		BlendMode m_BlendMode = BlendMode::MulAlpha;
-		double m_HalfSizeX = 0.;
-		double m_HalfSizeY = 0.;
-		bool m_bRectangle = false;
-	public:
-		f2dSprite* GetSprite()LNOEXCEPT { return m_Sprite; }
-		BlendMode GetBlendMode()const LNOEXCEPT { return m_BlendMode; }
-		void SetBlendMode(BlendMode m)LNOEXCEPT { m_BlendMode = m; }
-		double GetHalfSizeX()const LNOEXCEPT { return m_HalfSizeX; }
-		double GetHalfSizeY()const LNOEXCEPT { return m_HalfSizeY; }
-		bool IsRectangle()const LNOEXCEPT { return m_bRectangle; }
-	public:
-		ResSprite(const char* name, fcyRefPointer<f2dSprite> sprite, double hx, double hy, bool rect)
-			: Resource(ResourceType::Sprite, name), m_Sprite(sprite), m_HalfSizeX(hx), m_HalfSizeY(hy), m_bRectangle(rect)
-		{
-			m_Sprite->SetColor(0xFFFFFFFF);  // 适应乘法
-		}
-	};
-
-	/// @brief 动画资源
-	class ResAnimation :
-		public Resource
-	{
-	private:
-		std::vector<fcyRefPointer<f2dSprite>> m_ImageSequences;
-		fuInt m_Interval = 1;
-		BlendMode m_BlendMode = BlendMode::MulAlpha;
-		double m_HalfSizeX = 0.;
-		double m_HalfSizeY = 0.;
-		bool m_bRectangle = false;
-	public:
-		size_t GetCount()const LNOEXCEPT { return m_ImageSequences.size(); }
-		f2dSprite* GetSprite(fuInt index)LNOEXCEPT
-		{
-			if (index >= GetCount())
-				return nullptr;
-			return m_ImageSequences[index];
-		}
-		fuInt GetInterval()const LNOEXCEPT { return m_Interval; }
-		BlendMode GetBlendMode()const LNOEXCEPT { return m_BlendMode; }
-		void SetBlendMode(BlendMode m)LNOEXCEPT { m_BlendMode = m; }
-		double GetHalfSizeX()const LNOEXCEPT { return m_HalfSizeX; }
-		double GetHalfSizeY()const LNOEXCEPT { return m_HalfSizeY; }
-		bool IsRectangle()const LNOEXCEPT { return m_bRectangle; }
-	public:
-		ResAnimation(const char* name, fcyRefPointer<ResTexture> tex, float x, float y, float w, float h,
-			int n, int m, int intv, double a, double b, bool rect = false);
-	};
-
-	/// @brief 粒子系统
-	/// @note HGE粒子系统的f2d实现
-	class ResParticle :
-		public Resource
-	{
-	public:
-		/// @brief 粒子信息
-		struct ParticleInfo
-		{
-			fuInt iBlendInfo;
-
-			int nEmission;  // 每秒发射个数
-			float fLifetime;  // 生命期
-			float fParticleLifeMin;  // 粒子最小生命期
-			float fParticleLifeMax;  // 粒子最大生命期
-			float fDirection;  // 发射方向
-			float fSpread;  // 偏移角度
-			bool bRelative;  // 使用相对值还是绝对值
-
-			float fSpeedMin;  // 速度最小值
-			float fSpeedMax;  // 速度最大值
-
-			float fGravityMin;  // 重力最小值
-			float fGravityMax;  // 重力最大值
-
-			float fRadialAccelMin;  // 最低线加速度
-			float fRadialAccelMax;  // 最高线加速度
-
-			float fTangentialAccelMin;  // 最低角加速度
-			float fTangentialAccelMax;  // 最高角加速度
-
-			float fSizeStart;  // 起始大小
-			float fSizeEnd;  // 最终大小
-			float fSizeVar;  // 大小抖动值
-
-			float fSpinStart;  // 起始自旋
-			float fSpinEnd;  // 最终自旋
-			float fSpinVar;  // 自旋抖动值
-
-			float colColorStart[4];  // 起始颜色(rgba)
-			float colColorEnd[4];  // 最终颜色
-			float fColorVar;  // 颜色抖动值
-			float fAlphaVar;  // alpha抖动值
-		};
-		/// @brief 粒子实例
-		struct ParticleInstance
-		{
-			fcyVec2 vecLocation;  // 位置
-			fcyVec2 vecVelocity;  // 速度
-
-			float fGravity;  // 重力
-			float fRadialAccel;  // 线加速度
-			float fTangentialAccel;  // 角加速度
-
-			float fSpin;  // 自旋
-			float fSpinDelta;  // 自旋增量
-
-			float fSize;  // 大小
-			float fSizeDelta;  // 大小增量
-
-			float colColor[4];  // 颜色
-			float colColorDelta[4];  // 颜色增量
-
-			float fAge;  // 当前存活时间
-			float fTerminalAge;  // 终止时间
-		};
-		/// @brief 粒子池
-		class ParticlePool
-		{
-			friend class ResParticle;
-		public:
-			enum class Status
-			{
-				Alive,
-				Sleep
-			};
-		private:
-			fcyRefPointer<ResParticle> m_pInstance;  // 信息
-
-			BlendMode m_BlendMode = BlendMode::MulAlpha;
-			fcyColor m_MixColor;//渲染时整体颜色
-			Status m_iStatus = Status::Alive;  // 状态
-			fcyVec2 m_vCenter;  // 中心
-			fcyVec2 m_vPrevCenter;  // 上一个中心
-			float m_fRotation = 0.f;  // 方向
-			size_t m_iAlive = 0;  // 存活数
-			float m_fAge = 0.f;  // 已存活时间
-			float m_fEmission = 0.f;  // 每秒发射数
-			float m_fEmissionResidue = 0.f;  // 不足的粒子数
-			std::array<ParticleInstance, LPARTICLE_MAXCNT> m_ParticlePool;
-		public:
-			size_t GetAliveCount()const LNOEXCEPT { return m_iAlive; }
-			BlendMode GetBlendMode()const LNOEXCEPT { return m_BlendMode; }
-			void SetBlendMode(BlendMode m)LNOEXCEPT { m_BlendMode = m; }
-			fcyColor GetMixColor()LNOEXCEPT { return m_MixColor; }
-			void SetMixColor(fcyColor c)LNOEXCEPT { m_MixColor = c; }
-			float GetEmission()const LNOEXCEPT { return m_fEmission; }
-			void SetEmission(float e)LNOEXCEPT { m_fEmission = e; }
-			bool IsActived()const LNOEXCEPT { return m_iStatus == Status::Alive; }
-			void SetActive()LNOEXCEPT
-			{
-				m_iStatus = Status::Alive;
-				m_fAge = 0.f;
-			}
-			void SetInactive()LNOEXCEPT
-			{
-				m_iStatus = Status::Sleep;
-			}
-			void SetCenter(fcyVec2 pos)LNOEXCEPT
-			{
-				if (m_iStatus == Status::Alive)
-					m_vPrevCenter = m_vCenter;
-				else
-					m_vPrevCenter = pos;
-				m_vCenter = pos;
-			}
-			void SetRotation(float r)LNOEXCEPT { m_fRotation = r; }
-			void Update(float delta);
-			void Render(f2dGraphics2D* graph, float scaleX, float scaleY);
-		public:
-			ParticlePool(fcyRefPointer<ResParticle> ref);
-		};
-	private:
-		static fcyMemPool<sizeof(ParticlePool)> s_MemoryPool;
-
-		fcyRefPointer<f2dSprite> m_BindedSprite;
-		BlendMode m_BlendMode = BlendMode::MulAlpha;
-		ParticleInfo m_ParticleInfo;
-		double m_HalfSizeX = 0.;
-		double m_HalfSizeY = 0.;
-		bool m_bRectangle = false;
-	public:
-		ParticlePool* AllocInstance()LNOEXCEPT;
-		void FreeInstance(ParticlePool* p)LNOEXCEPT;
-
-		f2dSprite* GetBindedSprite()LNOEXCEPT { return m_BindedSprite; }
-		const ParticleInfo& GetParticleInfo()const LNOEXCEPT { return m_ParticleInfo; }
-		double GetHalfSizeX()const LNOEXCEPT { return m_HalfSizeX; }
-		double GetHalfSizeY()const LNOEXCEPT { return m_HalfSizeY; }
-		bool IsRectangle()const LNOEXCEPT { return m_bRectangle; }
-	public:
-		ResParticle(const char* name, const ParticleInfo& pinfo, fcyRefPointer<f2dSprite> sprite, BlendMode bld, double a, double b, bool rect = false);
-	};
-
-	/// @brief 纹理字体
-	class ResFont :
-		public Resource
-	{
-	public:
-		enum class FontAlignHorizontal  // 水平对齐
-		{
-			Left,
-			Center,
-			Right
-		};
-		enum class FontAlignVertical  // 垂直对齐
-		{
-			Top,
-			Middle,
-			Bottom
-		};
-
-		class HGEFont :
-			public fcyRefObjImpl<f2dFontProvider>
-		{
-		public:
-			static void ReadDefine(const std::wstring& data, std::unordered_map<wchar_t, f2dGlyphInfo>& out, std::wstring& tex);
-		private:
-			fcyRefPointer<f2dTexture2D> m_pTex;
-			std::unordered_map<wchar_t, f2dGlyphInfo> m_Charset;
-			float m_fLineHeight;
-		public:
-			fFloat GetLineHeight();
-			fFloat GetAscender();
-			fFloat GetDescender();
-			f2dTexture2D* GetCacheTexture();
-			fResult CacheString(fcStrW String);
-			fResult QueryGlyph(f2dGraphics* pGraph, fCharW Character, f2dGlyphInfo* InfoOut);
-			fInt GetCacheCount() { return 0; }
-			fInt GetCacheTexSize() { return 0; }
-		public:
-			HGEFont(std::unordered_map<wchar_t, f2dGlyphInfo>&& org, fcyRefPointer<f2dTexture2D> pTex);
-		};
-	private:
-		fcyRefPointer<f2dFontProvider> m_pFontProvider;
-		BlendMode m_BlendMode = BlendMode::MulAlpha;
-		fcyColor m_BlendColor = fcyColor(0xFFFFFFFF);
-	public:
-		f2dFontProvider* GetFontProvider()LNOEXCEPT { return m_pFontProvider; }
-		BlendMode GetBlendMode()const LNOEXCEPT { return m_BlendMode; }
-		void SetBlendMode(BlendMode m)LNOEXCEPT { m_BlendMode = m; }
-		fcyColor GetBlendColor()const LNOEXCEPT { return m_BlendColor; }
-		void SetBlendColor(fcyColor c)LNOEXCEPT { m_BlendColor = c; }
-	public:
-		ResFont(const char* name, fcyRefPointer<f2dFontProvider> pFont);
-	};
-
-	/// @brief 音效
-	class ResSound :
-		public Resource
-	{
-	private:
-		fcyRefPointer<f2dSoundBuffer> m_pBuffer;
-		int m_status;//0停止1暂停2播放
-		float m_lastfrq;
-		long m_freq;
-	public:
-		void Play(float vol, float pan)
-		{
-			m_pBuffer->Stop();
-
-			//float nv = VolumeFix(vol);
-			float nv = (float)Eyes2D::Math::LinearToLog(vol);
-			if (m_pBuffer->GetVolume() != nv)
-				m_pBuffer->SetVolume(nv);
-			if (m_pBuffer->GetPan() != pan)
-				m_pBuffer->SetPan(pan);
-
-			m_pBuffer->Play();
-			m_status = 2;
-		}
-
-		void Resume()
-		{
-			m_pBuffer->Play();
-			m_status = 2;
-		}
-
-		void Pause()
-		{
-			m_pBuffer->Pause();
-			m_status = 1;
-		}
-
-		void Stop()
-		{
-			m_pBuffer->Stop();
-			m_status = 0;
-		}
-
-		bool IsPlaying()
-		{
-			return m_pBuffer->IsPlaying();
-		}
-
-		bool IsStopped()
-		{
-			return !IsPlaying() && m_pBuffer->GetTime() == 0.;
-			//return !IsPlaying() || m_status == 0;
-		}
-
-		bool SetSpeed(float speed) {
-			float frq = (float)m_freq;
-			int newfrq = (int)(frq * speed);
-			if (newfrq > 100000 || newfrq < 100) {
-				return false;
-			}
-			if (m_pBuffer->SetFrequency(newfrq) == FCYERR_OK) {
-				m_lastfrq = speed;
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-
-		float GetSpeed() {
-			if (m_lastfrq <= 0.0f) {
-				return 1.0f;
-			}
-			else {
-				return m_lastfrq;
-			}
-		}
-	public:
-		ResSound(const char* name, fcyRefPointer<f2dSoundBuffer> buffer) : Resource(ResourceType::SoundEffect, name) {
-			m_pBuffer = buffer;
-			m_lastfrq = -1.0f;
-			m_freq = m_pBuffer->GetFrequency();
-		}
-	};
-
-	/// @brief 背景音乐
-	class ResMusic :
-		public Resource
-	{
-	public:
-		// 对SoundDecoder作一个包装来保持BGM循环
-		// 使用该Wrapper之后SoundBuffer的播放参数（位置）将没有意义
-		// ! 从fancystg（已坑）中抽取的上古时期代码
-		class BGMWrapper :
-			public fcyRefObjImpl<f2dSoundDecoder>
-		{
-		protected:
-			fcyRefPointer<f2dSoundDecoder> m_pDecoder;
-
-			// 转到采样为单位
-			fuInt m_TotalSample;
-			fuInt m_pLoopStartSample;
-			fuInt m_pLoopEndSample; // 监视哨，=EndSample+1
-		public:
-			// 直接返回原始参数
-			fuInt GetBufferSize() { return m_pDecoder->GetBufferSize(); }
-			fuInt GetAvgBytesPerSec() { return m_pDecoder->GetAvgBytesPerSec(); }
-			fuShort GetBlockAlign() { return m_pDecoder->GetBlockAlign(); }
-			fuShort GetChannelCount() { return m_pDecoder->GetChannelCount(); }
-			fuInt GetSamplesPerSec() { return m_pDecoder->GetSamplesPerSec(); }
-			fuShort GetFormatTag() { return m_pDecoder->GetFormatTag(); }
-			fuShort GetBitsPerSample() { return m_pDecoder->GetBitsPerSample(); }
-
-			// 不作任何处理
-			fLen GetPosition() { return m_pDecoder->GetPosition(); }
-			fResult SetPosition(F2DSEEKORIGIN Origin, fInt Offset) { return m_pDecoder->SetPosition(Origin, Offset); }
-
-			// 对Read作处理
-			fResult Read(fData pBuffer, fuInt SizeToRead, fuInt* pSizeRead);
-		public:
-			BGMWrapper(fcyRefPointer<f2dSoundDecoder> pOrg, fDouble LoopStart, fDouble LoopEnd);
-		};
-	private:
-		fcyRefPointer<f2dSoundBuffer> m_pBuffer;
-		int m_status;//0停止1暂停2播放
-		float m_lastfrq;
-		long m_freq;
-	public:
-		void Play(float vol, double position)
-		{
-			m_pBuffer->Stop();
-			m_pBuffer->SetTime(position);
-
-			//float nv = VolumeFix(vol);
-			float nv = (float)Eyes2D::Math::LinearToLog(vol);
-			if (m_pBuffer->GetVolume() != nv)
-				m_pBuffer->SetVolume(nv);
-
-			m_pBuffer->Play();
-			m_status = 2;
-		}
-		
-		void Stop()
-		{
-			m_pBuffer->Stop();
-			m_status = 0;
-		}
-		
-		void Pause()
-		{
-			m_pBuffer->Pause();
-			m_status = 1;
-		}
-		
-		void Resume()
-		{
-			m_pBuffer->Play();
-			m_status = 2;
-		}
-
-		bool IsPlaying()
-		{
-			return m_pBuffer->IsPlaying();
-		}
-
-		bool IsPaused() {
-			return m_status == 1;
-		}
-
-		bool IsStopped()
-		{
-			return !IsPlaying() && m_pBuffer->GetTime() == 0.;//用播放时间来判断貌似会遇到[播放然后立即判断状态会返回stop状态]的错误
-			//return (!IsPlaying() || m_status == 0) && m_pBuffer->GetTime() == 0.;
-		}
-
-		void SetVolume(float v)
-		{
-			//float nv = VolumeFix(v);
-			float nv = (float)Eyes2D::Math::LinearToLog(v);
-			if (m_pBuffer->GetVolume() != nv)
-				m_pBuffer->SetVolume(nv);
-		}
-
-		float GetVolume() {
-			double dv= (double)m_pBuffer->GetVolume();
-			double tv = Eyes2D::Math::LogToLinear(dv);
-			return (float)tv;
-			//return m_pBuffer->GetVolume();
-		}
-
-		bool SetSpeed(float speed) {
-			float frq = (float)m_freq;
-			int newfrq = (int)(frq * speed);
-			if (newfrq > 100000 || newfrq<100) {
-				return false;
-			}
-			if (m_pBuffer->SetFrequency(newfrq) == FCYERR_OK) {
-				m_lastfrq = speed;
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-
-		float GetSpeed() {
-			if (m_lastfrq <= 0.0f) {
-				return 1.0f;
-			}
-			else {
-				return m_lastfrq;
-			}
-		}
-	public:
-		ResMusic(const char* name, fcyRefPointer<f2dSoundBuffer> buffer) : Resource(ResourceType::Music, name) {
-			m_pBuffer = buffer;
-			m_status = 0;
-			m_lastfrq = -1.0f;
-			m_freq = m_pBuffer->GetFrequency();
-		}
-	};
-
-	/// @brief shader包装
-	class ResFX :
-		public Resource
-	{
-	private:
-		fcyRefPointer<f2dEffect> m_pShader;
-
-		// 特殊对象绑定
-		std::vector<f2dEffectParamValue*> m_pBindingPostEffectTexture;  // POSTEFFECTTEXTURE
-		std::vector<f2dEffectParamValue*> m_pBindingViewport;  // VIEWPORT
-		std::vector<f2dEffectParamValue*> m_pBindingScreenSize;  // SCREENSIZE
-
-		// 变量绑定
-		Dictionary<std::vector<f2dEffectParamValue*>> m_pBindingVar;
-	public:
-		f2dEffect* GetEffect()LNOEXCEPT { return m_pShader; }
-		
-		void SetPostEffectTexture(f2dTexture2D* val)LNOEXCEPT;
-		void SetViewport(fcyRect rect)LNOEXCEPT;
-		void SetScreenSize(fcyVec2 size)LNOEXCEPT;
-
-		void SetValue(const char* key, float val)LNOEXCEPT;
-		void SetValue(const char* key, fcyColor val)LNOEXCEPT;  // 以float4进行绑定
-		void SetValue(const char* key, f2dTexture2D* val)LNOEXCEPT;
-	public:
-		ResFX(const char* name, fcyRefPointer<f2dEffect> shader);
-	};
-
-	/// @brief 资源池
+	// 资源池
 	class ResourcePool
 	{
 	private:
@@ -641,14 +57,14 @@ namespace LuaSTGPlus
 			}
 		}
 		template <typename T>
-		void removeResource(Dictionary<fcyRefPointer<T>> &pool, const char* name)//bakaCHU漏了一个&草
+		void removeResource(Dictionary<fcyRefPointer<T>>& pool, const char* name)//bakaCHU漏了一个&草
 		{
 			auto i = pool.find(name);
 			if (i == pool.end())
 			{
 				LWARNING("RemoveResource: 试图移除一个不存在的资源'%m'", name);
 				return;
-			}	
+			}
 			pool.erase(i);
 #ifdef LSHOWRESLOADINFO
 			LINFO("RemoveResource: 资源'%m'已卸载", name);
@@ -709,7 +125,7 @@ namespace LuaSTGPlus
 
 		/// @brief 装载纹理（UTF-8）
 		LNOINLINE bool LoadTexture(const char* name, const char* path, bool mipmaps = true)LNOEXCEPT;
-		
+
 		/// @brief 装载图像
 		LNOINLINE bool LoadImage(const char* name, const char* texname,
 			double x, double y, double w, double h, double a, double b, bool rect = false)LNOEXCEPT;
@@ -850,9 +266,9 @@ namespace LuaSTGPlus
 	public:
 		ResourcePool(ResourceMgr* mgr, ResourcePoolType t)
 			: m_pMgr(mgr), m_iType(t) {}
-	};
-
-	/// @brief 资源管理器
+		};
+	
+	// 资源管理器
 	class ResourceMgr
 	{
 	private:
@@ -864,12 +280,12 @@ namespace LuaSTGPlus
 		ResourcePool m_GlobalResourcePool;
 		ResourcePool m_StageResourcePool;
 	public:
-		float GetGlobalImageScaleFactor()const LNOEXCEPT{ return m_GlobalImageScaleFactor; }
-		void SetGlobalImageScaleFactor(float s)LNOEXCEPT{ m_GlobalImageScaleFactor = s; }
-		float GetGlobalSoundEffectVolume()const LNOEXCEPT{ return m_GlobalSoundEffectVolume; }
-		void SetGlobalSoundEffectVolume(float s)LNOEXCEPT{ m_GlobalSoundEffectVolume = s; }
-		float GetGlobalMusicVolume()const LNOEXCEPT{ return m_GlobalMusicVolume; }
-		void SetGlobalMusicVolume(float s)LNOEXCEPT{ m_GlobalMusicVolume = s; }
+		float GetGlobalImageScaleFactor()const LNOEXCEPT { return m_GlobalImageScaleFactor; }
+		void SetGlobalImageScaleFactor(float s)LNOEXCEPT { m_GlobalImageScaleFactor = s; }
+		float GetGlobalSoundEffectVolume()const LNOEXCEPT { return m_GlobalSoundEffectVolume; }
+		void SetGlobalSoundEffectVolume(float s)LNOEXCEPT { m_GlobalSoundEffectVolume = s; }
+		float GetGlobalMusicVolume()const LNOEXCEPT { return m_GlobalMusicVolume; }
+		void SetGlobalMusicVolume(float s)LNOEXCEPT { m_GlobalMusicVolume = s; }
 
 		/// @brief 获得当前激活的资源池类型
 		ResourcePoolType GetActivedPoolType()LNOEXCEPT
@@ -922,8 +338,8 @@ namespace LuaSTGPlus
 		bool ExtractRes(const wchar_t* path, const wchar_t* target)LNOEXCEPT;
 
 		//查找文件
-		LNOINLINE bool FindFiles(lua_State *L, const char* path, const char *ext, const char *packname)LNOEXCEPT;
-		
+		LNOINLINE bool FindFiles(lua_State* L, const char* path, const char* ext, const char* packname)LNOEXCEPT;
+
 		/// @brief 解压资源文件（UTF8）
 		/// @param[in] path 路径
 		/// @param[in] target 目的地

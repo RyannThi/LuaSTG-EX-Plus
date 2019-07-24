@@ -44,6 +44,8 @@ bool GameObjectBentLaser::Update(size_t id, int length, float width, bool active
 		return false;
 	}
 
+	// ！循环队列的头部是最早创建的，尾部才是最新放入的！
+
 	// 移除多余的节点，保证长度在length范围内
 	while (m_Queue.IsFull() || m_Queue.Size() >= (size_t)length)
 	{
@@ -54,6 +56,7 @@ bool GameObjectBentLaser::Update(size_t id, int length, float width, bool active
 		if (!m_Queue.IsEmpty())
 		{
 			LaserNode& tFront = m_Queue.Front();
+			// 如果最后两个节点都是激活的，根据节点间的距离减少曲线激光总长度
 			if (tLastPop.active && tFront.active) {
 				m_fLength -= tFront.dis;
 			}
@@ -107,7 +110,7 @@ bool GameObjectBentLaser::UpdateByNode(size_t id, int node, int length, float wi
 		return false;
 	if (length <= 1)
 	{
-		LERROR("lstgBentLaserData: 无效的参数length");
+		LERROR("lstg.BentLaserData: 无效的参数length");
 		return false;
 	}
 
@@ -186,6 +189,7 @@ bool GameObjectBentLaser::CompileNode(size_t i)LNOEXCEPT
 	{
 		float d2 = a * c + b * d;
 		if (d2 > 0) {
+			//小于90度
 			if (d1<0.01 && d1>-0.01)
 			{
 				cur.x_dir = (b + d) / 2;

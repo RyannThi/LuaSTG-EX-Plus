@@ -48,9 +48,9 @@ void BentLaserDataWrapper::Register(lua_State* L)LNOEXCEPT
 			//lua_pop(L, 1);
 
 			int i3 = luaL_checkinteger(L, 3);
-			float f4 = luaL_checknumber(L, 4);
+			float f4 = (float)luaL_checknumber(L, 4);
 			int i5 = luaL_optinteger(L, 5, 1);
-			bool i6 = luaL_optinteger(L, 6, 0) != 0;
+			bool i6 = (bool)luaL_optinteger(L, 6, 0) != 0;
 			// ... t(list)
 			lua_settop(L, 2);
 
@@ -98,7 +98,7 @@ void BentLaserDataWrapper::Register(lua_State* L)LNOEXCEPT
 		{
 			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_BENTLASER));
 			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
+				return luaL_error(L, "lstg.BentLaserData was released.");
 			if (!p->handle->Render(
 				luaL_checkstring(L, 2),
 				TranslateBlendMode(L, 3),
@@ -122,7 +122,7 @@ void BentLaserDataWrapper::Register(lua_State* L)LNOEXCEPT
 		{
 			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_BENTLASER));
 			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
+				return luaL_error(L, "lstg.BentLaserData was released.");
 			bool r = p->handle->CollisionCheck(
 				(float)luaL_checknumber(L, 2),
 				(float)luaL_checknumber(L, 3),
@@ -137,7 +137,7 @@ void BentLaserDataWrapper::Register(lua_State* L)LNOEXCEPT
 		static int RenderCollider(lua_State* L) {
 			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_BENTLASER));
 			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
+				return luaL_error(L, "lstg.BentLaserData was released.");
 			p->handle->RenderCollider(*static_cast<fcyColor*>(luaL_checkudata(L, 2, LUASTG_LUA_TYPENAME_COLOR)));
 			return 0;
 		}
@@ -145,7 +145,7 @@ void BentLaserDataWrapper::Register(lua_State* L)LNOEXCEPT
 		{
 			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_BENTLASER));
 			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
+				return luaL_error(L, "lstg.BentLaserData was released.");
 			bool r = p->handle->CollisionCheckW(
 				(float)luaL_checknumber(L, 2),
 				(float)luaL_checknumber(L, 3),
@@ -162,7 +162,7 @@ void BentLaserDataWrapper::Register(lua_State* L)LNOEXCEPT
 		{
 			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_BENTLASER));
 			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
+				return luaL_error(L, "lstg.BentLaserData was released.");
 			bool r = p->handle->BoundCheck();
 			lua_pushboolean(L, r);
 			return 1;
@@ -171,7 +171,7 @@ void BentLaserDataWrapper::Register(lua_State* L)LNOEXCEPT
 		{
 			Wrapper* p = static_cast<Wrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_BENTLASER));
 			if (!p->handle)
-				return luaL_error(L, "lstgBentLaserData was released.");
+				return luaL_error(L, "lstg.BentLaserData was released.");
 			p->handle->SetAllWidth((float)luaL_checknumber(L, 2));
 
 			return 0;

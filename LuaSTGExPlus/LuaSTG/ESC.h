@@ -110,7 +110,7 @@ IExLocalInput *CreateLocalInput();
 #include <string>
 #include <list>
 #include <vector>
-#include <atldbcli.h>
+//#include <atldbcli.h>
 #include <io.h>
 
 #define CP_UNICODE -1
@@ -118,6 +118,7 @@ IExLocalInput *CreateLocalInput();
 #define CP_GBK 936
 
 typedef std::vector<char> sbuffer;
+/*
 
 struct CODEPAGECOUNTER{
 	unsigned int ansi;
@@ -145,7 +146,7 @@ struct CODEDSTR
 	void getwstring(std::wstring &ws);
 	bool LoadBuffer(const void *tbuffer, int tcodepage);
 };
-
+//*/
 //======================================
 //ex+math
 

@@ -8,83 +8,75 @@
     <Filter Include="XMath">
       <UniqueIdentifier>{bbd9b89e-a169-4bbd-b604-bbbc8332a73b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="CocosMath">
-      <UniqueIdentifier>{9f0706fe-6075-4ead-8942-bb83d4f13d64}</UniqueIdentifier>
-    </Filter>
     <Filter Include="meowMath">
       <UniqueIdentifier>{aeaa5eb4-1a01-432a-afd7-a65cfeb6a8d1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="XCollision.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="XComplex.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="XConstant.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="XDistance.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="XEquation.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="XFFT.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="XIntersect.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="XMath.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="XRandom.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="XSpline.h">
-      <Filter>XMath</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec2.h">
-      <Filter>CocosMath</Filter>
-    </ClInclude>
-    <ClInclude Include="meow_fft.h">
+    <ClInclude Include="lstgx_Math\meow_fft.h">
       <Filter>meowMath</Filter>
     </ClInclude>
+    <ClInclude Include="lstgx_Math\XCollision.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="lstgx_Math\XComplex.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="lstgx_Math\XConstant.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="lstgx_Math\XDistance.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="lstgx_Math\XEquation.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="lstgx_Math\XFFT.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="lstgx_Math\XIntersect.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="lstgx_Math\XMath.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="lstgx_Math\XRandom.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="lstgx_Math\XSpline.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
+    <ClInclude Include="lstgx_Math\XVec2.h">
+      <Filter>XMath</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="XCollision.cpp">
+    <ClCompile Include="lstgx_Math\XVec2.cpp">
       <Filter>XMath</Filter>
     </ClCompile>
-    <ClCompile Include="XComplex.cpp">
+    <ClCompile Include="lstgx_Math\XCollision.cpp">
       <Filter>XMath</Filter>
     </ClCompile>
-    <ClCompile Include="XDistance.cpp">
+    <ClCompile Include="lstgx_Math\XComplex.cpp">
       <Filter>XMath</Filter>
     </ClCompile>
-    <ClCompile Include="XEquation.cpp">
+    <ClCompile Include="lstgx_Math\XDistance.cpp">
       <Filter>XMath</Filter>
     </ClCompile>
-    <ClCompile Include="XFFT.cpp">
+    <ClCompile Include="lstgx_Math\XEquation.cpp">
       <Filter>XMath</Filter>
     </ClCompile>
-    <ClCompile Include="XIntersect.cpp">
+    <ClCompile Include="lstgx_Math\XFFT.cpp">
       <Filter>XMath</Filter>
     </ClCompile>
-    <ClCompile Include="XRandom.cpp">
+    <ClCompile Include="lstgx_Math\XIntersect.cpp">
       <Filter>XMath</Filter>
     </ClCompile>
-    <ClCompile Include="XSpline.cpp">
+    <ClCompile Include="lstgx_Math\XRandom.cpp">
       <Filter>XMath</Filter>
     </ClCompile>
-    <ClCompile Include="Vec2.cpp">
-      <Filter>CocosMath</Filter>
+    <ClCompile Include="lstgx_Math\XSpline.cpp">
+      <Filter>XMath</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Vec2.inl">
-      <Filter>CocosMath</Filter>
-    </None>
   </ItemGroup>
 </Project>

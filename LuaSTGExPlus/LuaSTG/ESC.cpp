@@ -1200,7 +1200,7 @@ sbuffer TransformStrSingle(sbuffer source, int sourcepage, int targetpage){
 	return x2;
 }
 
-
+/*
 CODEPAGECOUNTER::CODEPAGECOUNTER()
 {
 	ansi = 0;
@@ -1355,3 +1355,4 @@ bool CODEDSTR::LoadBuffer(const void *tbuffer, int tcodepage)
 	}
 	return true;
 }
+//*/

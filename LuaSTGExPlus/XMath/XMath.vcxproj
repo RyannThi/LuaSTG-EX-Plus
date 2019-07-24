@@ -19,32 +19,29 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="meow_fft.h" />
-    <ClInclude Include="Vec2.h" />
-    <ClInclude Include="XCollision.h" />
-    <ClInclude Include="XComplex.h" />
-    <ClInclude Include="XConstant.h" />
-    <ClInclude Include="XDistance.h" />
-    <ClInclude Include="XEquation.h" />
-    <ClInclude Include="XFFT.h" />
-    <ClInclude Include="XIntersect.h" />
-    <ClInclude Include="XMath.h" />
-    <ClInclude Include="XRandom.h" />
-    <ClInclude Include="XSpline.h" />
+    <ClInclude Include="lstgx_Math\meow_fft.h" />
+    <ClInclude Include="lstgx_Math\XCollision.h" />
+    <ClInclude Include="lstgx_Math\XComplex.h" />
+    <ClInclude Include="lstgx_Math\XConstant.h" />
+    <ClInclude Include="lstgx_Math\XDistance.h" />
+    <ClInclude Include="lstgx_Math\XEquation.h" />
+    <ClInclude Include="lstgx_Math\XFFT.h" />
+    <ClInclude Include="lstgx_Math\XIntersect.h" />
+    <ClInclude Include="lstgx_Math\XMath.h" />
+    <ClInclude Include="lstgx_Math\XRandom.h" />
+    <ClInclude Include="lstgx_Math\XSpline.h" />
+    <ClInclude Include="lstgx_Math\XVec2.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Vec2.cpp" />
-    <ClCompile Include="XCollision.cpp" />
-    <ClCompile Include="XComplex.cpp" />
-    <ClCompile Include="XDistance.cpp" />
-    <ClCompile Include="XEquation.cpp" />
-    <ClCompile Include="XFFT.cpp" />
-    <ClCompile Include="XIntersect.cpp" />
-    <ClCompile Include="XRandom.cpp" />
-    <ClCompile Include="XSpline.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Vec2.inl" />
+    <ClCompile Include="lstgx_Math\XCollision.cpp" />
+    <ClCompile Include="lstgx_Math\XComplex.cpp" />
+    <ClCompile Include="lstgx_Math\XDistance.cpp" />
+    <ClCompile Include="lstgx_Math\XEquation.cpp" />
+    <ClCompile Include="lstgx_Math\XFFT.cpp" />
+    <ClCompile Include="lstgx_Math\XIntersect.cpp" />
+    <ClCompile Include="lstgx_Math\XRandom.cpp" />
+    <ClCompile Include="lstgx_Math\XSpline.cpp" />
+    <ClCompile Include="lstgx_Math\XVec2.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -132,6 +129,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeaderOutputFile />
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)\lstgx_Math\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -157,6 +155,7 @@
       <PrecompiledHeaderOutputFile />
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)\lstgx_Math\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
