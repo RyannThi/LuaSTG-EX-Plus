@@ -33,6 +33,8 @@
 
 #XMath过滤
 /LuaSTGExPlus/XMath/build/*
+/LuaSTGExPlus/XMath/lstgx_Math
+/LuaSTGExPlus/XMath/lstgx_Math/*
 
 #Eyes2D过滤
 /LuaSTGExPlus/Eyes2D/build/*
