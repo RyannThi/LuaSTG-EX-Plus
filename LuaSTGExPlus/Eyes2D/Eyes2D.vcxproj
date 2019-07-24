@@ -101,7 +101,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\;$(SolutionDir)\libz\;$(SolutionDir)\libzip\lib\;$(SolutionDir)\libzip\win32\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\libz\;$(SolutionDir)\libzip\lib\;$(SolutionDir)\libzip\win32\</AdditionalIncludeDirectories>
       <PrecompiledHeaderOutputFile />
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -113,7 +113,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\$(Configuration)\;$(SolutionDir)\libogg\build\$(Configuration)\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;$(SolutionDir)\libz\build\$(Configuration)\;$(SolutionDir)\libzip\build\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\$(Configuration)\;$(SolutionDir)\libogg\build\$(Configuration)\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\libz\build\$(Configuration)\;$(SolutionDir)\libzip\build\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>fancylib.lib;libvorbisfile_static.lib;libvorbis_static.lib;libogg_static.lib;xmath.lib;libz-static.lib;libzip-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -128,7 +128,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\;$(SolutionDir)\libz\;$(SolutionDir)\libzip\lib\;$(SolutionDir)\libzip\win32\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\libz\;$(SolutionDir)\libzip\lib\;$(SolutionDir)\libzip\win32\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeaderOutputFile />
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -138,8 +138,8 @@
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\$(Configuration)\;$(SolutionDir)\libogg\build\$(Configuration)\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;$(SolutionDir)\libz\build\$(Configuration)\;$(SolutionDir)\libzip\build\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fancylib_d.lib;libvorbisfile_static.lib;libvorbis_static.lib;libogg_static.lib;xmath_d.lib;libz-static.lib;libzip-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\$(Configuration)\;$(SolutionDir)\libogg\build\$(Configuration)\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\libz\build\$(Configuration)\;$(SolutionDir)\libzip\build\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fancylib_d.lib;libvorbisfile_static.lib;libvorbis_static.lib;libogg_static.lib;xmath.lib;libz-static.lib;libzip-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

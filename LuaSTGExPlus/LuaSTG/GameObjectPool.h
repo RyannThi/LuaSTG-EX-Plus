@@ -48,16 +48,16 @@ namespace LuaSTGPlus
 
 				//外接圆碰撞检测，没发生碰撞则直接PASS
 				if (!xmath::collision::check(
-					cocos2d::Vec2(x1, y1), cr1, cr1, rot1, XColliderType::Circle,
-					cocos2d::Vec2(x2, y2), cr2, cr2, rot2, XColliderType::Circle)) {
+					xmath::Vec2(x1, y1), cr1, cr1, rot1, XColliderType::Circle,
+					xmath::Vec2(x2, y2), cr2, cr2, rot2, XColliderType::Circle)) {
 					cc2++;
 					continue;
 				}
 
 					//精确碰撞检测
 				if (xmath::collision::check(
-					cocos2d::Vec2(x1, y1), a1, b1, rot1, p1->colliders[cc1].xtype,
-					cocos2d::Vec2(x2, y2), a2, b2, rot2, p2->colliders[cc2].xtype)) {
+					xmath::Vec2(x1, y1), a1, b1, rot1, p1->colliders[cc1].xtype,
+					xmath::Vec2(x2, y2), a2, b2, rot2, p2->colliders[cc2].xtype)) {
 					return true;
 				}//返回点1
 
@@ -84,34 +84,34 @@ namespace LuaSTGPlus
 		float cr1 = (float)p1->col_r; float cr2 = (float)p2->col_r;
 
 		//外接圆碰撞检测，没发生碰撞则直接PASS
-		if (!xmath::collision::check(cocos2d::Vec2(x1, y1), cr1, cr1, rot1, XColliderType::Circle,
-			cocos2d::Vec2(x2, y2), cr2, cr2, rot2, XColliderType::Circle)) {
+		if (!xmath::collision::check(xmath::Vec2(x1, y1), cr1, cr1, rot1, XColliderType::Circle,
+			xmath::Vec2(x2, y2), cr2, cr2, rot2, XColliderType::Circle)) {
 			return false;
 		}
 
 		//精确碰撞检测
 		if (!p1->rect && !p2->rect) {
 			//椭圆、椭圆碰撞检测
-			return xmath::collision::check(cocos2d::Vec2(x1, y1), a1, b1, rot1, XColliderType::Ellipse,
-				cocos2d::Vec2(x2, y2), a2, b2, rot2, XColliderType::Ellipse);
+			return xmath::collision::check(xmath::Vec2(x1, y1), a1, b1, rot1, XColliderType::Ellipse,
+				xmath::Vec2(x2, y2), a2, b2, rot2, XColliderType::Ellipse);
 		}
 		else if (p1->rect && p2->rect) {
 			//矩形、矩形碰撞检测
-			return xmath::collision::check(cocos2d::Vec2(x1, y1), a1, b1, rot1, XColliderType::OBB,
-				cocos2d::Vec2(x2, y2), a2, b2, rot2, XColliderType::OBB);
+			return xmath::collision::check(xmath::Vec2(x1, y1), a1, b1, rot1, XColliderType::OBB,
+				xmath::Vec2(x2, y2), a2, b2, rot2, XColliderType::OBB);
 		}
 		else
 		{
 			//矩形、椭圆碰撞检测
 			if (p1->rect && (!p2->rect))
 			{
-				return xmath::collision::check(cocos2d::Vec2(x1, y1), a1, b1, rot1, XColliderType::OBB,
-					cocos2d::Vec2(x2, y2), a2, b2, rot2, XColliderType::Ellipse);
+				return xmath::collision::check(xmath::Vec2(x1, y1), a1, b1, rot1, XColliderType::OBB,
+					xmath::Vec2(x2, y2), a2, b2, rot2, XColliderType::Ellipse);
 			}
 			else if ((!p1->rect) && p2->rect)
 			{
-				return xmath::collision::check(cocos2d::Vec2(x1, y1), a1, b1, rot1, XColliderType::Ellipse,
-					cocos2d::Vec2(x2, y2), a2, b2, rot2, XColliderType::OBB);
+				return xmath::collision::check(xmath::Vec2(x1, y1), a1, b1, rot1, XColliderType::Ellipse,
+					xmath::Vec2(x2, y2), a2, b2, rot2, XColliderType::OBB);
 			}
 		}
 		return false;

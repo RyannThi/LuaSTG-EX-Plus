@@ -79,8 +79,7 @@ namespace LuaSTGPlus
 	public:
 		RC4(const uint8_t* password, size_t len)
 		{
-			len = min(len, 256U);
-
+			len = (len < 256U) ? len : 256U;
 			// 初始化S盒
 			for (int i = 0; i < 256; ++i)
 				S[i] = i;

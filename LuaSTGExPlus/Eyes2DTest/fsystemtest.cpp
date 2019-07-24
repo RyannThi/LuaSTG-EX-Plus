@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <filesystem>
+#include <limits>
 
 #include "E2DMainFunction.hpp"
 
@@ -24,4 +25,5 @@ fstream f("nmsl.jpg", ios::binary | ios::in);
 if (f.is_open()) {
 	SAY("YES");
 }
+//SAY(std::numeric_limits<float>::max());
 E2DMAINRETURN }

@@ -97,15 +97,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)\build\</OutDir>
-    <IntDir>$(ProjectDir)\build\Dir\$(Configuration)\</IntDir>
+    <OutDir>$(ProjectDir)\build\$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)\</IntDir>
     <TargetName>xmath</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)\build\</OutDir>
-    <IntDir>$(ProjectDir)\build\Dir\$(Configuration)\</IntDir>
-    <TargetName>xmath_d</TargetName>
+    <OutDir>$(ProjectDir)\build\$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)\</IntDir>
+    <TargetName>xmath</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -130,6 +130,7 @@
       <PrecompiledHeaderOutputFile />
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)\lstgx_Math\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -138,7 +139,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <BuildLog>
-      <Path>$(ProjectDir)\build\Dir\$(MSBuildProjectName).log</Path>
+      <Path>$(OutDir)\$(MSBuildProjectName).log</Path>
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -156,13 +157,14 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)\lstgx_Math\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <BuildLog>
-      <Path>$(ProjectDir)\build\Dir\$(MSBuildProjectName).log</Path>
+      <Path>$(OutDir)\$(MSBuildProjectName).log</Path>
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
