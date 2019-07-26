@@ -2135,8 +2135,6 @@ fBool AppFrame::OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, 
 		}
 	}
 	
-	Eyes2D::GetXInput().Update();
-
 	//EX+ Network Input
 	if (!m_Input){
 		m_Input = CreateInputEx();
@@ -2147,6 +2145,9 @@ fBool AppFrame::OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, 
 		}
 	}
 	
+	//更新输入
+	m_XInput.Update();
+
 	// 执行帧函数
 	if (!SafeCallGlobalFunction(LFUNC_FRAME, 1))
 		return false;
@@ -2211,28 +2212,7 @@ fBool AppFrame::OnRender(fDouble ElapsedTime, f2dFPSController* pFPSController)
 			PopRenderTarget();
 	}
 	m_bRenderStarted = false;
-	/*
-#if (defined LDEVVERSION) || (defined LDEBUG)
-	if (m_bShowCollider)
-	{
-		m_pRenderDev->ClearZBuffer();
-
-		f2dBlendState stState = m_Graph2D->GetBlendState();
-		f2dBlendState stStateClone = stState;
-		stStateClone.DestBlend = F2DBLENDFACTOR_INVSRCALPHA;
-		stStateClone.BlendOp = F2DBLENDOPERATOR_ADD;
-		m_Graph2D->SetBlendState(stStateClone);
-
-		m_Graph2D->Begin();
-		m_GameObjectPool->DrawGroupCollider(m_Graph2D, m_GRenderer, 1, fcyColor(150, 163, 73, 164));  // GROUP_ENEMY_BULLET
-		m_GameObjectPool->DrawGroupCollider(m_Graph2D, m_GRenderer, 2, fcyColor(150, 163, 73, 164));  // GROUP_ENEMY
-		m_GameObjectPool->DrawGroupCollider(m_Graph2D, m_GRenderer, 5, fcyColor(150, 163, 73, 20));  // GROUP_INDES
-		m_GameObjectPool->DrawGroupCollider(m_Graph2D, m_GRenderer, 4, fcyColor(100, 175, 15, 20));  // GROUP_PLAYER
-		m_Graph2D->End();
-
-		m_Graph2D->SetBlendState(stState);
-	}
-#endif*/
+	
 	return true;
 }
 

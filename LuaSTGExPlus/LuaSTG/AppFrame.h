@@ -13,8 +13,8 @@
 #include "RemoteDebuggerClient.h"
 #endif
 
-#include <string.h>
 #include "E2DFileManager.hpp"
+#include "E2DXInputImpl.hpp"
 
 namespace LuaSTGPlus
 {
@@ -83,8 +83,8 @@ namespace LuaSTGPlus
 		SplashWindow m_SplashWindow;
 
 		// 资源管理器
-		ResourceMgr m_ResourceMgr;
 		Eyes2D::IO::FileManager m_FileManager;
+		ResourceMgr m_ResourceMgr;
 
 		// 对象池
 		std::unique_ptr<GameObjectPool> m_GameObjectPool;
@@ -138,6 +138,7 @@ namespace LuaSTGPlus
 		std::vector<fcyRefPointer<f2dTexture2D>> m_stRenderTargetStack;// RenderTarget控制
 
 		//输入设备
+		Eyes2D::Input::XInput m_XInput;
 		fcyRefPointer<f2dInputMouse> m_Mouse;
 		fcyRefPointer<f2dInputKeyboard> m_Keyboard;
 		fcyRefPointer<f2dInputKeyboard> m_Keyboard2;
@@ -504,7 +505,7 @@ namespace LuaSTGPlus
 		/// @note 扩展方法，视情况移除。
 		void SetFog(float start, float end, fcyColor color);
 
-		/// @brief 设置ZBUFFER
+		// 开启或关闭zbuffer
 		void SetZBufferEnable(bool enable)LNOEXCEPT
 		{
 			if (m_GraphType == GraphicsType::Graph2D)
@@ -513,6 +514,8 @@ namespace LuaSTGPlus
 				m_pRenderDev->SetZBufferEnable(enable);
 			}
 		}
+
+		// 用指定的值清空zbuffer
 		void ClearZBuffer(float z)LNOEXCEPT
 		{
 			if (m_GraphType == GraphicsType::Graph2D)
@@ -699,7 +702,7 @@ namespace LuaSTGPlus
 			return true;
 		}
 
-		//渲染纹理，多顶点
+		// 渲染纹理，多顶点
 		bool RenderTexture(const char* name, BlendMode blend, int vcount, const f2dGraphics2DVertex vertex[], int icount, unsigned short *indexs)LNOEXCEPT
 		{
 			if (m_GraphType != GraphicsType::Graph2D)
@@ -722,7 +725,7 @@ namespace LuaSTGPlus
 			return true;
 		}
 
-		//渲染模型
+		// 渲染模型
 		bool RenderModel(const char* name, float x, float y, float z, float sx, float sy, float sz,float rx,float ry ,float rz)LNOEXCEPT
 		{
 			if (m_GraphType != GraphicsType::Graph2D)
@@ -803,6 +806,7 @@ namespace LuaSTGPlus
 		f2dSoundSys* GetSoundSys()LNOEXCEPT { return m_pSoundSys; }
 		fcyRefPointer<f2dGeometryRenderer> GetGeometryRenderer()LNOEXCEPT { return m_GRenderer; }
 		fcyRefPointer<f2dGraphics2D> GetGraphics2D()LNOEXCEPT { return m_Graph2D; }
+		Eyes2D::Input::XInput& GetXInput() noexcept { return m_XInput; }
 
 		/// @brief 初始化框架
 		/// @note 该函数必须在一开始被调用，且仅能调用一次

@@ -1,5 +1,6 @@
-#include "LuaWrapper.h"
 #include "E2DXInputImpl.hpp"
+#include "LuaWrapper.h"
+#include "AppFrame.h"
 
 using namespace std;
 using namespace LuaSTGPlus;
@@ -12,66 +13,56 @@ void XInputManagerWrapper::Register(lua_State* L)LNOEXCEPT
 		{
 			int index = luaL_checkinteger(L, 1);
 			int vkey = luaL_checkinteger(L, 2);
-			bool state = Eyes2D::GetXInput().GetKeyState(index, vkey);
-			lua_pushboolean(L,state);
+			lua_pushboolean(L, LXINPUT.GetKeyState(index, vkey));
 			return 1;
 		}
 		static int GetTriggerState(lua_State* L) {
 			int index = luaL_checkinteger(L, 1);
-			lua_Number left = Eyes2D::GetXInput().GetTriggerStateL(index);
-			lua_Number right = Eyes2D::GetXInput().GetTriggerStateR(index);
-			lua_pushnumber(L,left);
-			lua_pushnumber(L, right);
+			lua_Integer left = LXINPUT.GetTriggerStateL(index);
+			lua_Integer right = LXINPUT.GetTriggerStateR(index);
+			lua_pushinteger(L,left);
+			lua_pushinteger(L, right);
 			return 2;
 		}
 		static int GetThumbState(lua_State* L) {
 			int index = luaL_checkinteger(L, 1);
-			lua_Number LX = Eyes2D::GetXInput().GetThumbStateLX(index);
-			lua_Number LY = Eyes2D::GetXInput().GetThumbStateLY(index);
-			lua_Number RX = Eyes2D::GetXInput().GetThumbStateRX(index);
-			lua_Number RY = Eyes2D::GetXInput().GetThumbStateRY(index);
-			lua_pushnumber(L, LX);
-			lua_pushnumber(L, LY);
-			lua_pushnumber(L, RX);
-			lua_pushnumber(L, RY);
+			lua_Integer LX = LXINPUT.GetThumbStateLX(index);
+			lua_Integer LY = LXINPUT.GetThumbStateLY(index);
+			lua_Integer RX = LXINPUT.GetThumbStateRX(index);
+			lua_Integer RY = LXINPUT.GetThumbStateRY(index);
+			lua_pushinteger(L, LX);
+			lua_pushinteger(L, LY);
+			lua_pushinteger(L, RX);
+			lua_pushinteger(L, RY);
 			return 4;
 		}
 		static int SetMotorSpeed(lua_State* L) {
 			int index = luaL_checkinteger(L, 1);
 			int _L = luaL_checkinteger(L, 2);
 			int _H = luaL_checkinteger(L, 3);
-			bool ret = Eyes2D::GetXInput().SetMotorSpeed(index, _L, _H);
+			bool ret = LXINPUT.SetMotorSpeed(index, _L, _H);
 			lua_pushboolean(L, ret);
 			return 1;
 		}
 		static int GetMotorSpeed(lua_State* L) {
 			int index = luaL_checkinteger(L, 1);
-			Eyes2D::XDeviceInfo info = Eyes2D::GetXInput().GetDeviceInfo(index);
-			bool _FF = info.ForceFeedback;
-			lua_Number _L = info.LMotorSpeed;
-			lua_Number _H = info.HMotorSpeed;
-			lua_pushnumber(L, _L);
-			lua_pushnumber(L, _H);
-			lua_pushboolean(L, _FF);
+			lua_Integer _L = LXINPUT.GetMotorSpeedLow(index);
+			lua_Integer _H = LXINPUT.GetMotorSpeedHigh(index);
+			lua_pushinteger(L, _L);
+			lua_pushinteger(L, _H);
+			lua_pushboolean(L, (_L >= 0) && (_H >= 0));//失败为false
 			return 3;
 		}
 		static int Refresh(lua_State* L) {
-			lua_Number count = Eyes2D::GetXInput().Refresh();
-			lua_pushnumber(L, count);
+			lua_pushinteger(L, LXINPUT.Refresh());
 			return 1;
 		}
 		static int Update(lua_State* L) {
-			Eyes2D::GetXInput().Update();
+			LXINPUT.Update();
 			return 0;
 		}
 		static int GetDeviceCount(lua_State* L) {
-			lua_Number n = Eyes2D::GetXInput().GetDeviceCount();
-			lua_pushnumber(L, n);
-			return 1;
-		}
-		static int Meta_ToString(lua_State* L)LNOEXCEPT
-		{
-			lua_pushfstring(L, "lstg.XInputManager object");
+			lua_pushinteger(L, LXINPUT.GetDeviceCount());
 			return 1;
 		}
 	};
@@ -88,25 +79,7 @@ void XInputManagerWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "GetDeviceCount", &WrapperImplement::GetDeviceCount },
 		{ NULL, NULL }
 	};
-	luaL_Reg tMetaTable[] =
-	{
-		{ "__tostring", &WrapperImplement::Meta_ToString },
-		{ NULL, NULL }
-	};
-
-	/*
-	luaL_openlib(L, LUASTG_LUA_TYPENAME_XINPUTWRAPPER, tMethods, 0);  // t
-	luaL_newmetatable(L, LUASTG_LUA_TYPENAME_XINPUTWRAPPER);  // t mt
-	luaL_openlib(L, 0, tMetaTable, 0);  // t mt
-	lua_pushliteral(L, "__index");  // t mt s
-	lua_pushvalue(L, -3);  // t mt s t
-	lua_rawset(L, -3);  // t mt (mt["__index"] = t)
-	lua_pushliteral(L, "__metatable");  // t mt s
-	lua_pushvalue(L, -3);  // t mt s t
-	lua_rawset(L, -3);  // t mt (mt["__metatable"] = t)  保护metatable不被修改
-	lua_pop(L, 2);
-	*/
-
+	
 	lua_getglobal(L, "lstg"); // ??? t 
 	lua_newtable(L); // ??? t t
 	::luaL_register(L, NULL, tMethods); // ??? t t 
