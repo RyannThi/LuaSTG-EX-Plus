@@ -1212,12 +1212,27 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		static int SetOrtho(lua_State* L)LNOEXCEPT
 		{
-			LAPP.SetOrtho(
-				static_cast<float>(luaL_checknumber(L, 1)),
-				static_cast<float>(luaL_checknumber(L, 2)),
-				static_cast<float>(luaL_checknumber(L, 3)),
-				static_cast<float>(luaL_checknumber(L, 4))
-			);
+			int top_n = lua_gettop(L);
+			switch (top_n) {
+			case 4:
+				LAPP.SetOrtho(
+					static_cast<float>(luaL_checknumber(L, 1)),
+					static_cast<float>(luaL_checknumber(L, 2)),
+					static_cast<float>(luaL_checknumber(L, 3)),
+					static_cast<float>(luaL_checknumber(L, 4))
+				);
+				break;
+			case 6:
+				LAPP.SetOrtho(
+					static_cast<float>(luaL_checknumber(L, 1)),
+					static_cast<float>(luaL_checknumber(L, 2)),
+					static_cast<float>(luaL_checknumber(L, 3)),
+					static_cast<float>(luaL_checknumber(L, 4)),
+					static_cast<float>(luaL_checknumber(L, 5)),
+					static_cast<float>(luaL_checknumber(L, 6))
+				);
+				break;
+			}
 			return 0;
 		}
 		static int SetPerspective(lua_State* L)LNOEXCEPT

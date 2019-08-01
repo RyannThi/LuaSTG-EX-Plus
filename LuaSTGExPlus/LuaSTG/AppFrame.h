@@ -477,18 +477,20 @@ namespace LuaSTGPlus
 		}
 
 		/// @brief 设置正投影矩阵。
-		void SetOrtho(float left, float right, float bottom, float top)LNOEXCEPT
+		void SetOrtho(float left, float right, float bottom, float top, float znear = 8.0f, float zfar = 2048.0f)LNOEXCEPT
 		{
 			if (m_GraphType == GraphicsType::Graph2D)
 			{
 				// luastg的lua部分已经做了坐标修正
 				// m_Graph2D->SetWorldTransform(fcyMatrix4::GetTranslateMatrix(fcyVec3(-0.5f, -0.5f, 0.f)));
 				m_Graph2D->SetWorldTransform(fcyMatrix4::GetIdentity());
-				m_Graph2D->SetViewTransform(fcyMatrix4::GetIdentity());
-				m_Graph2D->SetProjTransform(fcyMatrix4::GetOrthoOffCenterLH(left, right, bottom, top, 0.f, 100.f));
+				//m_Graph2D->SetViewTransform(fcyMatrix4::GetIdentity());
+				//允许正交投影下下可以饶原点3D旋转图片精灵
+				m_Graph2D->SetViewTransform(fcyMatrix4::GetTranslateMatrix(fcyVec3(0.0f, 0.0f, znear + (zfar - znear) / 2.0f)));
+				m_Graph2D->SetProjTransform(fcyMatrix4::GetOrthoOffCenterLH(left, right, bottom, top, znear, zfar));
 			}
 		}
-
+		
 		/// @brief 设置透视投影矩阵
 		void SetPerspective(float eyeX, float eyeY, float eyeZ, float atX, float atY, float atZ, 
 			float upX, float upY, float upZ, float fovy, float aspect, float zn, float zf)LNOEXCEPT
