@@ -178,7 +178,6 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 	lua_Number cache1, cache2;//速度限制计算时用到的中间变量
 	for (auto it = m_UpdateList.begin(); it != m_UpdateList.end();) {
 		auto p = *it;
-		it++;
 		// 根据id获取对象的lua绑定table、拿到class再拿到framefunc
 		if (superpause <= 0 || p->ignore_superpause) {
 			m_pCurrentObject = p;
@@ -260,6 +259,7 @@ void GameObjectPool::DoFrame()LNOEXCEPT
 				p->pause--;
 			}
 		}
+		it++;
 	}
 	m_pCurrentObject = nullptr;
 

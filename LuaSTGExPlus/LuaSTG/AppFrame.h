@@ -722,7 +722,7 @@ namespace LuaSTGPlus
 			updateGraph2DBlendMode(blend);
 
 			m_Graph2D->DrawRaw(p->GetTexture(), vcount, icount, vertex, indexs, false);
-			m_Graph2D->Flush();
+			//m_Graph2D->Flush();
 
 			return true;
 		}
@@ -738,14 +738,9 @@ namespace LuaSTGPlus
 			void RenderObj(std::string id);
 
 			fcyMatrix4 f0 = m_Graph2D->GetWorldTransform();
-			fcyVec3 r(x, y, z);
-			fcyMatrix4 f1 = fcyMatrix4::GetTranslateMatrix(r);
-			if (sx || sy || sz){
-				fcyVec3 r2(sx, sy, sz);
-				f1 = fcyMatrix4::GetScaleMatrix(r2)*f1;
-			}
+			fcyMatrix4 f1 = fcyMatrix4::GetTranslateMatrix(fcyVec3(x, y, z));
+			f1 = fcyMatrix4::GetScaleMatrix(fcyVec3(sx, sy, sz)) * f1;
 			if (rx || ry || rz){
-				fcyVec3 r2(rx, ry, rz);
 				f1 = fcyMatrix4::GetRotationYawPitchRoll(rx,ry,rz)*f1;
 			}
 

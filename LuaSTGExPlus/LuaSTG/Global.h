@@ -56,6 +56,7 @@
 #define LFUNC_GAMEINIT "GameInit"
 #define LFUNC_FRAME "FrameFunc"
 #define LFUNC_RENDER "RenderFunc"
+#define LFUNC_GAMEEXIT "GameExit"
 #define LFUNC_LOSEFOCUS "FocusLoseFunc"
 #define LFUNC_GAINFOCUS "FocusGainFunc"
 

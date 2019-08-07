@@ -1655,6 +1655,8 @@ bool AppFrame::Init()LNOEXCEPT
 
 void AppFrame::Shutdown()LNOEXCEPT
 {
+	SafeCallGlobalFunction(LFUNC_GAMEEXIT);
+	
 	m_GameObjectPool = nullptr;
 	LINFO("已清空对象池");
 
