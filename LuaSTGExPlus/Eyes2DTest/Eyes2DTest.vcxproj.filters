@@ -42,6 +42,9 @@
     <ClCompile Include="fsystemtest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="board.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

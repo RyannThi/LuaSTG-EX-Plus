@@ -1305,6 +1305,22 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			}
 			return 0;
 		}
+		static int RenderAnimation(lua_State* L)LNOEXCEPT
+		{
+			if (!LAPP.RenderAnimation(
+				luaL_checkstring(L, 1),
+				luaL_checkinteger(L,2),
+				static_cast<float>(luaL_checknumber(L, 3)),
+				static_cast<float>(luaL_checknumber(L, 4)),
+				static_cast<float>(luaL_optnumber(L, 5, 0.) * LDEGREE2RAD),
+				static_cast<float>(luaL_optnumber(L, 6, 1.) * LRES.GetGlobalImageScaleFactor()),
+				static_cast<float>(luaL_optnumber(L, 7, luaL_optnumber(L, 6, 1.)) * LRES.GetGlobalImageScaleFactor())
+			))
+			{
+				return luaL_error(L, "can't render '%m'", luaL_checkstring(L, 1));
+			}
+			return 0;
+		}
 		static int RenderRect(lua_State* L)LNOEXCEPT
 		{
 			if (!LAPP.RenderRect(
@@ -2439,6 +2455,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "SetPerspective", &WrapperImplement::SetPerspective },
 		{ "SetTextureSamplerState", &WrapperImplement::SetTextureSamplerState },
 		{ "Render", &WrapperImplement::Render },
+		{ "RenderAnimation", &WrapperImplement::RenderAnimation },
 		{ "RenderRect", &WrapperImplement::RenderRect },
 		{ "Render4V", &WrapperImplement::Render4V },
 		{ "RenderText", &WrapperImplement::RenderText },

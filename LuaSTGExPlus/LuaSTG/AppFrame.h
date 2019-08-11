@@ -595,6 +595,18 @@ namespace LuaSTGPlus
 			return Render(p, x, y, rot, hscale, vscale, z);
 		}
 
+		/// @brief 渲染动画
+		bool RenderAnimation(const char* name, int timer, float x, float y, float rot = 0, float hscale = 1, float vscale = 1)LNOEXCEPT
+		{
+			fcyRefPointer<ResAnimation> p = m_ResourceMgr.FindAnimation(name);
+			if (!p)
+			{
+				LERROR("Render: 找不到动画资源'%m'", name);
+				return false;
+			}
+			return Render(p, timer, x, y, rot, hscale, vscale);
+		}
+
 		/// @brief 渲染图像
 		bool RenderRect(const char* name, float x1, float y1, float x2, float y2)LNOEXCEPT
 		{
