@@ -408,10 +408,16 @@ void AppFrame::SetWindowed(bool v)LNOEXCEPT
 
 void AppFrame::SetFPS(fuInt v)LNOEXCEPT
 {
+	/*
 	if (m_iStatus == AppStatus::Initializing)
 		m_OptionFPSLimit = v;
 	else if (m_iStatus == AppStatus::Running)
 		LWARNING("试图在运行时更改FPS限制");
+	//*/
+	if (m_iStatus == AppStatus::Running)
+		LWARNING("试图在运行时更改FPS限制");
+	v = std::max(v, 1u);
+	m_OptionFPSLimit = v;
 }
 
 void AppFrame::SetVsync(bool v)LNOEXCEPT
@@ -1884,7 +1890,7 @@ fBool AppFrame::OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, 
 #if (defined LDEVVERSION) || (defined LDEBUG)
 	TimerScope tProfileScope(m_UpdateTimer);
 #endif
-
+	
 	m_fFPS = (float)pFPSController->GetFPS();
 
 	m_LastChar = 0;
@@ -2191,6 +2197,7 @@ fBool AppFrame::OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, 
 
 #endif
 
+	pFPSController->SetLimitedFPS(m_OptionFPSLimit);
 	return !tAbort;
 }
 
