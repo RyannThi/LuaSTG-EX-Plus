@@ -51,9 +51,6 @@
     <ClCompile Include="E2DOggDecoder.cpp">
       <Filter>system\sound</Filter>
     </ClCompile>
-    <ClCompile Include="E2DDXGIImpl.cpp">
-      <Filter>system\platform</Filter>
-    </ClCompile>
     <ClCompile Include="E2DXAudio2SoundPlayer.cpp">
       <Filter>system\sound</Filter>
     </ClCompile>
@@ -85,9 +82,6 @@
     </ClInclude>
     <ClInclude Include="E2DOggDecoder.hpp">
       <Filter>system\sound</Filter>
-    </ClInclude>
-    <ClInclude Include="E2DDXGIImpl.hpp">
-      <Filter>system\platform</Filter>
     </ClInclude>
     <ClInclude Include="E2DSound.hpp">
       <Filter>header</Filter>

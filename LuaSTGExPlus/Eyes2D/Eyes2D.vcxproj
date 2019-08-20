@@ -180,7 +180,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="E2DDXGIImpl.cpp" />
     <ClCompile Include="E2DFileManager.cpp" />
     <ClCompile Include="E2DLogSystem.cpp" />
     <ClCompile Include="E2DOggDecoder.cpp" />
@@ -192,7 +191,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="E2DCodePage.hpp" />
-    <ClInclude Include="E2DDXGIImpl.hpp" />
     <ClInclude Include="E2DException.hpp" />
     <ClInclude Include="E2DFileManager.hpp" />
     <ClInclude Include="E2DFilePath.hpp" />

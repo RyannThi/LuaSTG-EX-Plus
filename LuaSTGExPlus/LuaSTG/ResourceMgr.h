@@ -365,6 +365,21 @@ namespace LuaSTGPlus
 			return true;
 		}
 
+		// 缓存字形
+		void CacheTTFFontString(const char* ttf, const char* text) {
+			try
+			{
+				std::wstring t = fcyStringHelper::MultiByteToWideChar(text, CP_UTF8);
+				fcyRefPointer<ResFont> f = FindTTFFont(ttf);
+				if (f) f->GetFontProvider()->CacheString(t.c_str());
+				else LWARNING("ResourceMgr: 缓存字形贴图时未找到指定字体");
+			}
+			catch (const std::bad_alloc&)
+			{
+				LERROR("ResourceMgr: 转换字符编码时无法分配内存");
+			}
+		}
+
 		/// @brief 寻找精灵
 		fcyRefPointer<ResSprite> FindSprite(const char* name)LNOEXCEPT
 		{

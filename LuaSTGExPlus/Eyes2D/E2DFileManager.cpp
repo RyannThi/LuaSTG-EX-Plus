@@ -412,11 +412,6 @@ void FileManager::UnloadAllArchive() {
 }
 
 bool FileManager::FileExist(const char* filepath) {
-	for (auto& z : m_Impl->ArchiveSet) {
-		if (z->FileExist(filepath)) {
-			return true;
-		}
-	}
 	filesystem::path p(Eyes2D::String::UTF8ToANSI(filepath));
 	filesystem::directory_entry en(p);
 	if (en.is_regular_file() && filesystem::exists(p)) {
@@ -425,6 +420,15 @@ bool FileManager::FileExist(const char* filepath) {
 	else {
 		return false;
 	}
+}
+
+bool FileManager::FileExistEx(const char* filepath) {
+	for (auto& z : m_Impl->ArchiveSet) {
+		if (z->FileExist(filepath)) {
+			return true;
+		}
+	}
+	return FileExist(filepath);
 }
 
 fcyStream* FileManager::LoadFile(const char* filepath) {

@@ -2,7 +2,6 @@
 #include "LuaWrapper.h"
 #include "AppFrame.h"
 #include "Network.h"
-#include "E2DDXGIImpl.hpp"
 #include "ESC.h"
 
 #ifdef min
@@ -245,28 +244,17 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		static int EnumResolutions(lua_State* L) {
 			//返回一个lua表，该表中又包含多个表，分别储存着所支持的屏幕分辨率宽和屏幕分辨率的高，均为整数
 			//例如{ {1920,1080}, {1600,900}, ...  }
-			int* width;
-			int* height;
-			int count;
-			try {
-				Eyes2D::GetDXGI().SimpleGetResolutions(width, height, count);
+			auto count = LAPP.GetRenderDev()->GetSupportResolutionCount();
+			lua_createtable(L, count, 0);		// t
+			for (auto index = 0; index < count; index++) {
+				auto res = LAPP.GetRenderDev()->EnumSupportResolution(index);
+				lua_createtable(L, 2, 0);		// t t
+				lua_pushinteger(L, res.x);		// t t x
+				lua_rawseti(L, -2, 1);			// t t
+				lua_pushinteger(L, res.y);		// t t y
+				lua_rawseti(L, -2, 2);			// t t
+				lua_rawseti(L, -2, index + 1);	// t
 			}
-			catch (Eyes2D::E2DException & e) {
-				LERROR("Source : %s, Desc : %s", e.errSrc.data(), e.errDesc.data());
-				return luaL_error(L, "Failed to enum resolutions.");
-			}
-			
-			lua_newtable(L);// t
-			for (int index = 0; index < count; index++) {
-				lua_newtable(L);// t t
-				lua_pushinteger(L, (lua_Integer)width[index]);// t t width
-				lua_rawseti(L, -2, 1);// t t
-				lua_pushinteger(L, (lua_Integer)height[index]);// t t height
-				lua_rawseti(L, -2, 2);// t t
-				lua_rawseti(L, -2, index + 1);// t
-			}
-
-			delete[] width; delete[] height;
 			return 1;
 		}
 		#pragma endregion
@@ -1132,6 +1120,10 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 					static_cast<float>(luaL_checknumber(L, 2) + p->GetSprite(i)->GetTexRect().a.x),
 					static_cast<float>(luaL_checknumber(L, 3) + p->GetSprite(i)->GetTexRect().a.y)));
 			}
+			return 0;
+		}
+		static int CacheTTFString(lua_State* L) {
+			LRES.CacheTTFFontString(luaL_checkstring(L, 1), luaL_checkstring(L, 2));
 			return 0;
 		}
 		//EX+ model
@@ -2441,6 +2433,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "SetAnimationState", &WrapperImplement::SetAnimationState },
 		{ "SetImageCenter", &WrapperImplement::SetImageCenter },
 		{ "SetAnimationCenter", &WrapperImplement::SetAnimationCenter },
+		{ "CacheTTFString", &WrapperImplement::CacheTTFString },
 		//ESC
 		{ "LoadModel", &WrapperImplement::LoadModel },
 		//ETC
