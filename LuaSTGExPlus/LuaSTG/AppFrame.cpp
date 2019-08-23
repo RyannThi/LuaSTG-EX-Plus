@@ -1416,8 +1416,6 @@ bool AppFrame::Init()LNOEXCEPT
 	luaopen_mime_core(L); // mime (base64)
 	lua_pop(L, 6);// 不知道为什么弄了6个table在栈顶……
 
-	lua_newtable(L);
-	lua_setglobal(L, "option");
 	RegistBuiltInClassWrapper(L);  // 注册内建类 (luastg lib)
 	Xrysnow::InitStringToEnumHash(L); // 准备属性hash
 
@@ -1479,10 +1477,6 @@ bool AppFrame::Init()LNOEXCEPT
 		if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), "launch"))
 			return false;
 	}
-	//if (!m_ResourceMgr.LoadFile(LLAUNCH_SCRIPT, tMemStream))
-		//return false;
-	//if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), "launch"))
-		//return false;
 	
 	//////////////////////////////////////// 加载控制台
 #if (defined LDEVVERSION) || (defined LDEBUG)

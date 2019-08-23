@@ -48,20 +48,6 @@ GameObjectPool::~GameObjectPool()
 }
 
 void GameObjectPool::_PrepareLuaObjectTable() {
-	/*
-	// 取出lstg.GetAttr和lstg.SetAttr创建元表
-	lua_newtable(L);  // ... t
-	lua_getglobal(L, "lstg");  // ... t t
-	lua_pushstring(L, "GetAttr");  // ... t t s
-	lua_gettable(L, -2);  // ... t t f(GetAttr)
-	lua_pushstring(L, "SetAttr");  // ... t t f(GetAttr) s
-	lua_gettable(L, -3);  // ... t t f(GetAttr) f(SetAttr)
-	LASSERT(lua_iscfunction(L, -1) && lua_iscfunction(L, -2));
-	lua_setfield(L, -4, "__newindex");  // ... t t f(GetAttr)
-	lua_setfield(L, -3, "__index");  // ... t t
-	lua_pop(L, 1);  // ... t(将被用作元表)
-	//*/
-
 	// 创建一个全局表用于存放所有对象
 	lua_pushlightuserdata(L, (void*)& LAPP);	// ??? p   (使用APP实例指针作键用以防止用户访问)
 	lua_createtable(L, LGOBJ_MAXCNT, 0);		// ??? p t (创建足够大的table用于存放所有的游戏对象在lua中的对应对象)
