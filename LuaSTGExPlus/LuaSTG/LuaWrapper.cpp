@@ -266,11 +266,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			lua_pushinteger(L, (lua_Integer)LPOOL.GetObjectCount());
 			return 1;
 		}
-		static int UpdateObjList(lua_State* L)LNOEXCEPT
-		{
-			// ! 该函数已被否决
-			return 0;
-		}
 		static int ObjFrame(lua_State* L)LNOEXCEPT
 		{
 			LPOOL.CheckIsMainThread(L);
@@ -2359,7 +2354,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		//========游戏对象==========
 		//对象池管理
 		{ "GetnObj", &WrapperImplement::GetnObj },
-		{ "UpdateObjList", &WrapperImplement::UpdateObjList },//否决的方法，日后清除掉
 		{ "ObjFrame", &WrapperImplement::ObjFrame },
 		{ "ObjRender", &WrapperImplement::ObjRender },
 		{ "BoundCheck", &WrapperImplement::BoundCheck },
