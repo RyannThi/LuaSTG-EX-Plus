@@ -6,94 +6,60 @@ using namespace std;
 using namespace Eyes2D;
 using namespace Eyes2D::Sound;
 
-WaveDecoder::WaveDecoder(fcyStream* stream) {
-	//m_Type = "???";
-	m_FormatTag = 0;
-	m_Channels = 0;
-	m_SamplesPerSec = 0;
-	m_AvgBytesPerSec = 0;
-	m_BlockAlign = 0;
-	m_BitsPerSample = 0;
-	m_ExtendData = 0;
-	m_DataBuffer = nullptr;
-	m_DataSize = 0;
+class Wrapper : public Eyes2D::Sound::Stream {
+private:
+	fcyStream* data;
+public:
+	size_t Size() { return data->GetLength(); }
+	size_t Read(uint8_t* dest, size_t count) {
+		fLen read;
+		data->ReadBytes(dest, count, &read);
+		return (size_t)read;
+	};
+	bool Seek(int32_t step, SeekBase base) {
+		switch (base)
+		{
+		case SeekBase::BEG:
+			return (FCYERR_OK == data->SetPosition(FCYSEEKORIGIN_BEG, step));
+		case SeekBase::CUR:
+			return (FCYERR_OK == data->SetPosition(FCYSEEKORIGIN_CUR, step));
+		case SeekBase::END:
+			return (FCYERR_OK == data->SetPosition(FCYSEEKORIGIN_END, step));
+		default:
+			return false;
+		}
+	}
+	bool IsEOF() { return (data->GetPosition() >= (data->GetLength() - 1u)); }
+	size_t Tell() { return data->GetPosition(); }
+public:
+	Wrapper(fcyStream* src) : data(src) {}
+};
 
-	if (stream == nullptr)
+WaveDecoder::WaveDecoder(fcyStream* stream) {
+	m_Data.Reset();
+
+	if (stream == nullptr) {
 		throw E2DException(0, 0, L"Eyes2D::WaveDecoder::WaveDecoder", L"Invalid stream to read.");
+	}
 	stream->AddRef();
 	stream->Lock();
 	stream->SetPosition(FCYSEEKORIGIN_BEG, 0);
 
-	string TypeTag;
-	try
 	{
-		fcyBinaryReader Reader(stream);
-		char ID[5];
-		uint32_t Size;
-		while (stream->GetPosition() < stream->GetLength())
-		{
-			memset(ID, 0, 5 * sizeof(char));
-			Size = 0;
-			Reader.ReadChars(ID, 4);
-			Size = Reader.ReadUInt32();
-
-			string sID = ID;
-			if (sID == "RIFF") {
-				char format[5];
-				memset(format, 0, 5 * sizeof(char));
-				Reader.ReadChars(format, 4);
-				//m_Type = format;
-				TypeTag = format;
-			}
-			else if (sID == "fmt ") {
-				m_FormatTag = Reader.ReadUInt16();
-				m_Channels = Reader.ReadUInt16();
-				m_SamplesPerSec = Reader.ReadUInt32();
-				m_AvgBytesPerSec = Reader.ReadUInt32();
-				m_BlockAlign = Reader.ReadUInt16();
-				m_BitsPerSample = Reader.ReadUInt16();
-				if (Size > 18) {
-					m_ExtendData = Reader.ReadUInt16();
-					stream->SetPosition(FCYSEEKORIGIN_CUR, Size - 18);
-				}
-				else if (Size > 16 && Size <= 18) {
-					m_ExtendData = Reader.ReadUInt16();
-				}
-				else if (Size <= 16) {
-					m_ExtendData = 0;
-				}
-			}
-			else if (sID == "data") {
-				if (m_DataBuffer == nullptr) {
-					m_DataBuffer = new uint8_t[Size];
-					uint64_t Read = 0;
-					stream->ReadBytes(m_DataBuffer, Size, &Read);
-					m_DataSize = (uint32_t)Read;//潜在的数据溢出
-				}
-			}
-			else {
-				stream->SetPosition(FCYSEEKORIGIN_CUR, Size);//跳过不支持的chunk
-			}
+		Wrapper src(stream);
+		if (!Decode(SourceType::UNKOWN, &src, &m_Data)) {
+			//清理
+			stream->Unlock();
+			stream->Release();
+			throw E2DException(0, 0, L"Eyes2D::WaveDecoder::WaveDecoder", L"Failed to decode source data.");
 		}
-	}
-	catch (const fcyException& e) // 处理读取异常
-	{
-		//清理
-		long t = (long)e.GetTime();
-		stream->Unlock();
-		stream->Release();
-		throw E2DException(t, 0, L"Eyes2D::WaveDecoder::WaveDecoder", L"Failed to read wav file.");
 	}
 
 	//清理
 	stream->Unlock();
 	stream->Release();
-	if (TypeTag != "WAVE") {
-		throw E2DException(0, 0, L"Eyes2D::WaveDecoder::WaveDecoder", L"Invalid wav file.");
-	}
 }
 
 WaveDecoder::~WaveDecoder() {
-	if (m_DataBuffer != nullptr)
-		delete[] m_DataBuffer;
+	m_Data.Free();
 }

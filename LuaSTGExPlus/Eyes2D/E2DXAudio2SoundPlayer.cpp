@@ -1,7 +1,6 @@
 ﻿#include "E2DXAudio2SoundPlayer.hpp"
 #include "E2DXAudio2Impl.hpp"
 #include "E2DWaveDecoder.hpp"
-#include "E2DOggDecoder.hpp"
 
 #include "XFFT.h"
 
@@ -37,22 +36,7 @@ XAudio2SoundPlayerImpl::XAudio2SoundPlayerImpl(fcyStream* stream, unsigned int m
 		m_Decoder = new WaveDecoder(stream);
 	}
 	catch (E2DException & e) {
-		if (m_Decoder != nullptr) {
-			delete m_Decoder;
-			m_Decoder = nullptr;
-		}
-	}
-	if (m_Decoder == nullptr) {
-		try {
-			m_Decoder = new OggDecoder(stream);
-		}
-		catch (E2DException & e) {
-			if (m_Decoder != nullptr) {
-				delete m_Decoder;
-				m_Decoder = nullptr;
-			}
-			throw E2DException(0, 0, L"Eyes2D::Sound::XAudio2SoundPlayerImpl::XAudio2SoundPlayerImpl", L"Failed to decode audio file.");
-		}
+		throw E2DException(0, 0, L"Eyes2D::Sound::XAudio2SoundPlayerImpl::XAudio2SoundPlayerImpl", L"Failed to decode audio file.");
 	}
 
 	//音源数据格式

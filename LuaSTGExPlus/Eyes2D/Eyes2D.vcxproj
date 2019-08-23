@@ -101,7 +101,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\libz\;$(SolutionDir)\libzip\lib\;$(SolutionDir)\libzip\win32\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\libz\;$(SolutionDir)\libzip\lib\;$(SolutionDir)\libzip\win32\;$(SolutionDir)\Library\Eyes2D-Sound-AudioDecode\StaticDecoder\</AdditionalIncludeDirectories>
       <PrecompiledHeaderOutputFile />
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -113,8 +113,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\$(Configuration)\;$(SolutionDir)\libogg\build\$(Configuration)\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\libz\build\$(Configuration)\;$(SolutionDir)\libzip\build\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fancylib.lib;libvorbisfile_static.lib;libvorbis_static.lib;libogg_static.lib;xmath.lib;libz-static.lib;libzip-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\libz\build\$(Configuration)\;$(SolutionDir)\libzip\build\$(Configuration)\;$(SolutionDir)\Library\Eyes2D-Sound-AudioDecode\StaticDecoder\build\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fancylib.lib;xmath.lib;libz-static.lib;libzip-static.lib;StaticDecoder.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -128,7 +128,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\libvorbis\include\;$(SolutionDir)\libogg\include\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\libz\;$(SolutionDir)\libzip\lib\;$(SolutionDir)\libzip\win32\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\libz\;$(SolutionDir)\libzip\lib\;$(SolutionDir)\libzip\win32\;$(SolutionDir)\Library\Eyes2D-Sound-AudioDecode\StaticDecoder\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeaderOutputFile />
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -138,8 +138,8 @@
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\libvorbis\build\$(Configuration)\;$(SolutionDir)\libogg\build\$(Configuration)\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\libz\build\$(Configuration)\;$(SolutionDir)\libzip\build\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fancylib_d.lib;libvorbisfile_static.lib;libvorbis_static.lib;libogg_static.lib;xmath.lib;libz-static.lib;libzip-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\libz\build\$(Configuration)\;$(SolutionDir)\libzip\build\$(Configuration)\;$(SolutionDir)\Library\Eyes2D-Sound-AudioDecode\StaticDecoder\build\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fancylib_d.lib;xmath.lib;libz-static.lib;libzip-static.lib;StaticDecoder.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -182,7 +182,6 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="E2DFileManager.cpp" />
     <ClCompile Include="E2DLogSystem.cpp" />
-    <ClCompile Include="E2DOggDecoder.cpp" />
     <ClCompile Include="E2DWaveDecoder.cpp" />
     <ClCompile Include="E2DXAudio2Impl.cpp" />
     <ClCompile Include="E2DXAudio2SoundPlayer.cpp" />
@@ -198,7 +197,6 @@
     <ClInclude Include="E2DLogSystem.hpp" />
     <ClInclude Include="E2DMainFunction.hpp" />
     <ClInclude Include="E2DMath.hpp" />
-    <ClInclude Include="E2DOggDecoder.hpp" />
     <ClInclude Include="E2DSound.hpp" />
     <ClInclude Include="E2DWaveDecoder.hpp" />
     <ClInclude Include="E2DXAudio2Impl.hpp" />
