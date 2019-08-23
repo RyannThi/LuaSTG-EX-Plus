@@ -79,3 +79,7 @@
 #DirectX Tool Kit
 /LuaSTGExPlus/DirectXTK/*
 #!/LuaSTGExPlus/DirectXTK/readme.txt
+
+#第三方库
+/LuaSTGExPlus/Library/*
+!/LuaSTGExPlus/Library/readme.txt
