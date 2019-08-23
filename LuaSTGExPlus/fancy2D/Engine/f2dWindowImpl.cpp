@@ -795,15 +795,15 @@ fResult f2dWindowImpl::SetClientRect(const fcyRect& Range)
 void f2dWindowImpl::MoveToCenter()
 {
 	// 获得屏幕大小
-	fuInt tScreenHalfW = GetSystemMetrics(SM_CXSCREEN) / 2;
-	fuInt tScreenHalfH = GetSystemMetrics(SM_CYSCREEN) / 2;
+	fInt tScreenHalfW = GetSystemMetrics(SM_CXSCREEN) / 2;
+	fInt tScreenHalfH = GetSystemMetrics(SM_CYSCREEN) / 2;
 
 	// 获得原始大小
 	fcyRect tRect = GetRect();
-	fuInt tHalfW = static_cast<int>(tRect.GetWidth() / 2);
-	fuInt tHalfH = static_cast<int>(tRect.GetHeight() / 2);
-	float tLeft = static_cast<float>(tScreenHalfW - tHalfW);
-	float tTop = static_cast<float>(tScreenHalfH - tHalfH);
+	fInt tHalfW = static_cast<fInt>(tRect.GetWidth() / 2);
+	fInt tHalfH = static_cast<fInt>(tRect.GetHeight() / 2);
+	fFloat tLeft = static_cast<fFloat>(tScreenHalfW - tHalfW);
+	fFloat tTop = static_cast<fFloat>(tScreenHalfH - tHalfH);
 
 	// 重新计算坐标
 	tRect = fcyRect(tLeft, tTop, tLeft + tRect.GetWidth(), tTop + tRect.GetHeight());
