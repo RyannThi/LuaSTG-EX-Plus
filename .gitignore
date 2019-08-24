@@ -41,10 +41,6 @@
 /LuaSTGExPlus/Eyes2DTest/Debug/*
 /LuaSTGExPlus/Eyes2DTest/Release/*
 
-#DXSDK过滤
-/LuaSTGExPlus/DXSDK/*
-!/LuaSTGExPlus/DXSDK/readme.txt
-
 #libvorbis过滤
 /LuaSTGExPlus/libvorbis/*
 !/LuaSTGExPlus/libvorbis/readme.txt

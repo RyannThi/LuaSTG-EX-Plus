@@ -2,6 +2,9 @@
 /// @brief 全局定义文件
 #pragma once
 
+// 版本控制
+//#define LDEVVERSION
+
 // C
 #include <cassert>
 #include <cstdlib>

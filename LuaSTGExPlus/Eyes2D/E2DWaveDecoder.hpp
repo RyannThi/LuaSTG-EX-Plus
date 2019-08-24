@@ -7,12 +7,13 @@
 
 namespace Eyes2D {
 	namespace Sound {
-		class EYESDLLAPI WaveDecoder : public Decoder {
+		class EYESDLLAPI WaveDecoder : public AudioDecoder {
 		private:
 			PCM_AudioData m_Data;
 		public:
-			WaveDecoder(fcyStream* stream);
+			WaveDecoder();
 			~WaveDecoder();
+			bool DecodeFromStream(fcyStream* stream);
 		public:
 			uint16_t GetChannels() { return m_Data.channels; }
 			uint32_t GetSamplesPerSec() { return m_Data.samples_per_sec; }

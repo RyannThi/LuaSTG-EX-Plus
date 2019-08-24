@@ -28,7 +28,7 @@ int main() {
 	{
 		const wchar_t path[] = L"se_pldead00.wav";
 		fcyStream* stream = new fcyFileStream(path, false);
-		Sound::Decoder* decoder = new Sound::WaveDecoder(stream);
+		Sound::AudioDecoder* decoder = new Sound::WaveDecoder(stream);
 
 		cout << "channels:" << decoder->GetChannels() << endl;
 		cout << "samplerate:" << decoder->GetSamplesPerSec() << endl;
@@ -199,7 +199,7 @@ int main() {
 	{
 		const wchar_t path[] = L"luastg.ogg";
 		fcyStream* stream = new fcyFileStream(path, false);
-		Sound::Decoder* decoder = new Sound::OggDecoder(stream);
+		Sound::AudioDecoder* decoder = new Sound::OggDecoder(stream);
 
 		//创建音源
 		IXAudio2SourceVoice* source;

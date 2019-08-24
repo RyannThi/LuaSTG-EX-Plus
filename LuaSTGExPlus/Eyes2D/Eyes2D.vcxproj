@@ -101,7 +101,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\libz\;$(SolutionDir)\libzip\lib\;$(SolutionDir)\libzip\win32\;$(SolutionDir)\Library\Eyes2D-Sound-AudioDecode\StaticDecoder\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\libz\;$(SolutionDir)\libzip\lib\;$(SolutionDir)\libzip\win32\;$(SolutionDir)\Library\Eyes2D-Sound-AudioDecode\StaticDecoder\;$(SolutionDir)\Library\DirectX-SDK-June2010\Include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderOutputFile />
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -113,7 +113,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\libz\build\$(Configuration)\;$(SolutionDir)\libzip\build\$(Configuration)\;$(SolutionDir)\Library\Eyes2D-Sound-AudioDecode\StaticDecoder\build\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\XMath\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\libz\build\$(Configuration)\;$(SolutionDir)\libzip\build\$(Configuration)\;$(SolutionDir)\Library\Eyes2D-Sound-AudioDecode\StaticDecoder\build\$(Configuration)\;$(SolutionDir)\Library\DirectX-SDK-June2010\Lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>fancylib.lib;xmath.lib;libz-static.lib;libzip-static.lib;StaticDecoder.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -128,7 +128,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\DXSDK\Include\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\libz\;$(SolutionDir)\libzip\lib\;$(SolutionDir)\libzip\win32\;$(SolutionDir)\Library\Eyes2D-Sound-AudioDecode\StaticDecoder\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\fancylib\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\libz\;$(SolutionDir)\libzip\lib\;$(SolutionDir)\libzip\win32\;$(SolutionDir)\Library\Eyes2D-Sound-AudioDecode\StaticDecoder\;$(SolutionDir)\Library\DirectX-SDK-June2010\Include\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeaderOutputFile />
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -138,7 +138,7 @@
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\DXSDK\Lib\x86\;$(SolutionDir)\XMath\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\libz\build\$(Configuration)\;$(SolutionDir)\libzip\build\$(Configuration)\;$(SolutionDir)\Library\Eyes2D-Sound-AudioDecode\StaticDecoder\build\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\fancylib\build\;$(SolutionDir)\XMath\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\libz\build\$(Configuration)\;$(SolutionDir)\libzip\build\$(Configuration)\;$(SolutionDir)\Library\Eyes2D-Sound-AudioDecode\StaticDecoder\build\$(Configuration)\;$(SolutionDir)\Library\DirectX-SDK-June2010\Lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>fancylib_d.lib;xmath.lib;libz-static.lib;libzip-static.lib;StaticDecoder.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -180,15 +180,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="E2DAudioEngine.cpp" />
     <ClCompile Include="E2DFileManager.cpp" />
     <ClCompile Include="E2DLogSystem.cpp" />
     <ClCompile Include="E2DWaveDecoder.cpp" />
-    <ClCompile Include="E2DXAudio2Impl.cpp" />
-    <ClCompile Include="E2DXAudio2SoundPlayer.cpp" />
-    <ClCompile Include="E2DXAudio2VoicePool.cpp" />
+    <ClCompile Include="E2DXAudio2SoundPlayer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="E2DXInputImpl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="E2DAudioEngine.hpp" />
     <ClInclude Include="E2DCodePage.hpp" />
     <ClInclude Include="E2DException.hpp" />
     <ClInclude Include="E2DFileManager.hpp" />
@@ -199,9 +202,10 @@
     <ClInclude Include="E2DMath.hpp" />
     <ClInclude Include="E2DSound.hpp" />
     <ClInclude Include="E2DWaveDecoder.hpp" />
-    <ClInclude Include="E2DXAudio2Impl.hpp" />
-    <ClInclude Include="E2DXAudio2SoundPlayer.hpp" />
-    <ClInclude Include="E2DXAudio2VoicePool.hpp" />
+    <ClInclude Include="E2DXAudio2SoundPlayer.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="E2DXInputImpl.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

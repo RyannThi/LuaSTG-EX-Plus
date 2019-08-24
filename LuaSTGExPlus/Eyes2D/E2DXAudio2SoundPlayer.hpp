@@ -8,14 +8,14 @@
 
 namespace Eyes2D {
 	namespace Sound {
-		class XAudio2SoundPlayerImpl : public SoundPlayer {
+		class XAudio2SoundPlayerImpl : public AudioPlayer {
 		private:
 			char* m_FFTWorkset;
 			float* m_FFTOutComplex;
 		private:
-			SoundStatus m_Status;
+			AudioStatus m_Status;
 			IXAudio2SourceVoice* m_Voice;
-			Decoder* m_Decoder;
+			AudioDecoder* m_Decoder;
 			unsigned int m_PlayPos;   //播放位置
 			unsigned int m_LoopStart; //循环节开始
 			unsigned int m_LoopEnd;   //循环节结束
@@ -29,10 +29,10 @@ namespace Eyes2D {
 			void Play();
 			void Pause();
 			void Stop();
-			SoundStatus GetStatus();
+			AudioStatus GetStatus();
 
 			void SetLoop(unsigned int start, unsigned int end, unsigned int loopcount);
-			void GetLoop(unsigned int& outstart, unsigned int& outend, unsigned int& outloopcount);
+			void GetLoop(unsigned int* outstart, unsigned int* outend, unsigned int* outloopcount);
 
 			bool SetTime(unsigned int sample);
 			unsigned int GetTime();
@@ -52,7 +52,7 @@ namespace Eyes2D {
 			void SetSpeed(float speed);
 			float GetSpeed();
 
-			bool GetFFT(float*& outdata, unsigned int& outsize, unsigned int channel = 1);
+			bool GetFFT(float** outdata, unsigned int* outsize, unsigned int channel = 1);
 		};
 	}
 }

@@ -35,11 +35,18 @@ public:
 	Wrapper(fcyStream* src) : data(src) {}
 };
 
-WaveDecoder::WaveDecoder(fcyStream* stream) {
+WaveDecoder::WaveDecoder() {
 	m_Data.Reset();
+}
 
+WaveDecoder::~WaveDecoder() {
+	m_Data.Free();
+}
+
+bool WaveDecoder::DecodeFromStream(fcyStream* stream) {
 	if (stream == nullptr) {
-		throw E2DException(0, 0, L"Eyes2D::WaveDecoder::WaveDecoder", L"Invalid stream to read.");
+		return false;
+		//throw E2DException(0, 0, L"Eyes2D::WaveDecoder::WaveDecoder", L"Invalid stream to read.");
 	}
 	stream->AddRef();
 	stream->Lock();
@@ -51,15 +58,13 @@ WaveDecoder::WaveDecoder(fcyStream* stream) {
 			//清理
 			stream->Unlock();
 			stream->Release();
-			throw E2DException(0, 0, L"Eyes2D::WaveDecoder::WaveDecoder", L"Failed to decode source data.");
+			return false;
+			//throw E2DException(0, 0, L"Eyes2D::WaveDecoder::WaveDecoder", L"Failed to decode source data.");
 		}
 	}
 
 	//清理
 	stream->Unlock();
 	stream->Release();
-}
-
-WaveDecoder::~WaveDecoder() {
-	m_Data.Free();
+	return true;
 }

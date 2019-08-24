@@ -12,7 +12,7 @@ XAudio2SoundPlayerImpl::XAudio2SoundPlayerImpl(fcyStream* stream, unsigned int m
 	m_FFTWorkset = nullptr;
 	m_FFTOutComplex = nullptr;
 	
-	m_Status = SoundStatus::ERROR;//出错状态，还未准备好数据
+	m_Status = AudioStatus::ERROR;//出错状态，还未准备好数据
 	m_Decoder = nullptr;
 	m_Voice = nullptr;
 
@@ -33,7 +33,9 @@ XAudio2SoundPlayerImpl::XAudio2SoundPlayerImpl(fcyStream* stream, unsigned int m
 
 	//尝试解码数据
 	try {
-		m_Decoder = new WaveDecoder(stream);
+		WaveDecoder* decoder = new WaveDecoder();
+		decoder->DecodeFromStream(stream);
+		m_Decoder = decoder;
 	}
 	catch (E2DException & e) {
 		throw E2DException(0, 0, L"Eyes2D::Sound::XAudio2SoundPlayerImpl::XAudio2SoundPlayerImpl", L"Failed to decode audio file.");
@@ -70,7 +72,7 @@ XAudio2SoundPlayerImpl::XAudio2SoundPlayerImpl(fcyStream* stream, unsigned int m
 		}
 	}
 
-	m_Status = SoundStatus::STOP;//这时候总算可以处于停止播放状态了
+	m_Status = AudioStatus::STOP;//这时候总算可以处于停止播放状态了
 }
 
 XAudio2SoundPlayerImpl::~XAudio2SoundPlayerImpl() {
@@ -114,7 +116,7 @@ bool XAudio2SoundPlayerImpl::pushSoundBuffer() {
 			XAbuffer.LoopLength = 0;
 			XAbuffer.LoopCount = 0;//不循环
 			if (m_Voice->SubmitSourceBuffer(&XAbuffer) != S_OK) {
-				m_Status = SoundStatus::ERROR;
+				m_Status = AudioStatus::ERROR;
 				return false;
 			}
 			//填充第二段
@@ -145,7 +147,7 @@ bool XAudio2SoundPlayerImpl::pushSoundBuffer() {
 		XAbuffer.LoopCount = 0;
 	}
 	if (m_Voice->SubmitSourceBuffer(&XAbuffer) != S_OK) {
-		m_Status = SoundStatus::ERROR;
+		m_Status = AudioStatus::ERROR;
 		return false;
 	}
 	else {
@@ -154,44 +156,44 @@ bool XAudio2SoundPlayerImpl::pushSoundBuffer() {
 }
 
 void XAudio2SoundPlayerImpl::Play() {
-	if (m_Status != SoundStatus::PLAY && m_Status != SoundStatus::ERROR) {
-		if (m_Status == SoundStatus::STOP) {
+	if (m_Status != AudioStatus::PLAY && m_Status != AudioStatus::ERROR) {
+		if (m_Status == AudioStatus::STOP) {
 			if (!pushSoundBuffer()) {
 				return;
 			}
 		}
 		if (m_Voice->Start() == S_OK) {
-			m_Status = SoundStatus::PLAY;
+			m_Status = AudioStatus::PLAY;
 		}
 		else {
-			m_Status = SoundStatus::ERROR;
+			m_Status = AudioStatus::ERROR;
 		}
 	}
 }
 
 void XAudio2SoundPlayerImpl::Pause() {
-	if (m_Status == SoundStatus::PLAY && m_Status != SoundStatus::ERROR) {
+	if (m_Status == AudioStatus::PLAY && m_Status != AudioStatus::ERROR) {
 		if (m_Voice->Stop() == S_OK) {
-			m_Status = SoundStatus::PAUSE;
+			m_Status = AudioStatus::PAUSE;
 		}
 		else {
-			m_Status = SoundStatus::ERROR;
+			m_Status = AudioStatus::ERROR;
 		}
 	}
 }
 
 void XAudio2SoundPlayerImpl::Stop() {
-	if ((m_Status == SoundStatus::PLAY || m_Status == SoundStatus::PAUSE) && m_Status != SoundStatus::ERROR) {
+	if ((m_Status == AudioStatus::PLAY || m_Status == AudioStatus::PAUSE) && m_Status != AudioStatus::ERROR) {
 		if (m_Voice->Stop() == S_OK && m_Voice->FlushSourceBuffers() == S_OK) {
-			m_Status = SoundStatus::STOP;
+			m_Status = AudioStatus::STOP;
 		}
 		else {
-			m_Status = SoundStatus::ERROR;
+			m_Status = AudioStatus::ERROR;
 		}
 	}
 }
 
-SoundStatus XAudio2SoundPlayerImpl::GetStatus() {
+AudioStatus XAudio2SoundPlayerImpl::GetStatus() {
 	return m_Status;
 }
 
@@ -222,10 +224,10 @@ void XAudio2SoundPlayerImpl::SetLoop(unsigned int start, unsigned int end, unsig
 	}
 }
 
-void XAudio2SoundPlayerImpl::GetLoop(unsigned int& outstart, unsigned int& outend, unsigned int& outloopcount) {
-	outstart = m_LoopStart;
-	outend = m_LoopEnd;
-	outloopcount = m_LoopCount;
+void XAudio2SoundPlayerImpl::GetLoop(unsigned int* outstart, unsigned int* outend, unsigned int* outloopcount) {
+	*outstart = m_LoopStart;
+	*outend = m_LoopEnd;
+	*outloopcount = m_LoopCount;
 }
 
 bool XAudio2SoundPlayerImpl::SetTime(unsigned int sample) {
@@ -238,7 +240,7 @@ bool XAudio2SoundPlayerImpl::SetTime(unsigned int sample) {
 		m_PlayPos = sample;
 	}
 	//需要的时候重新播放
-	if (m_Status == SoundStatus::PLAY || m_Status == SoundStatus::PAUSE) {
+	if (m_Status == AudioStatus::PLAY || m_Status == AudioStatus::PAUSE) {
 		Stop();//先停止
 		Play();//然后播放
 	}
@@ -390,7 +392,7 @@ float XAudio2SoundPlayerImpl::GetSpeed() {
 	return r;
 }
 
-bool XAudio2SoundPlayerImpl::GetFFT(float*& outdata, unsigned int& outsize, unsigned int channel) {
+bool XAudio2SoundPlayerImpl::GetFFT(float** outdata, unsigned int* outsize, unsigned int channel) {
 	static const unsigned int ms_DataBufferSize = 4096;//FFT数据缓冲区大小
 	static const unsigned int ms_VaveValueSize = 512;//FFT波形数值大小
 	//准备工作内存
@@ -483,7 +485,7 @@ bool XAudio2SoundPlayerImpl::GetFFT(float*& outdata, unsigned int& outsize, unsi
 	float* out = new float[ms_VaveValueSize / 2];
 	xmath::fft::fft(ms_VaveValueSize, m_FFTWorkset, wavevalue, m_FFTOutComplex, out);
 	//return
-	outdata = out;
-	outsize = ms_VaveValueSize / 2;
+	*outdata = out;
+	*outsize = ms_VaveValueSize / 2;
 	return true;
 }

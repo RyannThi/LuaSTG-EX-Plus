@@ -36,14 +36,8 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="E2DXAudio2VoicePool.cpp">
-      <Filter>system\sound</Filter>
-    </ClCompile>
     <ClCompile Include="E2DXInputImpl.cpp">
       <Filter>system\input</Filter>
-    </ClCompile>
-    <ClCompile Include="E2DXAudio2Impl.cpp">
-      <Filter>system\sound</Filter>
     </ClCompile>
     <ClCompile Include="E2DWaveDecoder.cpp">
       <Filter>system\sound</Filter>
@@ -57,22 +51,19 @@
     <ClCompile Include="E2DLogSystem.cpp">
       <Filter>system\debug</Filter>
     </ClCompile>
+    <ClCompile Include="E2DAudioEngine.cpp">
+      <Filter>system\sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="E2DGlobal.hpp">
       <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="E2DXAudio2VoicePool.hpp">
-      <Filter>system\sound</Filter>
     </ClInclude>
     <ClInclude Include="E2DXInputImpl.hpp">
       <Filter>system\input</Filter>
     </ClInclude>
     <ClInclude Include="E2DMath.hpp">
       <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="E2DXAudio2Impl.hpp">
-      <Filter>system\sound</Filter>
     </ClInclude>
     <ClInclude Include="E2DWaveDecoder.hpp">
       <Filter>system\sound</Filter>
@@ -100,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="E2DFilePath.hpp">
       <Filter>system\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="E2DAudioEngine.hpp">
+      <Filter>system\sound</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

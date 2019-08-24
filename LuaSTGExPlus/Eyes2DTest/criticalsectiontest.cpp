@@ -246,7 +246,7 @@ void test6() {
 	//SAY(p->priority);
 }
 
-int test7a(Eyes2D::Sound::Decoder* decoder) {
+int test7a(Eyes2D::Sound::AudioDecoder* decoder) {
 	HRESULT hr;
 
 	//XAudio2ÒýÇæ
@@ -479,7 +479,7 @@ void test7() {
 			SAY("load");
 			try {
 				//Eyes2D::Sound::Decoder* decoder = new Eyes2D::Sound::WaveDecoder(stream);
-				Eyes2D::Sound::Decoder* decoder = new Eyes2D::Sound::OggDecoder(stream);
+				Eyes2D::Sound::AudioDecoder* decoder = new Eyes2D::Sound::OggDecoder(stream);
 				SAY(decoder->GetDataSize());
 				test7a(decoder);
 				system("pause");

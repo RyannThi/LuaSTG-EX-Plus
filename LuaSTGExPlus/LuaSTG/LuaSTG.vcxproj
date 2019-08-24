@@ -199,7 +199,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\fancy2d\;$(SolutionDir)\fancylib\;$(SolutionDir)\luajit\src\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\Eyes2D\;$(SolutionDir)\LuaExtend\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -207,7 +207,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\XMath\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\Eyes2D\build\;$(SolutionDir)\LuaExtend\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;Gdiplus.lib;lua51.lib;luaextend_d.lib;fancy2d_d.lib;fancylib_d.lib;xmath.lib;Eyes2D_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Gdiplus.lib;lua51.lib;luaextend_d.lib;fancy2d_d.lib;fancylib_d.lib;xmath.lib;Eyes2D_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -218,7 +218,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\fancy2d\;$(SolutionDir)\fancylib\;$(SolutionDir)\luajit\src\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\Eyes2D\;$(SolutionDir)\LuaExtend\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>LDEVVERSION;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LDEVVERSION;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -229,8 +229,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\XMath\build\;$(SolutionDir)\XMath\build\Release\;$(SolutionDir)\Eyes2D\build\;$(SolutionDir)\LuaExtend\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib;Gdiplus.lib;lua51.lib;luaextend.lib;fancy2d.lib;fancylib.lib;xmath.lib;Eyes2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\XMath\build\Release\;$(SolutionDir)\Eyes2D\build\;$(SolutionDir)\LuaExtend\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Gdiplus.lib;lua51.lib;luaextend.lib;fancy2d.lib;fancylib.lib;xmath.lib;Eyes2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -263,14 +263,14 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\fancy2d\;$(SolutionDir)\fancylib\;$(SolutionDir)\luajit\src\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\Eyes2D\;$(SolutionDir)\LuaExtend\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\XMath\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\Eyes2D\build\;$(SolutionDir)\LuaExtend\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\Eyes2D\build\;$(SolutionDir)\LuaExtend\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Gdiplus.lib;lua51.lib;luaextend.lib;fancy2d.lib;fancylib.lib;xmath.lib;Eyes2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
