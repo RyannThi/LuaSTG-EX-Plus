@@ -39,7 +39,7 @@ void fcyBinaryReader::ReadChars(fStr OutBuffer, fLen Length)
 
 fCharW fcyBinaryReader::ReadCharW()
 {
-	fChar tRet = 0;
+	fCharW tRet = 0;
 	if(FCYFAILED(m_pStream->ReadBytes((fData)&tRet, sizeof(tRet), NULL)))
 		throw fcyException("fcyBinaryReader::ReadCharW", "ReadBytes Failed.");
 	return tRet;
