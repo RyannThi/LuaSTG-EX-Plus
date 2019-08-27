@@ -4,7 +4,7 @@
 #include "ResourceMgr.h"
 #pragma comment(lib, "ws2_32.lib")
 
-#include "LuaWrapper.h"
+#include "LuaWrapper\LuaWrapper.hpp"
 #include "AppFrame.h"
 #include "Network.h"
 

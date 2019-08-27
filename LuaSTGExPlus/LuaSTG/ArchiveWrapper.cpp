@@ -2,7 +2,7 @@
 #include <string_view>
 #include "Global.h"
 #include "AppFrame.h"
-#include "LuaWrapper.h"
+#include "LuaWrapper\LuaWrapper.hpp"
 #include "E2DFilePath.hpp"
 #include "E2DFileManager.hpp"
 

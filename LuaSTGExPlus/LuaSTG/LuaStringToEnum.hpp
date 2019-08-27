@@ -82,6 +82,20 @@ namespace Xrysnow {
 	//字符串转混合模式枚举
 	LuaSTGPlus::BlendMode BlendModeHash(lua_State* L, int index);
 
+	// Color 包装器
+
+	enum class ColorWrapperProperty {
+		m_a = 0,
+		m_r,
+		m_g,
+		m_b,
+		f_ARGB,
+
+		_KEY_NOT_FOUND = -1,
+	};
+
+	ColorWrapperProperty ColorWrapperPropertyHash(lua_State* L, int index);
+
 	// 初始化方法
 
 	//初始化所有hash表

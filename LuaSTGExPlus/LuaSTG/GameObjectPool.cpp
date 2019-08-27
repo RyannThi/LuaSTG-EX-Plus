@@ -3,7 +3,7 @@
 #include "LuaStringToEnum.hpp"
 #include "AppFrame.h"
 #include "CollisionDetect.h"
-#include "LuaWrapper.h"
+#include "LuaWrapper\LuaWrapper.hpp"
 
 #define METATABLE_OBJ "mt"
 
@@ -1118,8 +1118,7 @@ int GameObjectPool::GetAttr(lua_State* L)LNOEXCEPT
 		break;
 	case GameObjectProperty::_COLOR:
 		if (p->luaclass.IsRenderClass) {
-			fcyColor c(p->vertexcolor.argb);
-			*ColorWrapper::CreateAndPush(L) = c;
+			LuaWrapper::ColorWrapper::CreateAndPush(L, fcyColor(p->vertexcolor.argb));
 		}
 		else {
 			lua_pushnil(L);

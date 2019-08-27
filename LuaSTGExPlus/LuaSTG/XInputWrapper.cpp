@@ -1,5 +1,5 @@
 #include "E2DXInputImpl.hpp"
-#include "LuaWrapper.h"
+#include "LuaWrapper\LuaWrapper.hpp"
 #include "AppFrame.h"
 
 using namespace std;

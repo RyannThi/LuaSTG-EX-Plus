@@ -1,6 +1,6 @@
 ﻿#include "Global.h"
 #include "AppFrame.h"
-#include "LuaWrapper.h"
+#include "LuaWrapper\LuaWrapper.hpp"
 #include "GameObjectPool.h"
 
 using namespace LuaSTGPlus;

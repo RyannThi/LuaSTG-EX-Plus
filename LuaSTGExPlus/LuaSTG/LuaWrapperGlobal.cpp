@@ -1,5 +1,5 @@
 ﻿#include "Global.h"
-#include "LuaWrapper.h"
+#include "LuaWrapper\LuaWrapper.hpp"
 #include "AppFrame.h"
 #include "Network.h"
 #include "ESC.h"
@@ -22,69 +22,6 @@
 
 using namespace std;
 using namespace LuaSTGPlus;
-
-static inline void TranslateAlignMode(lua_State* L, int argnum, ResFont::FontAlignHorizontal& halign, ResFont::FontAlignVertical& valign)
-{
-	int e = luaL_checkinteger(L, argnum);
-	switch (e & 0x03)  // HGETEXT_HORZMASK
-	{
-	case 0:  // HGETEXT_LEFT
-		halign = ResFont::FontAlignHorizontal::Left;
-		break;
-	case 1:  // HGETEXT_CENTER
-		halign = ResFont::FontAlignHorizontal::Center;
-		break;
-	case 2:  // HGETEXT_RIGHT
-		halign = ResFont::FontAlignHorizontal::Right;
-		break;
-	default:
-		luaL_error(L, "invalid align mode.");
-		return;
-	}
-	switch (e & 0x0C)  // HGETEXT_VERTMASK
-	{
-	case 0:  // HGETEXT_TOP
-		valign = ResFont::FontAlignVertical::Top;
-		break;
-	case 4:  // HGETEXT_MIDDLE
-		valign = ResFont::FontAlignVertical::Middle;
-		break;
-	case 8:  // HGETEXT_BOTTOM
-		valign = ResFont::FontAlignVertical::Bottom;
-		break;
-	default:
-		luaL_error(L, "invalid align mode.");
-		return;
-	}
-}
-
-static inline F2DTEXTUREADDRESS TranslateTextureSamplerAddress(lua_State* L, int argnum) {
-	const char* s = luaL_checkstring(L, argnum);
-	if (strcmp(s, "wrap") == 0)
-		return F2DTEXTUREADDRESS_WRAP;
-	else if (strcmp(s, "mirror") == 0)
-		return F2DTEXTUREADDRESS_MIRROR;
-	else if (strcmp(s, "clamp") == 0 || strcmp(s, "") == 0)
-		return F2DTEXTUREADDRESS_CLAMP;
-	else if (strcmp(s, "border") == 0)
-		return F2DTEXTUREADDRESS_BORDER;
-	else if (strcmp(s, "mirroronce") == 0)
-		return F2DTEXTUREADDRESS_MIRRORONCE;
-	else
-		luaL_error(L, "Invalid texture sampler address mode '%s'.", s);
-	return F2DTEXTUREADDRESS_CLAMP;
-}
-
-static inline F2DTEXFILTERTYPE TranslateTextureSamplerFilter(lua_State* L, int argnum) {
-	const char* s = luaL_checkstring(L, argnum);
-	if (strcmp(s, "point") == 0)
-		return F2DTEXFILTER_POINT;
-	else if (strcmp(s, "linear") == 0 || strcmp(s, "") == 0)
-		return F2DTEXFILTER_LINEAR;
-	else
-		luaL_error(L, "Invalid texture sampler filter type '%s'.", s);
-	return F2DTEXFILTER_LINEAR;
-}
 
 void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 {
@@ -2091,23 +2028,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		
 		// 对象构造函数
-		static int NewColor(lua_State* L)LNOEXCEPT
-		{
-			fcyColor c;
-			if (lua_gettop(L) == 1)
-				c.argb = luaL_checknumber(L, 1);
-			else
-			{
-				c = fcyColor(
-					luaL_checkinteger(L, 1),
-					luaL_checkinteger(L, 2),
-					luaL_checkinteger(L, 3),
-					luaL_checkinteger(L, 4)
-				);
-			}
-			*ColorWrapper::CreateAndPush(L) = c;
-			return 1;
-		}
 		static int NewRand(lua_State* L)LNOEXCEPT
 		{
 			RandomizerWrapper::CreateAndPush(L);
@@ -2526,7 +2446,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "ObjTable", &WrapperImplement::ObjTable },
 		
 		// 对象构造函数
-		{ "Color", &WrapperImplement::NewColor },
 		{ "Rand", &WrapperImplement::NewRand },
 		{ "BentLaserData", &WrapperImplement::BentLaserData },
 		{ "StopWatch", &WrapperImplement::StopWatch },
@@ -2537,6 +2456,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ NULL, NULL }
 	};
 
-	luaL_register(L, "lstg", tFunctions);  // t
-	lua_pop(L, 1);
+	lua_getglobal(L, "lstg");				// ... t
+	::luaL_register(L, NULL, tFunctions);	// ... t
+	lua_pop(L, 1);							// ...
 }

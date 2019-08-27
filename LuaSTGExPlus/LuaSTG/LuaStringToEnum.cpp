@@ -101,6 +101,25 @@ void init_blendmode_hash_map(lua_State* L) {
 	}
 }
 
+static std::unordered_map<std::string, ColorWrapperProperty> colorprop_map = {
+	{ "a",		ColorWrapperProperty::m_a	},
+	{ "r",		ColorWrapperProperty::m_r	},
+	{ "g",		ColorWrapperProperty::m_g	},
+	{ "b",		ColorWrapperProperty::m_b	},
+	{ "ARGB",	ColorWrapperProperty::f_ARGB},
+};
+static std::unordered_map<uint32_t, ColorWrapperProperty> colorprop_hash_map;
+void init_colorprop_hash_map(lua_State* L) {
+	colorprop_hash_map.clear();
+	for (auto it : colorprop_map)
+	{
+		lua_pushstring(L, it.first.c_str());
+		const auto hash = ((uint32_t*)lua_tolstring(L, -1, nullptr))[HASH_OFFSET];
+		lua_pop(L, 1);
+		colorprop_hash_map[hash] = it.second;
+	}
+}
+
 namespace Xrysnow {
 	// GameObject 属性
 	
@@ -144,10 +163,22 @@ namespace Xrysnow {
 		return LuaSTGPlus::BlendMode::_KEY_NOT_FOUND;
 	}
 	
+	// Color 包装器
+
+	ColorWrapperProperty ColorWrapperPropertyHash(lua_State* L, int index) {
+		const auto s = lua_tolstring(L, index, nullptr);
+		const auto hash = ((uint32_t*)s)[HASH_OFFSET];
+		const auto it = colorprop_hash_map.find(hash);
+		if (it != colorprop_hash_map.end())
+			return it->second;
+		return ColorWrapperProperty::_KEY_NOT_FOUND;
+	}
+
 	// 初始化方法
 
 	void InitStringToEnumHash(lua_State* L) {
 		init_prop_hash_map(L);
 		init_blendmode_hash_map(L);
+		init_colorprop_hash_map(L);
 	}
 }

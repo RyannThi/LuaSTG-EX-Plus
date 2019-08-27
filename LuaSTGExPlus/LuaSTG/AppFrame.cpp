@@ -8,7 +8,7 @@
 
 #include "AppFrame.h"
 #include "Utility.h"
-#include "LuaWrapper.h"
+#include "LuaWrapper\LuaWrapper.hpp"
 #include "E2DXInputImpl.hpp"
 #include "LuaStringToEnum.hpp"
 

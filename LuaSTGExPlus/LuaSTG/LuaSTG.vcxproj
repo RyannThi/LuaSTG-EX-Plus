@@ -45,8 +45,8 @@
     <ClInclude Include="Global.h" />
     <ClInclude Include="LogSystem.h" />
     <ClInclude Include="LuaStringToEnum.hpp" />
-    <ClInclude Include="LuaWrapper.h" />
-    <ClInclude Include="LuaWrapperAudio.h" />
+    <ClInclude Include="LuaWrapper\LuaWrapper.hpp" />
+    <ClInclude Include="LuaWrapper\LuaWrapperMisc.hpp" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="ObjectPool.hpp" />
     <ClInclude Include="RemoteDebuggerClient.h" />
@@ -71,7 +71,6 @@
     <ClCompile Include="Bencode.cpp" />
     <ClCompile Include="BentlazerWrapper.cpp" />
     <ClCompile Include="CollisionDetect.cpp" />
-    <ClCompile Include="ColorWrapper.cpp" />
     <ClCompile Include="ESC.cpp" />
     <ClCompile Include="FileManagerWrapper.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -81,7 +80,13 @@
     <ClCompile Include="GameResourceWrapper.cpp" />
     <ClCompile Include="LogSystem.cpp" />
     <ClCompile Include="LuaStringToEnum.cpp" />
-    <ClCompile Include="LuaWrapper.cpp" />
+    <ClCompile Include="LuaWrapperGlobal.cpp" />
+    <ClCompile Include="LuaWrapper\IO\LW_IO.cpp" />
+    <ClCompile Include="LuaWrapper\IO\LW_IO_BinaryReader.cpp" />
+    <ClCompile Include="LuaWrapper\IO\LW_IO_BinaryWriter.cpp" />
+    <ClCompile Include="LuaWrapper\IO\LW_IO_Steam.cpp" />
+    <ClCompile Include="LuaWrapper\LuaWrapper.cpp" />
+    <ClCompile Include="LuaWrapper\Misc\LW_Color.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="RandomizerWrapper.cpp" />
@@ -199,7 +204,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\fancy2d\;$(SolutionDir)\fancylib\;$(SolutionDir)\luajit\src\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\Eyes2D\;$(SolutionDir)\LuaExtend\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -218,7 +223,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\fancy2d\;$(SolutionDir)\fancylib\;$(SolutionDir)\luajit\src\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\Eyes2D\;$(SolutionDir)\LuaExtend\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>LDEVVERSION;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LDEVVERSION;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -263,7 +268,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\fancy2d\;$(SolutionDir)\fancylib\;$(SolutionDir)\luajit\src\;$(SolutionDir)\XMath\lstgx_Math\;$(SolutionDir)\Eyes2D\;$(SolutionDir)\LuaExtend\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
