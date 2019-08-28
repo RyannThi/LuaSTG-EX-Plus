@@ -47,7 +47,7 @@
 #include "LogSystem.h"
 
 // 一些全局范围的宏
-#define LVERSION L"luaSTGPlus-0.2"
+#define LVERSION L"luaSTGExPlus-0.9"
 #define LVERSION_LUA LUAJIT_VERSION
 
 // 全局文件

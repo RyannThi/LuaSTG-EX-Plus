@@ -473,12 +473,12 @@ LNOINLINE bool AppFrame::ChangeVideoMode(int width, int height, bool windowed, b
 			(fuInt)width,
 			(fuInt)height,
 			windowed,
-			vsync,
+			windowed ? false : vsync, // 总是在窗口模式下关闭垂直同步
 			F2DAALEVEL_NONE)))
 		{
-			LINFO("视频模式切换成功 (%dx%d Vsync:%b Windowed:%b) -> (%dx%d Vsync:%b Windowed:%b)",
+			LINFO("视频模式切换成功 (%dx%d Vsync:%b Windowed:%b) -> (%dx%d Vsync:%b(%b) Windowed:%b)",
 				(int)m_OptionResolution.x, (int)m_OptionResolution.y, m_OptionVsync, m_OptionWindowed,
-				width, height, vsync, windowed);
+				width, height, vsync, windowed ? false : vsync, windowed);
 
 			m_OptionResolution.Set((float)width, (float)height);
 			m_OptionWindowed = windowed;
@@ -1537,7 +1537,7 @@ bool AppFrame::Init()LNOEXCEPT
 		fcyRect(0.f, 0.f, m_OptionResolution.x, m_OptionResolution.y),
 		m_OptionTitle.c_str(),
 		m_bSplashWindowEnabled ? true : m_OptionWindowed,
-		m_OptionVsync,
+		(m_bSplashWindowEnabled || m_OptionWindowed) ? false : m_OptionVsync, // 总是在窗口模式下关闭垂直同步
 		F2DAALEVEL_NONE,
 		this,
 		&m_pEngine,

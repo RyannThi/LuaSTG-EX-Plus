@@ -164,6 +164,12 @@
     <ClInclude Include="LuaWrapper\LuaWrapperMisc.hpp">
       <Filter>LuaWrapper</Filter>
     </ClInclude>
+    <ClInclude Include="CoScope.hpp">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="RuntimeCheck.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppFrame.cpp">

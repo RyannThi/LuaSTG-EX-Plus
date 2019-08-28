@@ -37,6 +37,7 @@
     <ClInclude Include="Bencode.h" />
     <ClInclude Include="CirularQueue.hpp" />
     <ClInclude Include="CollisionDetect.h" />
+    <ClInclude Include="CoScope.hpp" />
     <ClInclude Include="Dictionary.hpp" />
     <ClInclude Include="ESC.h" />
     <ClInclude Include="GameObject.hpp" />
@@ -61,6 +62,7 @@
     <ClInclude Include="ResourceParticle.hpp" />
     <ClInclude Include="ResourceSprite.hpp" />
     <ClInclude Include="ResourceTexture.hpp" />
+    <ClInclude Include="RuntimeCheck.hpp" />
     <ClInclude Include="SplashWindow.h" />
     <ClInclude Include="UnicodeStringEncoding.h" />
     <ClInclude Include="Utility.h" />
