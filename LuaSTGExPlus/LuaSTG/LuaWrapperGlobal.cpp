@@ -506,6 +506,10 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			lua_pushinteger(L, LPOOL.FirstObject(g));			// next(f) i(groupId) id(firstobj) 最后的两个参数作为迭代器参数传入
 			return 3;
 		}
+		static int ObjTable(lua_State* L)LNOEXCEPT
+		{
+			return LPOOL.GetObjectTable(L);
+		}
 		static int ObjMetaIndex(lua_State* L)LNOEXCEPT
 		{
 			return LPOOL.GetAttr(L);
@@ -1871,7 +1875,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{
 			//检查键盘按键是否按下，使用微软VKcode，通过GetAsyncKeyState函数获取
 			//和GetKeyboardState不同，这个检测的不是按下过的，而是现在被按住的键
-			lua_pushboolean(L, LAPP.GetAsyncKeyState(luaL_checkinteger(L, -1)) == 2);
+			lua_pushboolean(L, LAPP.GetAsyncKeyState(luaL_checkinteger(L, -1)));
 			return 1;
 		}
 		#pragma endregion
@@ -2240,11 +2244,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			return 1;
 		}
 
-		// 调试函数
-		static int ObjTable(lua_State* L)LNOEXCEPT
-		{
-			return LPOOL.GetObjectTable(L);
-		}
 	};
 
 	luaL_Reg tFunctions[] =
@@ -2284,6 +2283,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "ResetPool", &WrapperImplement::ResetPool },
 		{ "NextObject", &WrapperImplement::NextObject },
 		{ "ObjList", &WrapperImplement::ObjList },
+		{ "ObjTable", &WrapperImplement::ObjTable },
 		// 对象控制函数
 		{ "BoxCheck", &WrapperImplement::BoxCheck },
 		{ "ResetObject", &WrapperImplement::ResetObject },
@@ -2441,9 +2441,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "Snapshot", &WrapperImplement::Snapshot },
 		{ "SaveTexture", &WrapperImplement::SaveTexture },
 		{ "Execute", &WrapperImplement::Execute },
-		
-		// 调试函数
-		{ "ObjTable", &WrapperImplement::ObjTable },
 		
 		// 对象构造函数
 		{ "Rand", &WrapperImplement::NewRand },

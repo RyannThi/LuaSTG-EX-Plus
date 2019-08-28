@@ -147,7 +147,11 @@ namespace LuaSTGPlus
 		fInt m_LastKey;
 		fBool m_KeyStateMap[256];
 		fcyVec2 m_MousePosition;
-		fBool m_MouseState[3];
+		void resetKeyStatus()LNOEXCEPT {
+			m_LastChar = 0;
+			m_LastKey = 0;
+			::memset(m_KeyStateMap, 0, sizeof(m_KeyStateMap));
+		}
 	private:
 		void updateGraph2DBlendMode(BlendMode m)
 		{
@@ -411,9 +415,8 @@ namespace LuaSTGPlus
 		fBool GetKeyboardState(DWORD VKCode)LNOEXCEPT { return m_Keyboard2->KeyPress(VKCode); }
 
 		//检查键盘按键是否按下，使用的是GetAsyncKeyState
-		//返回0代表没有按下，返回2代表正被按住，返回1代表自从上次调用这个函数以来被按下过
 		//和GetKeyboardState不同，这个检测的不是按下过的，而是现在被按住的键
-		int GetAsyncKeyState(int VKCode)LNOEXCEPT;
+		bool GetAsyncKeyState(int VKCode)LNOEXCEPT;
 
 		/// @brief 获得最后一次字符输入（UTF-8）
 		LNOINLINE int GetLastChar(lua_State* L)LNOEXCEPT;
@@ -430,8 +433,6 @@ namespace LuaSTGPlus
 		/// @brief 检查鼠标是否按下
 		fBool GetMouseState(int button)LNOEXCEPT
 		{
-			//if (button >= 0 && button < 3)
-				// return m_MouseState[button];
 			switch (button) {
 			case 0:
 				return m_Mouse->IsLeftBtnDown();

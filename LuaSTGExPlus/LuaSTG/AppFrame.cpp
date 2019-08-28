@@ -350,7 +350,7 @@ AppFrame::AppFrame() LNOEXCEPT
 {
 	m_Input = CreateInputEx();
 	WSADATA wsa;
-	WSAStartup(MAKEWORD(1, 1), &wsa);
+	::WSAStartup(MAKEWORD(1, 1), &wsa);
 }
 
 AppFrame::~AppFrame() LNOEXCEPT
@@ -601,16 +601,6 @@ LNOINLINE void AppFrame::LoadTextFile(const char* path, const char *packname)LNO
 	}
 	const char *fstr = (fcStr)tMemStream->GetInternalBuffer();
 	lua_pushstring(L, fstr);
-	/*
-	if (luaL_loadbuffer(L, (fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), luaL_checkstring(L, 1)))
-	{
-		tMemStream = nullptr;
-		const char* tDetail = lua_tostring(L, -1);
-		LERROR("编译脚本'%m'失败: %m", path, tDetail);
-		luaL_error(L, "failed to compile '%s': %s", path, tDetail);
-		return;
-	}
-	*/
 	tMemStream = nullptr;
 }
 
@@ -660,45 +650,24 @@ fBool AppFrame::GetKeyState(int VKCode)LNOEXCEPT
 			else
 				return false;
 		}
-
-		bool test1 = (fBool)(GetAsyncKeyState(VKCode) & 0x8000);
-		bool test2 = m_Keyboard->IsKeyDown(VKKeyToF2DKey(VKCode));
-		bool test3 = m_KeyStateMap[VKCode];
-		return test2;
-
-		static bool ltest1=0;
-		static bool ltest2=0;
-		static bool ltest3=0;
-
-
-
-		if (test1 != test2 || test1 != test3){
-
-			ltest1 = test1;
-			ltest2 = test2;
-			ltest3 = test3;
-			return true;
+		else if (m_Keyboard) {
+			return m_Keyboard->IsKeyDown(VKKeyToF2DKey(VKCode));
 		}
-		else{
-			ltest1 = test1;
-			ltest2 = test2;
-			ltest3 = test3;
-			return test1;
+		else {
+			//return m_KeyStateMap[VKCode] || GetAsyncKeyState(VKCode);
+			return m_KeyStateMap[VKCode];
 		}
 	}
 	return false;
 }
 
-int AppFrame::GetAsyncKeyState(int VKCode)LNOEXCEPT {
+bool AppFrame::GetAsyncKeyState(int VKCode)LNOEXCEPT {
 	SHORT KeyState = ::GetAsyncKeyState(VKCode);//应该使用WinUser的方法，这个是在全局命名空间里面的，不然会出现我调用我自己的bug
 	if (KeyState & (1 << 15)) {
-		return 2;
-	}
-	else if (KeyState & (1 << 0)) {
-		return 1;
+		return true;
 	}
 	else {
-		return 0;
+		return false;
 	}
 }
 
@@ -1676,10 +1645,7 @@ bool AppFrame::Init()LNOEXCEPT
 		m_pMainWindow->SetVisiable(true);
 	}
 
-	m_LastChar = 0;
-	m_LastKey = 0;
-	::memset(m_KeyStateMap, 0, sizeof(m_KeyStateMap));
-	::memset(m_MouseState, 0, sizeof(m_MouseState));
+	resetKeyStatus();
 
 	//////////////////////////////////////// 碰撞组显示设置
 	m_collidercfg.clear();
@@ -1688,18 +1654,17 @@ bool AppFrame::Init()LNOEXCEPT
 	m_collidercfg.emplace_back(ColliderDisplayConfig(5, fcyColor(150, 163, 73, 20)));// GROUP_INDES
 	m_collidercfg.emplace_back(ColliderDisplayConfig(4, fcyColor(100, 175, 15, 20)));// GROUP_PLAYER
 
-	//////////////////////////////////////// 装载核心脚本并执行GameInit
-	LINFO("装载核心脚本'%s'", LMAIN_SCRIPT.c_str());
+	//////////////////////////////////////// 装载核心脚本
+	//LINFO("装载核心脚本'%s'", LMAIN_SCRIPT.c_str());
 	if (!m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream)) {
-		LWARNING("找不到文件'%s'", LMAIN_SCRIPT.c_str());
+		//LWARNING("找不到文件'%s'", LMAIN_SCRIPT.c_str());
 		MAIN_SCRIPT = "src/main.lua"; LMAIN_SCRIPT = L"src/main.lua";
+		LINFO("装载核心脚本'%s'", LMAIN_SCRIPT.c_str());
 		if (!m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream))
 			return false;
 	}
 	if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), MAIN_SCRIPT.c_str()))
 		return false;
-	//if (!SafeCallGlobalFunction(LFUNC_GAMEINIT))
-		//return false;
 
 	m_iStatus = AppStatus::Initialized;
 	LINFO("初始化成功完成");
@@ -1939,6 +1904,7 @@ fBool AppFrame::OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, 
 #endif
 	
 	m_fFPS = (float)pFPSController->GetFPS();
+	pFPSController->SetLimitedFPS(m_OptionFPSLimit);
 
 	m_LastChar = 0;
 	m_LastKey = 0;
@@ -1950,17 +1916,29 @@ fBool AppFrame::OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, 
 		switch (tMsg.Type)
 		{
 		case F2DMSG_WINDOW_ONCLOSE:
+		{
 			return false;  // 关闭窗口时结束循环
+		}
 		case F2DMSG_WINDOW_ONGETFOCUS:
+		{
 			if (!SafeCallGlobalFunction(LFUNC_GAINFOCUS))
 				return false;
+			break;
+		}
 		case F2DMSG_WINDOW_ONLOSTFOCUS:
+		{
+			resetKeyStatus(); // clear input status
 			if (!SafeCallGlobalFunction(LFUNC_LOSEFOCUS))
 				return false;
+			break;
+		}
 		case F2DMSG_WINDOW_ONCHARINPUT:
+		{
 			m_LastChar = (fCharW)tMsg.Param1;
 			break;
+		}
 		case F2DMSG_WINDOW_ONKEYDOWN:
+		{
 			// ctrl+enter全屏
 			if (tMsg.Param1 == VK_RETURN && !m_KeyStateMap[VK_RETURN] && m_KeyStateMap[VK_CONTROL])  // 防止反复触发
 				ChangeVideoMode((int)m_OptionResolution.x, (int)m_OptionResolution.y, !m_OptionWindowed, m_OptionVsync);
@@ -1971,14 +1949,16 @@ fBool AppFrame::OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, 
 			{
 				m_LastKey = (fInt)tMsg.Param1;
 				m_KeyStateMap[tMsg.Param1] = true;
-			}	
+			}
 
 #if (defined LDEVVERSION) || (defined LDEBUG)
 			if (tMsg.Param1 == VK_F8)
 				m_bShowCollider = !m_bShowCollider;
 #endif
 			break;
+		}
 		case F2DMSG_WINDOW_ONKEYUP:
+		{
 			if (m_LastKey == tMsg.Param1)
 				m_LastKey = 0;
 			if (0 < tMsg.Param1 && tMsg.Param1 < _countof(m_KeyStateMap) &&
@@ -1988,31 +1968,13 @@ fBool AppFrame::OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, 
 				m_KeyStateMap[tMsg.Param1] = false;
 			}
 			break;
-		case F2DMSG_WINDOW_ONMOUSELDOWN:
-			m_MouseState[0] = true;
-			break;
-		case F2DMSG_WINDOW_ONMOUSELUP:
-			m_MouseState[0] = false;
-			break;
-		case F2DMSG_WINDOW_ONMOUSEMDOWN:
-			m_MouseState[1] = true;
-			break;
-		case F2DMSG_WINDOW_ONMOUSEMUP:
-			m_MouseState[1] = false;
-			break;
-		case F2DMSG_WINDOW_ONMOUSERDOWN:
-			m_MouseState[2] = true;
-			break;
-		case F2DMSG_WINDOW_ONMOUSERUP:
-			m_MouseState[2] = false;
-			break;
+		}
 		case F2DMSG_WINDOW_ONMOUSEMOVE:
+		{
 			m_MousePosition.x = (float)static_cast<fInt>(tMsg.Param1);
 			m_MousePosition.y = m_OptionResolution.y - (float)static_cast<fInt>(tMsg.Param2);  // ! 潜在大小不匹配问题
 			break;
-		case F2DMSG_WINDOW_ONMOUSEWHEEL:
-			//m_MouseWheelDelta = tMsg.Param3;//TODO:SB逻辑cnm
-			break;
+		}
 		case F2DMSG_JOYSTICK_ONXPOSCHANGE:
 			do
 			{
@@ -2244,7 +2206,6 @@ fBool AppFrame::OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, 
 
 #endif
 
-	pFPSController->SetLimitedFPS(m_OptionFPSLimit);
 	return !tAbort;
 }
 
