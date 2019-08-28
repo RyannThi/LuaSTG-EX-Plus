@@ -56,6 +56,7 @@
 #define LCORE_SCRIPT L"core.lua"
 
 // 全局回调函数名称
+#define LFUNC_TRACEBACK "Traceback"
 #define LFUNC_GAMEINIT "GameInit"
 #define LFUNC_FRAME "FrameFunc"
 #define LFUNC_RENDER "RenderFunc"

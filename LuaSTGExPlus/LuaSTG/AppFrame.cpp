@@ -1357,27 +1357,80 @@ LNOINLINE bool AppFrame::PostEffectApply(ResFX* shader, BlendMode blend)LNOEXCEP
 #pragma endregion
 
 #pragma region 框架函数
-static int StackTraceback(lua_State *L)
+static int _StackTraceback(lua_State* L)
 {
-	lua_getfield(L, LUA_GLOBALSINDEX, "debug");  // errmsg t
+	// errmsg
+	int ret = 0;
+
+	lua_getfield(L, LUA_GLOBALSINDEX, "debug");								// errmsg t
 	if (!lua_istable(L, -1))
 	{
-		lua_pop(L, 1);
+		lua_pop(L, 1);														// errmsg
 		return 1;
 	}
-	lua_getfield(L, -1, "traceback");  // errmsg t f
+
+	lua_getfield(L, -1, "traceback");										// errmsg t f
 	if (!lua_isfunction(L, -1) && !lua_iscfunction(L, -1))
 	{
-		lua_pop(L, 2);
+		lua_pop(L, 2);														// errmsg
 		return 1;
 	}
-	lua_pushvalue(L, 1);  // errmsg t f errmsg
-	lua_pushinteger(L, 2);  // errmsg t f errmsg 2
-	if (0 != lua_pcall(L, 2, 1, 0))  // errmsg t 
+
+	lua_pushvalue(L, 1);													// errmsg t f errmsg
+	lua_pushinteger(L, 2);													// errmsg t f errmsg 2
+	ret = lua_pcall(L, 2, 1, 0);											// errmsg t msg
+	if (0 != ret)
 	{
-		LWARNING("执行stacktrace时发生错误。(%m)", lua_tostring(L, -1));
-		lua_pop(L, 2);
-	}	
+		LWARNING("执行stacktrace时发生错误。(%m)", lua_tostring(L, -1));	// errmsg t errmsg
+		lua_pop(L, 2);														// errmsg
+		return 1;
+	}
+
+	lua_getfield(L, -2, "getinfo");											// errmsg t msg f
+	if (!lua_isfunction(L, -1) && !lua_iscfunction(L, -1))
+	{
+		lua_pop(L, 1);														// errmsg t msg
+		return 1;
+	}
+
+	lua_pushinteger(L, 3);													// errmsg t msg f 2
+	lua_pushstring(L, "S");													// errmsg t msg f 2 s
+	ret = lua_pcall(L, 2, 1, 0);											// errmsg t msg t
+	if (0 != ret)
+	{
+		LWARNING("执行stacktrace时发生错误。(%m)", lua_tostring(L, -1));	// errmsg t msg errmsg
+		lua_pop(L, 3);														// errmsg
+		return 1;
+	}
+
+	lua_getfield(L, -1, "source");											// errmsg t msg t s
+	lua_pushvalue(L, 3);													// errmsg t msg t s msg
+	lua_pushstring(L, "\nfull source:\n\t");								// errmsg t msg t s msg str
+	lua_pushvalue(L, 5);													// errmsg t msg t s msg str s
+	lua_concat(L, 3);														// errmsg t msg t s final
+	return 1;
+}
+
+static int StackTraceback(lua_State *L)
+{
+	int ret = 0;
+	// errmsg
+	lua_getglobal(L, LFUNC_TRACEBACK);											// errmsg ?
+	if (!lua_isfunction(L, -1) && !lua_iscfunction(L, -1))
+	{
+		lua_pop(L, 1);															// errmsg
+		return _StackTraceback(L);
+	}
+
+	lua_pushvalue(L, -2);														// errmsg f errmsg
+	lua_pushinteger(L, 2);														// errmsg f errmsg 2
+	ret = lua_pcall(L, 2, 1, 0);												// errmsg msg
+	if (0 != ret)
+	{
+		LWARNING("执行Traceback时发生错误。(%m)", lua_tostring(L, -1));			// errmsg errmsg
+		lua_pop(L, 1);															// errmsg
+		return _StackTraceback(L);
+	}
 	return 1;
 }
 

@@ -47,6 +47,7 @@ namespace LuaSTGPlus
 						break;
 					case Xrysnow::ColorWrapperProperty::f_ARGB:
 						lua_pushcfunction(L, ARGB);
+						break;
 					default:
 						return luaL_error(L, "Invalid index key.");
 					}
