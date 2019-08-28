@@ -232,9 +232,9 @@ fcStrW f2dWindowClass::GetName()const
 	return m_ClsName.c_str();
 }
 
-f2dWindowImpl* f2dWindowClass::CreateRenderWindow(const fcyRect& Pos, fcStrW Title, fBool Visiable, F2DWINBORDERTYPE Border)
+f2dWindowImpl* f2dWindowClass::CreateRenderWindow(const fcyRect& Pos, fcStrW Title, fBool Visiable, F2DWINBORDERTYPE Border, bool DisableIME)
 {
-	return new f2dWindowImpl(m_pEngine, this, Pos, Title, Visiable, Border);
+	return new f2dWindowImpl(m_pEngine, this, Pos, Title, Visiable, Border, DisableIME);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -497,9 +497,9 @@ void f2dWindowImpl::DefaultListener::OnLostFocus()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-f2dWindowImpl::f2dWindowImpl(f2dEngineImpl* pEngine, f2dWindowClass* WinCls, const fcyRect& Pos, fcStrW Title, fBool Visiable, F2DWINBORDERTYPE Border)
+f2dWindowImpl::f2dWindowImpl(f2dEngineImpl* pEngine, f2dWindowClass* WinCls, const fcyRect& Pos, fcStrW Title, fBool Visiable, F2DWINBORDERTYPE Border, bool DisableIME)
 	: m_DefaultListener(pEngine, this), m_pListener(&m_DefaultListener), m_hWnd(NULL), m_bShow(false), m_CaptionText(Title),
-	m_bHideIME(true), m_IMETotalCandidate(0), m_IMESelectedCandidate(0), m_IMEPageStartCandidate(0), m_IMEPageCandidateCount(0)
+	m_bHideIME(true), m_hIMC(NULL), m_IMETotalCandidate(0), m_IMESelectedCandidate(0), m_IMEPageStartCandidate(0), m_IMEPageCandidateCount(0)
 {
 	// 定义窗口样式
 	fuInt tWinStyle;
@@ -524,7 +524,10 @@ f2dWindowImpl::f2dWindowImpl(f2dEngineImpl* pEngine, f2dWindowClass* WinCls, con
 	fuInt tRealWidth = tWinRect.right  - tWinRect.left ;
 	fuInt tRealHeight = tWinRect.bottom  - tWinRect.top;
 
+
 	// 创建窗口
+	if (DisableIME)
+		ImmDisableIME(0);//不需要的时候屏蔽输入法
 	m_hWnd = CreateWindowEx(
 		WS_EX_APPWINDOW,
 		WinCls->GetName(),
@@ -566,26 +569,33 @@ f2dWindowImpl::~f2dWindowImpl()
 
 void f2dWindowImpl::InitIMEContext()
 {
-	m_hIMC = ImmCreateContext();
-	m_hIMC = ImmAssociateContext(m_hWnd, m_hIMC);
+	if (!m_bHideIME) {
+		m_hIMC = ImmCreateContext();
+		m_hIMC = ImmAssociateContext(m_hWnd, m_hIMC);
+	}
+	else {
+		m_hIMC = ImmAssociateContext(m_hWnd, NULL);
+	}
 }
 
 void f2dWindowImpl::UninitIMEContext()
 {
-	m_hIMC = ImmAssociateContext(m_hWnd, m_hIMC);
-	ImmDestroyContext(m_hIMC);
+	if (!m_bHideIME) {
+		m_hIMC = ImmAssociateContext(m_hWnd, m_hIMC);
+		ImmDestroyContext(m_hIMC);
+	}
 }
 
 void f2dWindowImpl::HandleIMELanguageChanged()
 {
 	HKL hKL = ::GetKeyboardLayout(0);
 	int iSize = ::ImmGetDescription(hKL, NULL, 0);
-	if( iSize == 0 )
+	if (iSize == 0)
 	{
 		// 输入法关闭
 		m_CurIMEDesc.clear();
 
-		if(m_pListener)
+		if (m_pListener)
 			m_pListener->OnIMEClosed();
 
 #ifdef _IME_DEBUG
@@ -598,8 +608,8 @@ void f2dWindowImpl::HandleIMELanguageChanged()
 		m_CurIMEDesc.clear();
 		m_CurIMEDesc.resize(iSize);
 		ImmGetDescription(hKL, &m_CurIMEDesc[0], iSize);
-		
-		if(m_pListener)
+
+		if (m_pListener)
 			m_pListener->OnIMEActivated(GetIMEDesc());
 
 #ifdef _IME_DEBUG
@@ -610,80 +620,91 @@ void f2dWindowImpl::HandleIMELanguageChanged()
 
 void f2dWindowImpl::HandleIMEComposition()
 {
-	HIMC hIMC = ImmGetContext(m_hWnd);
-	LONG lSize = ImmGetCompositionString(hIMC, GCS_COMPSTR, 0, 0);
+	if (!m_bHideIME) {
+		HIMC hIMC = ImmGetContext(m_hWnd);
+		LONG lSize = ImmGetCompositionString(hIMC, GCS_COMPSTR, 0, 0);
 
-	if( lSize == 0 )
-		m_CurIMEComposition.clear();
-	else
-	{
-		m_CurIMEComposition.clear();
-		m_CurIMEComposition.resize(lSize);
-		ImmGetCompositionString(hIMC, GCS_COMPSTR, &m_CurIMEComposition[0], lSize);
-		
+		if (lSize == 0)
+			m_CurIMEComposition.clear();
+		else
+		{
+			m_CurIMEComposition.clear();
+			m_CurIMEComposition.resize(lSize);
+			ImmGetCompositionString(hIMC, GCS_COMPSTR, &m_CurIMEComposition[0], lSize);
+
 #ifdef _IME_DEBUG
-		fcyDebug::Trace(L"[ @ f2dWindowImpl::HandleIMEComposition ] Current composition : %s.\n", m_CurIMEComposition.c_str());
+			fcyDebug::Trace(L"[ @ f2dWindowImpl::HandleIMEComposition ] Current composition : %s.\n", m_CurIMEComposition.c_str());
 #endif
 
-		ImmReleaseContext(m_hWnd, hIMC) ;
+			ImmReleaseContext(m_hWnd, hIMC);
+		}
+	}
+	else {
+		m_CurIMEComposition.clear();
 	}
 }
 
 void f2dWindowImpl::HandleIMECandidate()
 {
-	// 获得上下文
-	HIMC hIMC = ImmGetContext(m_hWnd);
+	if (!m_bHideIME) {
+		// 获得上下文
+		HIMC hIMC = ImmGetContext(m_hWnd);
 
-	// 获得候选词列表大小
-	LONG dwSize = ImmGetCandidateList(hIMC, 0, NULL, 0);
+		// 获得候选词列表大小
+		LONG dwSize = ImmGetCandidateList(hIMC, 0, NULL, 0);
 
-	if(dwSize == 0)
-	{
-		m_IMEPageCandidateCount = m_IMEPageStartCandidate = m_IMETotalCandidate = m_IMESelectedCandidate = 0;
+		if (dwSize == 0)
+		{
+			m_IMEPageCandidateCount = m_IMEPageStartCandidate = m_IMETotalCandidate = m_IMESelectedCandidate = 0;
+			m_IMECandidateList.clear();
+
+			return;
+		}
+
+		// 申请全局空间来存放候选词
+		LPCANDIDATELIST pList = (LPCANDIDATELIST)GlobalAlloc(GPTR, dwSize);
+
+		// 获得候选词列表
+		if (pList)
+			ImmGetCandidateList(hIMC, 0, pList, dwSize);
+		else
+			return;  // 内存分配失败
+
+		m_IMEPageCandidateCount = pList->dwPageSize;
+		m_IMEPageStartCandidate = pList->dwPageStart;
+		m_IMETotalCandidate = pList->dwCount;
+		m_IMESelectedCandidate = pList->dwSelection;
+
+		// 获得候选词列表
 		m_IMECandidateList.clear();
+		m_IMECandidateList.reserve(pList->dwCount);
+		for (fuInt i = 0; i < pList->dwCount; ++i)
+		{
+			fcStrW pStr = (fcStrW)((size_t)pList + (size_t)pList->dwOffset[i]);
 
-		return;
-	}
-
-	// 申请全局空间来存放候选词
-	LPCANDIDATELIST pList = (LPCANDIDATELIST)GlobalAlloc(GPTR, dwSize);
-	
-	// 获得候选词列表
-	if(pList)
-		ImmGetCandidateList(hIMC, 0, pList, dwSize);
-	else
-		return;  // 内存分配失败
-
-	m_IMEPageCandidateCount = pList->dwPageSize;
-	m_IMEPageStartCandidate = pList->dwPageStart;
-	m_IMETotalCandidate = pList->dwCount;
-	m_IMESelectedCandidate = pList->dwSelection;
-
-	// 获得候选词列表
-	m_IMECandidateList.clear();
-	m_IMECandidateList.reserve(pList->dwCount);
-	for (fuInt i = 0; i<pList->dwCount; ++i)
-	{
-		fcStrW pStr = (fcStrW)((size_t)pList + (size_t)pList->dwOffset[i]);
-
-		m_IMECandidateList.push_back(pStr);
-	}
+			m_IMECandidateList.push_back(pStr);
+		}
 
 #ifdef _IME_DEBUG
-	wstring tDebugStr;
-	for (fuInt i = 0; i<pList->dwCount; ++i)
-	{
-		tDebugStr += L"\t" + m_IMECandidateList[i] + L"\n";
-	}
+		wstring tDebugStr;
+		for (fuInt i = 0; i < pList->dwCount; ++i)
+		{
+			tDebugStr += L"\t" + m_IMECandidateList[i] + L"\n";
+		}
 
-	fcyDebug::Trace(L"[ @ f2dWindowImpl::HandleIMECandidate ] Candidate info.\n\tCandidate: %d/%d PageStart: %d PageSize: %d\nList :\n%s\n",
-		m_IMESelectedCandidate, m_IMETotalCandidate, m_IMEPageStartCandidate, m_IMEPageCandidateCount,
-		tDebugStr.c_str());
+		fcyDebug::Trace(L"[ @ f2dWindowImpl::HandleIMECandidate ] Candidate info.\n\tCandidate: %d/%d PageStart: %d PageSize: %d\nList :\n%s\n",
+			m_IMESelectedCandidate, m_IMETotalCandidate, m_IMEPageStartCandidate, m_IMEPageCandidateCount,
+			tDebugStr.c_str());
 #endif
 
-	// 擦屁股
-	GlobalFree(pList);
-	ImmReleaseContext(m_hWnd, hIMC);
+		// 擦屁股
+		GlobalFree(pList);
+		ImmReleaseContext(m_hWnd, hIMC);
+	}
+	else {
+		m_IMEPageCandidateCount = m_IMEPageStartCandidate = m_IMETotalCandidate = m_IMESelectedCandidate = 0u;
+		m_IMECandidateList.clear();
+	}
 }
 
 f2dWindowEventListener* f2dWindowImpl::GetListener()

@@ -1644,8 +1644,7 @@ bool AppFrame::Init()LNOEXCEPT
 		m_pMainWindow->MoveToCenter();
 		m_pMainWindow->SetVisiable(true);
 	}
-
-	resetKeyStatus();
+	resetKeyStatus(); // clear key status first
 
 	//////////////////////////////////////// 碰撞组显示设置
 	m_collidercfg.clear();
@@ -1755,12 +1754,6 @@ void AppFrame::Run()LNOEXCEPT
 	DWORD dwForeID = ::GetWindowThreadProcessId(hForeWnd, NULL);
 	DWORD dwCurID = ::GetCurrentThreadId();
 	::AttachThreadInput(dwCurID, dwForeID, TRUE);
-
-	//ShowWindow(hWnd, SW_SHOWNORMAL);
-	//SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
-	//SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
-	//SetForegroundWindow(hWnd);
-
 	if (m_bSplashWindowEnabled)  // 显示过载入窗口
 	{
 		// 显示窗口
@@ -1772,10 +1765,7 @@ void AppFrame::Run()LNOEXCEPT
 			ChangeVideoMode((int)m_OptionResolution.x, (int)m_OptionResolution.y, m_OptionWindowed, m_OptionVsync);
 	}
 	m_bSplashWindowEnabled = false;
-
-	m_pMainWindow->SetHideIME(true);
 	m_pMainWindow->HideMouse(!m_OptionSplash);
-
 	::AttachThreadInput(dwCurID, dwForeID, FALSE);
 
 	// 启动游戏循环

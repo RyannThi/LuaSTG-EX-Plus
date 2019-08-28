@@ -30,7 +30,7 @@ private:
 	static LRESULT CALLBACK WndProc(HWND Handle, UINT Msg, WPARAM wParam, LPARAM lParam);
 public:
 	fcStrW GetName()const; // 获得窗口类名称
-	f2dWindowImpl* CreateRenderWindow(const fcyRect& Pos, fcStrW Title, fBool Visiable, F2DWINBORDERTYPE Border); // 创建窗口
+	f2dWindowImpl* CreateRenderWindow(const fcyRect& Pos, fcStrW Title, fBool Visiable, F2DWINBORDERTYPE Border, bool DisableIME = true); // 创建窗口
 public:
 	f2dWindowClass(f2dEngineImpl* pEngine, fcStrW ClassName);
 	~f2dWindowClass();
@@ -236,6 +236,6 @@ public: // 接口实现
 			return m_IMECandidateList[Index].c_str();
 	}
 protected:
-	f2dWindowImpl(f2dEngineImpl* pEngine, f2dWindowClass* WinCls, const fcyRect& Pos, fcStrW Title, fBool Visiable, F2DWINBORDERTYPE Border);
+	f2dWindowImpl(f2dEngineImpl* pEngine, f2dWindowClass* WinCls, const fcyRect& Pos, fcStrW Title, fBool Visiable, F2DWINBORDERTYPE Border, bool DisableIME = true);
 	~f2dWindowImpl();
 };
