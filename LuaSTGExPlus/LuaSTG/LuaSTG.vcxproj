@@ -27,17 +27,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="BlendModeHash.json" />
     <None Include="GameObjectPropertyHash.inl" />
-    <None Include="GameObjectPropertyHash.json" />
-    <None Include="string2enum.py" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppFrame.h" />
     <ClInclude Include="Bencode.h" />
     <ClInclude Include="CirularQueue.hpp" />
     <ClInclude Include="CollisionDetect.h" />
-    <ClInclude Include="CoScope.hpp" />
     <ClInclude Include="Dictionary.hpp" />
     <ClInclude Include="ESC.h" />
     <ClInclude Include="GameObject.hpp" />

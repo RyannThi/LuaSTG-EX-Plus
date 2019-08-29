@@ -1,6 +1,5 @@
 ﻿#include "AppFrame.h"
 #include "RuntimeCheck.hpp"
-#include "CoScope.hpp"
 #include "Utility.h"
 
 using namespace std;

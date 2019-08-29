@@ -1,5 +1,12 @@
 ﻿#include "Utility.h"
 
+#include <wrl.h>
+#include <Shobjidl.h>
+#include <Knownfolders.h>
+
+template <class T>
+using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 using namespace std;
 using namespace LuaSTGPlus;
 
@@ -205,4 +212,64 @@ std::wstring LuaSTGPlus::StringFormatV(const wchar_t* Format, va_list vaptr)LNOE
 	}
 
 	return std::move(tRet);
+}
+
+bool _GetSystemPath(REFKNOWNFOLDERID id, std::wstring& out) {
+	ComPtr<IKnownFolderManager> kfm = nullptr;
+	if (SUCCEEDED(CoCreateInstance(CLSID_KnownFolderManager, nullptr, CLSCTX_INPROC_SERVER, IID_IKnownFolderManager, (LPVOID*)kfm.GetAddressOf())))
+	{
+		ComPtr<IKnownFolder> kf = nullptr;
+		if (SUCCEEDED(kfm->GetFolder(id, kf.GetAddressOf())))
+		{
+			LPWSTR _path = nullptr;
+			if (SUCCEEDED(kf->GetPath(0, &_path))) {
+				if (_path != nullptr) {
+					out = _path;
+					if (out.size() > 0 && out.back() != L'\\') {
+						out.push_back(L'\\');
+					}
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+bool _GetLocalPath(std::wstring& out) {
+	std::wstring path;
+	path.resize(MAX_PATH);
+	if (0u == GetCurrentDirectoryW(MAX_PATH, const_cast<wchar_t*>(path.data()))) {
+		return false;
+	}
+	out = path;
+	if (out.size() > 0 && out.back() != L'\\') {
+		out.push_back(L'\\');
+	}
+	return true;
+}
+
+std::wstring _GetUserPath(REFKNOWNFOLDERID id)
+{
+	try {
+		std::wstring path;
+		if (_GetSystemPath(id, path)) {
+			return std::move(path);
+		}
+		if (_GetLocalPath(path)) {
+			return std::move(path);
+		}
+	}
+	catch (const std::bad_alloc&) { }
+	return L"";
+}
+
+std::wstring LuaSTGPlus::GetLocalAppDataPath()LNOEXCEPT
+{
+	return std::move(_GetUserPath(FOLDERID_LocalAppData));
+}
+
+std::wstring LuaSTGPlus::GetRoamingAppDataPath()LNOEXCEPT
+{
+	return std::move(_GetUserPath(FOLDERID_RoamingAppData));
 }

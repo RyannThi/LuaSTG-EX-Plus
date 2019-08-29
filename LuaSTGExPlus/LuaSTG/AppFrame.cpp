@@ -1493,7 +1493,7 @@ bool AppFrame::Init()LNOEXCEPT
 	lua_pop(L, 1);
 
 	//////////////////////////////////////// 装载初始化脚本
-	LINFO("装载初始化脚本'%s'", LLAUNCH_SCRIPT);
+	//LINFO("装载初始化脚本'%s'", LLAUNCH_SCRIPT);
 	fcyRefPointer<fcyMemStream> tMemStream;
 	if (m_ResourceMgr.LoadFile(LLAUNCH_SCRIPT, tMemStream)) {
 		if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), "launch"))
@@ -1658,7 +1658,7 @@ bool AppFrame::Init()LNOEXCEPT
 	if (!m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream)) {
 		//LWARNING("找不到文件'%s'", LMAIN_SCRIPT.c_str());
 		MAIN_SCRIPT = "src/main.lua"; LMAIN_SCRIPT = L"src/main.lua";
-		LINFO("装载核心脚本'%s'", LMAIN_SCRIPT.c_str());
+		//LINFO("装载核心脚本'%s'", LMAIN_SCRIPT.c_str());
 		if (!m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream))
 			return false;
 	}

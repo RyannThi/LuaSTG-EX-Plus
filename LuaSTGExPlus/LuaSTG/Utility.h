@@ -5,7 +5,7 @@
 
 namespace LuaSTGPlus
 {
-	/// @brief 域
+	///离开作用域自动执行委托的函数
 	class Scope
 	{
 	private:
@@ -22,7 +22,7 @@ namespace LuaSTGPlus
 		}
 	};
 
-	/// @brief 计时域
+	///计时域，离开作用域自动计算流逝的时间
 	class TimerScope
 	{
 	private:
@@ -39,21 +39,31 @@ namespace LuaSTGPlus
 		}
 	};
 
-	/// @brief 字符串格式化
-	/// @param Format 字符串格式，不支持精度
+	// com组件库域，自动初始化com组件库和离开作用域时自动卸载com组件库，以函数调用时获取com组件库初始化成功与否
+	class CoScope {
+	private:
+		bool m_Status = false;
+	public:
+		bool operator ()()const { return m_Status; }
+		CoScope() { m_Status = SUCCEEDED(CoInitializeEx(NULL, COINIT_MULTITHREADED)); }
+		~CoScope() { if (m_Status) CoUninitialize(); }
+	};
+
+	//字符串格式化
+	//param[in] Format 字符串格式，不支持精度
 	std::string StringFormat(const char* Format, ...)LNOEXCEPT;
 
-	/// @brief 字符串格式化 va_list版本
+	//字符串格式化 va_list版本
 	std::string StringFormatV(const char* Format, va_list vaptr)LNOEXCEPT;
 
-	/// @brief 字符串格式化 宽字符
-	/// @param Format 字符串格式，不支持精度
+	//字符串格式化 宽字符
+	//param[in] Format 字符串格式，不支持精度
 	std::wstring StringFormat(const wchar_t* Format, ...)LNOEXCEPT;
 
-	/// @brief 字符串格式化 宽字符、va_list版本
+	//字符串格式化 宽字符、va_list版本
 	std::wstring StringFormatV(const wchar_t* Format, va_list vaptr)LNOEXCEPT;
 
-	/// @brief RC4加解密实现
+	//RC4加解密实现
 	class RC4
 	{
 	private:
@@ -92,4 +102,10 @@ namespace LuaSTGPlus
 			}
 		}
 	};
+
+	//获取系统本地应用数据文件夹
+	std::wstring GetLocalAppDataPath()LNOEXCEPT;
+
+	//获取系统漫游应用数据文件夹
+	std::wstring GetRoamingAppDataPath()LNOEXCEPT;
 }
