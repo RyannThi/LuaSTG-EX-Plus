@@ -242,4 +242,113 @@ namespace LuaSTGPlus {
 
 		return false;
 	}
+
+	bool CollisionCheck(GameObject* p1, GameObject* p2)LNOEXCEPT {
+		//忽略不碰撞对象
+		if (!p1->colli || !p2->colli)
+			return false;//返回点0
+
+#ifdef USING_ADVANCE_COLLIDER
+		float la, ra, ba, ta;
+		float lb, rb, bb, tb;
+		float x1, x2, y1, y2, a1, a2, b1, b2, rot1, rot2, cr1, cr2;
+
+		int cc1 = 0, cc2;
+		while (p1->colliders[cc1].type != GameObjectColliderType::None && cc1 < MAX_COLLIDERS_COUNT) {
+			x1 = p1->colliders[cc1].absx;
+			y1 = p1->colliders[cc1].absy;
+			cr1 = p1->colliders[cc1].circum_r;
+			a1 = p1->colliders[cc1].a;
+			b1 = p1->colliders[cc1].b;
+			rot1 = p1->colliders[cc1].absrot;
+
+			cc2 = 0;//归位
+			while (p2->colliders[cc2].type != GameObjectColliderType::None && cc2 < MAX_COLLIDERS_COUNT) {
+				x2 = p2->colliders[cc2].absx;
+				y2 = p2->colliders[cc2].absy;
+				cr2 = p2->colliders[cc2].circum_r;
+
+				//快速AABB检测
+				la = x1 - cr1; ra = x1 + cr1; ba = y1 - cr1; ta = y1 + cr1;
+				lb = x2 - cr2; rb = x2 + cr2; bb = y2 - cr2; tb = y2 + cr2;
+				if ((la >= rb) || (ra <= lb) || (ba >= tb) || (ta <= bb)) {
+					cc2++;
+					continue;
+				}
+
+				a2 = p2->colliders[cc2].a;
+				b2 = p2->colliders[cc2].b;
+				rot2 = p2->colliders[cc2].absrot;
+
+				//外接圆碰撞检测，没发生碰撞则直接PASS
+				if (!xmath::collision::check(
+					xmath::Vec2(x1, y1), cr1, cr1, rot1, XColliderType::Circle,
+					xmath::Vec2(x2, y2), cr2, cr2, rot2, XColliderType::Circle)) {
+					cc2++;
+					continue;
+				}
+
+				//精确碰撞检测
+				if (xmath::collision::check(
+					xmath::Vec2(x1, y1), a1, b1, rot1, p1->colliders[cc1].xtype,
+					xmath::Vec2(x2, y2), a2, b2, rot2, p2->colliders[cc2].xtype)) {
+					return true;
+				}//返回点1
+
+				cc2++;
+			}
+
+			cc1++;
+		}
+
+		return false;//返回点2
+#else
+		//快速AABB检测
+		if ((p1->x - p1->col_r >= p2->x + p2->col_r) ||
+			(p1->x + p1->col_r <= p2->x - p2->col_r) ||
+			(p1->y - p1->col_r >= p2->y + p2->col_r) ||
+			(p1->y + p1->col_r <= p2->y - p2->col_r))
+		{
+			return false;
+		}
+
+		float x1 = (float)p1->x; float x2 = (float)p2->x; float y1 = (float)p1->y; float y2 = (float)p2->y;
+		float a1 = (float)p1->a; float a2 = (float)p2->a; float b1 = (float)p1->b; float b2 = (float)p2->b;
+		float rot1 = (float)p1->rot; float rot2 = (float)p2->rot;
+		float cr1 = (float)p1->col_r; float cr2 = (float)p2->col_r;
+
+		//外接圆碰撞检测，没发生碰撞则直接PASS
+		if (!xmath::collision::check(xmath::Vec2(x1, y1), cr1, cr1, rot1, XColliderType::Circle,
+			xmath::Vec2(x2, y2), cr2, cr2, rot2, XColliderType::Circle)) {
+			return false;
+		}
+
+		//精确碰撞检测
+		if (!p1->rect && !p2->rect) {
+			//椭圆、椭圆碰撞检测
+			return xmath::collision::check(xmath::Vec2(x1, y1), a1, b1, rot1, XColliderType::Ellipse,
+				xmath::Vec2(x2, y2), a2, b2, rot2, XColliderType::Ellipse);
+		}
+		else if (p1->rect && p2->rect) {
+			//矩形、矩形碰撞检测
+			return xmath::collision::check(xmath::Vec2(x1, y1), a1, b1, rot1, XColliderType::OBB,
+				xmath::Vec2(x2, y2), a2, b2, rot2, XColliderType::OBB);
+		}
+		else
+		{
+			//矩形、椭圆碰撞检测
+			if (p1->rect && (!p2->rect))
+			{
+				return xmath::collision::check(xmath::Vec2(x1, y1), a1, b1, rot1, XColliderType::OBB,
+					xmath::Vec2(x2, y2), a2, b2, rot2, XColliderType::Ellipse);
+			}
+			else if ((!p1->rect) && p2->rect)
+			{
+				return xmath::collision::check(xmath::Vec2(x1, y1), a1, b1, rot1, XColliderType::Ellipse,
+					xmath::Vec2(x2, y2), a2, b2, rot2, XColliderType::OBB);
+			}
+		}
+		return false;
+#endif // USING_ADVANCE_COLLIDER
+	}
 }

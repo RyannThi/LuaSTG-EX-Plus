@@ -1,5 +1,5 @@
 ﻿#include "../LuaWrapper.hpp"
-#include "../../GameObjectPool.h"
+#include "../../GameObjectBentLaser.hpp"
 
 namespace LuaSTGPlus
 {

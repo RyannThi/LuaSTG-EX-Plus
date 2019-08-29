@@ -1,7 +1,5 @@
-﻿#include "Global.h"
+﻿#include "GameObjectBentLaser.hpp"
 #include "AppFrame.h"
-#include "GameObjectPool.h"
-#include "CollisionDetect.h"
 
 using namespace std;
 using namespace LuaSTGPlus;
@@ -564,13 +562,13 @@ void GameObjectBentLaser::RenderCollider(fcyColor fillColor)LNOEXCEPT {
 							{ tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },
 							{ -tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
 						};
-						float tSin, tCos;
-						LuaSTGPlus::SinCos(testObjA.colliders[0].absrot, tSin, tCos);
+						float tSin = std::sinf(testObjA.colliders[0].absrot);
+						float tCos = std::cosf(testObjA.colliders[0].absrot);
 						// 变换
 						for (int i = 0; i < 4; i++)
 						{
-							fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin,
-								ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
+							fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin;
+							fFloat ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
 							tFinalPos[i].x = tx + testObjA.colliders[0].absx;
 							tFinalPos[i].y = ty + testObjA.colliders[0].absy;
 						}
@@ -625,12 +623,12 @@ void GameObjectBentLaser::RenderCollider(fcyColor fillColor)LNOEXCEPT {
 			}
 			// 变换
 			{
-				float tSin, tCos;
-				LuaSTGPlus::SinCos(testObjA.colliders[0].absrot, tSin, tCos);
+				float tSin = std::sinf(testObjA.colliders[0].absrot);
+				float tCos = std::cosf(testObjA.colliders[0].absrot);
 				for (int i = 0; i < vertcount; i++)
 				{
-					fFloat tx = vert[i].x * tCos - vert[i].y * tSin,
-						   ty = vert[i].x * tSin + vert[i].y * tCos;
+					fFloat tx = vert[i].x * tCos - vert[i].y * tSin;
+					fFloat ty = vert[i].x * tSin + vert[i].y * tCos;
 					vert[i].x = tx + testObjA.colliders[0].absx;
 					vert[i].y = ty + testObjA.colliders[0].absy;
 				}

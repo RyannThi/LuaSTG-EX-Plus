@@ -7,9 +7,8 @@
 
 #define MAX_COLLIDERS_COUNT 16
 
-namespace LuaSTGPlus {
-	//static const int MAX_COLLIDERS_COUNT = 16;
-
+namespace LuaSTGPlus
+{
 	// 游戏对象状态
 	enum GAMEOBJECTSTATUS
 	{
@@ -90,11 +89,6 @@ namespace LuaSTGPlus {
 		}
 		//根据偏移计算绝对坐标和旋转
 		void caloffset(float x, float y, float _rot) {
-			//可能是计算方法有误
-			/*float tSin, tCos;
-			LuaSTGPlus::SinCos(_rot, tSin, tCos);
-			absx = x + dx * tCos - dy * tSin;
-			absy = y + dx * tSin + dy * tCos;*/
 			float tCos = std::cosf(-_rot);
 			float tSin = std::sinf(-_rot);
 			absx = x + dx * tCos + dy * tSin;
@@ -314,4 +308,7 @@ namespace LuaSTGPlus {
 			return false;
 		}
 	};
+
+	//对两个游戏对象进行碰撞检测
+	bool CollisionCheck(GameObject* p1, GameObject* p2)LNOEXCEPT;
 }

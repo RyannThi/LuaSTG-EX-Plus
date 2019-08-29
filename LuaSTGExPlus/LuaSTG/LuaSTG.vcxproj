@@ -37,6 +37,7 @@
     <ClInclude Include="Dictionary.hpp" />
     <ClInclude Include="ESC.h" />
     <ClInclude Include="GameObject.hpp" />
+    <ClInclude Include="GameObjectBentLaser.hpp" />
     <ClInclude Include="GameObjectClass.hpp" />
     <ClInclude Include="GameObjectPool.h" />
     <ClInclude Include="Global.h" />
