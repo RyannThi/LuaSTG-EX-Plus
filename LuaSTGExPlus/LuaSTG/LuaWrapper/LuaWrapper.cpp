@@ -1,4 +1,4 @@
-#include "LuaWrapper.hpp"
+ï»¿#include "LuaWrapper.hpp"
 #include "../Utility.h"
 
 namespace LuaSTGPlus
@@ -73,6 +73,21 @@ namespace LuaSTGPlus
 					ColorWrapper::CreateAndPush(L, c);
 					return 1;
 				}
+				static int StopWatch(lua_State* L)LNOEXCEPT
+				{
+					StopWatchWrapper::CreateAndPush(L);
+					return 1;
+				}
+				static int Rand(lua_State* L)LNOEXCEPT
+				{
+					RandomizerWrapper::CreateAndPush(L);
+					return 1;
+				}
+				static int BentLaser(lua_State* L)LNOEXCEPT
+				{
+					BentLaserWrapper::CreateAndPush(L);
+					return 1;
+				}
 			};
 
 			luaL_Reg tMethod[] =
@@ -84,11 +99,17 @@ namespace LuaSTGPlus
 				{ "UTF8ToANSI", &Function::UTF8ToANSI },
 				
 				{ "Color", &Function::Color },
+				{ "StopWatch", &Function::StopWatch },
+				{ "Rand", &Function::Rand },
+				{ "BentLaserData", &Function::BentLaser },
 				{ NULL, NULL }
 			};
 
 			lua_newtable(L);						// ... t
 			ColorWrapper::Register(L);
+			StopWatchWrapper::Register(L);
+			RandomizerWrapper::Register(L);
+			BentLaserWrapper::Register(L);
 			IO::Register(L);
 			::luaL_register(L, NULL, tMethod);
 			::lua_setglobal(L, LUASTG_LUA_LIBNAME);	// ...
@@ -97,14 +118,11 @@ namespace LuaSTGPlus
 
 	void RegistBuiltInClassWrapper(lua_State* L)LNOEXCEPT {
 		LuaWrapper::Register(L);
-		RandomizerWrapper::Register(L);  // Ëæ»úÊı·¢ÉúÆ÷
-		BentLaserDataWrapper::Register(L);  // ÇúÏß¼¤¹â
-		Fancy2dStopWatchWrapper::Register(L);  // ¸ß¾«¶ÈÍ£±í
-		BuiltInFunctionWrapper::Register(L);  // ÄÚ½¨º¯Êı¿â
-		FileManagerWrapper::Register(L); //ÄÚ½¨º¯Êı¿â£¬ÎÄ¼ş×ÊÔ´¹ÜÀí£¬ÇëÈ·±£Î»ÓÚÄÚ½¨º¯Êı¿âºó¼ÓÔØ
-		ArchiveWrapper::Register(L); //Ñ¹Ëõ°ü
-		GameResourceWrapper::Register(L);  // ÓÎÏ·×ÊÔ´¶ÔÏó
-		XInputManagerWrapper::Register(L);  //ÄÚ½¨º¯Êı¿â£¬XInput£¬ÇëÈ·±£Î»ÓÚÄÚ½¨º¯Êı¿âºó¼ÓÔØ
+		BuiltInFunctionWrapper::Register(L);  // å†…å»ºå‡½æ•°åº“
+		FileManagerWrapper::Register(L); //å†…å»ºå‡½æ•°åº“ï¼Œæ–‡ä»¶èµ„æºç®¡ç†ï¼Œè¯·ç¡®ä¿ä½äºå†…å»ºå‡½æ•°åº“ååŠ è½½
+		ArchiveWrapper::Register(L); //å‹ç¼©åŒ…
+		GameResourceWrapper::Register(L);  // æ¸¸æˆèµ„æºå¯¹è±¡
+		XInputManagerWrapper::Register(L);  //å†…å»ºå‡½æ•°åº“ï¼ŒXInputï¼Œè¯·ç¡®ä¿ä½äºå†…å»ºå‡½æ•°åº“ååŠ è½½
 #ifdef USING_ADVANCE_COLLIDER
 		GameObjectColliderWrapper::Register(L);//Collider
 #endif // USING_ADVANCE_COLLIDER

@@ -67,7 +67,6 @@
     <ClCompile Include="AppFrame.cpp" />
     <ClCompile Include="ArchiveWrapper.cpp" />
     <ClCompile Include="Bencode.cpp" />
-    <ClCompile Include="BentlazerWrapper.cpp" />
     <ClCompile Include="CollisionDetect.cpp" />
     <ClCompile Include="ESC.cpp" />
     <ClCompile Include="FileManagerWrapper.cpp" />
@@ -84,10 +83,12 @@
     <ClCompile Include="LuaWrapper\IO\LW_IO_BinaryWriter.cpp" />
     <ClCompile Include="LuaWrapper\IO\LW_IO_Steam.cpp" />
     <ClCompile Include="LuaWrapper\LuaWrapper.cpp" />
+    <ClCompile Include="LuaWrapper\Misc\LW_BentLaser.cpp" />
     <ClCompile Include="LuaWrapper\Misc\LW_Color.cpp" />
+    <ClCompile Include="LuaWrapper\Misc\LW_Randomizer.cpp" />
+    <ClCompile Include="LuaWrapper\Misc\LW_StopWatch.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Network.cpp" />
-    <ClCompile Include="RandomizerWrapper.cpp" />
     <ClCompile Include="RemoteDebuggerClient.cpp" />
     <ClCompile Include="ResourceAnimation.cpp" />
     <ClCompile Include="ResourceAudio.cpp" />
@@ -97,7 +98,6 @@
     <ClCompile Include="ResourceParticle.cpp" />
     <ClCompile Include="ResourcePool.cpp" />
     <ClCompile Include="SplashWindow.cpp" />
-    <ClCompile Include="StopWatchWrapper.cpp" />
     <ClCompile Include="UnicodeStringEncoding.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="XInputWrapper.cpp" />

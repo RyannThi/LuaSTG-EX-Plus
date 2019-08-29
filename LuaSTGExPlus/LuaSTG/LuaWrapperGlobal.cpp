@@ -2032,21 +2032,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		
 		// 对象构造函数
-		static int NewRand(lua_State* L)LNOEXCEPT
-		{
-			RandomizerWrapper::CreateAndPush(L);
-			return 1;
-		}
-		static int BentLaserData(lua_State* L)LNOEXCEPT
-		{
-			BentLaserDataWrapper::CreateAndPush(L);
-			return 1;
-		}
-		static int StopWatch(lua_State* L)LNOEXCEPT
-		{
-			Fancy2dStopWatchWrapper::CreateAndPush(L);
-			return 1;
-		}
 		static int ResourceRef(lua_State* L)LNOEXCEPT
 		{
 			//ResourceRef(ResorseName:string, ResourceType:number[, ResourcePool:number])
@@ -2443,9 +2428,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "Execute", &WrapperImplement::Execute },
 		
 		// 对象构造函数
-		{ "Rand", &WrapperImplement::NewRand },
-		{ "BentLaserData", &WrapperImplement::BentLaserData },
-		{ "StopWatch", &WrapperImplement::StopWatch },
 		{ "ResourceReference", &WrapperImplement::ResourceRef },
 		{ "XInputManager", &WrapperImplement::XInputManager },
 		{ "SampleBezier", &WrapperImplement::SampleBezier },

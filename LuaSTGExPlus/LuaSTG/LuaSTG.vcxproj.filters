@@ -220,9 +220,6 @@
     <ClCompile Include="ResourceAudio.cpp">
       <Filter>Resource\Type</Filter>
     </ClCompile>
-    <ClCompile Include="BentlazerWrapper.cpp">
-      <Filter>LuaWrapper\Class</Filter>
-    </ClCompile>
     <ClCompile Include="FileManagerWrapper.cpp">
       <Filter>LuaWrapper\Class</Filter>
     </ClCompile>
@@ -230,12 +227,6 @@
       <Filter>LuaWrapper\Class</Filter>
     </ClCompile>
     <ClCompile Include="GameResourceWrapper.cpp">
-      <Filter>LuaWrapper\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="RandomizerWrapper.cpp">
-      <Filter>LuaWrapper\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="StopWatchWrapper.cpp">
       <Filter>LuaWrapper\Class</Filter>
     </ClCompile>
     <ClCompile Include="XInputWrapper.cpp">
@@ -267,6 +258,15 @@
     </ClCompile>
     <ClCompile Include="LuaWrapperGlobal.cpp">
       <Filter>LuaWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaWrapper\Misc\LW_StopWatch.cpp">
+      <Filter>LuaWrapper\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaWrapper\Misc\LW_Randomizer.cpp">
+      <Filter>LuaWrapper\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaWrapper\Misc\LW_BentLaser.cpp">
+      <Filter>LuaWrapper\Misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
