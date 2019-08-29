@@ -413,7 +413,6 @@ int GameObjectPool::New(lua_State* L)LNOEXCEPT
 
 	//  t(class) 
 #ifdef USING_ADVANCE_GAMEOBJECT_CLASS
-	p->luaclass.Reset();
 	p->luaclass.CheckClassClass(L, 1);
 #endif // USING_ADVANCE_GAMEOBJECT_CLASS
 	GETOBJTABLE;								// t(class) ... ot
@@ -1297,7 +1296,6 @@ int GameObjectPool::SetAttr(lua_State* L)LNOEXCEPT
 #ifdef USING_ADVANCE_GAMEOBJECT_CLASS
 		if (!GameObjectClass::CheckClassValid(L, 3))
 			return luaL_error(L, "invalid argument, require luastg object class.");
-		p->luaclass.Reset(); // 先重置一次对象的class消息，因为不是所有的class信息都是完整的
 		p->luaclass.CheckClassClass(L, 3); // 刷新对象的class
 #endif // USING_ADVANCE_GAMEOBJECT_CLASS
 		lua_rawseti(L, 1, 1);

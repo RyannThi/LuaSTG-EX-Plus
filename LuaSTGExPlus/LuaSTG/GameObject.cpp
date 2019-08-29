@@ -61,9 +61,6 @@ namespace LuaSTGPlus {
 	void GameObject::DirtReset()
 	{
 		status = (GAMEOBJECTSTATUS)STATUS_DEFAULT;
-#ifdef USING_ADVANCE_GAMEOBJECT_CLASS
-		luaclass.Reset();
-#endif // USING_ADVANCE_GAMEOBJECT_CLASS
 
 		x = y = 0.;
 		lastx = lasty = 0.;

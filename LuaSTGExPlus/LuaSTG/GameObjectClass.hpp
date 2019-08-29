@@ -1,5 +1,4 @@
 #pragma once
-#include "lua.hpp"
 #include "Global.h"
 
 #define LOBJ_CLASS_ISCLASS         "is_class"
@@ -31,6 +30,7 @@ namespace LuaSTGPlus {
 		}
 
 		bool CheckClassClass(lua_State* L, int index) {
+			Reset(); // clear info first
 			// ??? class ???
 
 			// default function
