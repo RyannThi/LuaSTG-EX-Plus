@@ -1,4 +1,5 @@
 ﻿#include "Global.h"
+#include "ResourcePassword.hpp"
 #include "LuaWrapper\LuaWrapper.hpp"
 #include "AppFrame.h"
 #include "Network.h"
@@ -80,6 +81,40 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			LAPP.SetTitle(luaL_checkstring(L, 1));
 			return 0;
 		}
+		static int Log(lua_State* L)LNOEXCEPT
+		{
+			lua_Integer _level = luaL_checkinteger(L, 1);
+			LuaSTGPlus::LogType level = LuaSTGPlus::LogType::Information;
+			switch (_level)
+			{
+			case 1:
+				level = LuaSTGPlus::LogType::Debug;
+				break;
+			case 2:
+				level = LuaSTGPlus::LogType::Information;
+				break;
+			case 3:
+				level = LuaSTGPlus::LogType::Warning;
+				break;
+			case 4:
+				level = LuaSTGPlus::LogType::Error;
+				break;
+			case 5:
+				level = LuaSTGPlus::LogType::Fatal;
+				break;
+			default:
+				level = LuaSTGPlus::LogType::Information;
+				break;
+			}
+			try {
+				std::wstring msg = fcyStringHelper::MultiByteToWideChar(luaL_checkstring(L, 2), CP_UTF8);
+				LLOGGER.Log(level, msg.c_str());
+			}
+			catch (...) {
+				return luaL_error(L, "Failed to write log message.");
+			}
+			return 0;
+		}
 		static int SystemLog(lua_State* L)LNOEXCEPT
 		{
 			LINFO("脚本日志：%m", luaL_checkstring(L, 1));
@@ -110,7 +145,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		static int LoadPack(lua_State* L)LNOEXCEPT
 		{
 			const char* p = luaL_checkstring(L, 1);
-			//const char* pwd = "password";
 			const char* pwd = nullptr;
 			if (lua_isstring(L, 2))
 				pwd = luaL_checkstring(L, 2);
@@ -120,11 +154,8 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		static int LoadPackSub(lua_State* L)LNOEXCEPT
 		{
 			const char* p = luaL_checkstring(L, 1);
-			const char pwd[] = "password";
-			//const char* pwd = nullptr;
-			//if (lua_isstring(L, 2))
-				//pwd = luaL_checkstring(L, 2);
-			LFMGR.LoadArchive(p, 0, pwd);
+			std::string pw = LuaSTGPlus::GetGameName();
+			LFMGR.LoadArchive(p, 0, pw.c_str());
 			return 0;
 		}
 		static int UnloadPack(lua_State* L)LNOEXCEPT
@@ -2242,6 +2273,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "ChangeVideoMode", &WrapperImplement::ChangeVideoMode },
 		{ "SetSplash", &WrapperImplement::SetSplash },
 		{ "SetTitle", &WrapperImplement::SetTitle },
+		{ "Log", &WrapperImplement::Log },
 		{ "SystemLog", &WrapperImplement::SystemLog },
 		{ "Print", &WrapperImplement::Print },
 		{ "LoadPack", &WrapperImplement::LoadPack },

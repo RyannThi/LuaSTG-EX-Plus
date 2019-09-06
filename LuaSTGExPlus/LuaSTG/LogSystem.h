@@ -11,7 +11,10 @@ namespace LuaSTGPlus
 	{
 		Information,
 		Warning,
-		Error
+		Error,
+
+		Debug,
+		Fatal,
 	};
 
 	/// @brief 日志系统

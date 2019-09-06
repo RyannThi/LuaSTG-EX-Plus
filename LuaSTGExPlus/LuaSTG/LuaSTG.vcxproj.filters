@@ -158,6 +158,9 @@
     <ClInclude Include="GameObjectBentLaser.hpp">
       <Filter>GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="ResourcePassword.hpp">
+      <Filter>Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppFrame.cpp">
@@ -270,6 +273,12 @@
     </ClCompile>
     <ClCompile Include="LuaWrapper\Misc\LW_BentLaser.cpp">
       <Filter>LuaWrapper\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="MyResourcePassword.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourcePassword.cpp">
+      <Filter>Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

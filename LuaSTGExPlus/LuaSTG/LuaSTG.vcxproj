@@ -57,6 +57,7 @@
     <ClInclude Include="ResourceMgr.h" />
     <ClInclude Include="ResourceModel.hpp" />
     <ClInclude Include="ResourceParticle.hpp" />
+    <ClInclude Include="ResourcePassword.hpp" />
     <ClInclude Include="ResourceSprite.hpp" />
     <ClInclude Include="ResourceTexture.hpp" />
     <ClInclude Include="RuntimeCheck.hpp" />
@@ -89,6 +90,7 @@
     <ClCompile Include="LuaWrapper\Misc\LW_Randomizer.cpp" />
     <ClCompile Include="LuaWrapper\Misc\LW_StopWatch.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MyResourcePassword.cpp" />
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="RemoteDebuggerClient.cpp" />
     <ClCompile Include="ResourceAnimation.cpp" />
@@ -97,6 +99,11 @@
     <ClCompile Include="ResourceFX.cpp" />
     <ClCompile Include="ResourceMgr.cpp" />
     <ClCompile Include="ResourceParticle.cpp" />
+    <ClCompile Include="ResourcePassword.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Dev|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="ResourcePool.cpp" />
     <ClCompile Include="SplashWindow.cpp" />
     <ClCompile Include="UnicodeStringEncoding.cpp" />

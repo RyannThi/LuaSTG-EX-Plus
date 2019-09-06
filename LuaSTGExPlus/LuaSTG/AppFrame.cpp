@@ -661,9 +661,18 @@ fBool AppFrame::GetKeyState(int VKCode)LNOEXCEPT
 	return false;
 }
 
+fBool AppFrame::GetKeyboardState(DWORD VKCode)LNOEXCEPT {
+	if (m_Keyboard2) {
+		return m_Keyboard2->KeyPress(VKCode);
+	}
+	else {
+		return false;
+	}
+}
+
 bool AppFrame::GetAsyncKeyState(int VKCode)LNOEXCEPT {
 	SHORT KeyState = ::GetAsyncKeyState(VKCode);//应该使用WinUser的方法，这个是在全局命名空间里面的，不然会出现我调用我自己的bug
-	if (KeyState & (1 << 15)) {
+	if (KeyState & 0x8000) {
 		return true;
 	}
 	else {

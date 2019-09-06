@@ -29,13 +29,22 @@ LNOINLINE void LogSystem::Log(LogType type, const wchar_t* info, ...)throw()
 		switch (type)
 		{
 		case LogType::Error:
-			tRet = L"[ERRO] ";
+			tRet = L"[ERROR] ";
 			break;
 		case LogType::Warning:
-			tRet = L"[WARN] ";
+			tRet = L"[WARN]  ";
+			break;
+		case LogType::Information:
+			tRet = L"[INFO]  ";
+			break;
+		case LogType::Debug:
+			tRet = L"[DEBUG] ";
+			break;
+		case LogType::Fatal:
+			tRet = L"[FATAL] ";
 			break;
 		default:
-			tRet = L"[INFO] ";
+			tRet = L"[INFO]  ";
 			break;
 		}
 
@@ -47,11 +56,11 @@ LNOINLINE void LogSystem::Log(LogType type, const wchar_t* info, ...)throw()
 	}
 	catch (const bad_alloc&)
 	{
-		OutputDebugString(L"[ERRO] 记录日志时发生内存不足错误");
+		OutputDebugStringW(L"[ERROR] 记录日志时发生内存不足错误");
 		return;
 	}
 	
-	OutputDebugString(tRet.c_str());
+	OutputDebugStringW(tRet.c_str());
 	try
 	{
 		if (m_LogFile)
@@ -62,7 +71,7 @@ LNOINLINE void LogSystem::Log(LogType type, const wchar_t* info, ...)throw()
 	}
 	catch (const bad_alloc&)
 	{
-		OutputDebugString(L"[ERRO] 记录日志时发生内存不足错误");
+		OutputDebugStringW(L"[ERROR] 记录日志时发生内存不足错误");
 		return;
 	}
 }

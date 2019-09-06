@@ -124,7 +124,6 @@ namespace LuaSTGPlus
 		F2DGRAPH2DBLENDTYPE m_Graph2DColorBlendState;//2D
 		BlendMode m_Graph3DLastBlendMode;//3D
 		f2dBlendState m_Graph3DBlendState;//3D
-		f2dBlendState m_UserBlendState;//user
 
 		//渲染器
 		fcyRefPointer<f2dGeometryRenderer> m_GRenderer;//2D
@@ -412,7 +411,7 @@ namespace LuaSTGPlus
 		fBool GetKeyState(int VKCode)LNOEXCEPT;
 
 		//检查键盘按键是否按下，Dinput KeyCode
-		fBool GetKeyboardState(DWORD VKCode)LNOEXCEPT { return m_Keyboard2->KeyPress(VKCode); }
+		fBool GetKeyboardState(DWORD VKCode)LNOEXCEPT;
 
 		//检查键盘按键是否按下，使用的是GetAsyncKeyState
 		//和GetKeyboardState不同，这个检测的不是按下过的，而是现在被按住的键
