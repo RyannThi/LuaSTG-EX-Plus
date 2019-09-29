@@ -10,11 +10,13 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cmath>
+#include <ctime>
 
 // STL
 #include <functional>
 #include <algorithm>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <memory>
 #include <map>

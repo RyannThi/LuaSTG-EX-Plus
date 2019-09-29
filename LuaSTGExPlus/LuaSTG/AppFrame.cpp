@@ -599,9 +599,11 @@ LNOINLINE void AppFrame::LoadTextFile(const char* path, const char *packname)LNO
 		luaL_error(L, "can't load file '%s'", path);
 		return;
 	}
-	const char *fstr = (fcStr)tMemStream->GetInternalBuffer();
-	lua_pushstring(L, fstr);
+	std::string buffer;
+	buffer.resize((size_t)tMemStream->GetLength());
+	tMemStream->ReadBytes((fData)buffer.data(), tMemStream->GetLength(), nullptr);
 	tMemStream = nullptr;
+	lua_pushstring(L, buffer.c_str());
 }
 
 fBool AppFrame::GetKeyState(int VKCode)LNOEXCEPT
@@ -1502,7 +1504,7 @@ bool AppFrame::Init()LNOEXCEPT
 	lua_pop(L, 1);
 
 	//////////////////////////////////////// 装载初始化脚本
-	//LINFO("装载初始化脚本'%s'", LLAUNCH_SCRIPT);
+	LINFO("装载初始化脚本'%s'", LLAUNCH_SCRIPT);
 	fcyRefPointer<fcyMemStream> tMemStream;
 	if (m_ResourceMgr.LoadFile(LLAUNCH_SCRIPT, tMemStream)) {
 		if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), "launch"))
@@ -1814,6 +1816,7 @@ bool AppFrame::SafeCallScript(const char* source, size_t len, const char* desc)L
 		}
 		
 		lua_pop(L, 2);
+		LLOGGER.LogSnapshoot();
 		return false;
 	}
 
@@ -1841,6 +1844,7 @@ bool AppFrame::SafeCallScript(const char* source, size_t len, const char* desc)L
 		}
 
 		lua_pop(L, 2);
+		LLOGGER.LogSnapshoot();
 		return false;
 	}
 
@@ -1880,6 +1884,7 @@ bool AppFrame::SafeCallGlobalFunction(const char* name, int retc)LNOEXCEPT
 		}
 
 		lua_pop(L, 2);
+		LLOGGER.LogSnapshoot();
 		return false;
 	}
 

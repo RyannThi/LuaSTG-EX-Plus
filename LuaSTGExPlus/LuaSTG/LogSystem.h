@@ -9,11 +9,10 @@ namespace LuaSTGPlus
 	/// @brief 日志级别
 	enum class LogType
 	{
+		Debug,
 		Information,
 		Warning,
 		Error,
-
-		Debug,
 		Fatal,
 	};
 
@@ -23,13 +22,16 @@ namespace LuaSTGPlus
 	private:
 		std::fstream m_LogFile;
 	public:
-		/// @brief 获取日志系统实例
+		//获取日志系统实例
 		static __declspec(noinline) LogSystem& GetInstance();
 
-		/// @brief 记录日志
-		/// @param type 日志类型
-		/// @param info 格式化文本
-		__declspec(noinline) void Log(LogType type, const wchar_t* info, ...)throw();
+		//记录日志
+		//param[in] type 日志类型
+		//param[in] info 格式化文本
+		__declspec(noinline) void Log(LogType type, const wchar_t* info, ...)noexcept;
+
+		//生成日志快照
+		__declspec(noinline) void LogSnapshoot()noexcept;
 	public:
 		LogSystem();
 		~LogSystem();

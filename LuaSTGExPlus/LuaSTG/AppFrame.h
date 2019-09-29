@@ -373,7 +373,6 @@ namespace LuaSTGPlus
 			return false;
 		}
 #endif
-		
 		struct ColliderDisplayConfig {
 			int group;
 			fcyColor color;

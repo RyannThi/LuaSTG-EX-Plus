@@ -51,17 +51,17 @@ namespace LuaSTGPlus
 
 	//字符串格式化
 	//param[in] Format 字符串格式，不支持精度
-	std::string StringFormat(const char* Format, ...)LNOEXCEPT;
+	std::string StringFormat(const char* Format, ...)noexcept;
 
 	//字符串格式化 va_list版本
-	std::string StringFormatV(const char* Format, va_list vaptr)LNOEXCEPT;
+	std::string StringFormatV(const char* Format, va_list vaptr)noexcept;
 
 	//字符串格式化 宽字符
 	//param[in] Format 字符串格式，不支持精度
-	std::wstring StringFormat(const wchar_t* Format, ...)LNOEXCEPT;
+	std::wstring StringFormat(const wchar_t* Format, ...)noexcept;
 
 	//字符串格式化 宽字符、va_list版本
-	std::wstring StringFormatV(const wchar_t* Format, va_list vaptr)LNOEXCEPT;
+	std::wstring StringFormatV(const wchar_t* Format, va_list vaptr)noexcept;
 
 	//RC4加解密实现
 	class RC4
@@ -104,8 +104,8 @@ namespace LuaSTGPlus
 	};
 
 	//获取系统本地应用数据文件夹
-	std::wstring GetLocalAppDataPath()LNOEXCEPT;
+	std::wstring GetLocalAppDataPath()noexcept;
 
 	//获取系统漫游应用数据文件夹
-	std::wstring GetRoamingAppDataPath()LNOEXCEPT;
+	std::wstring GetRoamingAppDataPath()noexcept;
 }

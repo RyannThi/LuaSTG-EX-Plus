@@ -161,6 +161,9 @@
     <ClInclude Include="ResourcePassword.hpp">
       <Filter>Resource</Filter>
     </ClInclude>
+    <ClInclude Include="LuaTableToOption.hpp">
+      <Filter>LuaUtility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppFrame.cpp">
@@ -279,6 +282,9 @@
     </ClCompile>
     <ClCompile Include="ResourcePassword.cpp">
       <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaTableToOption.cpp">
+      <Filter>LuaUtility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

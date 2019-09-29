@@ -10,7 +10,7 @@ using ComPtr = Microsoft::WRL::ComPtr<T>;
 using namespace std;
 using namespace LuaSTGPlus;
 
-std::string LuaSTGPlus::StringFormat(const char* Format, ...)LNOEXCEPT
+std::string LuaSTGPlus::StringFormat(const char* Format, ...)noexcept
 {
 	va_list vaptr;
 	va_start(vaptr, Format);
@@ -19,7 +19,7 @@ std::string LuaSTGPlus::StringFormat(const char* Format, ...)LNOEXCEPT
 	return std::move(tRet);
 }
 
-std::string LuaSTGPlus::StringFormatV(const char* Format, va_list vaptr)LNOEXCEPT
+std::string LuaSTGPlus::StringFormatV(const char* Format, va_list vaptr)noexcept
 {
 	std::string tRet;
 	try
@@ -112,7 +112,7 @@ std::string LuaSTGPlus::StringFormatV(const char* Format, va_list vaptr)LNOEXCEP
 	return std::move(tRet);
 }
 
-std::wstring LuaSTGPlus::StringFormat(const wchar_t* Format, ...)LNOEXCEPT
+std::wstring LuaSTGPlus::StringFormat(const wchar_t* Format, ...)noexcept
 {
 	va_list vaptr;
 	va_start(vaptr, Format);
@@ -121,7 +121,7 @@ std::wstring LuaSTGPlus::StringFormat(const wchar_t* Format, ...)LNOEXCEPT
 	return std::move(tRet);
 }
 
-std::wstring LuaSTGPlus::StringFormatV(const wchar_t* Format, va_list vaptr)LNOEXCEPT
+std::wstring LuaSTGPlus::StringFormatV(const wchar_t* Format, va_list vaptr)noexcept
 {
 	std::wstring tRet;
 	try
@@ -264,12 +264,12 @@ std::wstring _GetUserPath(REFKNOWNFOLDERID id)
 	return L"";
 }
 
-std::wstring LuaSTGPlus::GetLocalAppDataPath()LNOEXCEPT
+std::wstring LuaSTGPlus::GetLocalAppDataPath()noexcept
 {
 	return std::move(_GetUserPath(FOLDERID_LocalAppData));
 }
 
-std::wstring LuaSTGPlus::GetRoamingAppDataPath()LNOEXCEPT
+std::wstring LuaSTGPlus::GetRoamingAppDataPath()noexcept
 {
 	return std::move(_GetUserPath(FOLDERID_RoamingAppData));
 }

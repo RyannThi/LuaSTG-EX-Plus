@@ -148,14 +148,16 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			const char* pwd = nullptr;
 			if (lua_isstring(L, 2))
 				pwd = luaL_checkstring(L, 2);
-			LFMGR.LoadArchive(p, 0, pwd);
+			if (!LFMGR.LoadArchive(p, 0, pwd))
+				LWARNING("无法装载资源包'%m'，文件不存在或不是合法的资源包格式", p);
 			return 0;
 		}
 		static int LoadPackSub(lua_State* L)LNOEXCEPT
 		{
 			const char* p = luaL_checkstring(L, 1);
 			std::string pw = LuaSTGPlus::GetGameName();
-			LFMGR.LoadArchive(p, 0, pw.c_str());
+			if (!LFMGR.LoadArchive(p, 0, pw.c_str()))
+				LWARNING("无法装载资源包'%m'，文件不存在或不是合法的资源包格式", p);
 			return 0;
 		}
 		static int UnloadPack(lua_State* L)LNOEXCEPT

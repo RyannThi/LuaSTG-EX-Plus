@@ -1,5 +1,8 @@
-﻿#include <iostream>
+﻿#include <ctime>
+#include <iostream>
 #include <string>
+#include <sstream>
+#include <chrono>
 #include <Windows.h>
 #include <wrl.h>
 #include <Shobjidl.h>
@@ -7,6 +10,9 @@
 
 template <class T>
 using ComPtr = Microsoft::WRL::ComPtr<T>;
+
+using std::cout;
+using std::endl;
 
 class CoScope {
 private:
@@ -17,7 +23,7 @@ public:
 	~CoScope() { if (m_Status) CoUninitialize(); }
 };
 
-int main() {
+void KnownFolderTest() {
 	CoScope co;
 	if (co())
 	{
@@ -30,7 +36,7 @@ int main() {
 			std::wstring path = L"";
 			//FOLDERID_LocalAppData
 			//FOLDERID_RoamingAppData
-;			if (SUCCEEDED(kfm->GetFolder(FOLDERID_RoamingAppData, kf.GetAddressOf()))) {
+			;			if (SUCCEEDED(kfm->GetFolder(FOLDERID_RoamingAppData, kf.GetAddressOf()))) {
 				LPWSTR _path = nullptr;
 				if (SUCCEEDED(kf->GetPath(0, &_path))) {
 					path = _path;
@@ -50,6 +56,28 @@ int main() {
 			}
 		}
 	}
+}
+
+int main() {
+	//*
+	// get time
+	std::time_t rawtime = std::time(nullptr);
+	if (rawtime == (std::time_t)(-1)) {
+		cout << "Failed to get time." << endl;
+	}
+	std::tm tminfo;
+	localtime_s(&tminfo, &rawtime);
+	// generate time string
+	size_t ymdhms_size = 15u; // 14, plus 1 to make c style string
+	std::string ymdhms = "";
+	ymdhms.resize(ymdhms_size, 0);
+	std::strftime(ymdhms.data(), ymdhms_size, "%Y%m%d%H%M%S", &tminfo);
+	ymdhms.pop_back(); // remove tail 0
+	ymdhms = "log/log" + ymdhms + ".txt";
+	// print time
+	cout << ymdhms << endl;
+	//*/
+
 	std::system("pause");
 	return 0;
 }
