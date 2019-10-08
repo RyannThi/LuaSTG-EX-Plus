@@ -1374,28 +1374,34 @@ static int _StackTraceback(lua_State* L)
 
 static int StackTraceback(lua_State *L)
 {
-	return _StackTraceback(L);
-	/*
-	int ret = 0;
 	// errmsg
-	lua_getglobal(L, LFUNC_TRACEBACK);											// errmsg ?
-	if (!lua_isfunction(L, -1) && !lua_iscfunction(L, -1))
+	int ret = 0;
+
+	lua_getfield(L, LUA_GLOBALSINDEX, "debug");								// errmsg t
+	if (!lua_istable(L, -1))
 	{
-		lua_pop(L, 1);															// errmsg
-		return _StackTraceback(L);
+		lua_pop(L, 1);														// errmsg
+		return 1;
 	}
 
-	lua_pushvalue(L, -2);														// errmsg f errmsg
-	lua_pushinteger(L, 2);														// errmsg f errmsg 2
-	ret = lua_pcall(L, 2, 1, 0);												// errmsg msg
+	lua_getfield(L, -1, "traceback");										// errmsg t f
+	if (!lua_isfunction(L, -1) && !lua_iscfunction(L, -1))
+	{
+		lua_pop(L, 2);														// errmsg
+		return 1;
+	}
+
+	lua_pushvalue(L, 1);													// errmsg t f errmsg
+	lua_pushinteger(L, 2);													// errmsg t f errmsg 2
+	ret = lua_pcall(L, 2, 1, 0);											// errmsg t msg
 	if (0 != ret)
 	{
-		LWARNING("执行Traceback时发生错误。(%m)", lua_tostring(L, -1));			// errmsg errmsg
-		lua_pop(L, 1);															// errmsg
-		return _StackTraceback(L);
+		LWARNING("执行stacktrace时发生错误。(%m)", lua_tostring(L, -1));		// errmsg t errmsg
+		lua_pop(L, 2);														// errmsg
+		return 1;
 	}
+	
 	return 1;
-	//*/
 }
 
 bool AppFrame::Init()LNOEXCEPT
@@ -1841,7 +1847,6 @@ bool AppFrame::SafeCallScript(const char* source, size_t len, const char* desc)L
 
 bool AppFrame::SafeCallGlobalFunction(const char* name, int retc)LNOEXCEPT
 {
-	int tStackIndex = lua_gettop(L);		// ...
 	lua_pushcfunction(L, StackTraceback);	// ... c
 	int tStacktraceIndex = lua_gettop(L);
 
@@ -1874,8 +1879,7 @@ bool AppFrame::SafeCallGlobalFunction(const char* name, int retc)LNOEXCEPT
 		return false;
 	}
 
-	//lua_remove(L, tStacktraceIndex);
-	lua_settop(L, tStackIndex);				// ...
+	lua_remove(L, tStacktraceIndex);
 	return true;
 }
 #pragma endregion
