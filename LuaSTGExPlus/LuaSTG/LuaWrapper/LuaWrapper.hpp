@@ -19,8 +19,6 @@
 #define LUASTG_LUA_TYPENAME_IO_BINARY_READER "lstg.IO.BinaryReader"
 #define LUASTG_LUA_TYPENAME_IO_BINARY_WRITER "lstg.IO.BinaryWriter"
 
-#define LUASTG_LUA_TYPENAME_XINPUTWRAPPER "lstgXInputWrapper"
-#define LUASTG_LUA_TYPENAME_COLLIDERWRAPPER "lstgColliderWrapper"
 #define LUASTG_LUA_TYPENAME_RESOURCE "lstgResource"
 #define LUASTG_LUA_TYPENAME_ARCHIVE "lstgArchive"
 
@@ -62,24 +60,6 @@ namespace LuaSTGPlus
 	public:
 		//向lua注册包装类
 		static void Register(lua_State* L)LNOEXCEPT;
-	};
-
-	//游戏碰撞体操作
-	class GameObjectColliderWrapper {
-	private:
-		struct Wrapper
-		{
-			GameObject* handle;
-			int cur;
-			size_t id;
-			int64_t uid;
-			Wrapper() { cur = 0; handle = nullptr; id = 0; uid = 0; }
-		};
-	public:
-		//向lua注册包装类
-		static void Register(lua_State* L)LNOEXCEPT;
-		//创建一个游戏碰撞体包装类并推入堆栈
-		static void CreateAndPush(lua_State* L, GameObject* obj)LNOEXCEPT;
 	};
 
 	//压缩包

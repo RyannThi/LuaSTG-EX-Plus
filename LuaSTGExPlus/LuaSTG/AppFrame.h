@@ -404,7 +404,7 @@ namespace LuaSTGPlus
 
 		//读取资源包中的文本文件
 		//也能读取其他类型的文件，但是会得到无意义的结果
-		LNOINLINE void LoadTextFile(const char* path, const char *packname)LNOEXCEPT;
+		LNOINLINE int LoadTextFile(const char* path, const char *packname)LNOEXCEPT;
 
 		//检查按键是否按下
 		fBool GetKeyState(int VKCode)LNOEXCEPT;

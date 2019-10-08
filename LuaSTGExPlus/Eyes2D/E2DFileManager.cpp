@@ -6,6 +6,7 @@
 #include "E2DFileManager.hpp"
 #include "E2DCodePage.hpp"
 #include "E2DLogSystem.hpp"
+#include "fcyMisc/fcyStringHelper.h"
 #include "zip.h"
 
 using namespace std;
@@ -442,7 +443,25 @@ fcyStream* FileManager::LoadFile(const char* filepath) {
 		}
 	}
 
-	//从文件系统查找
+	/*//从文件系统查找
+	fcyStream* ss = nullptr;
+	try {
+		fcyRefPointer<fcyFileStream> fs;
+		fs.DirectSet(new fcyFileStream(fcyStringHelper::MultiByteToWideChar(filepath, CP_UTF8).c_str(), false));
+		fcyRefPointer<fcyMemStream> ms;
+		ms.DirectSet(new fcyMemStream(nullptr, fs->GetLength(), true, false));
+		if (FCYERR_OK != fs->SetPosition(FCYSEEKORIGIN_BEG, 0)) { return nullptr; }
+		if (FCYERR_OK != ms->SetPosition(FCYSEEKORIGIN_BEG, 0)) { return nullptr; }
+		if (FCYERR_OK != fs->WriteBytes(ms->GetInternalBuffer(), fs->GetLength(), nullptr)) { return nullptr; }
+		ms->AddRef();
+		ss = (fcyStream*)ms;
+	}
+	catch (...) {
+		return nullptr;
+	}
+	return ss;
+	//*/
+	//*
 	fstream f;
 	string ansipath = Eyes2D::String::UTF8ToANSI(string(filepath));
 	f.open(ansipath, ios::in | ios::binary);
@@ -477,6 +496,7 @@ fcyStream* FileManager::LoadFile(const char* filepath) {
 			return (fcyStream*)stream;
 		}
 	}
+	//*/
 }
 
 fcyStream* FileManager::LoadFile(const char* filepath, const char* archive) {

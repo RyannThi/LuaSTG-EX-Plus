@@ -5,8 +5,6 @@
 #include "ResourceParticle.hpp"
 #include "GameObjectClass.hpp"
 
-#define MAX_COLLIDERS_COUNT 16
-
 namespace LuaSTGPlus
 {
 	// 游戏对象状态
@@ -138,13 +136,9 @@ namespace LuaSTGPlus
 		Resource* res;  // 渲染资源
 		ResParticle::ParticlePool* ps;  // 粒子系统
 
-#ifdef USING_ADVANCE_COLLIDER
-		GameObjectCollider colliders[MAX_COLLIDERS_COUNT];//碰撞体
-#else
 		bool rect; //是否为矩形碰撞盒
 		lua_Number a, b; //单位的横向、纵向碰撞大小的一半
 		lua_Number col_r; //受colli,a,b,rect参数影响的碰撞盒外圆半径
-#endif // USING_ADVANCE_COLLIDER
 
 #ifdef USING_ADVANCE_GAMEOBJECT_CLASS
 		BlendMode blendmode;
@@ -166,7 +160,6 @@ namespace LuaSTGPlus
 
 		void DirtReset();
 
-#ifndef USING_ADVANCE_COLLIDER
 		inline void UpdateCollisionCirclrRadius() {
 			if (rect) {
 				//矩形
@@ -181,14 +174,13 @@ namespace LuaSTGPlus
 				col_r = (a + b) / 2;
 			}
 		}
-#endif // USING_ADVANCE_COLLIDER
 
 		void ReleaseResource();
 
 		bool ChangeResource(const char* res_name);
 		
 		template <typename T>
-		bool ChangeResourceEx(T res_set)
+		inline bool ChangeResourceEx(T res_set)
 		{
 			//*
 			if (res) {
@@ -200,22 +192,6 @@ namespace LuaSTGPlus
 			case ResourceType::Sprite: {
 				res = res_set;
 				res->AddRef();
-#ifdef USING_ADVANCE_COLLIDER
-#ifdef GLOBAL_SCALE_COLLI_SHAPE
-				colliders[0].a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
-				colliders[0].b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
-#else
-				colliders[0].a = (float)res_set->GetHalfSizeX();
-				colliders[0].b = (float)res_set->GetHalfSizeY();
-#endif // GLOBAL_SCALE_COLLI_SHAPE
-				if (res_set->IsRectangle()) {
-					colliders[0].type = GameObjectColliderType::OBB;
-				}
-				else {
-					colliders[0].type = GameObjectColliderType::Ellipse;
-				}
-				colliders[0].calcircum();
-#else
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
 				a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
 				b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
@@ -225,28 +201,11 @@ namespace LuaSTGPlus
 #endif // GLOBAL_SCALE_COLLI_SHAPE
 				rect = res_set->IsRectangle();
 				UpdateCollisionCirclrRadius();
-#endif // USING_ADVANCE_COLLIDER
 				return true;
 			}
 			case ResourceType::Animation: {
 				res = res_set;
 				res->AddRef();
-#ifdef USING_ADVANCE_COLLIDER
-#ifdef GLOBAL_SCALE_COLLI_SHAPE
-				colliders[0].a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
-				colliders[0].b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
-#else
-				colliders[0].a = (float)res_set->GetHalfSizeX();
-				colliders[0].b = (float)res_set->GetHalfSizeY();
-#endif // GLOBAL_SCALE_COLLI_SHAPE
-				if (res_set->IsRectangle()) {
-					colliders[0].type = GameObjectColliderType::OBB;
-				}
-				else {
-					colliders[0].type = GameObjectColliderType::Ellipse;
-				}
-				colliders[0].calcircum();
-#else
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
 				a = res_set->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
 				b = res_set->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
@@ -256,7 +215,6 @@ namespace LuaSTGPlus
 #endif // GLOBAL_SCALE_COLLI_SHAPE
 				rect = res_set->IsRectangle();
 				UpdateCollisionCirclrRadius();
-#endif // USING_ADVANCE_COLLIDER
 				return true;
 			}
 			case ResourceType::Particle: {
@@ -275,22 +233,6 @@ namespace LuaSTGPlus
 				ps->SetActive();
 
 				res->AddRef();
-#ifdef USING_ADVANCE_COLLIDER
-#ifdef GLOBAL_SCALE_COLLI_SHAPE
-				colliders[0].a = _res->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
-				colliders[0].b = _res->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
-#else
-				colliders[0].a = (float)_res->GetHalfSizeX();
-				colliders[0].b = (float)_res->GetHalfSizeY();
-#endif // GLOBAL_SCALE_COLLI_SHAPE
-				if (_res->IsRectangle()) {
-					colliders[0].type = GameObjectColliderType::OBB;
-				}
-				else {
-					colliders[0].type = GameObjectColliderType::Ellipse;
-				}
-				colliders[0].calcircum();
-#else
 #ifdef GLOBAL_SCALE_COLLI_SHAPE
 				a = _res->GetHalfSizeX() * LRES.GetGlobalImageScaleFactor();
 				b = _res->GetHalfSizeY() * LRES.GetGlobalImageScaleFactor();
@@ -300,7 +242,6 @@ namespace LuaSTGPlus
 #endif // GLOBAL_SCALE_COLLI_SHAPE
 				rect = _res->IsRectangle();
 				UpdateCollisionCirclrRadius();
-#endif // USING_ADVANCE_COLLIDER
 				return true;
 			}
 			}

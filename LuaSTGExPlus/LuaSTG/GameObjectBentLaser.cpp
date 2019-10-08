@@ -309,7 +309,6 @@ void GameObjectBentLaser::RenderCollider(fcyColor fillColor)LNOEXCEPT {
 	if (sn <= 1)
 		return;
 
-#ifdef USING_ADVANCE_COLLIDER
 	LAPP.GetRenderDev()->ClearZBuffer();
 
 	fcyRefPointer<f2dGeometryRenderer> grender = LAPP.GetGeometryRenderer();
@@ -326,7 +325,6 @@ void GameObjectBentLaser::RenderCollider(fcyColor fillColor)LNOEXCEPT {
 
 	GameObject testObjA;
 	testObjA.Reset();
-	testObjA.colliders[0].type = GameObjectColliderType::Ellipse;
 
 	for (size_t i = 0; i < sn; ++i)
 	{
@@ -342,15 +340,14 @@ void GameObjectBentLaser::RenderCollider(fcyColor fillColor)LNOEXCEPT {
 					fcyVec2 c = (last.pos + n.pos) * 0.5;
 					testObjA.x = c.x;
 					testObjA.y = c.y;
-					testObjA.colliders[0].type = GameObjectColliderType::OBB;
+					testObjA.rect = true;
 					testObjA.rot = n.rot;
-					testObjA.colliders[0].a = df / 2;
-					testObjA.colliders[0].b = n.half_width;
-					testObjA.colliders[0].calcircum();
-					testObjA.colliders[0].caloffset(testObjA.x, testObjA.y, testObjA.rot);
+					testObjA.a = df / 2;
+					testObjA.b = n.half_width;
+					//testObjA.UpdateCollisionCirclrRadius()
 					//渲染部分
 					{
-						fcyVec2 tHalfSize(testObjA.colliders[0].a, testObjA.colliders[0].b);
+						fcyVec2 tHalfSize(testObjA.a, testObjA.b);
 						// 计算出矩形的4个顶点
 						f2dGraphics2DVertex tFinalPos[4] =
 						{
@@ -359,15 +356,15 @@ void GameObjectBentLaser::RenderCollider(fcyColor fillColor)LNOEXCEPT {
 							{ tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 1.0f },
 							{ -tHalfSize.x, tHalfSize.y, 0.5f, fillColor.argb, 1.0f, 0.0f }
 						};
-						float tSin = std::sinf(testObjA.colliders[0].absrot);
-						float tCos = std::cosf(testObjA.colliders[0].absrot);
+						float tSin = std::sinf(testObjA.rot);
+						float tCos = std::cosf(testObjA.rot);
 						// 变换
 						for (int i = 0; i < 4; i++)
 						{
 							fFloat tx = tFinalPos[i].x * tCos - tFinalPos[i].y * tSin;
 							fFloat ty = tFinalPos[i].x * tSin + tFinalPos[i].y * tCos;
-							tFinalPos[i].x = tx + testObjA.colliders[0].absx;
-							tFinalPos[i].y = ty + testObjA.colliders[0].absy;
+							tFinalPos[i].x = tx + testObjA.x;
+							tFinalPos[i].y = ty + testObjA.y;
 						}
 						graph->DrawQuad(nullptr, tFinalPos);
 					}
@@ -375,71 +372,21 @@ void GameObjectBentLaser::RenderCollider(fcyColor fillColor)LNOEXCEPT {
 			}
 		}
 		
-		//计算部分
+		//计算
 		testObjA.x = n.pos.x;
 		testObjA.y = n.pos.y;
-		testObjA.colliders[0].a
-			= testObjA.colliders[0].b
+		testObjA.rect = false;
+		testObjA.a
+			= testObjA.b
 			= n.half_width * _GetEnvelope((float)i / (float)(sn - 1u));
-		testObjA.colliders[0].type = GameObjectColliderType::Ellipse;
-		testObjA.colliders[0].calcircum();
-		testObjA.colliders[0].caloffset(testObjA.x, testObjA.y, testObjA.rot);
-		//渲染部分
-		{
-			const int vertcount = 37;//分割36份，还要中心一个点
-			const int indexcount = 111;//37*3加一个组成封闭图形
-			//准备顶点索引
-			fuShort index[indexcount];
-			{
-				for (int i = 0; i < (vertcount - 1); i++) {
-					index[i * 3] = 0;//中心点
-					index[i * 3 + 1] = i;//1
-					index[i * 3 + 2] = i + 1;//2
-					//index[i * 3 + 3] = i + 1;//2 //fancy2d貌似不是以三角形为单位……
-				}
-				index[108] = 0;//中心点
-				index[109] = 36;//1
-				index[110] = 1;//2
-			}
-			//准备顶点
-			f2dGraphics2DVertex vert[vertcount];
-			{
-				vert[0].x = 0.0f;
-				vert[0].y = 0.0f;
-				vert[0].z = 0.5f;//2D下固定z0.5
-				vert[0].color = fillColor.argb;
-				vert[0].u = 0.0f; vert[0].v = 0.0f;//没有使用到贴图，uv是多少无所谓
-				float angle;
-				for (int i = 1; i < vertcount; i++) {
-					//椭圆参方
-					angle = 10.0f * (i - 1) * LDEGREE2RAD;
-					vert[i].x = testObjA.colliders[0].a * std::cosf(angle);
-					vert[i].y = testObjA.colliders[0].b * std::sinf(angle);
-					vert[i].z = 0.5f;//2D下固定z0.5
-					vert[i].color = fillColor.argb;
-					vert[i].u = 0.0f; vert[i].v = 0.0f;//没有使用到贴图，uv是多少无所谓
-				}
-			}
-			// 变换
-			{
-				float tSin = std::sinf(testObjA.colliders[0].absrot);
-				float tCos = std::cosf(testObjA.colliders[0].absrot);
-				for (int i = 0; i < vertcount; i++)
-				{
-					fFloat tx = vert[i].x * tCos - vert[i].y * tSin;
-					fFloat ty = vert[i].x * tSin + vert[i].y * tCos;
-					vert[i].x = tx + testObjA.colliders[0].absx;
-					vert[i].y = ty + testObjA.colliders[0].absy;
-				}
-			}
-			//绘制
-			graph->DrawRaw(nullptr, vertcount, indexcount, vert, index, false);
-		}
+		//testObjA.UpdateCollisionCirclrRadius();
+		//渲染
+		grender->FillCircle(graph, fcyVec2((float)testObjA.x, (float)testObjA.y), (float)testObjA.a, fillColor, fillColor,
+			testObjA.a < 10.0 ? 4 : (testObjA.a < 20.0 ? 8 : 16));
 	}
 
 	graph->SetBlendState(stState);
 	graph->SetColorBlendType(txState);
-#endif // USING_ADVANCE_COLLIDER
 }
 
 void GameObjectBentLaser::SetEnvelope(float height, float base, float rate, float power)LNOEXCEPT {
@@ -455,64 +402,6 @@ bool GameObjectBentLaser::CollisionCheck(float x, float y, float rot, float a, f
 	if (m_Queue.Size() <= 1)
 		return false;
 
-#ifdef USING_ADVANCE_COLLIDER
-	GameObject testObjA;
-	testObjA.Reset();
-	testObjA.colliders[0].type = GameObjectColliderType::Ellipse;
-
-	GameObject testObjB;
-	testObjB.Reset();
-	testObjB.x = x;
-	testObjB.y = y;
-	testObjB.rot = rot;
-	testObjB.colliders[0].a = a;
-	testObjB.colliders[0].b = b;
-	if (rect) {
-		testObjB.colliders[0].type = GameObjectColliderType::OBB;
-	}
-	else {
-		testObjB.colliders[0].type = GameObjectColliderType::Ellipse;
-	}
-	testObjB.colliders[0].calcircum();
-	testObjB.colliders[0].caloffset(x, y, rot);
-
-	int sn = m_Queue.Size();
-	for (size_t i = 0; i < sn; ++i)
-	{
-		LaserNode& n = m_Queue[i];
-		if (!n.active)continue;
-		if (i > 0) {
-			LaserNode& last = m_Queue[i - 1];
-			if (!last.active) {
-				float df = n.dis;
-				if (df > n.half_width) {
-					fcyVec2 c = (last.pos + n.pos) * 0.5;
-					testObjA.x = c.x;
-					testObjA.y = c.y;
-					testObjA.colliders[0].type = GameObjectColliderType::OBB;
-					testObjA.rot = n.rot;
-					testObjA.colliders[0].a = df / 2;
-					testObjA.colliders[0].b = n.half_width;
-					testObjA.colliders[0].calcircum();
-					testObjA.colliders[0].caloffset(testObjA.x, testObjA.y, testObjA.rot);
-					if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB)) { return true; }
-				}
-			}
-		}
-
-		testObjA.x = n.pos.x;
-		testObjA.y = n.pos.y;
-		testObjA.colliders[0].a
-			= testObjA.colliders[0].b
-			= n.half_width * _GetEnvelope((float)i / (float)(sn - 1u));
-		testObjA.colliders[0].type = GameObjectColliderType::Ellipse;
-		testObjA.colliders[0].calcircum();
-		testObjA.colliders[0].caloffset(testObjA.x, testObjA.y, testObjA.rot);
-		if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB)) { return true; }
-	}
-
-	return false;
-#else
 	GameObject testObjA;
 	testObjA.Reset();
 	testObjA.rot = 0.;
@@ -532,6 +421,7 @@ bool GameObjectBentLaser::CollisionCheck(float x, float y, float rot, float a, f
 	{
 		LaserNode& n = m_Queue[i];
 		if (!n.active)continue;
+		/*
 		if (i > 0) {
 			LaserNode& last = m_Queue[i - 1];
 			if (!last.active) {
@@ -551,16 +441,16 @@ bool GameObjectBentLaser::CollisionCheck(float x, float y, float rot, float a, f
 				}
 			}
 		}
+		//*/
 		testObjA.x = n.pos.x;
 		testObjA.y = n.pos.y;
-		testObjA.a = testObjA.b = n.half_width;
+		testObjA.a = testObjA.b = n.half_width * _GetEnvelope((float)i / (float)(sn - 1u)); //n.half_width;
 		testObjA.rect = false;
 		testObjA.UpdateCollisionCirclrRadius();
 		if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB))
 			return true;
 	}
 	return false;
-#endif // USING_ADVANCE_COLLIDER
 }
 
 bool GameObjectBentLaser::CollisionCheckW(float x, float y, float rot, float a, float b, bool rect, float width)LNOEXCEPT
@@ -568,64 +458,7 @@ bool GameObjectBentLaser::CollisionCheckW(float x, float y, float rot, float a, 
 	// 忽略只有一个节点的情况
 	if (m_Queue.Size() <= 1)
 		return false;
-
-#ifdef USING_ADVANCE_COLLIDER
-	width = width / 2;
-	GameObject testObjA;
-	testObjA.Reset();
-	testObjA.colliders[0].type = GameObjectColliderType::Ellipse;
-
-	GameObject testObjB;
-	testObjB.Reset();
-	testObjB.x = x;
-	testObjB.y = y;
-	testObjB.rot = rot;
-	testObjB.colliders[0].a = a;
-	testObjB.colliders[0].b = b;
-	if (rect) {
-		testObjB.colliders[0].type = GameObjectColliderType::OBB;
-	}
-	else {
-		testObjB.colliders[0].type = GameObjectColliderType::Ellipse;
-	}
-	testObjB.colliders[0].calcircum();
-	testObjB.colliders[0].caloffset(x, y, rot);
-
-	int sn = m_Queue.Size();
-	for (size_t i = 0; i < sn; ++i)
-	{
-		LaserNode& n = m_Queue[i];
-		if (!n.active)continue;
-		if (i > 0) {
-			LaserNode& last = m_Queue[i - 1];
-			if (!last.active) {
-				float df = n.dis;
-				if (df > width) {
-					fcyVec2 c = (last.pos + n.pos) * 0.5;
-					testObjA.x = c.x;
-					testObjA.y = c.y;
-					testObjA.colliders[0].type = GameObjectColliderType::OBB;
-					testObjA.rot = n.rot;
-					testObjA.colliders[0].a = df / 2;
-					testObjA.colliders[0].b = width;
-					testObjA.colliders[0].calcircum();
-					testObjA.colliders[0].caloffset(testObjA.x, testObjA.y, testObjA.rot);
-					if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB)) { return true; }
-				}
-			}
-		}
-
-		testObjA.x = n.pos.x;
-		testObjA.y = n.pos.y;
-		testObjA.colliders[0].a = testObjA.colliders[0].b = width;
-		testObjA.colliders[0].type = GameObjectColliderType::Ellipse;
-		testObjA.colliders[0].calcircum();
-		testObjA.colliders[0].caloffset(testObjA.x, testObjA.y, testObjA.rot);
-		if (LuaSTGPlus::CollisionCheck(&testObjA, &testObjB)) { return true; }
-	}
 	
-	return false;
-#else
 	width = width / 2;
 	GameObject testObjA;
 	testObjA.Reset();
@@ -646,6 +479,7 @@ bool GameObjectBentLaser::CollisionCheckW(float x, float y, float rot, float a, 
 	{
 		LaserNode& n = m_Queue[i];
 		if (!n.active)continue;
+		/*
 		if (i > 0) {
 			LaserNode& last = m_Queue[i - 1];
 			if (!last.active) {
@@ -665,6 +499,7 @@ bool GameObjectBentLaser::CollisionCheckW(float x, float y, float rot, float a, 
 				}
 			}
 		}
+		//*/
 		testObjA.x = n.pos.x;
 		testObjA.y = n.pos.y;
 		testObjA.a = testObjA.b = width;
@@ -674,7 +509,6 @@ bool GameObjectBentLaser::CollisionCheckW(float x, float y, float rot, float a, 
 			return true;
 	}
 	return false;
-#endif // USING_ADVANCE_COLLIDER
 }
 
 bool GameObjectBentLaser::BoundCheck()LNOEXCEPT

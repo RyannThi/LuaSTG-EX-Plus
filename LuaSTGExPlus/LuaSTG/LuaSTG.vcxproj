@@ -79,7 +79,6 @@
     <ClCompile Include="FileManagerWrapper.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameObjectBentLaser.cpp" />
-    <ClCompile Include="GameObjectColliderWrapper.cpp" />
     <ClCompile Include="GameObjectPool.cpp" />
     <ClCompile Include="GameResourceWrapper.cpp" />
     <ClCompile Include="LogSystem.cpp" />
@@ -232,7 +231,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\XMath\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\Eyes2D\build\;$(SolutionDir)\LuaExtend\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Link>
-      <AdditionalDependencies>Gdiplus.lib;lua51.lib;luaextend_d.lib;fancy2d_d.lib;fancylib_d.lib;xmath.lib;Eyes2D_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Gdiplus.lib;luajit.lib;luaextend_d.lib;fancy2d_d.lib;fancylib_d.lib;xmath.lib;Eyes2D_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -255,7 +254,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\XMath\build\Release\;$(SolutionDir)\Eyes2D\build\;$(SolutionDir)\LuaExtend\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Gdiplus.lib;lua51.lib;luaextend.lib;fancy2d.lib;fancylib.lib;xmath.lib;Eyes2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Gdiplus.lib;luajit.lib;luaextend.lib;fancy2d.lib;fancylib.lib;xmath.lib;Eyes2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -296,7 +295,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)\luajit\src\;$(SolutionDir)\fancy2d\build\;$(SolutionDir)\fancylib\build\;$(SolutionDir)\XMath\build\$(Configuration)\;$(SolutionDir)\Eyes2D\build\;$(SolutionDir)\LuaExtend\build\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Gdiplus.lib;lua51.lib;luaextend.lib;fancy2d.lib;fancylib.lib;xmath.lib;Eyes2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Gdiplus.lib;luajit.lib;luaextend.lib;fancy2d.lib;fancylib.lib;xmath.lib;Eyes2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <Profile>true</Profile>

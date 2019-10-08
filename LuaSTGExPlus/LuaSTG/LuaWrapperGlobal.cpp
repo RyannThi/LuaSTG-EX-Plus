@@ -182,8 +182,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		static int LoadTextFile(lua_State* L)LNOEXCEPT
 		{
-			LAPP.LoadTextFile(luaL_checkstring(L, 1), luaL_optstring(L, 2, NULL));
-			return 1;//必返回一个string给lua
+			return LAPP.LoadTextFile(luaL_checkstring(L, 1), luaL_optstring(L, 2, NULL));
 		}
 		static int FindFiles(lua_State* L)LNOEXCEPT
 		{

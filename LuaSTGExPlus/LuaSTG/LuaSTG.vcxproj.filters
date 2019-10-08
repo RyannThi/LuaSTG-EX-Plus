@@ -232,12 +232,6 @@
     <ClCompile Include="FileManagerWrapper.cpp">
       <Filter>LuaWrapper\Class</Filter>
     </ClCompile>
-    <ClCompile Include="GameObjectColliderWrapper.cpp">
-      <Filter>LuaWrapper\Class</Filter>
-    </ClCompile>
-    <ClCompile Include="GameResourceWrapper.cpp">
-      <Filter>LuaWrapper\Class</Filter>
-    </ClCompile>
     <ClCompile Include="XInputWrapper.cpp">
       <Filter>LuaWrapper\Class</Filter>
     </ClCompile>
@@ -285,6 +279,9 @@
     </ClCompile>
     <ClCompile Include="LuaTableToOption.cpp">
       <Filter>LuaUtility</Filter>
+    </ClCompile>
+    <ClCompile Include="GameResourceWrapper.cpp">
+      <Filter>LuaWrapper\Class</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

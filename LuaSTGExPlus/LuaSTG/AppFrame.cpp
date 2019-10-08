@@ -72,7 +72,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 /// VKCode F2DKeyCode 转换表
 ////////////////////////////////////////////////////////////////////////////////
-const F2DINPUTKEYCODE VKCodeToF2DKeyCodeTable[256] =
+static const F2DINPUTKEYCODE VKCodeToF2DKeyCodeTable[256] =
 {
 	F2DINPUTKEYCODE_UNKNOWN,
 	F2DINPUTKEYCODE_UNKNOWN,    // 1 VK_LBUTTON
@@ -408,16 +408,7 @@ void AppFrame::SetWindowed(bool v)LNOEXCEPT
 
 void AppFrame::SetFPS(fuInt v)LNOEXCEPT
 {
-	/*
-	if (m_iStatus == AppStatus::Initializing)
-		m_OptionFPSLimit = v;
-	else if (m_iStatus == AppStatus::Running)
-		LWARNING("试图在运行时更改FPS限制");
-	//*/
-	if (m_iStatus == AppStatus::Running)
-		LWARNING("试图在运行时更改FPS限制");
-	v = std::max(v, 1u);
-	m_OptionFPSLimit = v;
+	m_OptionFPSLimit = std::max(v, 1u);
 }
 
 void AppFrame::SetVsync(bool v)LNOEXCEPT
@@ -577,33 +568,23 @@ LNOINLINE void AppFrame::LoadScript(const char* path,const char *packname)LNOEXC
 		return;
 	}
 	tMemStream = nullptr;
-	//lua_call(L, 0, 0);
 	lua_call(L, 0, LUA_MULTRET);//保证DoFile后有返回值
-	/*
-	if (lua_pcall(L, 0, 0, 0))
-	{
-		const char* tDetail = lua_tostring(L, -1);
-		LERROR("执行脚本'%m'失败", path);
-		luaL_error(L, "failed to execute '%s':\n\t%s", path, tDetail);
-		return;
-	}
-	*/
 }
 
-LNOINLINE void AppFrame::LoadTextFile(const char* path, const char *packname)LNOEXCEPT
+LNOINLINE int AppFrame::LoadTextFile(const char* path, const char *packname)LNOEXCEPT
 {
 	LINFO("读取文本文件'%m'", path);
 	fcyRefPointer<fcyMemStream> tMemStream;
-	if (!m_ResourceMgr.LoadFile(path, tMemStream, packname))
-	{
-		luaL_error(L, "can't load file '%s'", path);
-		return;
+	if (!m_ResourceMgr.LoadFile(path, tMemStream, packname)) {
+		LWARNING("无法加载文件'%m'.", path);
+		return 0;
 	}
 	std::string buffer;
 	buffer.resize((size_t)tMemStream->GetLength());
 	tMemStream->ReadBytes((fData)buffer.data(), tMemStream->GetLength(), nullptr);
 	tMemStream = nullptr;
 	lua_pushstring(L, buffer.c_str());
+	return 1;
 }
 
 fBool AppFrame::GetKeyState(int VKCode)LNOEXCEPT
@@ -1393,6 +1374,8 @@ static int _StackTraceback(lua_State* L)
 
 static int StackTraceback(lua_State *L)
 {
+	return _StackTraceback(L);
+	/*
 	int ret = 0;
 	// errmsg
 	lua_getglobal(L, LFUNC_TRACEBACK);											// errmsg ?
@@ -1412,6 +1395,7 @@ static int StackTraceback(lua_State *L)
 		return _StackTraceback(L);
 	}
 	return 1;
+	//*/
 }
 
 bool AppFrame::Init()LNOEXCEPT
@@ -1509,6 +1493,9 @@ bool AppFrame::Init()LNOEXCEPT
 	if (m_ResourceMgr.LoadFile(LLAUNCH_SCRIPT, tMemStream)) {
 		if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), "launch"))
 			return false;
+	}
+	else {
+		LWARNING("找不到文件'%s'", LLAUNCH_SCRIPT);
 	}
 	
 	//////////////////////////////////////// 加载控制台
@@ -1790,7 +1777,7 @@ void AppFrame::Run()LNOEXCEPT
 
 bool AppFrame::SafeCallScript(const char* source, size_t len, const char* desc)LNOEXCEPT
 {
-	lua_pushcfunction(L, StackTraceback);
+	lua_pushcfunction(L, StackTraceback);			// ... c
 
 	if (0 != luaL_loadbuffer(L, source, len, desc))
 	{
@@ -1819,7 +1806,7 @@ bool AppFrame::SafeCallScript(const char* source, size_t len, const char* desc)L
 		LLOGGER.LogSnapshoot();
 		return false;
 	}
-
+	// ... c s
 	if (0 != lua_pcall(L, 0, 0, lua_gettop(L) - 1))
 	{
 		try
@@ -1854,12 +1841,11 @@ bool AppFrame::SafeCallScript(const char* source, size_t len, const char* desc)L
 
 bool AppFrame::SafeCallGlobalFunction(const char* name, int retc)LNOEXCEPT
 {
-#define USE_STACK_TRACEBACK
-#ifdef USE_STACK_TRACEBACK
-	lua_pushcfunction(L, StackTraceback);  // ... c
+	int tStackIndex = lua_gettop(L);		// ...
+	lua_pushcfunction(L, StackTraceback);	// ... c
 	int tStacktraceIndex = lua_gettop(L);
 
-	lua_getglobal(L, name);  // ... c f
+	lua_getglobal(L, name);					// ... c f
 	if (0 != lua_pcall(L, 0, retc, tStacktraceIndex))
 	{
 		try
@@ -1888,14 +1874,8 @@ bool AppFrame::SafeCallGlobalFunction(const char* name, int retc)LNOEXCEPT
 		return false;
 	}
 
-	lua_remove(L, tStacktraceIndex);
-#else
-	lua_getglobal(L, name);
-	lua_call(L, 0, retc);
-#endif
-#ifdef USE_STACK_TRACEBACK
-#undef USE_STACK_TRACEBACK
-#endif
+	//lua_remove(L, tStacktraceIndex);
+	lua_settop(L, tStackIndex);				// ...
 	return true;
 }
 #pragma endregion

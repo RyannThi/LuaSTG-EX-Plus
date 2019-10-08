@@ -209,7 +209,6 @@ namespace LuaSTGPlus
 		
 		lua_Integer m_iWorld = 15;//当前的world mask
 		std::array<lua_Integer, 4> m_Worlds = { 15, 0, 0, 0 };//预置的world mask
-		//lua_Integer m_Worlds[4] = { 15, 0, 0, 0 };//预置的world mask
 	public:
 		///用于多world
 
