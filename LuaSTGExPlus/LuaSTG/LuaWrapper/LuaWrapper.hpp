@@ -81,6 +81,13 @@ namespace LuaSTGPlus
 		class ColorWrapper
 		{
 		public:
+			struct HSVColor {
+				float hue;
+				float saturation;
+				float value;
+			};
+			static HSVColor RGB2HSV(const fcyColor& rgb)LNOEXCEPT;
+			static fcyColor HSV2RGB(const HSVColor& hsv)LNOEXCEPT;
 			static void Register(lua_State* L)LNOEXCEPT;
 			static void CreateAndPush(lua_State* L, const fcyColor& color);
 		};

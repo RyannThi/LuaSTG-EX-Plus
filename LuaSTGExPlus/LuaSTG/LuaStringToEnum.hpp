@@ -89,7 +89,12 @@ namespace Xrysnow {
 		m_r,
 		m_g,
 		m_b,
+		m_argb,
+		m_h,
+		m_s,
+		m_v,
 		f_ARGB,
+		f_AHSV,
 
 		_KEY_NOT_FOUND = -1,
 	};

@@ -106,7 +106,12 @@ static std::unordered_map<std::string, ColorWrapperProperty> colorprop_map = {
 	{ "r",		ColorWrapperProperty::m_r	},
 	{ "g",		ColorWrapperProperty::m_g	},
 	{ "b",		ColorWrapperProperty::m_b	},
+	{ "argb",	ColorWrapperProperty::m_argb},
+	{ "h",		ColorWrapperProperty::m_h	},
+	{ "s",		ColorWrapperProperty::m_s	},
+	{ "v",		ColorWrapperProperty::m_v	},
 	{ "ARGB",	ColorWrapperProperty::f_ARGB},
+	{ "AHSV",	ColorWrapperProperty::f_AHSV },
 };
 static std::unordered_map<uint32_t, ColorWrapperProperty> colorprop_hash_map;
 void init_colorprop_hash_map(lua_State* L) {

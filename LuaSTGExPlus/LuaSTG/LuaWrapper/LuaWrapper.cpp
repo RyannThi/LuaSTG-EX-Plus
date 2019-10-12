@@ -73,6 +73,18 @@ namespace LuaSTGPlus
 					ColorWrapper::CreateAndPush(L, c);
 					return 1;
 				}
+				static int HSVColor(lua_State* L)LNOEXCEPT
+				{
+					ColorWrapper::HSVColor hsv = {
+						(float)luaL_checknumber(L, 2),
+						(float)luaL_checknumber(L, 3),
+						(float)luaL_checknumber(L, 4),
+					};
+					fcyColor rgb = ColorWrapper::HSV2RGB(hsv);
+					rgb.a = (fByte)((luaL_checknumber(L, 1) / 100.0) * 255.0);
+					ColorWrapper::CreateAndPush(L, rgb);
+					return 1;
+				}
 				static int StopWatch(lua_State* L)LNOEXCEPT
 				{
 					StopWatchWrapper::CreateAndPush(L);
@@ -99,6 +111,7 @@ namespace LuaSTGPlus
 				{ "UTF8ToANSI", &Function::UTF8ToANSI },
 				
 				{ "Color", &Function::Color },
+				{ "HSVColor", &Function::HSVColor },
 				{ "StopWatch", &Function::StopWatch },
 				{ "Rand", &Function::Rand },
 				{ "BentLaserData", &Function::BentLaser },

@@ -99,7 +99,7 @@ namespace LuaSTGPlus
 		bool m_OptionVsync = true;
 		fcyVec2 m_OptionResolution = fcyVec2(640.f, 480.f);
 		bool m_OptionSplash = false;
-		std::wstring m_OptionTitle = L"LuaSTGExPlus";
+		std::wstring m_OptionTitle = L"LuaSTG";
 		fDouble m_fFPS = 0.;
 
 		// 引擎
