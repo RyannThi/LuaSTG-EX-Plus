@@ -101,11 +101,6 @@ namespace LuaSTGPlus
 		bool m_OptionSplash = false;
 		std::wstring m_OptionTitle = L"LuaSTGExPlus";
 		fDouble m_fFPS = 0.;
-#if (defined LDEVVERSION) || (defined LDEBUG)
-		bool m_bShowConsole = false;
-		HANDLE m_hConsoleWrite = NULL;
-		HANDLE m_hConsoleRead = NULL;
-#endif
 
 		// 引擎
 		fcyRefPointer<f2dEngine> m_pEngine;
@@ -361,18 +356,7 @@ namespace LuaSTGPlus
 		void SetResolution(fuInt width, fuInt height)LNOEXCEPT;
 		void SetSplash(bool v)LNOEXCEPT;
 		LNOINLINE void SetTitle(const char* v)LNOEXCEPT;  // UTF8编码
-#if (defined LDEVVERSION) || (defined LDEBUG)
-		bool ShowConsole(bool key)LNOEXCEPT {
-			if (m_iStatus == AppStatus::Initializing) {
-				m_bShowConsole = key;
-				return true;
-			}
-			else if (m_iStatus == AppStatus::Running) {
-				return false;
-			}
-			return false;
-		}
-#endif
+
 		struct ColliderDisplayConfig {
 			int group;
 			fcyColor color;

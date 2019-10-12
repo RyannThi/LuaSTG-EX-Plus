@@ -198,33 +198,26 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				LAPP.ShowSplashWindow(luaL_checkstring(L, 1));
 			return 0;
 		}
-		static int ShowConsole(lua_State* L)LNOEXCEPT
-		{
-#if (defined LDEVVERSION) || (defined LDEBUG)
-			bool key = lua_toboolean(L, 1) == 0 ? false : true;
-			bool ret = LAPP.ShowConsole(key);
-			lua_pushboolean(L, ret);
-			return 1;
-#else
-			lua_pushboolean(L, false);
-			return 1;
-#endif
-		}
 		static int EnumResolutions(lua_State* L) {
 			//返回一个lua表，该表中又包含多个表，分别储存着所支持的屏幕分辨率宽和屏幕分辨率的高，均为整数
 			//例如{ {1920,1080}, {1600,900}, ...  }
-			auto count = LAPP.GetRenderDev()->GetSupportResolutionCount();
-			lua_createtable(L, count, 0);		// t
-			for (auto index = 0; index < count; index++) {
-				auto res = LAPP.GetRenderDev()->EnumSupportResolution(index);
-				lua_createtable(L, 2, 0);		// t t
-				lua_pushinteger(L, res.x);		// t t x
-				lua_rawseti(L, -2, 1);			// t t
-				lua_pushinteger(L, res.y);		// t t y
-				lua_rawseti(L, -2, 2);			// t t
-				lua_rawseti(L, -2, index + 1);	// t
+			if (LAPP.GetRenderDev()) {
+				auto count = LAPP.GetRenderDev()->GetSupportResolutionCount();
+				lua_createtable(L, count, 0);		// t
+				for (auto index = 0; index < count; index++) {
+					auto res = LAPP.GetRenderDev()->EnumSupportResolution(index);
+					lua_createtable(L, 2, 0);		// t t
+					lua_pushinteger(L, res.x);		// t t x
+					lua_rawseti(L, -2, 1);			// t t
+					lua_pushinteger(L, res.y);		// t t y
+					lua_rawseti(L, -2, 2);			// t t
+					lua_rawseti(L, -2, index + 1);	// t
+				}
+				return 1;
 			}
-			return 1;
+			else {
+				return luaL_error(L, "The fancy2D Engine is null.");
+			}
 		}
 		#pragma endregion
 
@@ -2284,7 +2277,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "DoFile", &WrapperImplement::DoFile },
 		{ "LoadTextFile", &WrapperImplement::LoadTextFile },
 		{ "ShowSplashWindow", &WrapperImplement::ShowSplashWindow },
-		{ "ShowConsole", &WrapperImplement::ShowConsole },
 		{ "EnumResolutions", &WrapperImplement::EnumResolutions },
 		{ "FindFiles", &WrapperImplement::FindFiles },
 		

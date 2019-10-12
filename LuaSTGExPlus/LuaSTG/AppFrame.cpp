@@ -1504,26 +1504,6 @@ bool AppFrame::Init()LNOEXCEPT
 		LWARNING("找不到文件'%s'", LLAUNCH_SCRIPT);
 	}
 	
-	//////////////////////////////////////// 加载控制台
-#if (defined LDEVVERSION) || (defined LDEBUG)
-	if (m_bShowConsole){
-		BOOL ret = AllocConsole();
-		if (ret == FALSE) {
-			m_bShowConsole = false;
-			LWARNING("无法启动调试控制台");
-		}
-		else {
-			LINFO("启动调试控制台");
-			m_hConsoleWrite = GetStdHandle(STD_OUTPUT_HANDLE);
-			m_hConsoleRead = GetStdHandle(STD_INPUT_HANDLE);
-			SetConsoleTitleW(L"LuaSTGPlus Debug Console");
-			/*wstring out = L"Hello Console!";
-			DWORD outlen;
-			WriteConsoleW(m_hConsoleWrite, out.data(), out.length(), &outlen, NULL);*/
-		}
-	}
-#endif
-
 	//////////////////////////////////////// 初始化fancy2d引擎
 	LINFO("初始化fancy2d 版本 %d.%d (分辨率: %dx%d 垂直同步: %b 窗口化: %b)",
 		(F2DVERSION & 0xFFFF0000) >> 16, F2DVERSION & 0x0000FFFF,
@@ -1699,26 +1679,6 @@ void AppFrame::Shutdown()LNOEXCEPT
 	m_pMainWindow = nullptr;
 	m_pEngine = nullptr;
 	LINFO("已卸载fancy2d");
-
-#if (defined LDEVVERSION) || (defined LDEBUG)
-	if (m_bShowConsole) {
-		if (m_hConsoleRead != INVALID_HANDLE_VALUE) {
-			CloseHandle(m_hConsoleRead);
-		}
-		if (m_hConsoleWrite != INVALID_HANDLE_VALUE) {
-			CloseHandle(m_hConsoleWrite);
-		}
-		//IDE debug环境下可能会出现无效句柄的错误，貌似不会出事，所以不管了
-		BOOL ret = FreeConsole();
-		if (ret == FALSE) {
-			LWARNING("无法关闭调试控制台");
-		}
-		else {
-			LINFO("关闭调试控制台");
-		}
-		m_bShowConsole = false;
-	}
-#endif
 
 	if (L)
 	{
