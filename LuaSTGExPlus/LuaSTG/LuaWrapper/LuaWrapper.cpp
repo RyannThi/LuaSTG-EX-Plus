@@ -58,19 +58,17 @@ namespace LuaSTGPlus
 				
 				static int Color(lua_State* L)LNOEXCEPT
 				{
-					fcyColor c;
-					if (lua_gettop(L) == 1)
-						c.argb = (fuInt)luaL_checknumber(L, 1);
-					else
-					{
-						c = fcyColor(
+					if (lua_gettop(L) == 1) {
+						ColorWrapper::CreateAndPush(L, fcyColor((fuInt)luaL_checknumber(L, 1)));
+					}
+					else {
+						ColorWrapper::CreateAndPush(L, fcyColor(
 							luaL_checkinteger(L, 1),
 							luaL_checkinteger(L, 2),
 							luaL_checkinteger(L, 3),
 							luaL_checkinteger(L, 4)
-						);
+						));
 					}
-					ColorWrapper::CreateAndPush(L, c);
 					return 1;
 				}
 				static int HSVColor(lua_State* L)LNOEXCEPT
@@ -81,7 +79,7 @@ namespace LuaSTGPlus
 						(float)luaL_checknumber(L, 4),
 					};
 					fcyColor rgb = ColorWrapper::HSV2RGB(hsv);
-					rgb.a = (fByte)((luaL_checknumber(L, 1) / 100.0) * 255.0);
+					rgb.a = (fByte)(std::clamp(luaL_checknumber(L, 1) / 100.0, 0.0, 1.0) * 255.0);
 					ColorWrapper::CreateAndPush(L, rgb);
 					return 1;
 				}

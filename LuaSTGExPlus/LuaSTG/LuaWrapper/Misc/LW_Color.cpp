@@ -95,21 +95,20 @@ namespace LuaSTGPlus
 					switch (args)
 					{
 					case 1:
-						lua_pushnumber(L, p->a);
-						lua_pushnumber(L, p->r);
-						lua_pushnumber(L, p->g);
-						lua_pushnumber(L, p->b);
+						lua_pushinteger(L, p->a);
+						lua_pushinteger(L, p->r);
+						lua_pushinteger(L, p->g);
+						lua_pushinteger(L, p->b);
 						return 4;
 					case 2:
-						p->argb = (fuInt)luaL_checkinteger(L, 2);
+						p->argb = (fuInt)luaL_checknumber(L, 2);
 						*q = RGB2HSV(*p);
 						return 0;
 					case 5:
-						// 让各个分量的溢出变成特性
-						p->a = (fByte)luaL_checkinteger(L, 2);
-						p->r = (fByte)luaL_checkinteger(L, 3);
-						p->g = (fByte)luaL_checkinteger(L, 4);
-						p->b = (fByte)luaL_checkinteger(L, 5);
+						p->a = (fByte)std::clamp(luaL_checkinteger(L, 2), 0, 255);
+						p->r = (fByte)std::clamp(luaL_checkinteger(L, 3), 0, 255);
+						p->g = (fByte)std::clamp(luaL_checkinteger(L, 4), 0, 255);
+						p->b = (fByte)std::clamp(luaL_checkinteger(L, 5), 0, 255);
 						*q = RGB2HSV(*p);
 						return 0;
 					default:
@@ -123,17 +122,17 @@ namespace LuaSTGPlus
 					switch (args)
 					{
 					case 1:
-						lua_pushnumber(L, (((lua_Number)p->a) / 255.0) * 100.0);
+						lua_pushnumber(L, ((lua_Number)p->a / 255.0) * 100.0);
 						lua_pushnumber(L, q->hue);
 						lua_pushnumber(L, q->saturation);
 						lua_pushnumber(L, q->value);
 						return 3;
 					case 5:
-						q->hue			= (float)luaL_checknumber(L, 3);
-						q->saturation	= (float)luaL_checknumber(L, 4);
-						q->value		= (float)luaL_checknumber(L, 5);
+						q->hue			= (float)std::clamp(luaL_checknumber(L, 3), 0.0, 100.0);
+						q->saturation	= (float)std::clamp(luaL_checknumber(L, 4), 0.0, 100.0);
+						q->value		= (float)std::clamp(luaL_checknumber(L, 5), 0.0, 100.0);
 						*p = HSV2RGB(*q);
-						p->a = (fByte)((luaL_checknumber(L, 2) / 100.0) * 255.0);
+						p->a = (fByte)(std::clamp(luaL_checknumber(L, 2) / 100.0, 0.0, 1.0) * 255.0);
 						return 0;
 					default:
 						return luaL_error(L, "Invalid args.");
@@ -159,7 +158,7 @@ namespace LuaSTGPlus
 						lua_pushinteger(L, (lua_Integer)p->b);
 						break;
 					case Xrysnow::ColorWrapperProperty::m_argb:
-						lua_pushinteger(L, (lua_Integer)p->argb);
+						lua_pushnumber(L, (lua_Number)p->argb);
 						break;
 					case Xrysnow::ColorWrapperProperty::m_h:
 						lua_pushnumber(L, (lua_Number)q->hue);
@@ -189,36 +188,36 @@ namespace LuaSTGPlus
 					switch (Xrysnow::ColorWrapperPropertyHash(L, 2))
 					{
 					case Xrysnow::ColorWrapperProperty::m_a:
-						p->a = (fByte)luaL_checkinteger(L, 3);
+						p->a = (fByte)std::clamp(luaL_checkinteger(L, 3), 0, 255);
 						break;
 					case Xrysnow::ColorWrapperProperty::m_r:
-						p->r = (fByte)luaL_checkinteger(L, 3);
+						p->r = (fByte)std::clamp(luaL_checkinteger(L, 3), 0, 255);
 						*q = RGB2HSV(*p);
 						break;
 					case Xrysnow::ColorWrapperProperty::m_g:
-						p->g = (fByte)luaL_checkinteger(L, 3);
+						p->g = (fByte)std::clamp(luaL_checkinteger(L, 3), 0, 255);
 						*q = RGB2HSV(*p);
 						break;
 					case Xrysnow::ColorWrapperProperty::m_b:
-						p->b = (fByte)luaL_checkinteger(L, 3);
+						p->b = (fByte)std::clamp(luaL_checkinteger(L, 3), 0, 255);
 						*q = RGB2HSV(*p);
 						break;
 					case Xrysnow::ColorWrapperProperty::m_argb:
-						p->argb = (fuInt)luaL_checkinteger(L, 3);
+						p->argb = (fuInt)luaL_checknumber(L, 3);
 						*q = RGB2HSV(*p);
 						break;
 					case Xrysnow::ColorWrapperProperty::m_h:
-						q->hue = (float)luaL_checknumber(L, 3);
+						q->hue = (float)luaL_checknumber(L, 3); // any angle
 						*p = HSV2RGB(*q);
 						p->a = olda;
 						break;
 					case Xrysnow::ColorWrapperProperty::m_s:
-						q->saturation = (float)luaL_checknumber(L, 3);
+						q->saturation = (float)std::clamp(luaL_checknumber(L, 3), 0.0, 100.0);
 						*p = HSV2RGB(*q);
 						p->a = olda;
 						break;
 					case Xrysnow::ColorWrapperProperty::m_v:
-						q->value = (float)luaL_checknumber(L, 3);
+						q->value = (float)std::clamp(luaL_checknumber(L, 3), 0.0, 100.0);
 						*p = HSV2RGB(*q);
 						p->a = olda;
 						break;
@@ -236,114 +235,144 @@ namespace LuaSTGPlus
 				}
 				static int Meta_Add(lua_State* L)LNOEXCEPT
 				{
-					lua_Number tFactor;
-					fcyColor* p = nullptr;
-					if (lua_isnumber(L, 1))  // arg1为数字，则arg2必为lstg.Color
-					{
-						tFactor = luaL_checknumber(L, 1);
-						p = _GETUDATA(2);
+					if (lua_isnumber(L, 1)) {  // arg1为数字，则arg2必为lstgColor
+						lua_Number tFactor = luaL_checknumber(L, 1);
+						GETUDATA(p, 2);
+						ColorWrapper::CreateAndPush(L, fcyColor(
+							std::clamp((fInt)(tFactor + (lua_Number)p->a), 0, 255),
+							std::clamp((fInt)(tFactor + (lua_Number)p->r), 0, 255),
+							std::clamp((fInt)(tFactor + (lua_Number)p->g), 0, 255),
+							std::clamp((fInt)(tFactor + (lua_Number)p->b), 0, 255)
+						));
 					}
-					else if (lua_isnumber(L, 2))  // arg2为数字，则arg1必为lstg.Color
-					{
-						tFactor = luaL_checknumber(L, 2);
-						p = _GETUDATA(1);
+					else if (lua_isnumber(L, 2)) { // arg2为数字，则arg1必为lstgColor
+						lua_Number tFactor = luaL_checknumber(L, 2);
+						GETUDATA(p, 1);
+						ColorWrapper::CreateAndPush(L, fcyColor(
+							std::clamp((fInt)((lua_Number)p->a + tFactor), 0, 255),
+							std::clamp((fInt)((lua_Number)p->r + tFactor), 0, 255),
+							std::clamp((fInt)((lua_Number)p->g + tFactor), 0, 255),
+							std::clamp((fInt)((lua_Number)p->b + tFactor), 0, 255)
+						));
 					}
 					else {
 						GETUDATA(pA, 1);
 						GETUDATA(pB, 2);
 						ColorWrapper::CreateAndPush(L, fcyColor(
-							(fInt)pA->a + (fInt)pB->a,
-							(fInt)pA->r + (fInt)pB->r,
-							(fInt)pA->g + (fInt)pB->g,
-							(fInt)pA->b + (fInt)pB->b
+							std::clamp((fInt)pA->a + (fInt)pB->a, 0, 255),
+							std::clamp((fInt)pA->r + (fInt)pB->r, 0, 255),
+							std::clamp((fInt)pA->g + (fInt)pB->g, 0, 255),
+							std::clamp((fInt)pA->b + (fInt)pB->b, 0, 255)
 						));
-						return 1;
 					}
-					ColorWrapper::CreateAndPush(L, fcyColor(
-						(fInt)((lua_Number)p->a + tFactor),
-						(fInt)((lua_Number)p->r + tFactor),
-						(fInt)((lua_Number)p->g + tFactor),
-						(fInt)((lua_Number)p->b + tFactor)
-					));
 					return 1;
 				}
 				static int Meta_Sub(lua_State* L)LNOEXCEPT
 				{
-					lua_Number tFactor;
-					fcyColor* p = nullptr;
-					if (lua_isnumber(L, 1))  // arg1为数字，则arg2必为lstgColor
-					{
-						tFactor = luaL_checknumber(L, 1);
-						p = _GETUDATA(2);
+					if (lua_isnumber(L, 1)) {  // arg1为数字，则arg2必为lstgColor
+						lua_Number tFactor = luaL_checknumber(L, 1);
+						GETUDATA(p, 2);
 						ColorWrapper::CreateAndPush(L, fcyColor(
-							(fInt)(tFactor - (lua_Number)p->a),
-							(fInt)(tFactor - (lua_Number)p->r),
-							(fInt)(tFactor - (lua_Number)p->g),
-							(fInt)(tFactor - (lua_Number)p->b)
+							std::clamp((fInt)(tFactor - (lua_Number)p->a), 0, 255),
+							std::clamp((fInt)(tFactor - (lua_Number)p->r), 0, 255),
+							std::clamp((fInt)(tFactor - (lua_Number)p->g), 0, 255),
+							std::clamp((fInt)(tFactor - (lua_Number)p->b), 0, 255)
 						));
 					}
-					else if (lua_isnumber(L, 2))  // arg2为数字，则arg1必为lstgColor
-					{
-						tFactor = luaL_checknumber(L, 2);
-						p = _GETUDATA(1);
+					else if (lua_isnumber(L, 2)) { // arg2为数字，则arg1必为lstgColor
+						lua_Number tFactor = luaL_checknumber(L, 2);
+						GETUDATA(p, 1);
 						ColorWrapper::CreateAndPush(L, fcyColor(
-							(fInt)((lua_Number)p->a - tFactor),
-							(fInt)((lua_Number)p->r - tFactor),
-							(fInt)((lua_Number)p->g - tFactor),
-							(fInt)((lua_Number)p->b - tFactor)
+							std::clamp((fInt)((lua_Number)p->a - tFactor), 0, 255),
+							std::clamp((fInt)((lua_Number)p->r - tFactor), 0, 255),
+							std::clamp((fInt)((lua_Number)p->g - tFactor), 0, 255),
+							std::clamp((fInt)((lua_Number)p->b - tFactor), 0, 255)
 						));
 					}
 					else {
 						GETUDATA(pA, 1);
 						GETUDATA(pB, 2);
 						ColorWrapper::CreateAndPush(L, fcyColor(
-							(fInt)pA->a - (fInt)pB->a,
-							(fInt)pA->r - (fInt)pB->r,
-							(fInt)pA->g - (fInt)pB->g,
-							(fInt)pA->b - (fInt)pB->b
+							std::clamp((fInt)pA->a - (fInt)pB->a, 0, 255),
+							std::clamp((fInt)pA->r - (fInt)pB->r, 0, 255),
+							std::clamp((fInt)pA->g - (fInt)pB->g, 0, 255),
+							std::clamp((fInt)pA->b - (fInt)pB->b, 0, 255)
 						));
-						return 1;
 					}
 					return 1;
 				}
 				static int Meta_Mul(lua_State* L)LNOEXCEPT
 				{
-					lua_Number tFactor;
-					fcyColor* p = nullptr;
-					if (lua_isnumber(L, 1))  // arg1为数字，则arg2必为lstgColor
-					{
-						tFactor = luaL_checknumber(L, 1);
-						p = _GETUDATA(2);
+					if (lua_isnumber(L, 1)) {  // arg1为数字，则arg2必为lstgColor
+						lua_Number tFactor = luaL_checknumber(L, 1);
+						GETUDATA(p, 2);
+						ColorWrapper::CreateAndPush(L, fcyColor(
+							std::clamp((fInt)(tFactor * (lua_Number)p->a), 0, 255),
+							std::clamp((fInt)(tFactor * (lua_Number)p->r), 0, 255),
+							std::clamp((fInt)(tFactor * (lua_Number)p->g), 0, 255),
+							std::clamp((fInt)(tFactor * (lua_Number)p->b), 0, 255)
+						));
 					}
-					else if (lua_isnumber(L, 2))  // arg2为数字，则arg1必为lstgColor
-					{
-						tFactor = luaL_checknumber(L, 2);
-						p = _GETUDATA(1);
+					else if (lua_isnumber(L, 2)) { // arg2为数字，则arg1必为lstgColor
+						lua_Number tFactor = luaL_checknumber(L, 2);
+						GETUDATA(p, 1);
+						ColorWrapper::CreateAndPush(L, fcyColor(
+							std::clamp((fInt)((lua_Number)p->a * tFactor), 0, 255),
+							std::clamp((fInt)((lua_Number)p->r * tFactor), 0, 255),
+							std::clamp((fInt)((lua_Number)p->g * tFactor), 0, 255),
+							std::clamp((fInt)((lua_Number)p->b * tFactor), 0, 255)
+						));
 					}
-					else  // arg1和arg2都必为lstgColor
-					{
+					else {
 						GETUDATA(pA, 1);
 						GETUDATA(pB, 2);
 						ColorWrapper::CreateAndPush(L, fcyColor(
-							(fInt)pA->a * (fInt)pB->a,
-							(fInt)pA->r * (fInt)pB->r,
-							(fInt)pA->g * (fInt)pB->g,
-							(fInt)pA->b * (fInt)pB->b
+							std::clamp((fInt)pA->a * (fInt)pB->a, 0, 255),
+							std::clamp((fInt)pA->r * (fInt)pB->r, 0, 255),
+							std::clamp((fInt)pA->g * (fInt)pB->g, 0, 255),
+							std::clamp((fInt)pA->b * (fInt)pB->b, 0, 255)
 						));
-						return 1;
 					}
-					ColorWrapper::CreateAndPush(L, fcyColor(
-						(fInt)((lua_Number)p->a * tFactor),
-						(fInt)((lua_Number)p->r * tFactor),
-						(fInt)((lua_Number)p->g * tFactor),
-						(fInt)((lua_Number)p->b * tFactor)
-					));
+					return 1;
+				}
+				static int Meta_Div(lua_State* L)LNOEXCEPT
+				{
+					if (lua_isnumber(L, 1)) {  // arg1为数字，则arg2必为lstgColor
+						lua_Number tFactor = luaL_checknumber(L, 1);
+						GETUDATA(p, 2);
+						ColorWrapper::CreateAndPush(L, fcyColor(
+							std::clamp((fInt)(tFactor / (lua_Number)p->a), 0, 255),
+							std::clamp((fInt)(tFactor / (lua_Number)p->r), 0, 255),
+							std::clamp((fInt)(tFactor / (lua_Number)p->g), 0, 255),
+							std::clamp((fInt)(tFactor / (lua_Number)p->b), 0, 255)
+						));
+					}
+					else if (lua_isnumber(L, 2)) { // arg2为数字，则arg1必为lstgColor
+						lua_Number tFactor = luaL_checknumber(L, 2);
+						GETUDATA(p, 1);
+						ColorWrapper::CreateAndPush(L, fcyColor(
+							std::clamp((fInt)((lua_Number)p->a / tFactor), 0, 255),
+							std::clamp((fInt)((lua_Number)p->r / tFactor), 0, 255),
+							std::clamp((fInt)((lua_Number)p->g / tFactor), 0, 255),
+							std::clamp((fInt)((lua_Number)p->b / tFactor), 0, 255)
+						));
+					}
+					else {
+						GETUDATA(pA, 1);
+						GETUDATA(pB, 2);
+						ColorWrapper::CreateAndPush(L, fcyColor(
+							std::clamp((fInt)((lua_Number)pA->a / (lua_Number)pB->a), 0, 255),
+							std::clamp((fInt)((lua_Number)pA->r / (lua_Number)pB->r), 0, 255),
+							std::clamp((fInt)((lua_Number)pA->g / (lua_Number)pB->g), 0, 255),
+							std::clamp((fInt)((lua_Number)pA->b / (lua_Number)pB->b), 0, 255)
+						));
+					}
 					return 1;
 				}
 				static int Meta_ToString(lua_State* L)LNOEXCEPT
 				{
 					GETUDATA(p, 1);
-					lua_pushfstring(L, "lstg.Color(%d,%d,%d,%d)", p->a, p->r, p->g, p->b);
+					lua_pushfstring(L, "lstg.Color(%d, %d, %d, %d)", p->a, p->r, p->g, p->b);
 					return 1;
 				}
 #undef _GETUDATA
@@ -366,6 +395,7 @@ namespace LuaSTGPlus
 				{ "__add", &Function::Meta_Add },
 				{ "__sub", &Function::Meta_Sub },
 				{ "__mul", &Function::Meta_Mul },
+				{ "__div", &Function::Meta_Div },
 				{ "__tostring", &Function::Meta_ToString },
 				{ NULL, NULL }
 			};
