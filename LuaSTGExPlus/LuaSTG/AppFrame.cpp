@@ -11,6 +11,7 @@
 #include "LuaWrapper\LuaWrapper.hpp"
 #include "E2DXInputImpl.hpp"
 #include "LuaStringToEnum.hpp"
+#include "LuaInternalSource.hpp"
 
 #include "D3D9.H"  // for SetFog
 #include "Network.h"
@@ -1407,42 +1408,56 @@ static int StackTraceback(lua_State *L)
 bool AppFrame::Init()LNOEXCEPT
 {
 	LASSERT(m_iStatus == AppStatus::NotInitialized);
-
 	LINFO("开始初始化 版本: %s", LVERSION);
 	m_iStatus = AppStatus::Initializing;
 
 	Scope tSplashWindowExit([this]() {
 		m_SplashWindow.HideSplashWindow();
 	});
-	// 这些字符串是给最后加载入口点文件时候用的（可以看作main.lua）
-	// 会被命令行参数影响
-	std::string MAIN_SCRIPT = fcyStringHelper::WideCharToMultiByte(LCORE_SCRIPT, CP_UTF8);
+
+	//////////////////////////////////////// Lua入口点文件
+	std::string MAIN_SCRIPT;
 	std::wstring LMAIN_SCRIPT = LCORE_SCRIPT;
+	try {
+		MAIN_SCRIPT = fcyStringHelper::WideCharToMultiByte(LCORE_SCRIPT, CP_UTF8);
+	}
+	catch (...) {
+		MAIN_SCRIPT = "src/main.lua";
+		LMAIN_SCRIPT = L"src/main.lua";
+		LERROR("转换字符串编码时出现错误");
+	}
 	
 	//////////////////////////////////////// Lua初始化部分
-	LINFO("开始初始化Lua虚拟机 版本: %m", LVERSION_LUA);
-	L = lua_open();
-	if (!L)
 	{
-		LERROR("无法初始化Lua虚拟机");
-		return false;
+		LINFO("开始初始化Lua虚拟机 版本: %m", LVERSION_LUA);
+		L = lua_open();
+		if (!L)
+		{
+			LERROR("无法初始化Lua虚拟机");
+			return false;
+		}
+		if (0 != luaJIT_setmode(L, 0, LUAJIT_MODE_ENGINE | LUAJIT_MODE_ON))
+			LWARNING("无法启动JIT模式");
+		lua_gc(L, LUA_GCSTOP, 0);  // 初始化时关闭GC
+
+		luaL_openlibs(L);  // 内建库 (lua build in lib)
+
+		luaopen_lfs(L);  // 文件系统库 (file system)
+		luaopen_cjson(L);  // CJSON库 (json)
+		luaopen_socket_core(L);  // luasock (socket)
+		//luaopen_mime_core(L); // mime (base64)
+		lua_settop(L, 0);// 不知道为什么弄了6个table在栈顶……
+
+		if (!SafeCallScript(LuaInternalSource_1().c_str(), LuaInternalSource_1().length(), "internal")) {
+			LERROR("内置资源出错");
+		}
+
+		RegistBuiltInClassWrapper(L);  // 注册内建类 (luastg lib)
+		Xrysnow::InitStringToEnumHash(L); // 准备属性hash
+
+		lua_gc(L, LUA_GCRESTART, -1);  // 重启GC
 	}
-	if (0 != luaJIT_setmode(L, 0, LUAJIT_MODE_ENGINE | LUAJIT_MODE_ON))
-		LWARNING("无法启动JIT模式");
-	lua_gc(L, LUA_GCSTOP, 0);  // 初始化时关闭GC
 
-	luaL_openlibs(L);  // 内建库 (lua build in lib)
-
-	luaopen_lfs(L);  // 文件系统库 (file system)
-	luaopen_cjson(L);  // CJSON库 (json)
-	luaopen_socket_core(L);  // luasock (socket)
-	luaopen_mime_core(L); // mime (base64)
-	lua_pop(L, 6);// 不知道为什么弄了6个table在栈顶……
-
-	RegistBuiltInClassWrapper(L);  // 注册内建类 (luastg lib)
-	Xrysnow::InitStringToEnumHash(L); // 准备属性hash
-
-	lua_gc(L, LUA_GCRESTART, -1);  // 重启GC
 	// 为对象池分配空间
 	LINFO("初始化对象池 上限=%u", LGOBJ_MAXCNT);
 	try
@@ -1494,7 +1509,7 @@ bool AppFrame::Init()LNOEXCEPT
 	lua_pop(L, 1);
 
 	//////////////////////////////////////// 装载初始化脚本
-	LINFO("装载初始化脚本'%s'", LLAUNCH_SCRIPT);
+	LINFO("加载初始化脚本'%s'", LLAUNCH_SCRIPT);
 	fcyRefPointer<fcyMemStream> tMemStream;
 	if (m_ResourceMgr.LoadFile(LLAUNCH_SCRIPT, tMemStream)) {
 		if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), "launch"))
@@ -1504,116 +1519,124 @@ bool AppFrame::Init()LNOEXCEPT
 		LWARNING("找不到文件'%s'", LLAUNCH_SCRIPT);
 	}
 	
+	//////////////////////////////////////// 装载基础资源包
+	LINFO("加载资源包'data.pack'");
+	if (!m_FileManager.LoadArchive("data.pack", 0, nullptr)) {
+		LWARNING("找不到资源包'data.pack'");
+	}
+
 	//////////////////////////////////////// 初始化fancy2d引擎
-	LINFO("初始化fancy2d 版本 %d.%d (分辨率: %dx%d 垂直同步: %b 窗口化: %b)",
-		(F2DVERSION & 0xFFFF0000) >> 16, F2DVERSION & 0x0000FFFF,
-		(int)m_OptionResolution.x, (int)m_OptionResolution.y, m_OptionVsync, m_OptionWindowed);
-	struct : public f2dInitialErrListener
 	{
-		void OnErr(fuInt TimeTick, fcStr Src, fcStr Desc)
+		LINFO("初始化fancy2d 版本 %d.%d (分辨率: %dx%d 垂直同步: %b 窗口化: %b)",
+			(F2DVERSION & 0xFFFF0000) >> 16, F2DVERSION & 0x0000FFFF,
+			(int)m_OptionResolution.x, (int)m_OptionResolution.y, m_OptionVsync, m_OptionWindowed);
+		struct : public f2dInitialErrListener
 		{
-			LERROR("初始化fancy2d失败 (异常信息'%m' 源'%m')", Desc, Src);
+			void OnErr(fuInt TimeTick, fcStr Src, fcStr Desc)
+			{
+				LERROR("初始化fancy2d失败 (异常信息'%m' 源'%m')", Desc, Src);
+			}
+		} tErrListener;
+
+		if (FCYFAILED(CreateF2DEngineAndInit(
+			F2DVERSION,
+			fcyRect(0.f, 0.f, m_OptionResolution.x, m_OptionResolution.y),
+			m_OptionTitle.c_str(),
+			m_bSplashWindowEnabled ? true : m_OptionWindowed,
+			(m_bSplashWindowEnabled || m_OptionWindowed) ? false : m_OptionVsync, // 总是在窗口模式下关闭垂直同步
+			F2DAALEVEL_NONE,
+			this,
+			&m_pEngine,
+			&tErrListener
+			)))
+		{
+			return false;
 		}
-	} tErrListener;
 
-	if (FCYFAILED(CreateF2DEngineAndInit(
-		F2DVERSION,
-		fcyRect(0.f, 0.f, m_OptionResolution.x, m_OptionResolution.y),
-		m_OptionTitle.c_str(),
-		m_bSplashWindowEnabled ? true : m_OptionWindowed,
-		(m_bSplashWindowEnabled || m_OptionWindowed) ? false : m_OptionVsync, // 总是在窗口模式下关闭垂直同步
-		F2DAALEVEL_NONE,
-		this,
-		&m_pEngine,
-		&tErrListener
-		)))
-	{
-		return false;
-	}
+		// 获取组件
+		m_pMainWindow = m_pEngine->GetMainWindow();
+		m_pRenderer = m_pEngine->GetRenderer();
+		m_pRenderDev = m_pRenderer->GetDevice();
+		m_pSoundSys = m_pEngine->GetSoundSys();
+		m_pInputSys = m_pEngine->GetInputSys();
 
-	// 获取组件
-	m_pMainWindow = m_pEngine->GetMainWindow();
-	m_pRenderer = m_pEngine->GetRenderer();
-	m_pRenderDev = m_pRenderer->GetDevice();
-	m_pSoundSys = m_pEngine->GetSoundSys();
-	m_pInputSys = m_pEngine->GetInputSys();
+		// 打印设备信息
+		f2dCPUInfo stCPUInfo = { 0 };
+		m_pEngine->GetCPUInfo(stCPUInfo);
+		LINFO("CPU %m %m / GPU %m", stCPUInfo.CPUBrandString, stCPUInfo.CPUString, m_pRenderDev->GetDeviceName());
 
-	// 打印设备信息
-	f2dCPUInfo stCPUInfo = { 0 };
-	m_pEngine->GetCPUInfo(stCPUInfo);
-	LINFO("CPU %m %m / GPU %m", stCPUInfo.CPUBrandString, stCPUInfo.CPUString, m_pRenderDev->GetDeviceName());
+		// 创建渲染器
+		//原来的大小只有20000，20000
+		if (FCYFAILED(m_pRenderDev->CreateGraphics2D(32768, 65536, &m_Graph2D)))
+		{
+			LERROR("无法创建渲染器 (fcyRenderDevice::CreateGraphics2D failed)");
+			return false;
+		}
+		m_Graph2DLastBlendMode = BlendMode::AddAlpha;
+		m_Graph2DBlendState = m_Graph2D->GetBlendState();
+		m_Graph2DColorBlendState = m_Graph2D->GetColorBlendType();
+		m_bRenderStarted = false;
 
-	// 创建渲染器
-	//原来的大小只有20000，20000
-	if (FCYFAILED(m_pRenderDev->CreateGraphics2D(32768, 65536, &m_Graph2D)))
-	{
-		LERROR("无法创建渲染器 (fcyRenderDevice::CreateGraphics2D failed)");
-		return false;
-	}
-	m_Graph2DLastBlendMode = BlendMode::AddAlpha;
-	m_Graph2DBlendState = m_Graph2D->GetBlendState();
-	m_Graph2DColorBlendState = m_Graph2D->GetColorBlendType();
-	m_bRenderStarted = false;
+		// 创建文字渲染器
+		if (FCYFAILED(m_pRenderer->CreateFontRenderer(nullptr, &m_FontRenderer)))
+		{
+			LERROR("无法创建字体渲染器 (fcyRenderer::CreateFontRenderer failed)");
+			return false;
+		}
+		m_FontRenderer->SetZ(0.5f);
 
-	// 创建文字渲染器
-	if (FCYFAILED(m_pRenderer->CreateFontRenderer(nullptr, &m_FontRenderer)))
-	{
-		LERROR("无法创建字体渲染器 (fcyRenderer::CreateFontRenderer failed)");
-		return false;
-	}
-	m_FontRenderer->SetZ(0.5f);
+		// 创建图元渲染器
+		if (FCYFAILED(m_pRenderer->CreateGeometryRenderer(&m_GRenderer)))
+		{
+			LERROR("无法创建图元渲染器 (fcyRenderer::CreateGeometryRenderer failed)");
+			return false;
+		}
 
-	// 创建图元渲染器
-	if (FCYFAILED(m_pRenderer->CreateGeometryRenderer(&m_GRenderer)))
-	{
-		LERROR("无法创建图元渲染器 (fcyRenderer::CreateGeometryRenderer failed)");
-		return false;
-	}
-
-	// 创建3D渲染器
-	if (FCYFAILED(m_pRenderDev->CreateGraphics3D(nullptr, &m_Graph3D)))
-	{
-		LERROR("无法创建3D渲染器 (fcyRenderDevice::CreateGraphics3D failed)");
-		return false;
-	}
-	m_Graph3DLastBlendMode = BlendMode::AddAlpha;
-	m_Graph3DBlendState = m_Graph3D->GetBlendState();
+		// 创建3D渲染器
+		if (FCYFAILED(m_pRenderDev->CreateGraphics3D(nullptr, &m_Graph3D)))
+		{
+			LERROR("无法创建3D渲染器 (fcyRenderDevice::CreateGraphics3D failed)");
+			return false;
+		}
+		m_Graph3DLastBlendMode = BlendMode::AddAlpha;
+		m_Graph3DBlendState = m_Graph3D->GetBlendState();
 	
-	// 创建PostEffect缓冲
-	if (FCYFAILED(m_pRenderDev->CreateRenderTarget(
-		m_pRenderDev->GetBufferWidth(),
-		m_pRenderDev->GetBufferHeight(),
-		true,
-		&m_PostEffectBuffer)))
-	{
-		LERROR("无法创建POSTEFFECT缓冲区 (fcyRenderDevice::CreateRenderTarget failed)");
-		return false;
-	}
+		// 创建PostEffect缓冲
+		if (FCYFAILED(m_pRenderDev->CreateRenderTarget(
+			m_pRenderDev->GetBufferWidth(),
+			m_pRenderDev->GetBufferHeight(),
+			true,
+			&m_PostEffectBuffer)))
+		{
+			LERROR("无法创建POSTEFFECT缓冲区 (fcyRenderDevice::CreateRenderTarget failed)");
+			return false;
+		}
 
-	//创建鼠标输入
-	m_pInputSys->CreateMouse(-1, false, &m_Mouse);
-	if (!m_Mouse)
-		LWARNING("无法创建鼠标设备，将使用窗口消息作为输入源 (f2dInputSys::CreateMouse failed.)");
-	// 创建键盘输入
-	m_pInputSys->CreateKeyboard(-1, false, &m_Keyboard);
-	if (!m_Keyboard)
-		LWARNING("无法创建键盘设备，将使用窗口消息作为输入源 (f2dInputSys::CreateKeyboard failed.)");
-	m_pInputSys->CreateDefaultKeyboard(-1, false, &m_Keyboard2);
-	if (!m_Keyboard2)
-		LWARNING("无法创建键盘设备，将使用窗口消息作为输入源 (f2dInputSys::CreateDefaultKeyboard failed.)");
-	// 创建手柄输入
-	fuInt iJoyStickCount = ::min(2U, m_pInputSys->GetDeviceCount(F2DINPUTDEVTYPE_GAMECTRL));
-	for (fuInt i = 0; i < iJoyStickCount; ++i)
-	{
-		LINFO("侦测到手柄 设备名：%s 产品名：%s", m_pInputSys->GetDeviceName(F2DINPUTDEVTYPE_GAMECTRL, i), 
-			m_pInputSys->GetDeviceProductName(F2DINPUTDEVTYPE_GAMECTRL, i));
-		if (FCYFAILED(m_pInputSys->CreateJoystick(i, false, &m_Joystick[i])))
-			LWARNING("无法装载手柄，忽略。");
-	}
+		//创建鼠标输入
+		m_pInputSys->CreateMouse(-1, false, &m_Mouse);
+		if (!m_Mouse)
+			LWARNING("无法创建鼠标设备，将使用窗口消息作为输入源 (f2dInputSys::CreateMouse failed.)");
+		// 创建键盘输入
+		m_pInputSys->CreateKeyboard(-1, false, &m_Keyboard);
+		if (!m_Keyboard)
+			LWARNING("无法创建键盘设备，将使用窗口消息作为输入源 (f2dInputSys::CreateKeyboard failed.)");
+		m_pInputSys->CreateDefaultKeyboard(-1, false, &m_Keyboard2);
+		if (!m_Keyboard2)
+			LWARNING("无法创建键盘设备，将使用窗口消息作为输入源 (f2dInputSys::CreateDefaultKeyboard failed.)");
+		// 创建手柄输入
+		fuInt iJoyStickCount = ::min(2U, m_pInputSys->GetDeviceCount(F2DINPUTDEVTYPE_GAMECTRL));
+		for (fuInt i = 0; i < iJoyStickCount; ++i)
+		{
+			LINFO("侦测到手柄 设备名：%s 产品名：%s", m_pInputSys->GetDeviceName(F2DINPUTDEVTYPE_GAMECTRL, i), 
+				m_pInputSys->GetDeviceProductName(F2DINPUTDEVTYPE_GAMECTRL, i));
+			if (FCYFAILED(m_pInputSys->CreateJoystick(i, false, &m_Joystick[i])))
+				LWARNING("无法装载手柄，忽略。");
+		}
 
-	// luastg不使用ZBuffer，将其关闭。
-	m_pRenderDev->SetZBufferEnable(false);
-	m_pRenderDev->ClearZBuffer();
+		// luastg不使用ZBuffer，将其关闭。
+		m_pRenderDev->SetZBufferEnable(false);
+		m_pRenderDev->ClearZBuffer();
+	}
 	
 	// 设置窗口图标
 	HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_APPICON));
@@ -1638,17 +1661,24 @@ bool AppFrame::Init()LNOEXCEPT
 	m_collidercfg.emplace_back(ColliderDisplayConfig(4, fcyColor(100, 175, 15, 20)));// GROUP_PLAYER
 
 	//////////////////////////////////////// 装载核心脚本
-	//LINFO("装载核心脚本'%s'", LMAIN_SCRIPT.c_str());
-	if (!m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream)) {
-		//LWARNING("找不到文件'%s'", LMAIN_SCRIPT.c_str());
-		MAIN_SCRIPT = "src/main.lua"; LMAIN_SCRIPT = L"src/main.lua";
-		//LINFO("装载核心脚本'%s'", LMAIN_SCRIPT.c_str());
-		if (!m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream))
-			return false;
+	{
+		bool ok = m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream);
+		if (!ok) {
+			MAIN_SCRIPT = "src/main.lua"; LMAIN_SCRIPT = L"src/main.lua";
+			LINFO("装载核心脚本'%s'", LMAIN_SCRIPT.c_str());
+			ok = m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream);
+			
+		}
+		if (!ok) {
+			LWARNING("找不到文件'%s'", LMAIN_SCRIPT.c_str());
+		}
+		else {
+			if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), MAIN_SCRIPT.c_str())) {
+				return false;
+			}
+		}
 	}
-	if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), MAIN_SCRIPT.c_str()))
-		return false;
-
+	
 	m_iStatus = AppStatus::Initialized;
 	LINFO("初始化成功完成");
 	return true;

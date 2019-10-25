@@ -164,6 +164,9 @@
     <ClInclude Include="LuaTableToOption.hpp">
       <Filter>LuaUtility</Filter>
     </ClInclude>
+    <ClInclude Include="LuaInternalSource.hpp">
+      <Filter>LuaUtility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppFrame.cpp">
@@ -282,6 +285,9 @@
     </ClCompile>
     <ClCompile Include="GameResourceWrapper.cpp">
       <Filter>LuaWrapper\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaInternalSource.cpp">
+      <Filter>LuaUtility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
