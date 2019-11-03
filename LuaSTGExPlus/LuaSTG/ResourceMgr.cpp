@@ -29,35 +29,30 @@ void ResourceMgr::ClearAllResource()LNOEXCEPT
 
 LNOINLINE bool ResourceMgr::LoadFile(const wchar_t* path, fcyRefPointer<fcyMemStream>& outBuf, const wchar_t *packname)LNOEXCEPT
 {
-	//路径
-	std::wstring utf16path = path;
-	std::string utf8path = Eyes2D::String::UTF16ToUTF8(utf16path);//文件路径
-	std::wstring utf16pack = L"";
+	std::string utf8path = Eyes2D::String::UTF16ToUTF8(path);//文件路径
 	if (packname != nullptr) {
-		utf16pack = packname;
+		std::string utf8pack = Eyes2D::String::UTF16ToUTF8(packname); // 压缩包名
+		return LoadFile(utf8path.c_str(), outBuf, utf8pack.c_str());
 	}
-	std::string utf8pack = Eyes2D::String::UTF16ToUTF8(utf16pack);//压缩包名
-	
-	return LoadFile(utf8path.c_str(), outBuf, utf8pack.c_str());
+	else {
+		return LoadFile(utf8path.c_str(), outBuf, nullptr);
+	}
 }
 
 LNOINLINE bool ResourceMgr::LoadFile(const char* path, fcyRefPointer<fcyMemStream>& outBuf, const char *packname)LNOEXCEPT
 {
 	std::string utf8path = path;//文件路径
-	std::string utf8pack = "";//压缩包名
-	if (packname != nullptr) {
-		utf8pack = packname;
-	}
 	Eyes2D::Platform::PathFormatLinux(utf8path);
 	
 	Eyes2D::IO::FileManager& FMGR = LFMGR;
 	fcyStream* stream = nullptr;
-	if (utf8pack.size() > 0) {
-		stream = FMGR.LoadFile(utf8path.c_str(), utf8pack.c_str());
+	if (packname != nullptr) {
+		stream = FMGR.LoadFile(utf8path.c_str(), packname);
 	}
 	else {
 		stream = FMGR.LoadFile(utf8path.c_str());
 	}
+
 	if (stream != nullptr) {
 		outBuf.DirectSet((fcyMemStream*)stream);
 		return true;

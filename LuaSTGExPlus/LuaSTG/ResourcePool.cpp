@@ -1,4 +1,4 @@
-#include "ResourceMgr.h"
+ï»¿#include "ResourceMgr.h"
 #include "AppFrame.h"
 #include "Utility.h"
 
@@ -177,7 +177,7 @@ bool ResourcePool::LoadTexture(const char* name, const std::wstring& path, bool 
 
 		if (m_TexturePool.find(name) != m_TexturePool.end())
 		{
-			LWARNING("LoadTexture: ÎÆÀí'%m'ÒÑ´æÔÚ£¬ÊÔÍ¼Ê¹ÓÃ'%s'¼ÓÔØµÄ²Ù×÷ÒÑ±»È¡Ïû", name, path.c_str());
+			LWARNING("LoadTexture: çº¹ç†'%m'å·²å­˜åœ¨ï¼Œè¯•å›¾ä½¿ç”¨'%s'åŠ è½½çš„æ“ä½œå·²è¢«å–æ¶ˆ", name, path.c_str());
 			return true;
 		}
 
@@ -188,7 +188,7 @@ bool ResourcePool::LoadTexture(const char* name, const std::wstring& path, bool 
 		fcyRefPointer<f2dTexture2D> tTexture;
 		if (FCYFAILED(LAPP.GetRenderDev()->CreateTextureFromMemory((fcData)tDataBuf->GetInternalBuffer(), tDataBuf->GetLength(), 0, 0, false, mipmaps, &tTexture)))
 		{
-			LERROR("LoadTexture: ´ÓÎÄ¼ş'%s'´´½¨ÎÆÀí'%m'Ê§°Ü", path.c_str(), name);
+			LERROR("LoadTexture: ä»æ–‡ä»¶'%s'åˆ›å»ºçº¹ç†'%m'å¤±è´¥", path.c_str(), name);
 			return false;
 		}
 
@@ -200,12 +200,12 @@ bool ResourcePool::LoadTexture(const char* name, const std::wstring& path, bool 
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadTexture: ÄÚ´æ²»×ã");
+			LERROR("LoadTexture: å†…å­˜ä¸è¶³");
 			return false;
 		}
 
 #ifdef LSHOWRESLOADINFO
-		LINFO("LoadTexture: ÎÆÀí'%s'ÒÑ×°ÔØ -> '%m' (%s)", path.c_str(), name, getResourcePoolTypeName());
+		LINFO("LoadTexture: çº¹ç†'%s'å·²è£…è½½ -> '%m' (%s)", path.c_str(), name, getResourcePoolTypeName());
 #endif
 	}
 
@@ -224,7 +224,7 @@ bool ResourcePool::LoadModel(const char* name, const std::wstring& path)LNOEXCEP
 
 		if (m_TexturePool.find(name) != m_TexturePool.end())
 		{
-			LWARNING("LoadModel: Ä£ĞÍ'%m'ÒÑ´æÔÚ£¬ÊÔÍ¼Ê¹ÓÃ'%s'¼ÓÔØµÄ²Ù×÷ÒÑ±»È¡Ïû", name, path.c_str());
+			LWARNING("LoadModel: æ¨¡å‹'%m'å·²å­˜åœ¨ï¼Œè¯•å›¾ä½¿ç”¨'%s'åŠ è½½çš„æ“ä½œå·²è¢«å–æ¶ˆ", name, path.c_str());
 			return true;
 		}
 
@@ -253,12 +253,12 @@ bool ResourcePool::LoadModel(const char* name, const std::wstring& path)LNOEXCEP
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadModel: ÄÚ´æ²»×ã");
+			LERROR("LoadModel: å†…å­˜ä¸è¶³");
 			return false;
 		}
 
 #ifdef LSHOWRESLOADINFO
-		LINFO("LoadTexture: ÎÆÀí'%s'ÒÑ×°ÔØ -> '%m' (%s)", path.c_str(), name, getResourcePoolTypeName());
+		LINFO("LoadTexture: çº¹ç†'%s'å·²è£…è½½ -> '%m' (%s)", path.c_str(), name, getResourcePoolTypeName());
 #endif
 	}
 
@@ -274,7 +274,7 @@ bool ResourcePool::LoadModel(const char* name, const char* path)LNOEXCEPT
 	}
 	catch (const bad_alloc&)
 	{
-		LERROR("LoadModel: ×ª»»±àÂëÊ±ÎŞ·¨·ÖÅäÄÚ´æ");
+		LERROR("LoadModel: è½¬æ¢ç¼–ç æ—¶æ— æ³•åˆ†é…å†…å­˜");
 		return false;
 	}
 }
@@ -287,7 +287,7 @@ bool ResourcePool::LoadTexture(const char* name, const char* path, bool mipmaps)
 	}
 	catch (const bad_alloc&)
 	{
-		LERROR("LoadTexture: ×ª»»±àÂëÊ±ÎŞ·¨·ÖÅäÄÚ´æ");
+		LERROR("LoadTexture: è½¬æ¢ç¼–ç æ—¶æ— æ³•åˆ†é…å†…å­˜");
 		return false;
 	}
 }
@@ -304,14 +304,14 @@ bool ResourcePool::LoadImage(const char* name, const char* texname,
 
 		if (m_SpritePool.find(name) != m_SpritePool.end())
 		{
-			LWARNING("LoadImage: Í¼Ïñ'%m'ÒÑ´æÔÚ£¬¼ÓÔØ²Ù×÷ÒÑ±»È¡Ïû", name);
+			LWARNING("LoadImage: å›¾åƒ'%m'å·²å­˜åœ¨ï¼ŒåŠ è½½æ“ä½œå·²è¢«å–æ¶ˆ", name);
 			return true;
 		}
 
 		fcyRefPointer<ResTexture> pTex = m_pMgr->FindTexture(texname);
 		if (!pTex)
 		{
-			LWARNING("LoadImage: ¼ÓÔØÍ¼Ïñ'%m'Ê§°Ü, ÎŞ·¨ÕÒµ½ÎÆÀí'%m'", name, texname);
+			LWARNING("LoadImage: åŠ è½½å›¾åƒ'%m'å¤±è´¥, æ— æ³•æ‰¾åˆ°çº¹ç†'%m'", name, texname);
 			return false;
 		}
 
@@ -319,7 +319,7 @@ bool ResourcePool::LoadImage(const char* name, const char* texname,
 		fcyRect tRect((float)x, (float)y, (float)(x + w), (float)(y + h));
 		if (FCYFAILED(LAPP.GetRenderer()->CreateSprite2D(pTex->GetTexture(), tRect, &pSprite)))
 		{
-			LERROR("LoadImage: ÎŞ·¨´ÓÎÆÀí'%m'¼ÓÔØÍ¼Ïñ'%m' (CreateSprite2D failed)", texname, name);
+			LERROR("LoadImage: æ— æ³•ä»çº¹ç†'%m'åŠ è½½å›¾åƒ'%m' (CreateSprite2D failed)", texname, name);
 			return false;
 		}
 
@@ -331,12 +331,12 @@ bool ResourcePool::LoadImage(const char* name, const char* texname,
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadImage: ÄÚ´æ²»×ã");
+			LERROR("LoadImage: å†…å­˜ä¸è¶³");
 			return false;
 		}
 
 #ifdef LSHOWRESLOADINFO
-		LINFO("LoadImage: Í¼Ïñ'%m'ÒÑ×°ÔØ (%s)", name, getResourcePoolTypeName());
+		LINFO("LoadImage: å›¾åƒ'%m'å·²è£…è½½ (%s)", name, getResourcePoolTypeName());
 #endif
 	}
 
@@ -354,14 +354,14 @@ bool ResourcePool::LoadAnimation(const char* name, const char* texname,
 
 		if (m_AnimationPool.find(name) != m_AnimationPool.end())
 		{
-			LWARNING("LoadAnimation: ¶¯»­'%m'ÒÑ´æÔÚ£¬¼ÓÔØ²Ù×÷ÒÑ±»È¡Ïû", name);
+			LWARNING("LoadAnimation: åŠ¨ç”»'%m'å·²å­˜åœ¨ï¼ŒåŠ è½½æ“ä½œå·²è¢«å–æ¶ˆ", name);
 			return true;
 		}
 
 		fcyRefPointer<ResTexture> pTex = m_pMgr->FindTexture(texname);
 		if (!pTex)
 		{
-			LWARNING("LoadAnimation: ¼ÓÔØ¶¯»­'%m'Ê§°Ü, ÎŞ·¨ÕÒµ½ÎÆÀí'%m'", name, texname);
+			LWARNING("LoadAnimation: åŠ è½½åŠ¨ç”»'%m'å¤±è´¥, æ— æ³•æ‰¾åˆ°çº¹ç†'%m'", name, texname);
 			return false;
 		}
 
@@ -373,17 +373,17 @@ bool ResourcePool::LoadAnimation(const char* name, const char* texname,
 		}
 		catch (const fcyException&)
 		{
-			LERROR("LoadAnimation: ¹¹Ôì¶¯»­'%m'Ê±Ê§°Ü", name);
+			LERROR("LoadAnimation: æ„é€ åŠ¨ç”»'%m'æ—¶å¤±è´¥", name);
 			return false;
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadAnimation: ÄÚ´æ²»×ã");
+			LERROR("LoadAnimation: å†…å­˜ä¸è¶³");
 			return false;
 		}
 
 #ifdef LSHOWRESLOADINFO
-		LINFO("LoadAnimation: ¶¯»­'%m'ÒÑ×°ÔØ (%s)", name, getResourcePoolTypeName());
+		LINFO("LoadAnimation: åŠ¨ç”»'%m'å·²è£…è½½ (%s)", name, getResourcePoolTypeName());
 #endif
 	}
 
@@ -398,58 +398,58 @@ bool ResourcePool::LoadMusic(const char* name, const std::wstring& path, double 
 	{
 		LDEBUG_RESOURCESCOPE;
 
-		//¼ì²éÒôÆµÏµÍ³ÊÇ·ñÒÑ¾­³õÊ¼»¯
+		//æ£€æŸ¥éŸ³é¢‘ç³»ç»Ÿæ˜¯å¦å·²ç»åˆå§‹åŒ–
 		LASSERT(LAPP.GetSoundSys());
 
-		//¼ÓÔØÒôÆµÎÄ¼şÁ÷£¬¼ÓÔØµ½ÄÚ´æ
+		//åŠ è½½éŸ³é¢‘æ–‡ä»¶æµï¼ŒåŠ è½½åˆ°å†…å­˜
 		fcyRefPointer<fcyMemStream> tDataBuf;
 		if (!m_pMgr->LoadFile(path.c_str(), tDataBuf))
 			return false;
 
 		try
 		{
-			//¼ÓÔØ½âÂëÆ÷£¬ÓÅÏÈOGG½âÂëÆ÷£¬¼ÓÔØÊ§°ÜÔòÊ¹ÓÃWAV½âÂëÆ÷£¬¶¼Ê§°ÜÔòerrorºıÁ³
+			//åŠ è½½è§£ç å™¨ï¼Œä¼˜å…ˆOGGè§£ç å™¨ï¼ŒåŠ è½½å¤±è´¥åˆ™ä½¿ç”¨WAVè§£ç å™¨ï¼Œéƒ½å¤±è´¥åˆ™errorç³Šè„¸
 			fcyRefPointer<f2dSoundDecoder> tDecoder;
 			if (FCYFAILED(LAPP.GetSoundSys()->CreateOGGVorbisDecoder(tDataBuf, &tDecoder)))
 			{
 				tDataBuf->SetPosition(FCYSEEKORIGIN_BEG, 0);
 				if (FCYFAILED(LAPP.GetSoundSys()->CreateWaveDecoder(tDataBuf, &tDecoder)))
 				{
-					LERROR("LoadMusic: ÎŞ·¨½âÂëÎÄ¼ş'%s'", path.c_str());
+					LERROR("LoadMusic: æ— æ³•è§£ç æ–‡ä»¶'%s'", path.c_str());
 					return false;
 				}
 			}
 
-			//¼ÓÔØ½âÂëÆ÷
+			//åŠ è½½è§£ç å™¨
 			fcyRefPointer<ResMusic::BGMWrapper> tWrapperedBuffer;
 			tWrapperedBuffer.DirectSet(new ResMusic::BGMWrapper(tDecoder, start, end));
 
-			//¼ÓÔØÒôÆµ»º³åÇú£¬¶¯Ì¬»º³åÇø
+			//åŠ è½½éŸ³é¢‘ç¼“å†²æ›²ï¼ŒåŠ¨æ€ç¼“å†²åŒº
 			fcyRefPointer<f2dSoundBuffer> tBuffer;
 			if (FCYFAILED(LAPP.GetSoundSys()->CreateDynamicBuffer(tWrapperedBuffer, LSOUNDGLOBALFOCUS, &tBuffer)))
 			{
-				LERROR("LoadMusic: ÎŞ·¨´´½¨ÒôÆµ»º³åÇø£¬ÎÄ¼ş'%s' (f2dSoundSys::CreateDynamicBuffer failed.)", path.c_str());
+				LERROR("LoadMusic: æ— æ³•åˆ›å»ºéŸ³é¢‘ç¼“å†²åŒºï¼Œæ–‡ä»¶'%s' (f2dSoundSys::CreateDynamicBuffer failed.)", path.c_str());
 				return false;
 			}
 
-			//´æÈë×ÊÔ´³Ø
+			//å­˜å…¥èµ„æºæ± 
 			fcyRefPointer<ResMusic> tRes;
 			tRes.DirectSet(new ResMusic(name, tBuffer));
 			m_MusicPool.emplace(name, tRes);
 		}
 		catch (const fcyException& e)
 		{
-			LERROR("LoadMusic: ½âÂëÎÄ¼ş'%s'µÄÒôÆµÊı¾İÊ±·¢Éú´íÎó£¬¸ñÊ½²»Ö§³Ö£¿ (Òì³£ĞÅÏ¢'%m' Ô´'%m')", path.c_str(), e.GetDesc(), e.GetSrc());
+			LERROR("LoadMusic: è§£ç æ–‡ä»¶'%s'çš„éŸ³é¢‘æ•°æ®æ—¶å‘ç”Ÿé”™è¯¯ï¼Œæ ¼å¼ä¸æ”¯æŒï¼Ÿ (å¼‚å¸¸ä¿¡æ¯'%m' æº'%m')", path.c_str(), e.GetDesc(), e.GetSrc());
 			return false;
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadMusic: ÄÚ´æ²»×ã");
+			LERROR("LoadMusic: å†…å­˜ä¸è¶³");
 			return false;
 		}
 
 #ifdef LSHOWRESLOADINFO
-		LINFO("LoadMusic: BGM'%m'ÒÑ×°ÔØ (%s)", name, getResourcePoolTypeName());
+		LINFO("LoadMusic: BGM'%m'å·²è£…è½½ (%s)", name, getResourcePoolTypeName());
 #endif
 	}
 
@@ -465,7 +465,7 @@ LNOINLINE bool ResourcePool::LoadMusic(const char* name, const char* path, doubl
 	}
 	catch (const bad_alloc&)
 	{
-		LERROR("LoadMusic: ×ª»»±àÂëÊ±ÎŞ·¨·ÖÅäÄÚ´æ");
+		LERROR("LoadMusic: è½¬æ¢ç¼–ç æ—¶æ— æ³•åˆ†é…å†…å­˜");
 		return false;
 	}
 }
@@ -491,7 +491,7 @@ bool ResourcePool::LoadSound(const char* name, const std::wstring& path)LNOEXCEP
 				tDataBuf->SetPosition(FCYSEEKORIGIN_BEG, 0);
 				if (FCYFAILED(LAPP.GetSoundSys()->CreateOGGVorbisDecoder(tDataBuf, &tDecoder)))
 				{
-					LERROR("LoadSound: ÎŞ·¨½âÂëÎÄ¼ş'%s'", path.c_str());
+					LERROR("LoadSound: æ— æ³•è§£ç æ–‡ä»¶'%s'", path.c_str());
 					return false;
 				}
 			}
@@ -499,7 +499,7 @@ bool ResourcePool::LoadSound(const char* name, const std::wstring& path)LNOEXCEP
 			fcyRefPointer<f2dSoundBuffer> tBuffer;
 			if (FCYFAILED(LAPP.GetSoundSys()->CreateStaticBuffer(tDecoder, LSOUNDGLOBALFOCUS, &tBuffer)))
 			{
-				LERROR("LoadSound: ÎŞ·¨´´½¨ÒôÆµ»º³åÇø£¬ÎÄ¼ş'%s' (f2dSoundSys::CreateStaticBuffer failed.)", path.c_str());
+				LERROR("LoadSound: æ— æ³•åˆ›å»ºéŸ³é¢‘ç¼“å†²åŒºï¼Œæ–‡ä»¶'%s' (f2dSoundSys::CreateStaticBuffer failed.)", path.c_str());
 				return false;
 			}
 
@@ -509,17 +509,17 @@ bool ResourcePool::LoadSound(const char* name, const std::wstring& path)LNOEXCEP
 		}
 		catch (const fcyException& e)
 		{
-			LERROR("LoadSound: ½âÂëÎÄ¼ş'%s'µÄÒôÆµÊı¾İÊ±·¢Éú´íÎó£¬¸ñÊ½²»Ö§³Ö£¿ (Òì³£ĞÅÏ¢'%m' Ô´'%m')", path.c_str(), e.GetDesc(), e.GetSrc());
+			LERROR("LoadSound: è§£ç æ–‡ä»¶'%s'çš„éŸ³é¢‘æ•°æ®æ—¶å‘ç”Ÿé”™è¯¯ï¼Œæ ¼å¼ä¸æ”¯æŒï¼Ÿ (å¼‚å¸¸ä¿¡æ¯'%m' æº'%m')", path.c_str(), e.GetDesc(), e.GetSrc());
 			return false;
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadSound: ÄÚ´æ²»×ã");
+			LERROR("LoadSound: å†…å­˜ä¸è¶³");
 			return false;
 		}
 
 #ifdef LSHOWRESLOADINFO
-		LINFO("LoadSound: ÒôĞ§'%m'ÒÑ×°ÔØ (%s)", name, getResourcePoolTypeName());
+		LINFO("LoadSound: éŸ³æ•ˆ'%m'å·²è£…è½½ (%s)", name, getResourcePoolTypeName());
 #endif
 	}
 
@@ -535,7 +535,7 @@ LNOINLINE bool ResourcePool::LoadSound(const char* name, const char* path)LNOEXC
 	}
 	catch (const bad_alloc&)
 	{
-		LERROR("LoadSound: ×ª»»±àÂëÊ±ÎŞ·¨·ÖÅäÄÚ´æ");
+		LERROR("LoadSound: è½¬æ¢ç¼–ç æ—¶æ— æ³•åˆ†é…å†…å­˜");
 		return false;
 	}
 }
@@ -551,7 +551,7 @@ bool ResourcePool::LoadParticle(const char* name, const std::wstring& path, cons
 
 		if (m_ParticlePool.find(name) != m_ParticlePool.end())
 		{
-			LWARNING("LoadParticle: Á£×Ó'%m'ÒÑ´æÔÚ£¬¼ÓÔØ²Ù×÷ÒÑ±»È¡Ïû", name);
+			LWARNING("LoadParticle: ç²’å­'%m'å·²å­˜åœ¨ï¼ŒåŠ è½½æ“ä½œå·²è¢«å–æ¶ˆ", name);
 			return true;
 		}
 
@@ -559,15 +559,15 @@ bool ResourcePool::LoadParticle(const char* name, const std::wstring& path, cons
 		fcyRefPointer<f2dSprite> pClone;
 		if (!pSprite)
 		{
-			LWARNING("LoadParticle: ¼ÓÔØÁ£×Ó'%m'Ê§°Ü, ÎŞ·¨ÕÒµ½¾«Áé'%m'", name, img_name);
+			LWARNING("LoadParticle: åŠ è½½ç²’å­'%m'å¤±è´¥, æ— æ³•æ‰¾åˆ°ç²¾çµ'%m'", name, img_name);
 			return false;
 		}
 		else
 		{
-			// ¿ËÂ¡Ò»¸ö¾«Áé¶ÔÏó
+			// å…‹éš†ä¸€ä¸ªç²¾çµå¯¹è±¡
 			if (FCYFAILED(LAPP.GetRenderer()->CreateSprite2D(pSprite->GetSprite()->GetTexture(), pSprite->GetSprite()->GetTexRect(), pSprite->GetSprite()->GetHotSpot(), &pClone)))
 			{
-				LERROR("LoadParticle: ¿ËÂ¡Í¼Æ¬'%m'Ê§°Ü", img_name);
+				LERROR("LoadParticle: å…‹éš†å›¾ç‰‡'%m'å¤±è´¥", img_name);
 				return false;
 			}
 			pClone->SetColor(0, pSprite->GetSprite()->GetColor(0U));
@@ -582,7 +582,7 @@ bool ResourcePool::LoadParticle(const char* name, const std::wstring& path, cons
 			return false;
 		if (outBuf->GetLength() != sizeof(ResParticle::ParticleInfo))
 		{
-			LERROR("LoadParticle: Á£×Ó¶¨ÒåÎÄ¼ş'%s'¸ñÊ½²»ÕıÈ·", path.c_str());
+			LERROR("LoadParticle: ç²’å­å®šä¹‰æ–‡ä»¶'%s'æ ¼å¼ä¸æ­£ç¡®", path.c_str());
 			return false;
 		}
 
@@ -614,11 +614,11 @@ bool ResourcePool::LoadParticle(const char* name, const std::wstring& path, cons
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadParticle: ÄÚ´æ²»×ã");
+			LERROR("LoadParticle: å†…å­˜ä¸è¶³");
 			return false;
 		}
 #ifdef LSHOWRESLOADINFO
-		LINFO("LoadParticle: Á£×Ó'%m'ÒÑ×°ÔØ (%s)", name, getResourcePoolTypeName());
+		LINFO("LoadParticle: ç²’å­'%m'å·²è£…è½½ (%s)", name, getResourcePoolTypeName());
 #endif
 	}
 
@@ -634,7 +634,7 @@ LNOINLINE bool ResourcePool::LoadParticle(const char* name, const char* path, co
 	}
 	catch (const bad_alloc&)
 	{
-		LERROR("LoadParticle: ×ª»»±àÂëÊ±ÎŞ·¨·ÖÅäÄÚ´æ");
+		LERROR("LoadParticle: è½¬æ¢ç¼–ç æ—¶æ— æ³•åˆ†é…å†…å­˜");
 		return false;
 	}
 }
@@ -650,19 +650,19 @@ bool ResourcePool::LoadSpriteFont(const char* name, const std::wstring& path, bo
 
 		if (m_SpriteFontPool.find(name) != m_SpriteFontPool.end())
 		{
-			LWARNING("LoadFont: ×ÖÌå'%m'ÒÑ´æÔÚ£¬¼ÓÔØ²Ù×÷ÒÑ±»È¡Ïû", name);
+			LWARNING("LoadFont: å­—ä½“'%m'å·²å­˜åœ¨ï¼ŒåŠ è½½æ“ä½œå·²è¢«å–æ¶ˆ", name);
 			return true;
 		}
 
 		std::unordered_map<wchar_t, f2dGlyphInfo> tOutputCharset;
 		std::wstring tOutputTextureName;
 
-		// ¶ÁÈ¡ÎÄ¼ş
+		// è¯»å–æ–‡ä»¶
 		fcyRefPointer<fcyMemStream> tDataBuf;
 		if (!m_pMgr->LoadFile(path.c_str(), tDataBuf))
 			return false;
 
-		// ×ª»»±àÂë
+		// è½¬æ¢ç¼–ç 
 		wstring tFileData;
 		try
 		{
@@ -674,46 +674,48 @@ bool ResourcePool::LoadSpriteFont(const char* name, const std::wstring& path, bo
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadFont: ×ª»»±àÂëÊ±ÎŞ·¨·ÖÅäÄÚ´æ");
+			LERROR("LoadFont: è½¬æ¢ç¼–ç æ—¶æ— æ³•åˆ†é…å†…å­˜");
 			return false;
 		}
 
-		// ¶ÁÈ¡HGE×ÖÌå¶¨Òå
+		// è¯»å–HGEå­—ä½“å®šä¹‰
 		try
 		{
 			ResFont::HGEFont::ReadDefine(tFileData, tOutputCharset, tOutputTextureName);
 		}
 		catch (const fcyException& e)
 		{
-			LERROR("LoadFont: ×°ÔØHGE×ÖÌå¶¨ÒåÎÄ¼ş'%s'Ê§°Ü (Òì³£ĞÅÏ¢'%m' Ô´'%m')", path.c_str(), e.GetDesc(), e.GetSrc());
+			LERROR("LoadFont: è£…è½½HGEå­—ä½“å®šä¹‰æ–‡ä»¶'%s'å¤±è´¥ (å¼‚å¸¸ä¿¡æ¯'%m' æº'%m')", path.c_str(), e.GetDesc(), e.GetSrc());
 			return false;
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadFont: ÄÚ´æ²»×ã");
+			LERROR("LoadFont: å†…å­˜ä¸è¶³");
 			return false;
 		}
 
-		// ×°ÔØÎÆÀí
+		// è£…è½½çº¹ç†
 		try
 		{
-			if (!m_pMgr->LoadFile((fcyPathParser::GetPath(path) + tOutputTextureName).c_str(), tDataBuf))
+			if (!m_pMgr->LoadFile((fcyPathParser::GetPath(path) + tOutputTextureName).c_str(), tDataBuf)) {
+				LERROR("LoadFont: æ— æ³•åŠ è½½å­—ä½“çº¹ç†å›¾ç‰‡");
 				return false;
+			}
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadFont: ÄÚ´æ²»×ã");
+			LERROR("LoadFont: å†…å­˜ä¸è¶³");
 			return false;
 		}
 
 		fcyRefPointer<f2dTexture2D> tTexture;
 		if (FCYFAILED(LAPP.GetRenderDev()->CreateTextureFromMemory((fcData)tDataBuf->GetInternalBuffer(), tDataBuf->GetLength(), 0, 0, false, mipmaps, &tTexture)))
 		{
-			LERROR("LoadFont: ´ÓÎÄ¼ş'%s'´´½¨ÎÆÀí'%m'Ê§°Ü", tOutputTextureName.c_str(), name);
+			LERROR("LoadFont: ä»æ–‡ä»¶'%s'åˆ›å»ºçº¹ç†'%m'å¤±è´¥", tOutputTextureName.c_str(), name);
 			return false;
 		}
 
-		// ´´½¨¶¨Òå
+		// åˆ›å»ºå®šä¹‰
 		try
 		{
 			fcyRefPointer<f2dFontProvider> tFontProvider;
@@ -725,11 +727,11 @@ bool ResourcePool::LoadSpriteFont(const char* name, const std::wstring& path, bo
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadFont: ÄÚ´æ²»×ã");
+			LERROR("LoadFont: å†…å­˜ä¸è¶³");
 			return false;
 		}
 #ifdef LSHOWRESLOADINFO
-		LINFO("LoadFont: ÎÆÀí×ÖÌå'%m'ÒÑ×°ÔØ (%s)", name, getResourcePoolTypeName());
+		LINFO("LoadFont: çº¹ç†å­—ä½“'%m'å·²è£…è½½ (%s)", name, getResourcePoolTypeName());
 #endif
 	}
 
@@ -748,16 +750,16 @@ bool ResourcePool::LoadSpriteFont(const char* name, const std::wstring& path, co
 
 		if (m_SpriteFontPool.find(name) != m_SpriteFontPool.end())
 		{
-			LWARNING("LoadFont: ×ÖÌå'%m'ÒÑ´æÔÚ£¬¼ÓÔØ²Ù×÷ÒÑ±»È¡Ïû", name);
+			LWARNING("LoadFont: å­—ä½“'%m'å·²å­˜åœ¨ï¼ŒåŠ è½½æ“ä½œå·²è¢«å–æ¶ˆ", name);
 			return true;
 		}
 
-		// ¶ÁÈ¡ÎÄ¼ş
+		// è¯»å–æ–‡ä»¶
 		fcyRefPointer<fcyMemStream> tDataBuf;
 		if (!m_pMgr->LoadFile(path.c_str(), tDataBuf))
 			return false;
 
-		// ×ª»»±àÂë
+		// è½¬æ¢ç¼–ç 
 		wstring tFileData;
 		try
 		{
@@ -769,11 +771,11 @@ bool ResourcePool::LoadSpriteFont(const char* name, const std::wstring& path, co
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadFont: ×ª»»±àÂëÊ±ÎŞ·¨·ÖÅäÄÚ´æ");
+			LERROR("LoadFont: è½¬æ¢ç¼–ç æ—¶æ— æ³•åˆ†é…å†…å­˜");
 			return false;
 		}
 
-		// ×°ÔØÎÆÀí
+		// è£…è½½çº¹ç†
 		try
 		{
 			if (!m_pMgr->LoadFile((fcyPathParser::GetPath(path) + tex_path).c_str(), tDataBuf))
@@ -784,24 +786,24 @@ bool ResourcePool::LoadSpriteFont(const char* name, const std::wstring& path, co
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadFont: ÄÚ´æ²»×ã");
+			LERROR("LoadFont: å†…å­˜ä¸è¶³");
 			return false;
 		}
 
 		fcyRefPointer<f2dTexture2D> tTexture;
 		if (FCYFAILED(LAPP.GetRenderDev()->CreateTextureFromMemory((fcData)tDataBuf->GetInternalBuffer(), tDataBuf->GetLength(), 0, 0, false, mipmaps, &tTexture)))
 		{
-			LERROR("LoadFont: ´ÓÎÄ¼ş'%s'´´½¨ÎÆÀí'%m'Ê§°Ü", tex_path.c_str(), name);
+			LERROR("LoadFont: ä»æ–‡ä»¶'%s'åˆ›å»ºçº¹ç†'%m'å¤±è´¥", tex_path.c_str(), name);
 			return false;
 		}
 
-		// ´´½¨¶¨Òå
+		// åˆ›å»ºå®šä¹‰
 		try
 		{
 			fcyRefPointer<f2dFontProvider> tFontProvider;
 			if (FCYFAILED(LAPP.GetRenderer()->CreateFontFromTex(tFileData.c_str(), tTexture, &tFontProvider)))
 			{
-				LERROR("LoadFont: ´ÓÎÄ¼ş'%s'´´½¨ÎÆÀí×ÖÌåÊ§°Ü", path.c_str());
+				LERROR("LoadFont: ä»æ–‡ä»¶'%s'åˆ›å»ºçº¹ç†å­—ä½“å¤±è´¥", path.c_str());
 				return false;
 			}
 
@@ -811,11 +813,11 @@ bool ResourcePool::LoadSpriteFont(const char* name, const std::wstring& path, co
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadFont: ÄÚ´æ²»×ã");
+			LERROR("LoadFont: å†…å­˜ä¸è¶³");
 			return false;
 		}
 #ifdef LSHOWRESLOADINFO
-		LINFO("LoadFont: ÎÆÀí×ÖÌå'%m'ÒÑ×°ÔØ (%s)", name, getResourcePoolTypeName());
+		LINFO("LoadFont: çº¹ç†å­—ä½“'%m'å·²è£…è½½ (%s)", name, getResourcePoolTypeName());
 #endif
 	}
 
@@ -831,7 +833,7 @@ LNOINLINE bool ResourcePool::LoadSpriteFont(const char* name, const char* path, 
 	}
 	catch (const bad_alloc&)
 	{
-		LERROR("LoadSpriteFont: ×ª»»±àÂëÊ±ÎŞ·¨·ÖÅäÄÚ´æ");
+		LERROR("LoadSpriteFont: è½¬æ¢ç¼–ç æ—¶æ— æ³•åˆ†é…å†…å­˜");
 		return false;
 	}
 }
@@ -844,7 +846,7 @@ LNOINLINE bool ResourcePool::LoadSpriteFont(const char* name, const char* path, 
 	}
 	catch (const bad_alloc&)
 	{
-		LERROR("LoadSpriteFont: ×ª»»±àÂëÊ±ÎŞ·¨·ÖÅäÄÚ´æ");
+		LERROR("LoadSpriteFont: è½¬æ¢ç¼–ç æ—¶æ— æ³•åˆ†é…å†…å­˜");
 		return false;
 	}
 }
@@ -860,38 +862,38 @@ bool ResourcePool::LoadTTFFont(const char* name, const std::wstring& path, float
 
 		if (m_TTFFontPool.find(name) != m_TTFFontPool.end())
 		{
-			LWARNING("LoadTTFFont: ×ÖÌå'%m'ÒÑ´æÔÚ£¬¼ÓÔØ²Ù×÷ÒÑ±»È¡Ïû", name);
+			LWARNING("LoadTTFFont: å­—ä½“'%m'å·²å­˜åœ¨ï¼ŒåŠ è½½æ“ä½œå·²è¢«å–æ¶ˆ", name);
 			return true;
 		}
 
 		fcyRefPointer<f2dFontProvider> tFontProvider;
 
-		// ¶ÁÈ¡ÎÄ¼ş
+		// è¯»å–æ–‡ä»¶
 		fcyRefPointer<fcyMemStream> tDataBuf;
 		if (!m_pMgr->LoadFile(path.c_str(), tDataBuf))
 		{
-			LINFO("LoadTTFFont: ÎŞ·¨ÔÚÂ·¾¶'%s'ÉÏ¼ÓÔØ×ÖÌå£¬³¢ÊÔÒÔÏµÍ³×ÖÌå¶Ô´ı²¢¼ÓÔØÏµÍ³×ÖÌå", path.c_str());
+			LINFO("LoadTTFFont: æ— æ³•åœ¨è·¯å¾„'%s'ä¸ŠåŠ è½½å­—ä½“ï¼Œå°è¯•ä»¥ç³»ç»Ÿå­—ä½“å¯¹å¾…å¹¶åŠ è½½ç³»ç»Ÿå­—ä½“", path.c_str());
 			if (FCYFAILED(LAPP.GetRenderer()->CreateSystemFont(path.c_str(), 0, fcyVec2(width, height), F2DFONTFLAG_NONE, &tFontProvider)))
 			{
-				//LERROR("LoadTTFFont: ³¢ÊÔÊ§°Ü£¬ÎŞ·¨´ÓÂ·¾¶'%s'ÉÏ¼ÓÔØ×ÖÌå", path.c_str());
-				LWARNING("LoadTTFFont: ³¢ÊÔÊ§°Ü£¬ÎŞ·¨´ÓÏµÍ³×ÖÌå¿â¼ÓÔØ×ÖÌå'%s'", path.c_str());//Ïòlua²ã·µ»Ø´íÎó£¬¶ø²»ÊÇÖ±½Ó±ÀÓÎÏ·
+				//LERROR("LoadTTFFont: å°è¯•å¤±è´¥ï¼Œæ— æ³•ä»è·¯å¾„'%s'ä¸ŠåŠ è½½å­—ä½“", path.c_str());
+				LWARNING("LoadTTFFont: å°è¯•å¤±è´¥ï¼Œæ— æ³•ä»ç³»ç»Ÿå­—ä½“åº“åŠ è½½å­—ä½“'%s'", path.c_str());//å‘luaå±‚è¿”å›é”™è¯¯ï¼Œè€Œä¸æ˜¯ç›´æ¥å´©æ¸¸æˆ
 				return false;
 			}
 		}
 
-		// ´´½¨¶¨Òå
+		// åˆ›å»ºå®šä¹‰
 		try
 		{
 			if (!tFontProvider)
 			{
 				if (FCYFAILED(LAPP.GetRenderer()->CreateFontFromFile(tDataBuf, 0, fcyVec2(width, height), F2DFONTFLAG_NONE, &tFontProvider)))
 				{
-					LERROR("LoadTTFFont: ´ÓÎÄ¼ş'%s'´´½¨TrueType×ÖÌåÊ§°Ü", path.c_str());
+					LERROR("LoadTTFFont: ä»æ–‡ä»¶'%s'åˆ›å»ºTrueTypeå­—ä½“å¤±è´¥", path.c_str());
 					return false;
 				}
 			}
 #ifdef LSHOWRESLOADINFO
-			LINFO("×ÖĞÎ»º´æÊıÁ¿£º%d£¬×ÖĞÎ»º´æÌùÍ¼´óĞ¡£º%dx%d", tFontProvider->GetCacheCount(), tFontProvider->GetCacheTexSize(), tFontProvider->GetCacheTexSize());
+			LINFO("å­—å½¢ç¼“å­˜æ•°é‡ï¼š%dï¼Œå­—å½¢ç¼“å­˜è´´å›¾å¤§å°ï¼š%dx%d", tFontProvider->GetCacheCount(), tFontProvider->GetCacheTexSize(), tFontProvider->GetCacheTexSize());
 #endif
 			fcyRefPointer<ResFont> tRes;
 			tRes.DirectSet(new ResFont(name, tFontProvider));
@@ -900,11 +902,11 @@ bool ResourcePool::LoadTTFFont(const char* name, const std::wstring& path, float
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadTTFFont: ÄÚ´æ²»×ã");
+			LERROR("LoadTTFFont: å†…å­˜ä¸è¶³");
 			return false;
 		}
 #ifdef LSHOWRESLOADINFO
-		LINFO("LoadTTFFont: truetype×ÖÌå'%m'ÒÑ×°ÔØ (%s)", name, getResourcePoolTypeName());
+		LINFO("LoadTTFFont: truetypeå­—ä½“'%m'å·²è£…è½½ (%s)", name, getResourcePoolTypeName());
 #endif
 	}
 
@@ -920,7 +922,7 @@ LNOINLINE bool ResourcePool::LoadTTFFont(const char* name, const char* path, flo
 	}
 	catch (const bad_alloc&)
 	{
-		LERROR("LoadTTFFont: ×ª»»±àÂëÊ±ÎŞ·¨·ÖÅäÄÚ´æ");
+		LERROR("LoadTTFFont: è½¬æ¢ç¼–ç æ—¶æ— æ³•åˆ†é…å†…å­˜");
 		return false;
 	}
 }
@@ -936,11 +938,11 @@ bool ResourcePool::LoadFX(const char* name, const std::wstring& path)LNOEXCEPT
 
 		if (m_FXPool.find(name) != m_FXPool.end())
 		{
-			LWARNING("LoadFX: FX'%m'ÒÑ´æÔÚ£¬¼ÓÔØ²Ù×÷ÒÑ±»È¡Ïû", name);
+			LWARNING("LoadFX: FX'%m'å·²å­˜åœ¨ï¼ŒåŠ è½½æ“ä½œå·²è¢«å–æ¶ˆ", name);
 			return true;
 		}
 
-		// ¶ÁÈ¡ÎÄ¼ş
+		// è¯»å–æ–‡ä»¶
 		fcyRefPointer<fcyMemStream> tDataBuf;
 		if (!m_pMgr->LoadFile(path.c_str(), tDataBuf))
 			return false;
@@ -950,7 +952,7 @@ bool ResourcePool::LoadFX(const char* name, const std::wstring& path)LNOEXCEPT
 			fcyRefPointer<f2dEffect> tEffect;
 			if (FCYFAILED(LAPP.GetRenderDev()->CreateEffect(tDataBuf, false, &tEffect)))
 			{
-				LERROR("LoadFX: ¼ÓÔØshaderÓÚÎÄ¼ş'%s'Ê§°Ü (lasterr=%m)", path.c_str(), LAPP.GetEngine()->GetLastErrDesc());
+				LERROR("LoadFX: åŠ è½½shaderäºæ–‡ä»¶'%s'å¤±è´¥ (lasterr=%m)", path.c_str(), LAPP.GetEngine()->GetLastErrDesc());
 				return false;
 			}
 
@@ -960,16 +962,16 @@ bool ResourcePool::LoadFX(const char* name, const std::wstring& path)LNOEXCEPT
 		}
 		catch (const fcyException& e)
 		{
-			LERROR("LoadFX: °ó¶¨±äÁ¿ÓÚÎÄ¼ş'%s'Ê§°Ü (Òì³£ĞÅÏ¢'%m' Ô´'%m')", path.c_str(), e.GetDesc(), e.GetSrc());
+			LERROR("LoadFX: ç»‘å®šå˜é‡äºæ–‡ä»¶'%s'å¤±è´¥ (å¼‚å¸¸ä¿¡æ¯'%m' æº'%m')", path.c_str(), e.GetDesc(), e.GetSrc());
 			return false;
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("LoadFX: ÄÚ´æ²»×ã");
+			LERROR("LoadFX: å†…å­˜ä¸è¶³");
 			return false;
 		}
 #ifdef LSHOWRESLOADINFO
-		LINFO("LoadFX: FX'%m'ÒÑ×°ÔØ (%s)", name, getResourcePoolTypeName());
+		LINFO("LoadFX: FX'%m'å·²è£…è½½ (%s)", name, getResourcePoolTypeName());
 #endif
 	}
 
@@ -985,7 +987,7 @@ LNOINLINE bool ResourcePool::LoadFX(const char* name, const char* path)LNOEXCEPT
 	}
 	catch (const bad_alloc&)
 	{
-		LERROR("LoadFX: ×ª»»±àÂëÊ±ÎŞ·¨·ÖÅäÄÚ´æ");
+		LERROR("LoadFX: è½¬æ¢ç¼–ç æ—¶æ— æ³•åˆ†é…å†…å­˜");
 		return false;
 	}
 }
@@ -1001,7 +1003,7 @@ LNOINLINE bool ResourcePool::CreateRenderTarget(const char* name)LNOEXCEPT
 
 		if (m_TexturePool.find(name) != m_TexturePool.end())
 		{
-			LWARNING("CreateRenderTarget: '%m'ÒÑ´æÔÚ£¬´´½¨²Ù×÷ÒÑ±»È¡Ïû", name);
+			LWARNING("CreateRenderTarget: '%m'å·²å­˜åœ¨ï¼Œåˆ›å»ºæ“ä½œå·²è¢«å–æ¶ˆ", name);
 			return true;
 		}
 
@@ -1009,7 +1011,7 @@ LNOINLINE bool ResourcePool::CreateRenderTarget(const char* name)LNOEXCEPT
 		if (FCYFAILED(LAPP.GetRenderDev()->CreateRenderTarget(LAPP.GetRenderDev()->GetBufferWidth(),
 			LAPP.GetRenderDev()->GetBufferHeight(), true, &tTexture)))
 		{
-			LERROR("CreateRenderTarget: ´´½¨äÖÈ¾Ä¿±ê'%m'Ê§°Ü", name);
+			LERROR("CreateRenderTarget: åˆ›å»ºæ¸²æŸ“ç›®æ ‡'%m'å¤±è´¥", name);
 			return false;
 		}
 
@@ -1021,12 +1023,12 @@ LNOINLINE bool ResourcePool::CreateRenderTarget(const char* name)LNOEXCEPT
 		}
 		catch (const bad_alloc&)
 		{
-			LERROR("CreateRenderTarget: ÄÚ´æ²»×ã");
+			LERROR("CreateRenderTarget: å†…å­˜ä¸è¶³");
 			return false;
 		}
 
 #ifdef LSHOWRESLOADINFO
-		LINFO("CreateRenderTarget: '%m'ÒÑ´´½¨ (%s)", name, getResourcePoolTypeName());
+		LINFO("CreateRenderTarget: '%m'å·²åˆ›å»º (%s)", name, getResourcePoolTypeName());
 #endif
 	}
 
