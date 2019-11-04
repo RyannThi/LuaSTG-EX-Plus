@@ -1905,7 +1905,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		#pragma endregion
 
-		//EX+ 网络
+		#pragma region EX+ 网络
 		static int ConnectTo(lua_State* L)LNOEXCEPT
 		{
 			bool rt = LAPP.m_Input->ConnectTo(luaL_checkstring(L, 1), luaL_checkinteger(L, 2));
@@ -1943,6 +1943,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			lua_pushboolean(L, false);
 			return 1;
 		}
+		#pragma endregion
 
 		// 杂项
 		static int Snapshot(lua_State* L)LNOEXCEPT

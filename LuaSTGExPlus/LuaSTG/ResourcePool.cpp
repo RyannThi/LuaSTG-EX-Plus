@@ -659,8 +659,10 @@ bool ResourcePool::LoadSpriteFont(const char* name, const std::wstring& path, bo
 
 		// 读取文件
 		fcyRefPointer<fcyMemStream> tDataBuf;
-		if (!m_pMgr->LoadFile(path.c_str(), tDataBuf))
+		if (!m_pMgr->LoadFile(path.c_str(), tDataBuf)) {
+			LERROR("LoadFont: 无法加载字体定义文件 ");
 			return false;
+		}
 
 		// 转换编码
 		wstring tFileData;
