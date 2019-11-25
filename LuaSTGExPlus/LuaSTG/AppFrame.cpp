@@ -1,11 +1,6 @@
 ﻿#include "string"
 #include "resource.h"
 
-//#include "lfs.h"
-//#include "lua_cjson.h"
-//#include "luasocket.h"
-//#include "mime.h"
-
 #include "AppFrame.h"
 #include "Utility.h"
 #include "LuaWrapper\LuaWrapper.hpp"
@@ -1318,60 +1313,6 @@ LNOINLINE bool AppFrame::PostEffectApply(ResFX* shader, BlendMode blend)LNOEXCEP
 #pragma endregion
 
 #pragma region 框架函数
-static int _StackTraceback(lua_State* L)
-{
-	// errmsg
-	int ret = 0;
-
-	lua_getfield(L, LUA_GLOBALSINDEX, "debug");								// errmsg t
-	if (!lua_istable(L, -1))
-	{
-		lua_pop(L, 1);														// errmsg
-		return 1;
-	}
-
-	lua_getfield(L, -1, "traceback");										// errmsg t f
-	if (!lua_isfunction(L, -1) && !lua_iscfunction(L, -1))
-	{
-		lua_pop(L, 2);														// errmsg
-		return 1;
-	}
-
-	lua_pushvalue(L, 1);													// errmsg t f errmsg
-	lua_pushinteger(L, 2);													// errmsg t f errmsg 2
-	ret = lua_pcall(L, 2, 1, 0);											// errmsg t msg
-	if (0 != ret)
-	{
-		LWARNING("执行stacktrace时发生错误。(%m)", lua_tostring(L, -1));	// errmsg t errmsg
-		lua_pop(L, 2);														// errmsg
-		return 1;
-	}
-
-	lua_getfield(L, -2, "getinfo");											// errmsg t msg f
-	if (!lua_isfunction(L, -1) && !lua_iscfunction(L, -1))
-	{
-		lua_pop(L, 1);														// errmsg t msg
-		return 1;
-	}
-
-	lua_pushinteger(L, 3);													// errmsg t msg f 2
-	lua_pushstring(L, "S");													// errmsg t msg f 2 s
-	ret = lua_pcall(L, 2, 1, 0);											// errmsg t msg t
-	if (0 != ret)
-	{
-		LWARNING("执行stacktrace时发生错误。(%m)", lua_tostring(L, -1));	// errmsg t msg errmsg
-		lua_pop(L, 3);														// errmsg
-		return 1;
-	}
-
-	lua_getfield(L, -1, "source");											// errmsg t msg t s
-	lua_pushvalue(L, 3);													// errmsg t msg t s msg
-	lua_pushstring(L, "\nfull source:\n\t");								// errmsg t msg t s msg str
-	lua_pushvalue(L, 5);													// errmsg t msg t s msg str s
-	lua_concat(L, 3);														// errmsg t msg t s final
-	return 1;
-}
-
 static int StackTraceback(lua_State *L)
 {
 	// errmsg
@@ -1677,8 +1618,36 @@ bool AppFrame::Init()LNOEXCEPT
 		}
 	}
 	
+	//////////////////////////////////////// 初始化完成
 	m_iStatus = AppStatus::Initialized;
 	LINFO("初始化成功完成");
+
+	//////////////////////////////////////// 窗口前移、显示、隐藏鼠标指针
+	//附加当前线程到窗口线程将窗口设置成前台窗口
+	HWND hWnd = (HWND)m_pMainWindow->GetHandle();
+	HWND hForeWnd = ::GetForegroundWindow();
+	DWORD dwForeID = ::GetWindowThreadProcessId(hForeWnd, NULL);
+	DWORD dwCurID = ::GetCurrentThreadId();
+	::AttachThreadInput(dwCurID, dwForeID, TRUE);
+	if (m_bSplashWindowEnabled)  // 显示过载入窗口
+	{
+		// 显示窗口
+		m_pMainWindow->MoveToCenter();
+		m_pMainWindow->SetVisiable(true);
+
+		// 改变显示模式到全屏
+		if (!m_OptionWindowed)
+			ChangeVideoMode((int)m_OptionResolution.x, (int)m_OptionResolution.y, m_OptionWindowed, m_OptionVsync);
+	}
+	m_bSplashWindowEnabled = false;
+	m_pMainWindow->HideMouse(!m_OptionSplash);
+	::AttachThreadInput(dwCurID, dwForeID, FALSE);
+
+	//////////////////////////////////////// 调用GameInit
+	if (!SafeCallGlobalFunction(LFUNC_GAMEINIT)) {
+		return false;
+	}
+
 	return true;
 }
 
@@ -1725,7 +1694,7 @@ void AppFrame::Shutdown()LNOEXCEPT
 void AppFrame::Run()LNOEXCEPT
 {
 	LASSERT(m_iStatus == AppStatus::Initialized);
-	LINFO("开始执行游戏循环");
+	LINFO("开始游戏循环");
 
 	m_fFPS = 0.f;
 #if (defined LDEVVERSION) || (defined LDEBUG)
@@ -1739,34 +1708,10 @@ void AppFrame::Run()LNOEXCEPT
 	m_RenderTimerTotal = 0.f;
 #endif
 
-	// 窗口前移、显示、隐藏鼠标指针
-	//附加当前线程到窗口线程将窗口设置成前台窗口
-	HWND hWnd = (HWND)m_pMainWindow->GetHandle();
-	HWND hForeWnd = ::GetForegroundWindow();
-	DWORD dwForeID = ::GetWindowThreadProcessId(hForeWnd, NULL);
-	DWORD dwCurID = ::GetCurrentThreadId();
-	::AttachThreadInput(dwCurID, dwForeID, TRUE);
-	if (m_bSplashWindowEnabled)  // 显示过载入窗口
-	{
-		// 显示窗口
-		m_pMainWindow->MoveToCenter();
-		m_pMainWindow->SetVisiable(true);
-
-		// 改变显示模式到全屏
-		if (!m_OptionWindowed)
-			ChangeVideoMode((int)m_OptionResolution.x, (int)m_OptionResolution.y, m_OptionWindowed, m_OptionVsync);
-	}
-	m_bSplashWindowEnabled = false;
-	m_pMainWindow->HideMouse(!m_OptionSplash);
-	::AttachThreadInput(dwCurID, dwForeID, FALSE);
-
 	// 启动游戏循环
-	// 将GameInit执行后移到这里
-	if (SafeCallGlobalFunction(LFUNC_GAMEINIT)) {
-		m_pEngine->Run(F2DENGTHREADMODE_MULTITHREAD, m_OptionFPSLimit);
-	}
+	m_pEngine->Run(F2DENGTHREADMODE_MULTITHREAD, m_OptionFPSLimit);
 
-	LINFO("退出游戏循环");
+	LINFO("结束游戏循环");
 }
 
 bool AppFrame::SafeCallScript(const char* source, size_t len, const char* desc)LNOEXCEPT
