@@ -1945,7 +1945,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		#pragma endregion
 
-		// 杂项
+		#pragma region 杂项
 		static int Snapshot(lua_State* L)LNOEXCEPT
 		{
 			LAPP.SnapShot(luaL_checkstring(L, 1));
@@ -2019,8 +2019,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			lua_pushboolean(L, Detail_::Execute(path, args, directory, bWait, bShow));
 			return 1;
 		}
+		#pragma endregion
 
-		// 内置数学库
+		#pragma region 内置数学库
 		static int Sin(lua_State* L)LNOEXCEPT
 		{
 			lua_pushnumber(L, sin(luaL_checknumber(L, 1) * LDEGREE2RAD));
@@ -2056,8 +2057,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			lua_pushnumber(L, atan2(luaL_checknumber(L, 1), luaL_checknumber(L, 2)) * LRAD2DEGREE);
 			return 1;
 		}
-		
-		// 对象构造函数
+		#pragma endregion
+
+		#pragma region 对象构造函数
 		static int ResourceRef(lua_State* L)LNOEXCEPT
 		{
 			//ResourceRef(ResorseName:string, ResourceType:number[, ResourcePool:number])
@@ -2238,11 +2240,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			*GameResourceWrapper::CreateAndPush(L) = ResWrapper;
 			return 1;
 		}
-		static int XInputManager(lua_State* L) {
-			lua_getglobal(L, "lstg"); // ??? t 
-			lua_getfield(L, -1, "XInputManager"); // ??? t t 
-			return 1;
-		}
 		static int SampleBezier(lua_State* L)LNOEXCEPT // t(list) [n] <length> <rate>
 		{
 			//int ExSampleBezierA1(lua_State * L, int count, int sampleBy, float length, float rate)LNOEXCEPT;
@@ -2254,12 +2251,12 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			ExSampleBezierA1(L, i, 0, l, r);
 			return 1;
 		}
-
+		#pragma endregion
 	};
 
 	luaL_Reg tFunctions[] =
 	{
-		// 框架函数
+		#pragma region 框架函数
 		{ "SetWindowed", &WrapperImplement::SetWindowed },
 		{ "SetFPS", &WrapperImplement::SetFPS },
 		{ "GetFPS", &WrapperImplement::GetFPS },
@@ -2280,8 +2277,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "ShowSplashWindow", &WrapperImplement::ShowSplashWindow },
 		{ "EnumResolutions", &WrapperImplement::EnumResolutions },
 		{ "FindFiles", &WrapperImplement::FindFiles },
-		
-		//========游戏对象==========
+		#pragma endregion
+
+		#pragma region 游戏对象
 		//对象池管理
 		{ "GetnObj", &WrapperImplement::GetnObj },
 		{ "ObjFrame", &WrapperImplement::ObjFrame },
@@ -2331,8 +2329,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "IsInWorld", &WrapperImplement::IsSameWorld },
 		{ "GetCurrentObject", &WrapperImplement::GetCurrentObject },
 		{ "ActiveWorlds", &WrapperImplement::ActiveWorlds },
-		
-		// 资源控制函数
+		#pragma endregion
+
+		#pragma region 资源控制函数
 		{ "SetResourceStatus", &WrapperImplement::SetResourceStatus },
 		{ "GetResourceStatus", &WrapperImplement::GetResourceStatus },
 		{ "LoadTexture", &WrapperImplement::LoadTexture },
@@ -2363,8 +2362,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "LoadModel", &WrapperImplement::LoadModel },
 		//ETC
 		{ "SetImageStateEx", &WrapperImplement::SetImageStateEx },
-		
-		// 绘图函数
+		#pragma endregion
+
+		#pragma region 绘图函数
 		{ "BeginScene", &WrapperImplement::BeginScene },
 		{ "EndScene", &WrapperImplement::EndScene },
 		{ "RenderClear", &WrapperImplement::RenderClear },
@@ -2393,8 +2393,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		//ETC
 		{ "RenderEx", &WrapperImplement::RenderEx },
 		{ "RenderGroupCollider", &WrapperImplement::RenderGroupCollider },
-		
-		// 声音控制函数
+		#pragma endregion
+
+		#pragma region 声音控制函数
 		{ "PlaySound", &WrapperImplement::PlaySound },
 		{ "StopSound", &WrapperImplement::StopSound },
 		{ "PauseSound", &WrapperImplement::PauseSound },
@@ -2414,8 +2415,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "GetSESpeed", &WrapperImplement::GetSESpeed },
 		{ "SetBGMSpeed", &WrapperImplement::SetBGMSpeed },
 		{ "GetBGMSpeed", &WrapperImplement::GetBGMSpeed },
+		#pragma endregion
 		
-		// 输入控制函数
+		#pragma region 输入控制函数
 		{ "GetKeyState", &WrapperImplement::GetKeyState },
 		{ "GetLastKey", &WrapperImplement::GetLastKey },
 		{ "GetLastChar", &WrapperImplement::GetLastChar },
@@ -2433,13 +2435,15 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		//Raw Input
 		{ "GetKeyboardState", &WrapperImplement::GetKeyboardState },
 		{ "GetAsyncKeyState", &WrapperImplement::GetAsyncKeyState },
+		#pragma endregion
 		
-		//ESC Network
+		#pragma region Network
 		{ "ConnectTo", &WrapperImplement::ConnectTo },
 		{ "ReceiveData", &WrapperImplement::ReceiveData },
 		{ "SendData", &WrapperImplement::SendData },
-
-		// 内置数学函数
+		#pragma endregion
+		
+		#pragma region 内置数学函数
 		{ "sin", &WrapperImplement::Sin },
 		{ "cos", &WrapperImplement::Cos },
 		{ "asin", &WrapperImplement::ASin },
@@ -2447,16 +2451,18 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "tan", &WrapperImplement::Tan },
 		{ "atan", &WrapperImplement::ATan },
 		{ "atan2", &WrapperImplement::ATan2 },
+		#pragma endregion
 		
-		// 杂项
+		#pragma region 杂项
 		{ "Snapshot", &WrapperImplement::Snapshot },
 		{ "SaveTexture", &WrapperImplement::SaveTexture },
 		{ "Execute", &WrapperImplement::Execute },
+		#pragma endregion
 		
-		// 对象构造函数
+		#pragma region 对象构造函数
 		{ "ResourceReference", &WrapperImplement::ResourceRef },
-		{ "XInputManager", &WrapperImplement::XInputManager },
 		{ "SampleBezier", &WrapperImplement::SampleBezier },
+		#pragma endregion
 		
 		{ NULL, NULL }
 	};
