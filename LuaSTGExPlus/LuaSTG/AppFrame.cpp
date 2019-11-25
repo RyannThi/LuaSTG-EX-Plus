@@ -27,7 +27,6 @@
 extern "C" int luaopen_lfs(lua_State *L);
 extern "C" int luaopen_cjson(lua_State* L);
 extern "C" int luaopen_socket_core(lua_State *L);
-extern "C" int luaopen_mime_core(lua_State* L);
 
 using namespace std;
 using namespace LuaSTGPlus;
@@ -1445,7 +1444,6 @@ bool AppFrame::Init()LNOEXCEPT
 		luaopen_lfs(L);  // 文件系统库 (file system)
 		luaopen_cjson(L);  // CJSON库 (json)
 		luaopen_socket_core(L);  // luasock (socket)
-		//luaopen_mime_core(L); // mime (base64)
 		lua_settop(L, 0);// 不知道为什么弄了6个table在栈顶……
 
 		if (!SafeCallScript(LuaInternalSource_1().c_str(), LuaInternalSource_1().length(), "internal")) {
