@@ -100,6 +100,18 @@ f2dRenderDeviceImpl::f2dRenderDeviceImpl(f2dEngineImpl* pEngine, fuInt BackBuffe
 		&m_pDev
 		);
 
+	if (FAILED(tHR))
+	{
+		tHR = m_pD3D9->CreateDevice(
+			D3DADAPTER_DEFAULT,
+			D3DDEVTYPE_HAL,
+			m_hWnd,
+			D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, // 启动多线程
+			&m_D3Dpp,
+			&m_pDev
+		);
+	}
+
 	if(FAILED(tHR))
 	{
 		FCYSAFEKILL(m_pD3D9);
