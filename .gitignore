@@ -9,6 +9,7 @@
 /slk/*
 /sjf/*
 /eis/*
+/yqg/*
 /LuaSTGExPlus/LuaSTG/MyResourcePassword.cpp
 
 /LuaSTGExPlus/.vs/*
@@ -81,4 +82,10 @@
 
 #第三方库
 /LuaSTGExPlus/Library/*
+/LuaSTGExPlus/prebuild/*
 !/LuaSTGExPlus/Library/readme.txt
+
+/LuaSTGExPlus/run/*
+/LuaSTGExPlus/RuntimeCheck/*
+/LuaSTGExPlus/SteamAPI/*
+/LuaSTGExPlus/ZipTest/*
