@@ -10,58 +10,19 @@
 /sjf/*
 /eis/*
 /yqg/*
+
 /LuaSTGExPlus/LuaSTG/MyResourcePassword.cpp
 
 /LuaSTGExPlus/.vs/*
 /LuaSTGExPlus/build/*
 
-#luajit过滤
-/LuaSTGExPlus/luajit/*
-!/LuaSTGExPlus/luajit/readme.txt
-
-/LuaSTGExPlus/zlib/build/*
-
 /LuaSTGExPlus/DirectShowClass/build/*
-
 /LuaSTGExPlus/fancylib/build/*
-
 /LuaSTGExPlus/fancy2D/build/*
-
-/LuaSTGExPlus/TCPIP/build/*
-
-/LuaSTGExPlus/SimpleServer/bin/*
-/LuaSTGExPlus/SimpleServer/obj/*
+/LuaSTGExPlus/Eyes2D/build/*
 
 /LuaSTGExPlus/TexturedFontEditor/bin/*
 /LuaSTGExPlus/TexturedFontEditor/obj/*
-
-#XMath过滤
-/LuaSTGExPlus/XMath/build/*
-
-#Eyes2D过滤
-/LuaSTGExPlus/Eyes2D/build/*
-/LuaSTGExPlus/Eyes2D/Debug/*
-/LuaSTGExPlus/Eyes2D/Release/*
-/LuaSTGExPlus/Eyes2DTest/Debug/*
-/LuaSTGExPlus/Eyes2DTest/Release/*
-
-#libvorbis过滤
-/LuaSTGExPlus/libvorbis/*
-!/LuaSTGExPlus/libvorbis/readme.txt
-
-#libogg过滤
-/LuaSTGExPlus/libogg/*
-!/LuaSTGExPlus/libogg/readme.txt
-
-#freetype过滤
-/LuaSTGExPlus/freetype/*
-!/LuaSTGExPlus/freetype/readme.txt
-
-#libz libzip
-/LuaSTGExPlus/libz/*
-!/LuaSTGExPlus/libz/readme.txt
-/LuaSTGExPlus/libzip/*
-!/LuaSTGExPlus/libzip/readme.txt
 
 #luaextend过滤
 /LuaSTGExPlus/luafilesystem/*
@@ -72,20 +33,6 @@
 !/LuaSTGExPlus/luasocket/readme.txt
 /LuaSTGExPlus/LuaExtend/build/*
 
-#CSharp
-/LuaSTGExPlus/CSharpTest/bin/*
-/LuaSTGExPlus/CSharpTest/obj/*
-
-#DirectX Tool Kit
-/LuaSTGExPlus/DirectXTK/*
-#!/LuaSTGExPlus/DirectXTK/readme.txt
-
 #第三方库
-/LuaSTGExPlus/Library/*
 /LuaSTGExPlus/prebuild/*
-!/LuaSTGExPlus/Library/readme.txt
-
-/LuaSTGExPlus/run/*
-/LuaSTGExPlus/RuntimeCheck/*
 /LuaSTGExPlus/SteamAPI/*
-/LuaSTGExPlus/ZipTest/*
