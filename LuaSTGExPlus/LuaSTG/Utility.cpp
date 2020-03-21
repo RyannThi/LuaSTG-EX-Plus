@@ -214,14 +214,12 @@ std::wstring LuaSTGPlus::StringFormatV(const wchar_t* Format, va_list vaptr)noex
 	return std::move(tRet);
 }
 
-bool _GetSystemPath(REFKNOWNFOLDERID id, std::wstring& out) {
+bool _GetSystemPath(const KNOWNFOLDERID& id, std::wstring& out) {
 	ComPtr<IKnownFolderManager> kfm = nullptr;
-	if (SUCCEEDED(CoCreateInstance(CLSID_KnownFolderManager, nullptr, CLSCTX_INPROC_SERVER, IID_IKnownFolderManager, (LPVOID*)kfm.GetAddressOf())))
-	{
+	if (SUCCEEDED(CoCreateInstance(CLSID_KnownFolderManager, nullptr, CLSCTX_INPROC_SERVER, IID_IKnownFolderManager, (LPVOID*)kfm.GetAddressOf()))) {
 		ComPtr<IKnownFolder> kf = nullptr;
-		if (SUCCEEDED(kfm->GetFolder(id, kf.GetAddressOf())))
-		{
-			LPWSTR _path = nullptr;
+		if (SUCCEEDED(kfm->GetFolder(id, kf.GetAddressOf()))) {
+			wchar_t* _path = nullptr;
 			if (SUCCEEDED(kf->GetPath(0, &_path))) {
 				if (_path != nullptr) {
 					out = _path;
@@ -239,7 +237,7 @@ bool _GetSystemPath(REFKNOWNFOLDERID id, std::wstring& out) {
 bool _GetLocalPath(std::wstring& out) {
 	std::wstring path;
 	path.resize(MAX_PATH);
-	if (0u == GetCurrentDirectoryW(MAX_PATH, const_cast<wchar_t*>(path.data()))) {
+	if (0u == GetCurrentDirectoryW(MAX_PATH, (wchar_t*)path.data())) {
 		return false;
 	}
 	out = path;
@@ -249,7 +247,7 @@ bool _GetLocalPath(std::wstring& out) {
 	return true;
 }
 
-std::wstring _GetUserPath(REFKNOWNFOLDERID id)
+std::wstring _GetUserPath(const KNOWNFOLDERID& id)
 {
 	try {
 		std::wstring path;
@@ -264,12 +262,10 @@ std::wstring _GetUserPath(REFKNOWNFOLDERID id)
 	return L"";
 }
 
-std::wstring LuaSTGPlus::GetLocalAppDataPath()noexcept
-{
+std::wstring LuaSTGPlus::GetLocalAppDataPath()noexcept {
 	return std::move(_GetUserPath(FOLDERID_LocalAppData));
 }
 
-std::wstring LuaSTGPlus::GetRoamingAppDataPath()noexcept
-{
+std::wstring LuaSTGPlus::GetRoamingAppDataPath()noexcept {
 	return std::move(_GetUserPath(FOLDERID_RoamingAppData));
 }

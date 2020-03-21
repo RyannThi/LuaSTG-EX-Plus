@@ -32,29 +32,6 @@ namespace LuaSTGPlus
 		static void Register(lua_State* L)LNOEXCEPT;
 	};
 	
-	//游戏资源包装对象
-	class GameResourceWrapper
-	{
-	public:
-		struct ResourceWrapper
-		{
-			ResourceType m_type;
-			fcyRefPointer<ResTexture> m_tex;
-			fcyRefPointer<ResSprite> m_img;
-			fcyRefPointer<ResAnimation> m_ani;
-			fcyRefPointer<ResMusic> m_bgm;
-			fcyRefPointer<ResSound> m_se;
-			fcyRefPointer<ResParticle> m_ps;
-			fcyRefPointer<ResFont> m_fnt;//TTF和HGEfont
-			fcyRefPointer<ResFX> m_fx;
-		};
-	public:
-		/// @brief 向lua注册包装类
-		static void Register(lua_State* L)LNOEXCEPT;
-		//推入一个游戏资源类到堆栈中
-		static ResourceWrapper* CreateAndPush(lua_State* L);
-	};
-
 	//XInput的lua包装
 	class XInputManagerWrapper {
 	public:

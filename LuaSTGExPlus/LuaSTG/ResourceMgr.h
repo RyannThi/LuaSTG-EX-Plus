@@ -146,6 +146,8 @@ namespace LuaSTGPlus
 		/// @brief 装载粒子
 		bool LoadParticle(const char* name, const std::wstring& path, const char* img_name, double a, double b, bool rect = false)LNOEXCEPT;
 
+		bool LoadParticle(const char* name, const ResParticle::ParticleInfo& info, const char* img_name, double a, double b, bool rect = false)LNOEXCEPT;
+
 		LNOINLINE bool LoadParticle(const char* name, const char* path, const char* img_name, double a, double b, bool rect = false)LNOEXCEPT;
 
 		/// @brief 装载纹理字体(HGE)

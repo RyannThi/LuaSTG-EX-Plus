@@ -182,7 +182,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		static int LoadTextFile(lua_State* L)LNOEXCEPT
 		{
-			return LAPP.LoadTextFile(luaL_checkstring(L, 1), luaL_optstring(L, 2, NULL));
+			return LAPP.LoadTextFile(L, luaL_checkstring(L, 1), luaL_optstring(L, 2, NULL));
 		}
 		static int FindFiles(lua_State* L)LNOEXCEPT
 		{
@@ -564,10 +564,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			return LPOOL.ParticleSetEmission(L);
 		}
 		//EX+
-		static int Add(lua_State* L)LNOEXCEPT
-		{
-			return LPOOL.Add(L);
-		}
 		static int GetCurrentObject(lua_State* L)LNOEXCEPT
 		{
 			return LPOOL.PushCurrentObject(L);
@@ -627,38 +623,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			int a2 = luaL_checkinteger(L, 2);
 			lua_pushboolean(L, LPOOL.CheckWorlds(a1, a2));
 			return 1;
-		}
-		//ETC 对象资源设置
-		static int ObjChangeRes(lua_State* L)LNOEXCEPT
-		{
-			//t(object) res(lstgResource) ???
-			if (!lua_istable(L, 1))
-				return luaL_error(L, "invalid lstg object for 'ObjectChangeResource'.");
-			lua_rawgeti(L, 1, 2);  // t(object) res(lstgResource) ??? id
-			size_t id = (size_t)luaL_checkinteger(L, -1);
-			lua_pop(L, 1);
-
-			GameResourceWrapper::ResourceWrapper* pRes = static_cast<GameResourceWrapper::ResourceWrapper*>(luaL_checkudata(L, 2, LUASTG_LUA_TYPENAME_RESOURCE));
-			GameObject* pObj = LPOOL.GetPooledObject(id);
-			//*
-			switch (pRes->m_type) {
-			case ResourceType::Sprite: {
-				pObj->ChangeResourceEx<fcyRefPointer<ResSprite>>(pRes->m_img);
-				break;
-			}
-			case ResourceType::Animation: {
-				pObj->ChangeResourceEx<fcyRefPointer<ResAnimation>>(pRes->m_ani);
-				break;
-			}
-			case ResourceType::Particle: {
-				pObj->ChangeResourceEx<fcyRefPointer<ResParticle>>(pRes->m_ps);
-				break;
-			}
-			default:
-				return luaL_error(L, "invalid resource type for 'ObjectChangeResource'.");
-			}
-			//*/
-			return 0;
 		}
 		#pragma endregion
 
@@ -762,27 +726,45 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		static int LoadPS(lua_State* L)LNOEXCEPT
 		{
-			const char* name = luaL_checkstring(L, 1);
-			const char* path = luaL_checkstring(L, 2);
-			const char* img_name = luaL_checkstring(L, 3);
-
 			ResourcePool* pActivedPool = LRES.GetActivedPool();
 			if (!pActivedPool)
 				return luaL_error(L, "can't load resource at this time.");
-
-			if (!pActivedPool->LoadParticle(
-				name,
-				path,
-				img_name,
-				luaL_optnumber(L, 4, 0.0f),
-				luaL_optnumber(L, 5, 0.0f),
-				lua_toboolean(L, 6) == 0 ? false : true
-			))
-			{
-				return luaL_error(L, "load particle failed (name='%s', file='%s', img='%s').", name, path, img_name);
+			
+			const char* name = luaL_checkstring(L, 1);
+			const char* img_name = luaL_checkstring(L, 3);
+			if (lua_type(L, 2) == LUA_TTABLE) {
+				ResParticle::ParticleInfo info;
+				bool ret = TranslateTableToParticleInfo(L, 2, info);
+				if (!ret) return luaL_error(L, "load particle failed (name='%s', define=?, img='%s').", name, img_name);
+				if (!pActivedPool->LoadParticle(
+					name,
+					info,
+					img_name,
+					luaL_optnumber(L, 4, 0.0f),
+					luaL_optnumber(L, 5, 0.0f),
+					lua_toboolean(L, 6) == 0 ? false : true
+				))
+				{
+					return luaL_error(L, "load particle failed (name='%s', define=table, img='%s').", name, img_name);
+				}
+				return 0;
 			}
+			else {
+				const char* path = luaL_checkstring(L, 2);
 
-			return 0;
+				if (!pActivedPool->LoadParticle(
+					name,
+					path,
+					img_name,
+					luaL_optnumber(L, 4, 0.0f),
+					luaL_optnumber(L, 5, 0.0f),
+					lua_toboolean(L, 6) == 0 ? false : true
+				))
+				{
+					return luaL_error(L, "load particle failed (name='%s', file='%s', img='%s').", name, path, img_name);
+				}
+				return 0;
+			}
 		}
 		static int LoadSound(lua_State* L)LNOEXCEPT
 		{
@@ -1102,29 +1084,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 				texname))
 			{
 				return luaL_error(L, "load model failed (name='%s', tex='%s').", name, texname);
-			}
-			return 0;
-		}
-		//ETC
-		static int SetImageStateEx(lua_State* L)LNOEXCEPT
-		{
-			GameResourceWrapper::ResourceWrapper* pRes = static_cast<GameResourceWrapper::ResourceWrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_RESOURCE));
-			if (pRes->m_type != ResourceType::Sprite) {
-				return luaL_error(L, "InValid resource type for image state set.");
-			}
-			ResSprite* p = pRes->m_img;
-			p->SetBlendMode(TranslateBlendMode(L, 2));
-			if (lua_gettop(L) == 3)
-				p->GetSprite()->SetColor(*static_cast<fcyColor*>(luaL_checkudata(L, 3, LUASTG_LUA_TYPENAME_COLOR)));
-			else if (lua_gettop(L) == 6)
-			{
-				fcyColor tColors[] = {
-					*static_cast<fcyColor*>(luaL_checkudata(L, 3, LUASTG_LUA_TYPENAME_COLOR)),
-					*static_cast<fcyColor*>(luaL_checkudata(L, 4, LUASTG_LUA_TYPENAME_COLOR)),
-					*static_cast<fcyColor*>(luaL_checkudata(L, 5, LUASTG_LUA_TYPENAME_COLOR)),
-					*static_cast<fcyColor*>(luaL_checkudata(L, 6, LUASTG_LUA_TYPENAME_COLOR))
-				};
-				p->GetSprite()->SetColor(tColors);
 			}
 			return 0;
 		}
@@ -1560,26 +1519,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 			return 1;
 		}
 		//ETC
-		static int RenderEx(lua_State* L)LNOEXCEPT
-		{
-			GameResourceWrapper::ResourceWrapper* pRes = static_cast<GameResourceWrapper::ResourceWrapper*>(luaL_checkudata(L, 1, LUASTG_LUA_TYPENAME_RESOURCE));
-			if (pRes->m_type != ResourceType::Sprite) {
-				return luaL_error(L, "Invalid resource type render");
-			}
-			if (!LAPP.Render(
-				pRes->m_img,
-				static_cast<float>(luaL_checknumber(L, 2)),
-				static_cast<float>(luaL_checknumber(L, 3)),
-				static_cast<float>(luaL_optnumber(L, 4, 0.) * LDEGREE2RAD),
-				static_cast<float>(luaL_optnumber(L, 5, 1.) * LRES.GetGlobalImageScaleFactor()),
-				static_cast<float>(luaL_optnumber(L, 6, luaL_optnumber(L, 5, 1.)) * LRES.GetGlobalImageScaleFactor()),
-				static_cast<float>(luaL_optnumber(L, 7, 0.5))
-			))
-			{
-				return luaL_error(L, "can't render '%m'", luaL_checkstring(L, 1));
-			}
-			return 0;
-		}
 		static int RenderGroupCollider(lua_State* L) {
 			// group color
 			LPOOL.DrawGroupCollider2(
@@ -2060,186 +1999,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		#pragma endregion
 
 		#pragma region 对象构造函数
-		static int ResourceRef(lua_State* L)LNOEXCEPT
-		{
-			//ResourceRef(ResorseName:string, ResourceType:number[, ResourcePool:number])
-			//从资源池中获取一个资源并包装成对象使用
-			
-			//获取资源名
-			string resName = luaL_checkstring(L, 1);
-			//获取资源类型
-			int _tResourceType = luaL_checkint(L, 2);
-			if ( _tResourceType > static_cast<int>(ResourceType::FX) || _tResourceType < static_cast<int>(ResourceType::Texture) ) {
-				//在这里检查
-				return luaL_error(L, "Unkown resource type.");
-			}
-			ResourceType tResourceType = static_cast<ResourceType>(_tResourceType);
-			//获取要查找的资源池
-			ResourcePoolType tPoolType = ResourcePoolType::Stage;
-			bool constFind = false;//强制查找某个池
-			if (lua_gettop(L) == 3) {
-				string poolName = luaL_checkstring(L, 3);
-				if (poolName == "global") {
-					tPoolType = ResourcePoolType::Global;
-				}
-				else if (poolName == "stage") {
-					tPoolType = ResourcePoolType::Stage;
-				}
-				else {
-					return luaL_error(L, "Unkown ResourcePool Type.");
-				}
-				constFind = true;
-			}
-			
-			GameResourceWrapper::ResourceWrapper ResWrapper;
-
-			//获取资源
-			if (constFind) {
-				//强制查找某个池
-				if (LRES.GetResourcePool(tPoolType)->CheckResourceExists(tResourceType, resName)) {
-					switch (tResourceType) {
-					case ResourceType::Texture: {
-						ResWrapper.m_tex = LRES.GetResourcePool(tPoolType)->GetTexture(resName.c_str());
-						break;
-					}
-					case ResourceType::Sprite: {
-						ResWrapper.m_img = LRES.GetResourcePool(tPoolType)->GetSprite(resName.c_str());
-						break;
-					}
-					case ResourceType::Animation: {
-						ResWrapper.m_ani = LRES.GetResourcePool(tPoolType)->GetAnimation(resName.c_str());
-						break;
-					}
-					case ResourceType::Music: {
-						ResWrapper.m_bgm = LRES.GetResourcePool(tPoolType)->GetMusic(resName.c_str());
-						break;
-					}
-					case ResourceType::SoundEffect: {
-						ResWrapper.m_se = LRES.GetResourcePool(tPoolType)->GetSound(resName.c_str());
-						break;
-					}
-					case ResourceType::Particle: {
-						ResWrapper.m_ps = LRES.GetResourcePool(tPoolType)->GetParticle(resName.c_str());
-						break;
-					}
-					case ResourceType::SpriteFont: {
-						ResWrapper.m_fnt = LRES.GetResourcePool(tPoolType)->GetSpriteFont(resName.c_str());
-						break;
-					}
-					case ResourceType::TrueTypeFont: {
-						ResWrapper.m_fnt = LRES.GetResourcePool(tPoolType)->GetTTFFont(resName.c_str());
-						break;
-					}
-					case ResourceType::FX: {
-						ResWrapper.m_fx = LRES.GetResourcePool(tPoolType)->GetFX(resName.c_str());
-						break;
-					}
-					}
-				}
-				else {
-					return luaL_error(L, "Resources do not exist.");//啊找不到，error糊脸
-				}
-			}
-			else {
-				//没指定哪个池，瞎jb找
-				switch (tResourceType) {
-				case ResourceType::Texture: {
-					fcyRefPointer<ResTexture> pRes = LRES.FindTexture(resName.c_str());
-					if (pRes) {
-						ResWrapper.m_tex = pRes;
-					}
-					else {
-						return luaL_error(L, "Resources do not exist.");
-					}
-					break;
-				}
-				case ResourceType::Sprite: {
-					fcyRefPointer<ResSprite> pRes = LRES.FindSprite(resName.c_str());
-					if (pRes) {
-						ResWrapper.m_img = pRes;
-					}
-					else {
-						return luaL_error(L, "Resources do not exist.");
-					}
-					break;
-				}
-				case ResourceType::Animation: {
-					fcyRefPointer<ResAnimation> pRes = LRES.FindAnimation(resName.c_str());
-					if (pRes) {
-						ResWrapper.m_ani = pRes;
-					}
-					else {
-						return luaL_error(L, "Resources do not exist.");
-					}
-					break;
-				}
-				case ResourceType::Music: {
-					fcyRefPointer<ResMusic> pRes = LRES.FindMusic(resName.c_str());
-					if (pRes) {
-						ResWrapper.m_bgm = pRes;
-					}
-					else {
-						return luaL_error(L, "Resources do not exist.");
-					}
-					break;
-				}
-				case ResourceType::SoundEffect: {
-					fcyRefPointer<ResSound> pRes = LRES.FindSound(resName.c_str());
-					if (pRes) {
-						ResWrapper.m_se = pRes;
-					}
-					else {
-						return luaL_error(L, "Resources do not exist.");
-					}
-					break;
-				}
-				case ResourceType::Particle: {
-					fcyRefPointer<ResParticle> pRes = LRES.FindParticle(resName.c_str());
-					if (pRes) {
-						ResWrapper.m_ps = pRes;
-					}
-					else {
-						return luaL_error(L, "Resources do not exist.");
-					}
-					break;
-				}
-				case ResourceType::SpriteFont: {
-					fcyRefPointer<ResFont> pRes = LRES.FindSpriteFont(resName.c_str());
-					if (pRes) {
-						ResWrapper.m_fnt = pRes;
-					}
-					else {
-						return luaL_error(L, "Resources do not exist.");
-					}
-					break;
-				}
-				case ResourceType::TrueTypeFont: {
-					fcyRefPointer<ResFont> pRes = LRES.FindTTFFont(resName.c_str());
-					if (pRes) {
-						ResWrapper.m_fnt = pRes;
-					}
-					else {
-						return luaL_error(L, "Resources do not exist.");
-					}
-					break;
-				}
-				case ResourceType::FX: {
-					fcyRefPointer<ResFX> pRes = LRES.FindFX(resName.c_str());
-					if (pRes) {
-						ResWrapper.m_fx = pRes;
-					}
-					else {
-						return luaL_error(L, "Resources do not exist.");
-					}
-					break;
-				}
-				}
-			}
-			ResWrapper.m_type = tResourceType;
-			
-			*GameResourceWrapper::CreateAndPush(L) = ResWrapper;
-			return 1;
-		}
 		static int SampleBezier(lua_State* L)LNOEXCEPT // t(list) [n] <length> <rate>
 		{
 			//int ExSampleBezierA1(lua_State * L, int count, int sampleBy, float length, float rate)LNOEXCEPT;
@@ -2297,7 +2056,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "BoxCheck", &WrapperImplement::BoxCheck },
 		{ "ResetObject", &WrapperImplement::ResetObject },
 		{ "New", &WrapperImplement::New },
-		{ "Add", &WrapperImplement::Add },
 		{ "Del", &WrapperImplement::Del },
 		{ "Kill", &WrapperImplement::Kill },
 		{ "IsValid", &WrapperImplement::IsValid },
@@ -2317,7 +2075,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "ParticleGetn", &WrapperImplement::ParticleGetn },
 		{ "ParticleGetEmission", &WrapperImplement::ParticleGetEmission },
 		{ "ParticleSetEmission", &WrapperImplement::ParticleSetEmission },
-		{ "ObjectChangeResource", &WrapperImplement::ObjChangeRes },//用于资源包装类
 		//ESC
 		{ "SetSuperPause", &WrapperImplement::SetSuperPause },
 		{ "GetSuperPause", &WrapperImplement::GetSuperPause },
@@ -2360,8 +2117,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "CacheTTFString", &WrapperImplement::CacheTTFString },
 		//ESC
 		{ "LoadModel", &WrapperImplement::LoadModel },
-		//ETC
-		{ "SetImageStateEx", &WrapperImplement::SetImageStateEx },
 		#pragma endregion
 
 		#pragma region 绘图函数
@@ -2391,7 +2146,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "RenderModel", &WrapperImplement::RenderModel },
 		{ "DrawCollider", &WrapperImplement::DrawCollider },
 		//ETC
-		{ "RenderEx", &WrapperImplement::RenderEx },
 		{ "RenderGroupCollider", &WrapperImplement::RenderGroupCollider },
 		#pragma endregion
 
@@ -2460,7 +2214,6 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		#pragma endregion
 		
 		#pragma region 对象构造函数
-		{ "ResourceReference", &WrapperImplement::ResourceRef },
 		{ "SampleBezier", &WrapperImplement::SampleBezier },
 		#pragma endregion
 		

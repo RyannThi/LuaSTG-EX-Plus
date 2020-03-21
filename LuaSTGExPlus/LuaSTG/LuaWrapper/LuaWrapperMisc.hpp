@@ -2,6 +2,7 @@
 #include "..\Global.h"
 #include "..\ResourceBase.hpp"
 #include "..\ResourceFont.hpp"
+#include "..\ResourceParticle.hpp"
 #include "..\LuaStringToEnum.hpp"
 
 namespace LuaSTGPlus
@@ -156,5 +157,86 @@ namespace LuaSTGPlus
 		else
 			luaL_error(L, "Invalid texture sampler filter type '%s'.", s);
 		return F2DTEXFILTER_LINEAR;
+	}
+
+	inline bool TranslateTableToParticleInfo(lua_State* L, int argnum, ResParticle::ParticleInfo& info) {
+		if (lua_istable(L, argnum)) {
+			#define GET_ATTR(luakey, cppkey, valuetype, valueproc) {\
+				lua_pushstring(L, luakey);\
+				lua_gettable(L, argnum);\
+				info.##cppkey## = (valuetype)luaL_check##valueproc##(L, -1);\
+				lua_pop(L, 1);\
+			}
+
+			GET_ATTR("emission", nEmission, int, integer);
+			GET_ATTR("lifetime", fLifetime, float, number);
+			GET_ATTR("direction", fDirection, float, number);
+			GET_ATTR("spread", fSpread, float, number);
+
+			info.fDirection *= LDEGREE2RAD;
+			info.fSpread *= LDEGREE2RAD;
+
+			GET_ATTR("lifetime_min", fParticleLifeMin, float, number);
+			GET_ATTR("lifetime_max", fParticleLifeMax, float, number);
+
+			GET_ATTR("speed_min", fSpeedMin, float, number);
+			GET_ATTR("speed_max", fSpeedMax, float, number);
+			GET_ATTR("gravity_min", fGravityMin, float, number);
+			GET_ATTR("gravity_max", fGravityMax, float, number);
+			GET_ATTR("radial_min", fRadialAccelMin, float, number);
+			GET_ATTR("radial_max", fRadialAccelMax, float, number);
+			GET_ATTR("tangential_min", fTangentialAccelMin, float, number);
+			GET_ATTR("tangential_max", fTangentialAccelMax, float, number);
+
+			GET_ATTR("size_begin", fSizeStart, float, number);
+			GET_ATTR("size_end", fSizeEnd, float, number);
+			GET_ATTR("size_var", fSizeVar, float, number);
+
+			GET_ATTR("angle_begin", fSpinStart, float, number);
+			GET_ATTR("angle_end", fSpinEnd, float, number);
+			GET_ATTR("angle_var", fSpinVar, float, number);
+
+			info.fSpinStart *= LDEGREE2RAD;
+			info.fSpinEnd *= LDEGREE2RAD;
+
+			GET_ATTR("color_var", fColorVar, float, number);
+			GET_ATTR("alpha_var", fAlphaVar, float, number);
+
+			#undef GET_ATTR
+
+			lua_pushstring(L, "blend");
+			lua_gettable(L, argnum);
+			std::string blend_dest = luaL_checkstring(L, -1);
+			lua_pop(L, 1);
+			if (blend_dest == "alpha") {
+				info.iBlendInfo = 6 << 16;
+			}
+			else if (blend_dest == "add") {
+				info.iBlendInfo = 4 << 16;
+			}
+			else {
+				info.iBlendInfo = 4 << 16;
+			}
+
+			lua_pushstring(L, "color_begin");
+			lua_gettable(L, argnum);
+			lua_pushstring(L, "color_end");
+			lua_gettable(L, argnum); // ??? t ??? t t
+			for (auto idx = 0; idx < 4; idx++) {
+				lua_pushinteger(L, idx + 1); // ??? t ??? t t k
+				lua_gettable(L, -3);         // ??? t ??? t t v
+				lua_pushinteger(L, idx + 1); // ??? t ??? t t v k
+				lua_gettable(L, -3);         // ??? t ??? t t v v
+				info.colColorStart[idx] = (float)luaL_checknumber(L, -2);
+				info.colColorEnd[idx] = (float)luaL_checknumber(L, -1);
+				lua_pop(L, 2); // ??? t ??? t t
+			}
+			lua_pop(L, 2);
+			return true;
+		}
+		else {
+			LERROR("TranslateTableToParticleInfo: Invalid particle define value type, required table.");
+			return false;
+		}
 	}
 }

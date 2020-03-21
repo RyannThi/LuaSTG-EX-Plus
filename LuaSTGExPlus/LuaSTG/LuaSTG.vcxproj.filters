@@ -54,11 +54,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="GameObjectPropertyHash.inl">
-      <Filter>GameObject</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="AppFrame.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -166,6 +161,15 @@
     </ClInclude>
     <ClInclude Include="LuaInternalSource.hpp">
       <Filter>LuaUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaCustomLoader.hpp">
+      <Filter>LuaUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemDirectory.hpp">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -283,11 +287,14 @@
     <ClCompile Include="LuaTableToOption.cpp">
       <Filter>LuaUtility</Filter>
     </ClCompile>
-    <ClCompile Include="GameResourceWrapper.cpp">
-      <Filter>LuaWrapper\Class</Filter>
-    </ClCompile>
     <ClCompile Include="LuaInternalSource.cpp">
       <Filter>LuaUtility</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaCustomLoader.cpp">
+      <Filter>LuaUtility</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemDirectory.cpp">
+      <Filter>Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

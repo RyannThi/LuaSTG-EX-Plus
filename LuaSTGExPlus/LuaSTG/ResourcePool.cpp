@@ -626,6 +626,81 @@ bool ResourcePool::LoadParticle(const char* name, const std::wstring& path, cons
 	return true;
 }
 
+bool ResourcePool::LoadParticle(const char* name, const ResParticle::ParticleInfo& info, const char* img_name, double a, double b, bool rect)LNOEXCEPT {
+	LDEBUG_RESOURCETIMER;
+
+	{
+		LDEBUG_RESOURCESCOPE;
+
+		LASSERT(LAPP.GetRenderer());
+
+		if (m_ParticlePool.find(name) != m_ParticlePool.end())
+		{
+			LWARNING("LoadParticle: 粒子'%m'已存在，加载操作已被取消", name);
+			return true;
+		}
+
+		fcyRefPointer<ResSprite> pSprite = m_pMgr->FindSprite(img_name);
+		fcyRefPointer<f2dSprite> pClone;
+		if (!pSprite)
+		{
+			LWARNING("LoadParticle: 加载粒子'%m'失败, 无法找到精灵'%m'", name, img_name);
+			return false;
+		}
+		else
+		{
+			// 克隆一个精灵对象
+			if (FCYFAILED(LAPP.GetRenderer()->CreateSprite2D(pSprite->GetSprite()->GetTexture(), pSprite->GetSprite()->GetTexRect(), pSprite->GetSprite()->GetHotSpot(), &pClone)))
+			{
+				LERROR("LoadParticle: 克隆图片'%m'失败", img_name);
+				return false;
+			}
+			pClone->SetColor(0, pSprite->GetSprite()->GetColor(0U));
+			pClone->SetColor(1, pSprite->GetSprite()->GetColor(1U));
+			pClone->SetColor(2, pSprite->GetSprite()->GetColor(2U));
+			pClone->SetColor(3, pSprite->GetSprite()->GetColor(3U));
+			pClone->SetZ(pSprite->GetSprite()->GetZ());
+		}
+
+		try
+		{
+			ResParticle::ParticleInfo tInfo = info;
+			tInfo.iBlendInfo = (tInfo.iBlendInfo >> 16) & 0x00000003;
+
+			BlendMode tBlendInfo = BlendMode::AddAlpha;
+			if (tInfo.iBlendInfo & 1)  // ADD
+			{
+				if (tInfo.iBlendInfo & 2)  // ALPHA
+					tBlendInfo = BlendMode::AddAlpha;
+				else
+					tBlendInfo = BlendMode::AddAdd;
+			}
+			else  // MUL
+			{
+				if (tInfo.iBlendInfo & 2)  // ALPHA
+					tBlendInfo = BlendMode::MulAlpha;
+				else
+					tBlendInfo = BlendMode::MulAdd;
+			}
+
+			fcyRefPointer<ResParticle> tRes;
+			tRes.DirectSet(new ResParticle(name, tInfo, pClone, tBlendInfo, a, b, rect));
+			m_ParticlePool.emplace(name, tRes);
+		}
+		catch (const bad_alloc&)
+		{
+			LERROR("LoadParticle: 内存不足");
+			return false;
+		}
+#ifdef LSHOWRESLOADINFO
+		LINFO("LoadParticle: 粒子'%m'已装载 (%s)", name, getResourcePoolTypeName());
+#endif
+	}
+
+	LDEBUG_RESOURCEHINT(ResourceType::Particle, L"binary");
+	return true;
+}
+
 LNOINLINE bool ResourcePool::LoadParticle(const char* name, const char* path, const char* img_name, double a, double b, bool rect)LNOEXCEPT
 {
 	try

@@ -122,9 +122,6 @@ namespace LuaSTGPlus
 		/// @brief 创建新对象
 		int New(lua_State* L)LNOEXCEPT;
 
-		/// @brief 将一个对象插入链表
-		int Add(lua_State* L)LNOEXCEPT;
-
 		/// @brief 通知对象删除
 		int Del(lua_State* L)LNOEXCEPT;
 		
@@ -189,9 +186,6 @@ namespace LuaSTGPlus
 
 		/// @brief 属性写方法
 		int SetAttr(lua_State* L)LNOEXCEPT;
-
-		/// @brief 初始化方法
-		int InitAttr(lua_State* L)LNOEXCEPT;
 
 		/// @brief 调试目的，获取对象列表
 		int GetObjectTable(lua_State* L)LNOEXCEPT;

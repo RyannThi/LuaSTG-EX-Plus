@@ -132,7 +132,6 @@ namespace LuaSTGPlus
 		BuiltInFunctionWrapper::Register(L);  // 内建函数库
 		FileManagerWrapper::Register(L); //内建函数库，文件资源管理，请确保位于内建函数库后加载
 		ArchiveWrapper::Register(L); //压缩包
-		GameResourceWrapper::Register(L);  // 游戏资源对象
 		XInputManagerWrapper::Register(L);  //内建函数库，XInput，请确保位于内建函数库后加载
 #ifdef USING_ADVANCE_COLLIDER
 		GameObjectColliderWrapper::Register(L);//Collider

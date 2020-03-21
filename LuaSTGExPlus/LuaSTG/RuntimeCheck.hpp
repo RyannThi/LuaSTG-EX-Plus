@@ -3,20 +3,20 @@
 
 namespace LuaSTGPlus {
 	inline bool CheckRuntime() {
-		if (LoadLibraryW(L"D3D9.dll") == nullptr) {
-			return false;
-		}
-		if (LoadLibraryW(L"D3DX9_43.DLL") == nullptr) {
-			return false;
-		}
-		if (LoadLibraryW(L"XINPUT1_3.DLL") == nullptr) {
-			return false;
-		}
-		if (LoadLibraryW(L"DInput8.dll") == nullptr) {
-			return false;
-		}
-		if (LoadLibraryW(L"DSound.dll") == nullptr) {
-			return false;
+		const wchar_t* dlls[] = {
+			L"D3D9.dll",
+			L"D3DX9_43.dll",
+			L"XINPUT1_3.dll",
+			L"XINPUT9_1_0.dll",
+			L"DInput8.dll",
+			L"DSound.dll",
+		};
+		for (int idx = 0; idx < 6; idx++) {
+			HMODULE dll = LoadLibraryW(dlls[idx]);
+			if (dll == NULL) {
+				return false;
+			}
+			FreeLibrary(dll);
 		}
 		return true;
 	}

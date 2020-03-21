@@ -30,6 +30,7 @@ namespace LuaSTGPlus
 		float m_fEnvelopeBase = 1.0f;
 		float m_fEnvelopeRate = 0.0f;
 		float m_fEnvelopePower = 0.0f;
+		// https://www.desmos.com/calculator/i6r2pw90xw
 		inline float _GetEnvelope(float t) {
 			float ret = m_fEnvelopeHeight + (m_fEnvelopeBase * (1.0f - m_fEnvelopeRate * std::powf(2.0f * (t - 0.5f), m_fEnvelopePower)));
 			return (std::max)(0.0f, ret);

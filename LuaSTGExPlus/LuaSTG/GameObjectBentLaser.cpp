@@ -181,7 +181,11 @@ bool GameObjectBentLaser::Update(size_t id, int length, float width, bool active
 		len = dpos.Length();
 		lactive = tNodeLast.active;
 		if (len <= (std::numeric_limits<fFloat>::min)()) {
-			_PopHead(); // 仍然需要更新节点数量
+			// 仍然需要更新节点数量
+			// 移除多余的节点，保证长度在length范围内
+			while (m_Queue.Size() >= (size_t)length) {
+				_PopHead();
+			}
 			return true; // 变化几乎可以忽略不计，不插入该节点
 		}
 	}
@@ -263,12 +267,14 @@ bool GameObjectBentLaser::Render(const char* tex_name, BlendMode blend, fcyColor
 			flip = !flip;
 		}
 
+		// 计算延展方向1
 		float expX1 = cur.x_dir * scale * cur.half_width;
 		float expY1 = cur.y_dir * scale * cur.half_width;
 		if (flip) {
 			expX1 = -expX1;
 			expY1 = -expY1;
 		}
+		// 计算U坐标1
 		float u = tex_left + tVecLength / m_fLength * tex_width;
 		renderVertex[0].x = cur.pos.x + expX1;
 		renderVertex[0].y = cur.pos.y + expY1;
@@ -279,12 +285,14 @@ bool GameObjectBentLaser::Render(const char* tex_name, BlendMode blend, fcyColor
 		renderVertex[3].u = u;
 		renderVertex[3].color = cur.active ? org_c : trans_c;
 
+		// 计算延展方向2
 		float expX2 = next.x_dir * scale * cur.half_width;
 		float expY2 = next.y_dir * scale * cur.half_width;
 		if (flip) {
 			expX2 = -expX2;
 			expY2 = -expY2;
 		}
+		// 计算U坐标2
 		float lenOffsetA = next.dis;
 		tVecLength += lenOffsetA;
 		u = tex_left + tVecLength / m_fLength * tex_width;

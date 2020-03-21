@@ -5,8 +5,10 @@
 #include "Utility.h"
 #include "LuaWrapper\LuaWrapper.hpp"
 #include "E2DXInputImpl.hpp"
+#include "LuaCustomLoader.hpp"
 #include "LuaStringToEnum.hpp"
 #include "LuaInternalSource.hpp"
+#include "ResourcePassword.hpp"
 
 #include "D3D9.H"  // for SetFog
 #include "Network.h"
@@ -21,7 +23,6 @@
 // 内置lua扩展
 extern "C" int luaopen_lfs(lua_State *L);
 extern "C" int luaopen_cjson(lua_State* L);
-extern "C" int luaopen_socket_core(lua_State *L);
 
 using namespace std;
 using namespace LuaSTGPlus;
@@ -566,7 +567,7 @@ LNOINLINE void AppFrame::LoadScript(const char* path,const char *packname)LNOEXC
 	lua_call(L, 0, LUA_MULTRET);//保证DoFile后有返回值
 }
 
-LNOINLINE int AppFrame::LoadTextFile(const char* path, const char *packname)LNOEXCEPT
+LNOINLINE int AppFrame::LoadTextFile(lua_State* L, const char* path, const char *packname)LNOEXCEPT
 {
 	LINFO("读取文本文件'%m'", path);
 	fcyRefPointer<fcyMemStream> tMemStream;
@@ -574,11 +575,8 @@ LNOINLINE int AppFrame::LoadTextFile(const char* path, const char *packname)LNOE
 		LWARNING("无法加载文件'%m'.", path);
 		return 0;
 	}
-	std::string buffer;
-	buffer.resize((size_t)tMemStream->GetLength());
-	tMemStream->ReadBytes((fData)buffer.data(), tMemStream->GetLength(), nullptr);
+	lua_pushlstring(L, (char*)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength());
 	tMemStream = nullptr;
-	lua_pushstring(L, buffer.c_str());
 	return 1;
 }
 
@@ -900,7 +898,7 @@ fcyVec2 AppFrame::CalcuTextSize(ResFont* p, const wchar_t* strBuf, fcyVec2 scale
 	if (m_GraphType != GraphicsType::Graph2D)
 	{
 		LERROR("RenderText: 只有2D渲染器可以执行该方法");
-		return false;
+		return fcyVec2();
 	}
 
 	f2dFontProvider* pFontProvider = p->GetFontProvider();
@@ -1381,10 +1379,10 @@ bool AppFrame::Init()LNOEXCEPT
 		lua_gc(L, LUA_GCSTOP, 0);  // 初始化时关闭GC
 
 		luaL_openlibs(L);  // 内建库 (lua build in lib)
+		lua_register_custom_loader(L); // 加强版 package 库 (require)
 
 		luaopen_lfs(L);  // 文件系统库 (file system)
 		luaopen_cjson(L);  // CJSON库 (json)
-		luaopen_socket_core(L);  // luasock (socket)
 		lua_settop(L, 0);// 不知道为什么弄了6个table在栈顶……
 
 		if (!SafeCallScript(LuaInternalSource_1().c_str(), LuaInternalSource_1().length(), "internal")) {
@@ -1448,8 +1446,9 @@ bool AppFrame::Init()LNOEXCEPT
 	lua_pop(L, 1);
 
 	//////////////////////////////////////// 装载初始化脚本
-	LINFO("加载初始化脚本'%s'", LLAUNCH_SCRIPT);
 	fcyRefPointer<fcyMemStream> tMemStream;
+#ifdef USING_LAUNCH_FILE
+	LINFO("加载初始化脚本'%s'", LLAUNCH_SCRIPT);
 	if (m_ResourceMgr.LoadFile(LLAUNCH_SCRIPT, tMemStream)) {
 		if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), "launch"))
 			return false;
@@ -1457,11 +1456,12 @@ bool AppFrame::Init()LNOEXCEPT
 	else {
 		LWARNING("找不到文件'%s'", LLAUNCH_SCRIPT);
 	}
-	
+#endif // USING_LAUNCH_FILE
+
 	//////////////////////////////////////// 装载基础资源包
-	LINFO("加载资源包'data.pack'");
-	if (!m_FileManager.LoadArchive("data.pack", 0, nullptr)) {
-		LWARNING("找不到资源包'data.pack'");
+	LINFO("加载资源包'data'");
+	if (!m_FileManager.LoadArchive("data", 0, GetGameName().c_str())) {
+		LWARNING("找不到资源包'data'");
 	}
 
 	//////////////////////////////////////// 初始化fancy2d引擎
@@ -1742,7 +1742,6 @@ bool AppFrame::SafeCallScript(const char* source, size_t len, const char* desc)L
 		}
 		
 		lua_pop(L, 2);
-		LLOGGER.LogSnapshoot();
 		return false;
 	}
 	// ... c s
@@ -1770,7 +1769,6 @@ bool AppFrame::SafeCallScript(const char* source, size_t len, const char* desc)L
 		}
 
 		lua_pop(L, 2);
-		LLOGGER.LogSnapshoot();
 		return false;
 	}
 
@@ -1808,7 +1806,6 @@ bool AppFrame::SafeCallGlobalFunction(const char* name, int retc)LNOEXCEPT
 		}
 
 		lua_pop(L, 2);
-		LLOGGER.LogSnapshoot();
 		return false;
 	}
 
