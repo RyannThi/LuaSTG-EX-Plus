@@ -48,6 +48,9 @@
 // 日志系统
 #include "LogSystem.h"
 
+// 配置文件
+#include "Config.h"
+
 // 一些全局范围的宏
 #define LVERSION L"luaSTG-0.1"
 #define LVERSION_LUA LUAJIT_VERSION
@@ -80,8 +83,6 @@
 #define LGOBJ_CC_KILL 6
 
 //功能控制
-//#define USING_STEAM_API
-#define USING_LAUNCH_FILE //使用launch文件
 #define USER_SYSTEM_OPERATION //控制是否启用由lua层转来的额外功能，主要有重力加速度、速度限制
 #define GLOBAL_SCALE_COLLI_SHAPE //全局图像缩放是否影响碰撞盒大小
 #define USING_MULTI_GAME_WORLD //开启多world功能

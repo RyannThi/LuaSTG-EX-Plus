@@ -460,12 +460,12 @@ LNOINLINE bool AppFrame::ChangeVideoMode(int width, int height, bool windowed, b
 			(fuInt)width,
 			(fuInt)height,
 			windowed,
-			windowed ? false : vsync, // 总是在窗口模式下关闭垂直同步
+			vsync,
 			F2DAALEVEL_NONE)))
 		{
-			LINFO("视频模式切换成功 (%dx%d Vsync:%b Windowed:%b) -> (%dx%d Vsync:%b(%b) Windowed:%b)",
+			LINFO("视频模式切换成功 (%dx%d Vsync:%b Windowed:%b) -> (%dx%d Vsync:%b Windowed:%b)",
 				(int)m_OptionResolution.x, (int)m_OptionResolution.y, m_OptionVsync, m_OptionWindowed,
-				width, height, vsync, windowed ? false : vsync, windowed);
+				width, height, vsync, windowed);
 
 			m_OptionResolution.Set((float)width, (float)height);
 			m_OptionWindowed = windowed;
@@ -1482,7 +1482,7 @@ bool AppFrame::Init()LNOEXCEPT
 			fcyRect(0.f, 0.f, m_OptionResolution.x, m_OptionResolution.y),
 			m_OptionTitle.c_str(),
 			m_bSplashWindowEnabled ? true : m_OptionWindowed,
-			(m_bSplashWindowEnabled || m_OptionWindowed) ? false : m_OptionVsync, // 总是在窗口模式下关闭垂直同步
+			m_OptionVsync,
 			F2DAALEVEL_NONE,
 			this,
 			&m_pEngine,
@@ -1622,6 +1622,11 @@ bool AppFrame::Init()LNOEXCEPT
 	m_iStatus = AppStatus::Initialized;
 	LINFO("初始化成功完成");
 
+	//////////////////////////////////////// 调用GameInit
+	if (!SafeCallGlobalFunction(LFUNC_GAMEINIT)) {
+		return false;
+	}
+
 	//////////////////////////////////////// 窗口前移、显示、隐藏鼠标指针
 	//附加当前线程到窗口线程将窗口设置成前台窗口
 	HWND hWnd = (HWND)m_pMainWindow->GetHandle();
@@ -1629,12 +1634,11 @@ bool AppFrame::Init()LNOEXCEPT
 	DWORD dwForeID = ::GetWindowThreadProcessId(hForeWnd, NULL);
 	DWORD dwCurID = ::GetCurrentThreadId();
 	::AttachThreadInput(dwCurID, dwForeID, TRUE);
-	if (m_bSplashWindowEnabled)  // 显示过载入窗口
-	{
+	// 显示过载入窗口
+	if (m_bSplashWindowEnabled) {
 		// 显示窗口
 		m_pMainWindow->MoveToCenter();
 		m_pMainWindow->SetVisiable(true);
-
 		// 改变显示模式到全屏
 		if (!m_OptionWindowed)
 			ChangeVideoMode((int)m_OptionResolution.x, (int)m_OptionResolution.y, m_OptionWindowed, m_OptionVsync);
@@ -1642,11 +1646,6 @@ bool AppFrame::Init()LNOEXCEPT
 	m_bSplashWindowEnabled = false;
 	m_pMainWindow->HideMouse(!m_OptionSplash);
 	::AttachThreadInput(dwCurID, dwForeID, FALSE);
-
-	//////////////////////////////////////// 调用GameInit
-	if (!SafeCallGlobalFunction(LFUNC_GAMEINIT)) {
-		return false;
-	}
 
 	return true;
 }

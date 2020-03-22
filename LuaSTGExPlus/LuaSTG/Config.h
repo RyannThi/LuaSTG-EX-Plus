@@ -1,9 +1,13 @@
 #pragma once
 
-// app info
-#define APP_ID 0
+// log file
 #define APP_COMPANY L"team.luastg"
 #define APP_PRODUCT L"luastg"
-
-// write log file to system temp directory, not write to the work directory
 //#define USING_SYSTEM_DIRECTORY
+
+// steam
+#define STEAM_APP_ID 0
+//#define USING_STEAM_API
+
+// feature
+#define USING_LAUNCH_FILE // launch file

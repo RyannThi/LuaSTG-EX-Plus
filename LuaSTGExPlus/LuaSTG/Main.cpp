@@ -21,7 +21,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 #endif
 
 #ifdef USING_STEAM_API
-	if (SteamAPI_RestartAppIfNecessary(APP_ID)) {
+	if (SteamAPI_RestartAppIfNecessary(STEAM_APP_ID)) {
 		return 0;
 	}
 	if (!SteamAPI_Init()) {
