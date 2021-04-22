@@ -668,9 +668,10 @@ struct f2dRenderer
 	/// @param[in]  pStream   字体文件，读取整个文件
 	/// @param[in]  FaceIndex 若有多个Face，可以指定索引。0总是有效值。
 	/// @param[in]  FontSize  字体大小
+	/// @param[in]  BBoxSize  手动指定包围盒大小，专治SB思源系列字体，为0时忽略该参数
 	/// @param[in]  Flag      额外选项
 	/// @param[out] pOut      返回的字体对象
-	virtual fResult CreateFontFromFile(f2dStream* pStream, fuInt FaceIndex, const fcyVec2& FontSize, F2DFONTFLAG Flag, f2dFontProvider** pOut)=0;
+	virtual fResult CreateFontFromFile(f2dStream* pStream, fuInt FaceIndex, const fcyVec2& FontSize, const fcyVec2& BBoxSize, F2DFONTFLAG Flag, f2dFontProvider** pOut)=0;
 
 	/// @brief      从系统加载字体
 	/// @param[in]  FaceName  字体在注册表中的名称

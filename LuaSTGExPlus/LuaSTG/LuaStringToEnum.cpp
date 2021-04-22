@@ -88,6 +88,7 @@ static std::unordered_map<std::string, LuaSTGPlus::BlendMode> blendmode_map = {
 	{ "add+max",	LuaSTGPlus::BlendMode::AddMax		},
 	{ "add+mul",	LuaSTGPlus::BlendMode::AddMutiply	},
 	{ "add+screen",	LuaSTGPlus::BlendMode::AddScreen	},
+	{ "one",		LuaSTGPlus::BlendMode::One			},
 };
 static std::unordered_map<uint32_t, LuaSTGPlus::BlendMode> blendmode_hash_map;
 void init_blendmode_hash_map(lua_State* L) {

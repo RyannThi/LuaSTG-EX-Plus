@@ -161,9 +161,11 @@ namespace LuaSTGPlus
 		LNOINLINE bool LoadSpriteFont(const char* name, const char* path, const char* tex_path, bool mipmaps = true)LNOEXCEPT;
 
 		/// @brief 装载TTF字体
-		bool LoadTTFFont(const char* name, const std::wstring& path, float width, float height)LNOEXCEPT;
+		bool LoadTTFFont(const char* name, const std::wstring& path, float width, float height, float bboxwidth, float bboxheight)LNOEXCEPT;
 
-		LNOINLINE bool LoadTTFFont(const char* name, const char* path, float width, float height)LNOEXCEPT;
+		LNOINLINE bool LoadTTFFont(const char* name, const char* path, float width, float height, float bboxwidth, float bboxheight)LNOEXCEPT;
+
+		bool LoadTTFFont(const char* name, fcyStream* stream, float width, float height, float bboxwidth, float bboxheight)LNOEXCEPT;
 
 		/// @brief 装载FX
 		bool LoadFX(const char* name, const std::wstring& path)LNOEXCEPT;

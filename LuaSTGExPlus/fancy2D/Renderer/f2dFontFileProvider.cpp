@@ -8,7 +8,7 @@ using namespace std;
 
 const int f2dFontFileProvider::s_Magin = 1;
 
-f2dFontFileProvider::f2dFontFileProvider(f2dRenderDevice* pParent, f2dStream* pStream, const fcyVec2& FontSize, fuInt FaceIndex, F2DFONTFLAG Flag)
+f2dFontFileProvider::f2dFontFileProvider(f2dRenderDevice* pParent, f2dStream* pStream, const fcyVec2& FontSize, const fcyVec2& BBoxSize, fuInt FaceIndex, F2DFONTFLAG Flag)
 	: m_pParent(pParent), m_pStream(pStream),
 	m_CacheXCount(0), m_CacheYCount(0), m_Cache(NULL), m_CacheTex(NULL),
 	m_UsedNodeList(NULL), m_FreeNodeList(NULL)
@@ -46,8 +46,14 @@ f2dFontFileProvider::f2dFontFileProvider(f2dRenderDevice* pParent, f2dStream* pS
 
 	// --- 构建缓冲区 ---
 	// 获得字体大小
-	m_PerGlyphSize.x = ceil(widthSizeToPixel(abs(m_Face->bbox.xMax - m_Face->bbox.xMin)) + s_Magin * 2.f);
-	m_PerGlyphSize.y = ceil(heightSizeToPixel(abs(m_Face->bbox.yMax - m_Face->bbox.yMin)) + s_Magin * 2.f);
+	if (BBoxSize.x >= 0.01f && BBoxSize.y >= 0.01f) {
+		m_PerGlyphSize.x = ceil(BBoxSize.x + s_Magin * 2.f);
+		m_PerGlyphSize.y = ceil(BBoxSize.y + s_Magin * 2.f);
+	}
+	else {
+		m_PerGlyphSize.x = ceil(widthSizeToPixel(abs(m_Face->bbox.xMax - m_Face->bbox.xMin)) + s_Magin * 2.f);
+		m_PerGlyphSize.y = ceil(heightSizeToPixel(abs(m_Face->bbox.yMax - m_Face->bbox.yMin)) + s_Magin * 2.f);
+	}
 
 	/*
 	// 计算行列的文字数
@@ -215,6 +221,22 @@ void f2dFontFileProvider::removeUsedNode(FontCacheInfo* p)
 	p->pPrev->pNext = p->pNext;
 
 	p->pPrev = p->pNext = NULL;
+}
+
+f2dGlyphInfo f2dFontFileProvider::getGlyphInfo(fCharW Char) {
+	// 加载文字到字形槽
+	FT_Load_Char(m_Face, Char, FT_LOAD_DEFAULT);
+
+	// 获得图像
+	FT_Bitmap* tBitmap = &m_Face->glyph->bitmap;
+
+	// 写入对应属性
+	f2dGlyphInfo info;
+	info.Advance = fcyVec2(m_Face->glyph->advance.x / 64.f, m_Face->glyph->advance.y / 64.f);
+	info.BrushPos = fcyVec2(-(float)m_Face->glyph->bitmap_left, (float)m_Face->glyph->bitmap_top);
+	info.GlyphSize = fcyVec2((float)m_Face->glyph->bitmap.width, (float)m_Face->glyph->bitmap.rows);
+
+	return info;
 }
 
 f2dFontFileProvider::FontCacheInfo* f2dFontFileProvider::getChar(fCharW Char)
@@ -467,20 +489,41 @@ fResult f2dFontFileProvider::QueryGlyph(f2dGraphics* pGraph, fCharW Character, f
 		return tRet;
 	}
 
-	if(pGraph)  // 绘制过程
-	{
+	if(pGraph) {
 		// 检查是否需要Flush
 		if(m_FreeNodeList == NULL && !m_Dict[Character])
 			pGraph->Flush();
+
+		// 取出文字，绘制到纹理
+		FontCacheInfo* pCache = getChar(Character);
+
+		InfoOut->Advance = pCache->Advance;
+		InfoOut->BrushPos = pCache->BrushPos;
+		InfoOut->GlyphPos = pCache->UV;
+		InfoOut->GlyphSize = pCache->GlyphSize;
 	}
+	else {
+		// 只是查询信息，先在字典里面寻找（这部分代码复制自getChar）
+		FontCacheInfo* pCache = m_Dict[Character];
 
-	// 取出文字
-	FontCacheInfo* pCache = getChar(Character);
+		// 找到的话直接返回
+		if (pCache) {
+			// 找到UsedList中对应的位置，并删除节点，将其移到首位
+			removeUsedNode(pCache);
+			addUsedNode(pCache);
 
-	InfoOut->Advance = pCache->Advance;
-	InfoOut->BrushPos = pCache->BrushPos;
-	InfoOut->GlyphPos = pCache->UV;
-	InfoOut->GlyphSize = pCache->GlyphSize;
+			// 复制信息
+			InfoOut->Advance = pCache->Advance;
+			InfoOut->BrushPos = pCache->BrushPos;
+			InfoOut->GlyphPos = pCache->UV;
+			InfoOut->GlyphSize = pCache->GlyphSize;
+		}
+		else {
+			// 在字体里查找
+			f2dGlyphInfo info = getGlyphInfo(Character);
+			*InfoOut = info;
+		}
+	}
 
 	return FCYERR_OK;
 }

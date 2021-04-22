@@ -928,7 +928,7 @@ LNOINLINE bool ResourcePool::LoadSpriteFont(const char* name, const char* path, 
 	}
 }
 
-bool ResourcePool::LoadTTFFont(const char* name, const std::wstring& path, float width, float height)LNOEXCEPT
+bool ResourcePool::LoadTTFFont(const char* name, const std::wstring& path, float width, float height, float bboxwidth, float bboxheight)LNOEXCEPT
 {
 	LDEBUG_RESOURCETIMER;
 
@@ -963,7 +963,7 @@ bool ResourcePool::LoadTTFFont(const char* name, const std::wstring& path, float
 		{
 			if (!tFontProvider)
 			{
-				if (FCYFAILED(LAPP.GetRenderer()->CreateFontFromFile(tDataBuf, 0, fcyVec2(width, height), F2DFONTFLAG_NONE, &tFontProvider)))
+				if (FCYFAILED(LAPP.GetRenderer()->CreateFontFromFile(tDataBuf, 0, fcyVec2(width, height), fcyVec2(bboxwidth, bboxheight), F2DFONTFLAG_NONE, &tFontProvider)))
 				{
 					LERROR("LoadTTFFont: 从文件'%s'创建TrueType字体失败", path.c_str());
 					return false;
@@ -991,17 +991,65 @@ bool ResourcePool::LoadTTFFont(const char* name, const std::wstring& path, float
 	return true;
 }
 
-LNOINLINE bool ResourcePool::LoadTTFFont(const char* name, const char* path, float width, float height)LNOEXCEPT
+LNOINLINE bool ResourcePool::LoadTTFFont(const char* name, const char* path, float width, float height, float bboxwidth, float bboxheight)LNOEXCEPT
 {
 	try
 	{
-		return LoadTTFFont(name, fcyStringHelper::MultiByteToWideChar(path, CP_UTF8), width, height);
+		return LoadTTFFont(name, fcyStringHelper::MultiByteToWideChar(path, CP_UTF8), width, height, bboxwidth, bboxheight);
 	}
 	catch (const bad_alloc&)
 	{
 		LERROR("LoadTTFFont: 转换编码时无法分配内存");
 		return false;
 	}
+}
+
+bool ResourcePool::LoadTTFFont(const char* name, fcyStream* stream, float width, float height, float bboxwidth, float bboxheight)LNOEXCEPT {
+	LDEBUG_RESOURCETIMER;
+
+	{
+		LDEBUG_RESOURCESCOPE;
+
+		LASSERT(LAPP.GetRenderer());
+
+		if (m_TTFFontPool.find(name) != m_TTFFontPool.end())
+		{
+			LWARNING("LoadTTFFont: 字体'%m'已存在，加载操作已被取消", name);
+			return true;
+		}
+
+		fcyRefPointer<f2dFontProvider> tFontProvider;
+		// 创建定义
+		try
+		{
+			if (!tFontProvider)
+			{
+				if (FCYFAILED(LAPP.GetRenderer()->CreateFontFromFile(stream, 0, fcyVec2(width, height), fcyVec2(bboxwidth, bboxheight), F2DFONTFLAG_NONE, &tFontProvider)))
+				{
+					LERROR("LoadTTFFont: 从内存创建TrueType字体失败");
+					return false;
+				}
+			}
+#ifdef LSHOWRESLOADINFO
+			LINFO("字形缓存数量：%d，字形缓存贴图大小：%dx%d", tFontProvider->GetCacheCount(), tFontProvider->GetCacheTexSize(), tFontProvider->GetCacheTexSize());
+#endif
+			fcyRefPointer<ResFont> tRes;
+			tRes.DirectSet(new ResFont(name, tFontProvider));
+			tRes->SetBlendMode(BlendMode::AddAlpha);
+			m_TTFFontPool.emplace(name, tRes);
+		}
+		catch (const bad_alloc&)
+		{
+			LERROR("LoadTTFFont: 内存不足");
+			return false;
+		}
+#ifdef LSHOWRESLOADINFO
+		LINFO("LoadTTFFont: truetype字体'%m'已装载 (%s)", name, getResourcePoolTypeName());
+#endif
+	}
+
+	LDEBUG_RESOURCEHINT(ResourceType::TrueTypeFont, L"Memory");
+	return true;
 }
 
 bool ResourcePool::LoadFX(const char* name, const std::wstring& path)LNOEXCEPT

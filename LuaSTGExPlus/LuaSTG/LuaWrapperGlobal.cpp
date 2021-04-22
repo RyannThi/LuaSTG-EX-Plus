@@ -842,17 +842,24 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		}
 		static int LoadTTF(lua_State* L)LNOEXCEPT
 		{
-			const char* name = luaL_checkstring(L, 1);
-			const char* path = luaL_checkstring(L, 2);
-
 			ResourcePool* pActivedPool = LRES.GetActivedPool();
-			if (!pActivedPool)
+			if (!pActivedPool) {
 				return luaL_error(L, "can't load resource at this time.");
+			}
 
-			bool result = pActivedPool->LoadTTFFont(name, path, (float)luaL_checknumber(L, 3), (float)luaL_checknumber(L, 4));
-			//if (!result)
-				//return luaL_error(L, "load ttf font failed (name=%s, path=%s)", name, path);
-			lua_pushboolean(L, result);
+			const char* name = luaL_checkstring(L, 1);
+			int t = lua_type(L, 2);
+			if (LUA_TSTRING == t) {
+				const char* path = luaL_checkstring(L, 2);
+				bool result = pActivedPool->LoadTTFFont(name, path, (float)luaL_checknumber(L, 3), (float)luaL_checknumber(L, 4), (float)luaL_optnumber(L, 5, 0.0), (float)luaL_optnumber(L, 6, 0.0));
+				lua_pushboolean(L, result);
+			}
+			else {
+				using sw = LuaSTGPlus::LuaWrapper::IO::StreamWrapper::Wrapper;
+				sw* data = (sw*)luaL_checkudata(L, 2, LUASTG_LUA_TYPENAME_IO_STREAM);
+				bool result = pActivedPool->LoadTTFFont(name, data->handle, (float)luaL_checknumber(L, 3), (float)luaL_checknumber(L, 4), (float)luaL_optnumber(L, 5, 0.0), (float)luaL_optnumber(L, 6, 0.0));
+				lua_pushboolean(L, result);
+			}
 			return 1;
 		}
 		static int LoadFX(lua_State* L)LNOEXCEPT
@@ -2030,7 +2037,9 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		{ "LoadPack", &WrapperImplement::LoadPack },
 		{ "LoadPackSub", &WrapperImplement::LoadPackSub },
 		{ "UnloadPack", &WrapperImplement::UnloadPack },
+#ifndef USING_ENCRYPTION
 		{ "ExtractRes", &WrapperImplement::ExtractRes },
+#endif // !USING_ENCRYPTION
 		{ "DoFile", &WrapperImplement::DoFile },
 		{ "LoadTextFile", &WrapperImplement::LoadTextFile },
 		{ "ShowSplashWindow", &WrapperImplement::ShowSplashWindow },
@@ -2148,7 +2157,7 @@ void BuiltInFunctionWrapper::Register(lua_State* L)LNOEXCEPT
 		//ETC
 		{ "RenderGroupCollider", &WrapperImplement::RenderGroupCollider },
 		#pragma endregion
-
+		
 		#pragma region 声音控制函数
 		{ "PlaySound", &WrapperImplement::PlaySound },
 		{ "StopSound", &WrapperImplement::StopSound },

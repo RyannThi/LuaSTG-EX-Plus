@@ -103,6 +103,7 @@ protected: // 字体缓冲操作
 	void addUsedNode(FontCacheInfo* p);      // 加入最多使用节点
 	void removeFreeNode(FontCacheInfo* p);   // 移除空闲节点p的连接
 	void removeUsedNode(FontCacheInfo* p);   // 移除使用中节点p的连接
+	f2dGlyphInfo getGlyphInfo(fCharW Char);  // 仅获得字形信息（不包括UV坐标）
 	FontCacheInfo* getChar(fCharW Char);     // 获得字体
 	bool makeCache(fuInt Size);                           // 创建缓冲区，存放XCount * YCount个文字
 	bool renderCache(FontCacheInfo* pCache, fCharW Char); // 在缓冲区的pCache位置绘制字体Char
@@ -131,6 +132,6 @@ public: // 接口实现
 	fInt GetCacheCount() { return m_CacheXCount * m_CacheYCount; }
 	fInt GetCacheTexSize() { return m_TexSize; }
 protected:
-	f2dFontFileProvider(f2dRenderDevice* pParent, f2dStream* pStream, const fcyVec2& FontSize, fuInt FaceIndex, F2DFONTFLAG Flag);
+	f2dFontFileProvider(f2dRenderDevice* pParent, f2dStream* pStream, const fcyVec2& FontSize, const fcyVec2& BBoxSize, fuInt FaceIndex, F2DFONTFLAG Flag);
 	~f2dFontFileProvider();
 };

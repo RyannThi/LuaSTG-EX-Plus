@@ -52,6 +52,12 @@
     <Filter Include="LuaWrapper\Misc">
       <UniqueIdentifier>{9cbb89fb-d943-4e8c-befd-da1459bee295}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Steam">
+      <UniqueIdentifier>{f99f1c2e-730a-445a-8a8f-b7cf19c566b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuaWrapper\Steam">
+      <UniqueIdentifier>{42b64b8f-5c5e-476b-8ffb-648b18532f7f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppFrame.h">
@@ -170,6 +176,12 @@
     </ClInclude>
     <ClInclude Include="Config.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SteamAPI.hpp">
+      <Filter>Steam</Filter>
+    </ClInclude>
+    <ClInclude Include="LW_SteamAPI.h">
+      <Filter>LuaWrapper\Steam</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -296,6 +308,18 @@
     <ClCompile Include="SystemDirectory.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="SteamAPI.cpp">
+      <Filter>Steam</Filter>
+    </ClCompile>
+    <ClCompile Include="LW_SteamAPI.cpp">
+      <Filter>LuaWrapper\Steam</Filter>
+    </ClCompile>
+    <ClCompile Include="AppFrameRender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AppFrameFontRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico">
@@ -309,5 +333,8 @@
     <ResourceCompile Include="LuaSTGPlus.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\编译检查单.txt" />
   </ItemGroup>
 </Project>

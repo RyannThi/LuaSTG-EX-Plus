@@ -119,7 +119,7 @@ LNOINLINE bool ResourceMgr::ExtractRes(const char* path, const char* target)LNOE
 
 bool listFilesS(lua_State* L, const char* dir, const char* ext, int& index) {
 	//传入的肯定是utf8格式的搜索目录和拓展名
-	// ??? t 
+		// ??? t 
 	string searchpath = dir;//搜索路径
 	filesystem::path searchdir = filesystem::path(Eyes2D::String::UTF8ToUTF16(searchpath));//路径，需要转换为UTF16
 
@@ -127,29 +127,33 @@ bool listFilesS(lua_State* L, const char* dir, const char* ext, int& index) {
 	size_t extendsize = extendpath.size();//拓展名长度
 	size_t pathsize = 0;//文件路径长度
 
-	for (auto& f : filesystem::directory_iterator(searchdir)) {
-		if (filesystem::is_directory(f.path()) || filesystem::is_regular_file(f.path())) {
-			string path = f.path().string();//文件路径
-			pathsize = path.size();
+	if (filesystem::is_directory(searchdir)) {
+		for (auto& f : filesystem::directory_iterator(searchdir)) {
+			if (filesystem::is_directory(f.path()) || filesystem::is_regular_file(f.path())) {
+				string path = f.path().string();//文件路径
+				pathsize = path.size();
 
-			//检查拓展名匹配
-			string_view compare = string_view(&(path[pathsize - extendsize]), extendsize);//要比较的尾部
-			if ((extendsize > 0) && ((path[pathsize - extendsize - 1] != '.') || (extendpath != compare))) {
-				continue;//拓展名不匹配
+				//检查拓展名匹配
+				string_view compare = string_view(&(path[pathsize - extendsize]), extendsize);//要比较的尾部
+				if ((extendsize > 0) && ((path[pathsize - extendsize - 1] != '.') || (extendpath != compare))) {
+					continue;//拓展名不匹配
+				}
+
+				lua_pushinteger(L, index);// ??? t index 
+				lua_createtable(L, 1, 0);// ??? t index t //一个数组元素，没有非数组元素
+				lua_pushinteger(L, 1);// ??? t index t 1 
+				string u8path = Eyes2D::String::UTF16ToUTF8(f.path().wstring());
+				lua_pushstring(L, u8path.c_str());// ??? t index t 1 path 
+				lua_settable(L, -3);// ??? t index t 
+				lua_settable(L, -3);// ??? t 
+				index++;
 			}
-
-			lua_pushinteger(L, index);// ??? t index 
-			lua_createtable(L, 1, 0);// ??? t index t //一个数组元素，没有非数组元素
-			lua_pushinteger(L, 1);// ??? t index t 1 
-			string u8path = Eyes2D::String::UTF16ToUTF8(f.path().wstring());
-			lua_pushstring(L, u8path.c_str());// ??? t index t 1 path 
-			lua_settable(L, -3);// ??? t index t 
-			lua_settable(L, -3);// ??? t 
-			index++;
 		}
+		return true;
 	}
-
-	return true;
+	else {
+		return false;
+	}
 }
 
 bool listFilesA(lua_State* L, const char* dir, const char* ext, const char* packname, int& index) {

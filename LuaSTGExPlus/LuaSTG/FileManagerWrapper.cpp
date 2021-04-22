@@ -7,6 +7,10 @@
 #include "E2DFilePath.hpp"
 #include "E2DFileManager.hpp"
 
+#ifdef DrawText
+#undef DrawText
+#endif
+
 using namespace std;
 using namespace LuaSTGPlus;
 
@@ -122,25 +126,27 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 			lua_newtable(L); // ??? path t 
 			filesystem::path path = searchpath;
 			unsigned int index = 1;
-			for (auto& p : filesystem::directory_iterator(path)) {
-				if (filesystem::is_regular_file(p.path()) || filesystem::is_directory(p.path())) {
-					if (checkext && ((p.path().extension().string() != extpath) || filesystem::is_directory(p.path()))) {
-						continue;
+			if (filesystem::is_directory(path)) {
+				for (auto& p : filesystem::directory_iterator(path)) {
+					if (filesystem::is_regular_file(p.path()) || filesystem::is_directory(p.path())) {
+						if (checkext && ((p.path().extension().string() != extpath) || filesystem::is_directory(p.path()))) {
+							continue;
+						}
+						lua_pushinteger(L, index); // ??? path t index 
+						lua_newtable(L); // ??? path t index tt 
+						lua_pushinteger(L, 1); // ??? path t index tt 1 
+						string u8path = Eyes2D::String::UTF16ToUTF8(p.path().wstring());
+						if (filesystem::is_directory(p.path())) {
+							u8path.push_back('/');//在目录路径后面手动添加一个分隔符
+						}
+						lua_pushstring(L, u8path.c_str()); // ??? path t index tt 1 fpath 
+						lua_settable(L, -3); // ??? path t index tt 
+						lua_pushinteger(L, 2); // ??? path t index tt 2 
+						lua_pushboolean(L, filesystem::is_directory(p.path())); // ??? path t index tt 2 bool //为目录时该项为真
+						lua_settable(L, -3); // ??? path t index tt 
+						lua_settable(L, -3); // ??? path t 
+						index++;
 					}
-					lua_pushinteger(L, index); // ??? path t index 
-					lua_newtable(L); // ??? path t index tt 
-					lua_pushinteger(L, 1); // ??? path t index tt 1 
-					string u8path = Eyes2D::String::UTF16ToUTF8(p.path().wstring());
-					if (filesystem::is_directory(p.path())) {
-						u8path.push_back('/');//在目录路径后面手动添加一个分隔符
-					}
-					lua_pushstring(L, u8path.c_str()); // ??? path t index tt 1 fpath 
-					lua_settable(L, -3); // ??? path t index tt 
-					lua_pushinteger(L, 2); // ??? path t index tt 2 
-					lua_pushboolean(L, filesystem::is_directory(p.path())); // ??? path t index tt 2 bool //为目录时该项为真
-					lua_settable(L, -3); // ??? path t index tt 
-					lua_settable(L, -3); // ??? path t 
-					index++;
 				}
 			}
 			return 1;
@@ -167,26 +173,28 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 			lua_newtable(L); // ??? path t 
 			filesystem::path path = searchpath;
 			unsigned int index = 1;
-			for (auto& p : filesystem::directory_iterator(path)) {
-				if (filesystem::is_regular_file(p.path()) || filesystem::is_directory(p.path())) {
-					string _s = p.path().extension().string();
-					if (checkext && ((p.path().extension().string() != extpath) || filesystem::is_directory(p.path()))) {
-						continue;
+			if (filesystem::is_directory(path)) {
+				for (auto& p : filesystem::directory_iterator(path)) {
+					if (filesystem::is_regular_file(p.path()) || filesystem::is_directory(p.path())) {
+						string _s = p.path().extension().string();
+						if (checkext && ((p.path().extension().string() != extpath) || filesystem::is_directory(p.path()))) {
+							continue;
+						}
+						lua_pushinteger(L, index); // ??? path t index 
+						lua_newtable(L); // ??? path t index tt 
+						lua_pushinteger(L, 1); // ??? path t index tt 1 
+						string u8path = Eyes2D::String::UTF16ToUTF8(p.path().wstring());
+						if (filesystem::is_directory(p.path())) {
+							u8path.push_back('/');//在目录路径后面手动添加一个分隔符
+						}
+						lua_pushstring(L, u8path.c_str()); // ??? path t index tt 1 fpath 
+						lua_settable(L, -3); // ??? path t index tt 
+						lua_pushinteger(L, 2); // ??? path t index tt 2 
+						lua_pushboolean(L, filesystem::is_directory(p.path())); // ??? path t index tt 2 bool //为目录时该项为真
+						lua_settable(L, -3); // ??? path t index tt 
+						lua_settable(L, -3); // ??? path t 
+						index++;
 					}
-					lua_pushinteger(L, index); // ??? path t index 
-					lua_newtable(L); // ??? path t index tt 
-					lua_pushinteger(L, 1); // ??? path t index tt 1 
-					string u8path = Eyes2D::String::UTF16ToUTF8(p.path().wstring());
-					if (filesystem::is_directory(p.path())) {
-						u8path.push_back('/');//在目录路径后面手动添加一个分隔符
-					}
-					lua_pushstring(L, u8path.c_str()); // ??? path t index tt 1 fpath 
-					lua_settable(L, -3); // ??? path t index tt 
-					lua_pushinteger(L, 2); // ??? path t index tt 2 
-					lua_pushboolean(L, filesystem::is_directory(p.path())); // ??? path t index tt 2 bool //为目录时该项为真
-					lua_settable(L, -3); // ??? path t index tt 
-					lua_settable(L, -3); // ??? path t 
-					index++;
 				}
 			}
 			for (auto z = 0; z < LFMGR.GetArchiveCount(); z++) {
@@ -254,8 +262,7 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 		}
 	};
 
-	luaL_Reg tMethods[] =
-	{
+	luaL_Reg tMethods[] = {
 		{ "LoadArchive", &Wrapper::LoadArchive },
 		{ "UnloadArchive", &Wrapper::UnloadArchive },
 		{ "UnloadAllArchive", &Wrapper::UnloadAllArchive },
@@ -269,9 +276,61 @@ void FileManagerWrapper::Register(lua_State* L)LNOEXCEPT {
 		{ NULL, NULL }
 	};
 	
+	struct FR_Wrapper {
+		static int SetFontProvider(lua_State* L) {
+			lua_pushboolean(L, LAPP.FontRenderer_SetFontProvider(luaL_checkstring(L, 1)));
+			return 1;
+		}
+		static int SetScale(lua_State* L) {
+			float a = (float)luaL_checknumber(L, 1);
+			float b = (float)luaL_checknumber(L, 2);
+			LAPP.FontRenderer_SetScale(fcyVec2(a, b));
+			return 0;
+		}
+		static int MeasureString(lua_State* L) {
+			const fcyRect v = LAPP.FontRenderer_MeasureString(luaL_checkstring(L, 1), lua_toboolean(L, 2));
+			lua_pushnumber(L, v.a.x);
+			lua_pushnumber(L, v.b.x);
+			lua_pushnumber(L, -v.b.y);
+			lua_pushnumber(L, -v.a.y);
+			return 4;
+		}
+		static int MeasureStringWidth(lua_State* L) {
+			const float v = LAPP.FontRenderer_MeasureStringWidth(luaL_checkstring(L, 1));
+			lua_pushnumber(L, v);
+			return 1;
+		}
+		static int DrawText(lua_State* L) {
+			fcyColor color = *static_cast<fcyColor*>(luaL_checkudata(L, 6, LUASTG_LUA_TYPENAME_COLOR));
+			const bool ret = LAPP.FontRenderer_DrawTextW2(
+				luaL_checkstring(L, 1),
+				fcyVec2((float)luaL_checknumber(L, 2), (float)luaL_checknumber(L, 3)),
+				(float)luaL_checknumber(L, 4),
+				TranslateBlendMode(L, 5),
+				color);
+			lua_pushboolean(L, ret);
+			return 1;
+		}
+	};
+
+	luaL_Reg FR_Method[] = {
+		{ "SetFontProvider", &FR_Wrapper::SetFontProvider },
+		{ "SetScale", &FR_Wrapper::SetScale },
+		{ "MeasureString", &FR_Wrapper::MeasureString },
+		{ "MeasureStringWidth", &FR_Wrapper::MeasureStringWidth },
+		{ "DrawText", &FR_Wrapper::DrawText },
+		{ NULL, NULL }
+	};
+
 	lua_getglobal(L, "lstg"); // ??? t 
+
 	lua_newtable(L); // ??? t t
-	::luaL_register(L, NULL, tMethods); // ??? t t 
+	luaL_register(L, NULL, tMethods); // ??? t t 
 	lua_setfield(L, -2, "FileManager"); // ??? t 
+
+	lua_newtable(L); // ??? t t
+	luaL_register(L, NULL, FR_Method); // ??? t t 
+	lua_setfield(L, -2, "FontRenderer"); // ??? t 
+
 	lua_pop(L, 1); // ??? 
 }

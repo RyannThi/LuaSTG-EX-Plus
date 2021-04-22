@@ -223,7 +223,7 @@ fResult f2dRendererImpl::CreateFontRenderer(f2dFontProvider* pProvider, f2dFontR
 	return FCYERR_OK;
 }
 
-fResult f2dRendererImpl::CreateFontFromFile(f2dStream* pStream, fuInt FaceIndex, const fcyVec2& FontSize, F2DFONTFLAG Flag, f2dFontProvider** pOut)
+fResult f2dRendererImpl::CreateFontFromFile(f2dStream* pStream, fuInt FaceIndex, const fcyVec2& FontSize, const fcyVec2& BBoxSize, F2DFONTFLAG Flag, f2dFontProvider** pOut)
 {
 	if(pOut)
 		*pOut = NULL;
@@ -235,7 +235,7 @@ fResult f2dRendererImpl::CreateFontFromFile(f2dStream* pStream, fuInt FaceIndex,
 
 	try
 	{
-		*pOut = new f2dFontFileProvider(m_pDev, pStream, FontSize, FaceIndex, Flag);
+		*pOut = new f2dFontFileProvider(m_pDev, pStream, FontSize, BBoxSize, FaceIndex, Flag);
 	}
 	catch(const fcyException& e)
 	{
@@ -261,7 +261,7 @@ fResult f2dRendererImpl::CreateSystemFont(fcStrW FaceName, fuInt FaceIndex, cons
 		return FCYERR_INTERNALERR;
 	}
 
-	return CreateFontFromFile(pStream, FaceIndex, FontSize, Flag, pOut);
+	return CreateFontFromFile(pStream, FaceIndex, FontSize, fcyVec2(0.0f, 0.0f), Flag, pOut);
 }
 
 fResult f2dRendererImpl::CreateFontFromTex(f2dStream* pDefineFile, f2dTexture2D* pTex, f2dFontProvider** pOut)

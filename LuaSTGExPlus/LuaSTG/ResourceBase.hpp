@@ -42,6 +42,8 @@ namespace LuaSTGPlus {
 		AddMutiply = 16,	//顶点色和纹理色相加 混合模式：正片叠底（相乘）
 		AddScreen = 17,		//顶点色和纹理色相加 混合模式：滤色（相加减去相乘）
 
+		One = 18,           //无混合，直接覆盖
+
 		_KEY_NOT_FOUND = -1,
 	};
 

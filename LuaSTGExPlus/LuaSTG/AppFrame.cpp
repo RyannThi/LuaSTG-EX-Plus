@@ -4,6 +4,8 @@
 #include "AppFrame.h"
 #include "Utility.h"
 #include "LuaWrapper\LuaWrapper.hpp"
+#include "SteamAPI.hpp"
+#include "LW_SteamAPI.h"
 #include "E2DXInputImpl.hpp"
 #include "LuaCustomLoader.hpp"
 #include "LuaStringToEnum.hpp"
@@ -778,7 +780,7 @@ bool AppFrame::RenderText(ResFont* p, wchar_t* strBuf, fcyRect rect, fcyVec2 sca
 		else
 		{
 			f2dGlyphInfo tGlyphInfo;
-			if (FCYOK(pFontProvider->QueryGlyph(m_Graph2D, *pText, &tGlyphInfo)))
+			if (FCYOK(pFontProvider->QueryGlyph(NULL, *pText, &tGlyphInfo)))
 			{
 				float adv = tGlyphInfo.Advance.x * scale.x;
 				if (bWordBreak && fLineWidth + adv > rect.GetWidth())  // 截断模式
@@ -835,7 +837,7 @@ bool AppFrame::RenderText(ResFont* p, wchar_t* strBuf, fcyRect rect, fcyVec2 sca
 		while (*pScanner != L'\0' && *pScanner != '\n')
 		{
 			f2dGlyphInfo tGlyphInfo;
-			if (FCYOK(pFontProvider->QueryGlyph(m_Graph2D, *pScanner, &tGlyphInfo)))
+			if (FCYOK(pFontProvider->QueryGlyph(NULL, *pScanner, &tGlyphInfo)))
 			{
 				float adv = tGlyphInfo.Advance.x * scale.x;
 
@@ -917,7 +919,7 @@ fcyVec2 AppFrame::CalcuTextSize(ResFont* p, const wchar_t* strBuf, fcyVec2 scale
 		else
 		{
 			f2dGlyphInfo tGlyphInfo;
-			if (FCYOK(pFontProvider->QueryGlyph(m_Graph2D, *strBuf, &tGlyphInfo)))
+			if (FCYOK(pFontProvider->QueryGlyph(NULL, *strBuf, &tGlyphInfo)))
 				fLineWidth += tGlyphInfo.Advance.x * scale.x;
 		}
 		++strBuf;
@@ -1353,18 +1355,6 @@ bool AppFrame::Init()LNOEXCEPT
 		m_SplashWindow.HideSplashWindow();
 	});
 
-	//////////////////////////////////////// Lua入口点文件
-	std::string MAIN_SCRIPT;
-	std::wstring LMAIN_SCRIPT = LCORE_SCRIPT;
-	try {
-		MAIN_SCRIPT = fcyStringHelper::WideCharToMultiByte(LCORE_SCRIPT, CP_UTF8);
-	}
-	catch (...) {
-		MAIN_SCRIPT = "src/main.lua";
-		LMAIN_SCRIPT = L"src/main.lua";
-		LERROR("转换字符串编码时出现错误");
-	}
-	
 	//////////////////////////////////////// Lua初始化部分
 	{
 		LINFO("开始初始化Lua虚拟机 版本: %m", LVERSION_LUA);
@@ -1380,6 +1370,7 @@ bool AppFrame::Init()LNOEXCEPT
 
 		luaL_openlibs(L);  // 内建库 (lua build in lib)
 		lua_register_custom_loader(L); // 加强版 package 库 (require)
+		luaopen_steam(L); // Steam API
 
 		luaopen_lfs(L);  // 文件系统库 (file system)
 		luaopen_cjson(L);  // CJSON库 (json)
@@ -1459,11 +1450,14 @@ bool AppFrame::Init()LNOEXCEPT
 #endif // USING_LAUNCH_FILE
 
 	//////////////////////////////////////// 装载基础资源包
-	LINFO("加载资源包'data'");
+#ifdef USING_ENCRYPTION
 	if (!m_FileManager.LoadArchive("data", 0, GetGameName().c_str())) {
+#ifdef LDEVVERSION
 		LWARNING("找不到资源包'data'");
+#endif //LDEVVERSION
 	}
-
+#endif
+	
 	//////////////////////////////////////// 初始化fancy2d引擎
 	{
 		LINFO("初始化fancy2d 版本 %d.%d (分辨率: %dx%d 垂直同步: %b 窗口化: %b)",
@@ -1506,7 +1500,7 @@ bool AppFrame::Init()LNOEXCEPT
 
 		// 创建渲染器
 		//原来的大小只有20000，20000
-		if (FCYFAILED(m_pRenderDev->CreateGraphics2D(32768, 65536, &m_Graph2D)))
+		if (FCYFAILED(m_pRenderDev->CreateGraphics2D(16384, 24576, &m_Graph2D)))
 		{
 			LERROR("无法创建渲染器 (fcyRenderDevice::CreateGraphics2D failed)");
 			return false;
@@ -1601,23 +1595,60 @@ bool AppFrame::Init()LNOEXCEPT
 
 	//////////////////////////////////////// 装载核心脚本
 	{
-		bool ok = m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream);
-		if (!ok) {
-			MAIN_SCRIPT = "src/main.lua"; LMAIN_SCRIPT = L"src/main.lua";
-			LINFO("装载核心脚本'%s'", LMAIN_SCRIPT.c_str());
-			ok = m_ResourceMgr.LoadFile(LMAIN_SCRIPT.c_str(), tMemStream);
-			
-		}
-		if (!ok) {
-			LWARNING("找不到文件'%s'", LMAIN_SCRIPT.c_str());
-		}
-		else {
-			if (!SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), MAIN_SCRIPT.c_str())) {
-				return false;
+		const wchar_t* entry_file_array_w[] = {
+			L"core.lua",
+			L"main.lua",
+			L"src/main.lua",
+		};
+		const char* entry_file_array[] = {
+			"core.lua",
+			"main.lua",
+			"src/main.lua",
+		};
+		const int entry_file_count = sizeof(entry_file_array) / sizeof(char*);
+
+		for (int idx = 0; idx < entry_file_count; idx++) {
+			const char* entry_file = entry_file_array[idx];
+			const wchar_t* entry_file_w = entry_file_array_w[idx];
+
+#ifdef USING_ENCRYPTION
+			if (m_FileManager.ArchiveExist("data")) {
+				auto* zip = m_FileManager.GetArchive("data");
+				if (zip->FileExist(entry_file)) {
+					auto* steam = zip->LoadEncryptedFile(entry_file, GetGameName().c_str());
+					if (steam) {
+						fcyMemStream* mms = (fcyMemStream*)steam;
+#ifdef LDEVVERSION
+						LINFO("装载核心脚本'%s'", entry_file_w);
+#endif // LDEVVERSION
+						if (SafeCallScript((fcStr)mms->GetInternalBuffer(), (size_t)mms->GetLength(), entry_file)) {
+#ifdef LDEVVERSION
+							LINFO("装载核心脚本'%s'完成", entry_file_w);
+#endif // LDEVVERSION
+							break; // finish
+						}
+
+						mms = nullptr;
+						steam->Release();
+					}
+				}
 			}
+#else // USING_ENCRYPTION
+			if (m_ResourceMgr.LoadFile(entry_file_w, tMemStream)) {
+#ifdef LDEVVERSION
+				LINFO("装载核心脚本'%s'", entry_file_w);
+#endif // LDEVVERSION
+				if (SafeCallScript((fcStr)tMemStream->GetInternalBuffer(), (size_t)tMemStream->GetLength(), entry_file)) {
+#ifdef LDEVVERSION
+					LINFO("装载核心脚本'%s'完成", entry_file_w);
+#endif // LDEVVERSION
+					break; // finish
+				}
+			}
+#endif // USING_ENCRYPTION
 		}
 	}
-	
+
 	//////////////////////////////////////// 初始化完成
 	m_iStatus = AppStatus::Initialized;
 	LINFO("初始化成功完成");
@@ -2068,7 +2099,9 @@ fBool AppFrame::OnUpdate(fDouble ElapsedTime, f2dFPSController* pFPSController, 
 			break;
 		}
 	}
-	
+	// Steam消息
+	//SteamAPI_RunCallbacks();
+
 	//EX+ Network Input
 	if (!m_Input){
 		m_Input = CreateInputEx();

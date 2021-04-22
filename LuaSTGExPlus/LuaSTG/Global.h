@@ -92,7 +92,8 @@
 #define DBL_HALF_MAX (DBL_MAX / 2.0) //双精度浮点的半大值
 #define LRAD2DEGREE (180.0/3.141592653589793) // 弧度到角度
 #define LDEGREE2RAD (1.0/LRAD2DEGREE) // 角度到弧度
-#define LPI_HALF (3.141592653589793 / 2)  // PI*0.5
+#define LPI_FULL (3.1415926535897932384626433832795) // PI
+#define LPI_HALF (LPI_FULL / 2)  // PI*0.5
 
 #define LNOEXCEPT noexcept // throw()
 #define LNOINLINE __declspec(noinline)
