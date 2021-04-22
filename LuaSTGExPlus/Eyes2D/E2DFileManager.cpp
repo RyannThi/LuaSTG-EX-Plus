@@ -9,6 +9,8 @@
 #include "fcyMisc/fcyStringHelper.h"
 #include "zip.h"
 
+#define CUSTOM_ZIP_STAT (ZIP_STAT_NAME | ZIP_STAT_INDEX | ZIP_STAT_SIZE | ZIP_STAT_ENCRYPTION_METHOD)
+
 using namespace std;
 using namespace Eyes2D::IO;
 
@@ -171,7 +173,10 @@ fcyStream* Archive::LoadFile(const char* filepath) {
 	{
 		//获取文件信息
 		zip_stat_t zs;
-		if (zip_stat_index(m_Impl->ZipFile, index, ZIP_STAT_SIZE, &zs) != 0) {
+		if (zip_stat_index(m_Impl->ZipFile, index, ZIP_FL_UNCHANGED, &zs) != 0) {
+			return nullptr;
+		}
+		if (CUSTOM_ZIP_STAT != (zs.valid & CUSTOM_ZIP_STAT)) {
 			return nullptr;
 		}
 		//打开压缩包内文件
@@ -211,7 +216,13 @@ fcyStream* Archive::LoadEncryptedFile(const char* filepath, const char* password
 	{
 		//获取文件信息
 		zip_stat_t zs;
-		if (zip_stat_index(m_Impl->ZipFile, index, ZIP_STAT_SIZE, &zs) != 0) {
+		if (zip_stat_index(m_Impl->ZipFile, index, ZIP_FL_UNCHANGED, &zs) != 0) {
+			return nullptr;
+		}
+		if (CUSTOM_ZIP_STAT != (zs.valid & CUSTOM_ZIP_STAT)) {
+			return nullptr;
+		}
+		if (ZIP_EM_NONE == zs.encryption_method) {
 			return nullptr;
 		}
 		//打开压缩包内文件，密码不使用中文
