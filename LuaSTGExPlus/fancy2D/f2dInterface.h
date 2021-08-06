@@ -1,13 +1,13 @@
-////////////////////////////////////////////////////////////////////////////////
+ï»¿////////////////////////////////////////////////////////////////////////////////
 /// @file  f2dInterface.h
-/// @brief fancy2D½Ó¿Ú¶¨Òå
-/// @note  ¶¨ÒåÁËËùÓĞf2d½Ó¿ÚµÄ»ùÀà
+/// @brief fancy2Dæ¥å£å®šä¹‰
+/// @note  å®šä¹‰äº†æ‰€æœ‰f2dæ¥å£çš„åŸºç±»
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include <fcyType.h>
 #include <fcyMath.h>
 
-// --- f2dInterface µÈ¼ÛÓÚ fcyRefObj ---
+// --- f2dInterface ç­‰ä»·äº fcyRefObj ---
 #ifdef FCYREFOBJ
 
 typedef fcyRefObj f2dInterface;
@@ -15,18 +15,18 @@ typedef fcyRefObj f2dInterface;
 #else
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief f2dÒıÓÃ¼ÆÊı½Ó¿Ú¶¨Òå
+/// @brief f2då¼•ç”¨è®¡æ•°æ¥å£å®šä¹‰
 ////////////////////////////////////////////////////////////////////////////////
 struct f2dInterface
 {
-	virtual void AddRef()=0;  ///< @brief Ôö¼Ó½Ó¿ÚµÄÒıÓÃ¼ÆÊı
-	virtual void Release()=0; ///< @brief ¼õÉÙ½Ó¿ÚµÄÒıÓÃ¼ÆÊı
-	                          ///< @note  µ±¼ÆÊıÆ÷ÖÃ0Ê±Ïú»Ù¶ÔÏó
+	virtual void AddRef()=0;  ///< @brief å¢åŠ æ¥å£çš„å¼•ç”¨è®¡æ•°
+	virtual void Release()=0; ///< @brief å‡å°‘æ¥å£çš„å¼•ç”¨è®¡æ•°
+	                          ///< @note  å½“è®¡æ•°å™¨ç½®0æ—¶é”€æ¯å¯¹è±¡
 };
 
 #endif
 
-// --- ÔÚf2dÖĞ¶ÔÁ÷½Ó¿ÚÖØĞÂ¶¨Òå ---
+// --- åœ¨f2dä¸­å¯¹æµæ¥å£é‡æ–°å®šä¹‰ ---
 /// @cond NOFCYLIB
 
 #ifdef FCYSTREAM
@@ -38,64 +38,64 @@ typedef fcyStream f2dStream;
 
 enum F2DSEEKORIGIN
 {
-	F2DSEEKORIGIN_BEG = 0,  ///< @brief ´ÓÍ·¿ªÊ¼Ñ°Ö·
-	                        ///< @note  Ö¸ÕëÑ°Ö·Î»ÖÃ¿ªÊ¼ÓÚ0´¦
-	F2DSEEKORIGIN_CUR = 1,  ///< @brief ´Óµ±Ç°Î»ÖÃ¿ªÊ¼Ñ°Ö·
-	F2DSEEKORIGIN_END = 2   ///< @brief ´Ó½áÎ²´¦¿ªÊ¼Ñ°Ö·
-	                        ///< @note  Ö¸ÕëÑ°Ö·Î»ÖÃ¿ªÊ¼ÓÚEOF´¦
+	F2DSEEKORIGIN_BEG = 0,  ///< @brief ä»å¤´å¼€å§‹å¯»å€
+	                        ///< @note  æŒ‡é’ˆå¯»å€ä½ç½®å¼€å§‹äº0å¤„
+	F2DSEEKORIGIN_CUR = 1,  ///< @brief ä»å½“å‰ä½ç½®å¼€å§‹å¯»å€
+	F2DSEEKORIGIN_END = 2   ///< @brief ä»ç»“å°¾å¤„å¼€å§‹å¯»å€
+	                        ///< @note  æŒ‡é’ˆå¯»å€ä½ç½®å¼€å§‹äºEOFå¤„
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief fcyÁ÷½Ó¿Ú
+/// @brief fcyæµæ¥å£
 ////////////////////////////////////////////////////////////////////////////////
 struct f2dStream : f2dInterface
 {
-	/// @brief ·µ»ØÁ÷ÊÇ·ñ¿ÉĞ´
+	/// @brief è¿”å›æµæ˜¯å¦å¯å†™
 	virtual fBool CanWrite()=0;
 
-	/// @brief ·µ»ØÁ÷ÊÇ·ñ¿É±ä³¤
+	/// @brief è¿”å›æµæ˜¯å¦å¯å˜é•¿
 	virtual fBool CanResize()=0;
 
-	/// @brief ·µ»ØÁ÷³¤¶È
+	/// @brief è¿”å›æµé•¿åº¦
 	virtual fLen GetLength()=0;
 
-	/// @brief     ÉèÖÃĞÂ³¤¶È
-	/// @param[in] Length Á÷µÄĞÂ³¤¶È
+	/// @brief     è®¾ç½®æ–°é•¿åº¦
+	/// @param[in] Length æµçš„æ–°é•¿åº¦
 	virtual fResult SetLength(fLen Length)=0;
 	
-	/// @brief »ñµÃ¶ÁĞ´Ö¸ÕëµÄÎ»ÖÃ
+	/// @brief è·å¾—è¯»å†™æŒ‡é’ˆçš„ä½ç½®
 	virtual fLen GetPosition()=0;
 
-	/// @brief     ÉèÖÃ¶ÁĞ´Î»ÖÃ
-	/// @param[in] Origin Ñ°Ö·²Î¿¼Î»ÖÃ
-	/// @param[in] Offset Î»ÒÆ
+	/// @brief     è®¾ç½®è¯»å†™ä½ç½®
+	/// @param[in] Origin å¯»å€å‚è€ƒä½ç½®
+	/// @param[in] Offset ä½ç§»
 	virtual fResult SetPosition(F2DSEEKORIGIN Origin, fLong Offset)=0;
 
-	/// @brief      ´ÓÁ÷ÖĞ¶ÁÈ¡×Ö½ÚÊı¾İ
-	/// @param[in]  pData      Ä¿µÄ»º³åÇø
-	/// @param[in]  Length     Êı¾İ³¤¶È
-	/// @param[out] pBytesRead ÕæÊµ¶ÁĞ´³¤¶È£¬¿ÉÖÃÎªNULL
+	/// @brief      ä»æµä¸­è¯»å–å­—èŠ‚æ•°æ®
+	/// @param[in]  pData      ç›®çš„ç¼“å†²åŒº
+	/// @param[in]  Length     æ•°æ®é•¿åº¦
+	/// @param[out] pBytesRead çœŸå®è¯»å†™é•¿åº¦ï¼Œå¯ç½®ä¸ºNULL
 	virtual fResult ReadBytes(fData pData, fLen Length, fLen* pBytesRead=NULL)=0;
 
-	/// @brief      ÏòÁ÷ÖĞĞ´Èë×Ö½ÚÊı¾İ
-	/// @param[in]  pSrc        Ô­Ê¼»º³åÇø
-	/// @param[in]  Length      Êı¾İ³¤¶È
-	/// @param[out] pBytesWrite ÕæÊµ¶ÁĞ´³¤¶È£¬¿ÉÖÃÎªNULL
+	/// @brief      å‘æµä¸­å†™å…¥å­—èŠ‚æ•°æ®
+	/// @param[in]  pSrc        åŸå§‹ç¼“å†²åŒº
+	/// @param[in]  Length      æ•°æ®é•¿åº¦
+	/// @param[out] pBytesWrite çœŸå®è¯»å†™é•¿åº¦ï¼Œå¯ç½®ä¸ºNULL
 	virtual fResult WriteBytes(fcData pSrc, fLen Length, fLen* pBytesWrite=NULL)=0;
 
-	/// @brief   Ëø¶¨Á÷
-	/// @note    ¸Ãº¯Êı¿ÉÄÜ»áÔì³É×èÈû
-	/// @warning Èç¹ûÒ»¸öÁ÷ÔÚ¶àÏß³Ì»·¾³ÏÂ±»Ê¹ÓÃÊ±±ØĞëÔÚ¶ÁĞ´Çø¿éÖĞÊÖ¶¯¼ÓËø
+	/// @brief   é”å®šæµ
+	/// @note    è¯¥å‡½æ•°å¯èƒ½ä¼šé€ æˆé˜»å¡
+	/// @warning å¦‚æœä¸€ä¸ªæµåœ¨å¤šçº¿ç¨‹ç¯å¢ƒä¸‹è¢«ä½¿ç”¨æ—¶å¿…é¡»åœ¨è¯»å†™åŒºå—ä¸­æ‰‹åŠ¨åŠ é”
 	virtual void Lock()=0;
 	
-	/// @brief   ÊÔÍ¼Ëø¶¨Á÷
-	/// @warning Èç¹ûÒ»¸öÁ÷ÔÚ¶àÏß³Ì»·¾³ÏÂ±»Ê¹ÓÃÊ±±ØĞëÔÚ¶ÁĞ´Çø¿éÖĞÊÖ¶¯¼ÓËø
-	/// @return  Ê¹ÓÃFCYOKºÍFCYFAILEDÅĞ¶ÏÊÇ·ñ³É¹¦¼ÓËø
+	/// @brief   è¯•å›¾é”å®šæµ
+	/// @warning å¦‚æœä¸€ä¸ªæµåœ¨å¤šçº¿ç¨‹ç¯å¢ƒä¸‹è¢«ä½¿ç”¨æ—¶å¿…é¡»åœ¨è¯»å†™åŒºå—ä¸­æ‰‹åŠ¨åŠ é”
+	/// @return  ä½¿ç”¨FCYOKå’ŒFCYFAILEDåˆ¤æ–­æ˜¯å¦æˆåŠŸåŠ é”
 	virtual fResult TryLock()=0;
 
-	/// @brief   ½âËøÁ÷
-	/// @note    ¸Ãº¯Êı±ØĞëÔÚLockºÍTryLock³É¹¦µÄÌõ¼şÏÂ½øĞĞµ÷ÓÃ
-	/// @warning Èç¹ûÒ»¸öÁ÷ÔÚ¶àÏß³Ì»·¾³ÏÂ±»Ê¹ÓÃÊ±±ØĞëÔÚ¶ÁĞ´Çø¿éÖĞÊÖ¶¯¼ÓËø
+	/// @brief   è§£é”æµ
+	/// @note    è¯¥å‡½æ•°å¿…é¡»åœ¨Lockå’ŒTryLockæˆåŠŸçš„æ¡ä»¶ä¸‹è¿›è¡Œè°ƒç”¨
+	/// @warning å¦‚æœä¸€ä¸ªæµåœ¨å¤šçº¿ç¨‹ç¯å¢ƒä¸‹è¢«ä½¿ç”¨æ—¶å¿…é¡»åœ¨è¯»å†™åŒºå—ä¸­æ‰‹åŠ¨åŠ é”
 	virtual void Unlock()=0;
 };
 

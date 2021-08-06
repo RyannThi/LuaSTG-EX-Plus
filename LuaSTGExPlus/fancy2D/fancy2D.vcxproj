@@ -276,7 +276,9 @@
     <ClCompile Include="Video\f2dVideoSysImpl.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="fancy2D.rc" />
+    <ResourceCompile Include="fancy2D.rc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ResourceCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

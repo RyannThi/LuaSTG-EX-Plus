@@ -1,4 +1,4 @@
-#include "E2DCodePage.hpp"
+﻿#include "E2DCodePage.hpp"
 #include <stdexcept>
 
 namespace Eyes2D {

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <string>
 #include <vector>
@@ -9,13 +9,13 @@ namespace Eyes2D {
 	namespace Sound {
 		class XAudio2VoicePool {
 		private:
-			IXAudio2* m_XAudio;                                              //Ö»ÊÇ³ÖÓĞ
-			IXAudio2MasteringVoice* m_MasteringVoice;                        //Ö»ÊÇ³ÖÓĞ
-			std::unordered_map<std::string, IXAudio2SubmixVoice*> m_MixVoice;//»ìÒôÒô¹ì
-			int m_TotalVoiceSpace;                                           //¿É±ä£¬ÒôÆµ³Ø£¬µäĞÍÖµÎª64
-			int m_NextAllocSpace;                                            //ÏÂÒ»´Î·ÖÅäµÄIDÊıÁ¿£¬µäĞÍÖµÎª4
-			std::vector<int> m_FreeVoiceID;                                  //¿ÕÏĞµÄÒôÆµID
-			std::vector<IXAudio2SourceVoice*> m_SourceVoice;                 //ÒôÔ´³Ø
+			IXAudio2* m_XAudio;                                              //åªæ˜¯æŒæœ‰
+			IXAudio2MasteringVoice* m_MasteringVoice;                        //åªæ˜¯æŒæœ‰
+			std::unordered_map<std::string, IXAudio2SubmixVoice*> m_MixVoice;//æ··éŸ³éŸ³è½¨
+			int m_TotalVoiceSpace;                                           //å¯å˜ï¼ŒéŸ³é¢‘æ± ï¼Œå…¸å‹å€¼ä¸º64
+			int m_NextAllocSpace;                                            //ä¸‹ä¸€æ¬¡åˆ†é…çš„IDæ•°é‡ï¼Œå…¸å‹å€¼ä¸º4
+			std::vector<int> m_FreeVoiceID;                                  //ç©ºé—²çš„éŸ³é¢‘ID
+			std::vector<IXAudio2SourceVoice*> m_SourceVoice;                 //éŸ³æºæ± 
 		public:
 			XAudio2VoicePool(IXAudio2* p, IXAudio2MasteringVoice* m);
 			~XAudio2VoicePool();

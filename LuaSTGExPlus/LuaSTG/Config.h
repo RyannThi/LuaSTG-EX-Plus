@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // log file
 #define APP_COMPANY L"LuaSTG"

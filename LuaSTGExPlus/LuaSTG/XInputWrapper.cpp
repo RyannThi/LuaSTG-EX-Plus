@@ -1,4 +1,4 @@
-#include "E2DXInputImpl.hpp"
+﻿#include "E2DXInputImpl.hpp"
 #include "LuaWrapper\LuaWrapper.hpp"
 #include "AppFrame.h"
 
@@ -50,7 +50,7 @@ void XInputManagerWrapper::Register(lua_State* L)LNOEXCEPT
 			lua_Integer _H = LXINPUT.GetMotorSpeedHigh(index);
 			lua_pushinteger(L, _L);
 			lua_pushinteger(L, _H);
-			lua_pushboolean(L, (_L >= 0) && (_H >= 0));//ʧ��Ϊfalse
+			lua_pushboolean(L, (_L >= 0) && (_H >= 0));//ﾊｧｰﾜﾎｪfalse
 			return 3;
 		}
 		static int Refresh(lua_State* L) {

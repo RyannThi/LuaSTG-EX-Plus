@@ -1,4 +1,4 @@
-#include "LuaInternalSource.hpp"
+﻿#include "LuaInternalSource.hpp"
 
 static const std::string _InternalSource_1 = R"(
 function GameInit()

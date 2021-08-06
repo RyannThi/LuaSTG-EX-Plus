@@ -1,0 +1,16 @@
+[INFO]  开始初始化 版本: luaSTG-0.1
+[INFO]  开始初始化Lua虚拟机 版本: LuaJIT 2.1.0-beta3
+[INFO]  初始化对象池 上限=32768
+[INFO]  加载初始化脚本'launch'
+[WARN]  找不到文件'launch'
+[INFO]  初始化fancy2d 版本 0.6 (分辨率: 640x480 垂直同步: true 窗口化: true)
+[INFO]  CPU Intel(R) Core(TM) i3-9100F CPU @ 3.60GHz GenuineIntel / GPU Radeon RX550/550 Series
+[INFO]  初始化成功完成
+[INFO]  开始游戏循环
+[INFO]  结束游戏循环
+[INFO]  已清空对象池
+[INFO]  已清空所有资源
+[INFO]  已卸载fancy2d
+[INFO]  已卸载Lua虚拟机
+[INFO]  已卸载所有资源包
+[INFO]  框架销毁

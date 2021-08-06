@@ -1,4 +1,4 @@
-#include "fcyBinaryHelper.h"
+﻿#include "fcyBinaryHelper.h"
 
 using namespace std;
 

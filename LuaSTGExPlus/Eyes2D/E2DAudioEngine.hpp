@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "E2DGlobal.hpp"
 #include "E2DSound.hpp"
 #include "XAudio2.h"
